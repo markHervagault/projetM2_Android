@@ -16,4 +16,5 @@
 
     <!-- Clé pour utiliser l'API Google Map -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false"> AIzaSyCGwXaXjlhXfKurhkPXpsTApGf3kfjhcWI </string>
+    <string name="title_activity_map">Map</string>
 </resources>
