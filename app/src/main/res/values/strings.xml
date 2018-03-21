@@ -20,4 +20,7 @@
     <string name="title_activity_map">Map</string>
     <string name="title_activity_list_intervention">Interventions</string>
     <string name="img_item_intervention">carte de l\'intervention</string>
+    <string name="fab_menu_item1">Menu item 1</string>
+    <string name="fab_menu_item2">Menu item 2</string>
+    <string name="fab_menu_item3">Menu item 3</string>
 </resources>
