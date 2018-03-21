@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 public class MapActivity extends FragmentActivity implements
         OnMapReadyCallback {
@@ -104,6 +107,10 @@ public class MapActivity extends FragmentActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        // Notre InfoWindow personnalisé
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
+
 
         // Ajout du marqueur de positon du drône aux coordonnées RENNES
         mDrone = mMap.addMarker(new MarkerOptions()
