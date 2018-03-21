@@ -34,6 +34,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity;
+
 import static android.content.ContentValues.TAG;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -350,7 +352,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                startActivity(new Intent(LoginActivity.this, MapActivity.class));
+                // TODO: Ouvrir la bonne activity une fois l'utilisateur connecté
+                //startActivity(new Intent(LoginActivity.this, MapActivity.class));
+                startActivity(new Intent(LoginActivity.this, DetailsInterventionActivity.class));
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

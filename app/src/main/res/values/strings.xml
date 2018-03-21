@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">FireFighterApp</string>
 
+    <!-- Clé pour utiliser l'API Google Map -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false"> AIzaSyCGwXaXjlhXfKurhkPXpsTApGf3kfjhcWI </string>
+
+    <!--Titres activities-->
+    <string name="title_activity_map">Map</string>
+    <string name="title_intervention_details">Detail intervention</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -15,7 +22,9 @@
         completions."
     </string>
 
-    <!-- Clé pour utiliser l'API Google Map -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false"> AIzaSyCGwXaXjlhXfKurhkPXpsTApGf3kfjhcWI </string>
-    <string name="title_activity_map">Map</string>
+    String related to intervention details
+    <string name="intervention_detail_fragment_static_adresse">Adresse :</string>
+    <string name="intervention_detail_fragment_static_code_sinistre">Code Sinistre :</string>
+    <string name="intervention_detail_fragment_static_heure_creation">Heure de création :</string>
+    <string name="intervention_detail_fragment_static_createur">Crée par :</string>
 </resources>
