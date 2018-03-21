@@ -17,4 +17,6 @@ public interface LoginConsumer extends Consumer {
     Call<UserDto> getToken(@Body LoginDto loginDto);
 
 
+
+
 }

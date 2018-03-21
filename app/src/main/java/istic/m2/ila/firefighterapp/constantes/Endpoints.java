@@ -9,4 +9,5 @@ public class Endpoints {
     public static final String INTERVENTION_ID = "";
     public static final String VEHICULE = "";
     public static final String AUTHENTICATE = "authenticate";
+
 }

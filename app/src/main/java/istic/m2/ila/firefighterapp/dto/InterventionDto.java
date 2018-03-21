@@ -7,6 +7,7 @@ package istic.m2.ila.firefighterapp.dto;
 public class InterventionDto {
     private String adressIntervention;
     private int codeSinistre;
+    private enum etat {ongoing,closed};
     private MoyenIntervention[] moyenIntervention;
 
     public String getAdressIntervention() {
