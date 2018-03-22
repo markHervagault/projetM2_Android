@@ -30,21 +30,23 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MapActivity"
-            android:label="@string/title_activity_map" />
             android:screenOrientation="landscape"
-            android:label="@string/title_activity_map"></activity>
+            android:label="@string/title_activity_map">
+        </activity>
         <activity
             android:name=".ListInterventionActivity"
             android:screenOrientation="landscape"
-            android:label="@string/title_activity_list_intervention"></activity>
-            <activity android:name=".Intervention.DetailInterventionActivity"
-            android:value="@string/title_intervention_details" />
+            android:label="@string/title_activity_list_intervention">
+        </activity>
+        <activity
+            android:name=".Intervention.DetailsInterventionActivity"
+            android:value="@string/title_intervention_details">
+        </activity>
     </application>
 
 </manifest>
