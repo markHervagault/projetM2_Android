@@ -4,4 +4,12 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorLightGrey">#BDBDBD</color>
+
+    <color name="colorMenuFabUnselectedNormal">#DA4336</color>
+    <color name="colorMenuFabUnselectedPressed">#E75043</color>
+    <color name="colorMenuFabUnselectedRipple">#99FFFFFF</color>
+
+    <color name="colorMenuFabSelectedNormal">#05822b</color>
+    <color name="colorMenuFabSelectedPressed">#0a9936</color>
+    <color name="colorMenuFabSelectedRipple">#99FFFFFF</color>
 </resources>

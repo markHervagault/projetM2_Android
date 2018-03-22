@@ -1,8 +1,8 @@
 package istic.m2.ila.firefighterapp;
 
 import android.graphics.Color;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import com.github.clans.fab.FloatingActionButton;
+
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -60,6 +61,10 @@ public class MapActivity extends FragmentActivity implements
 //    private static final LatLng BORDEAUX = new LatLng(44.836151, -0.580816);
 //    private static final LatLng BOULOGNE_BILLANCOURT = new LatLng(48.843933, 2.247391);
 
+    // Contrôles d'interfaces
+    private boolean isEnabledButtonAddPointToVisit;
+    private List<FloatingActionButton> fabMenuButtons;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,20 +74,8 @@ public class MapActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        initMenuFlottant();
 
-                // Gestion de l'événement click pour le bouton flottant
-                deleteMarker(selectedMarker);
-
-                String fabDebugText = "Nombre de markers=" + markers.size();
-                // On définit notre action spécifique
-                Snackbar.make(view, fabDebugText, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         // Liste des marqueurs
         markers = new ArrayList<>();
@@ -92,8 +85,91 @@ public class MapActivity extends FragmentActivity implements
 
         // Map pour retrouver l'index d'un marqueur à partir de ses coordonnées
         indexMarkers = new HashMap<>();
+
+        isEnabledButtonAddPointToVisit = false;
     }
 
+    private void initMenuFlottant() {
+        // removePointToVisit
+        FloatingActionButton fab = findViewById(R.id.menu_removePointToVisit);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Gestion de l'événement click pour le bouton flottant
+                deleteMarker(selectedMarker);
+            }
+        });
+
+
+        // addPointToVisit
+        final FloatingActionButton fab2 = findViewById(R.id.menu_addPointToVisit);
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isEnabledButtonAddPointToVisit) {
+                    setEnabledAllFloatingButtons(false);
+
+                    // Réactiver le BOUTON ACTUELLEMENT SELECTIONNE
+                    fab2.setEnabled(true);
+
+                    // Couleurs du focus
+                    fab2.setColorNormal(getResources().
+                            getColor(R.color.colorMenuFabSelectedNormal));
+                    fab2.setColorPressed(getResources().
+                            getColor(R.color.colorMenuFabSelectedPressed));
+                    fab2.setColorRipple(getResources().
+                            getColor(R.color.colorMenuFabSelectedRipple));
+                    isEnabledButtonAddPointToVisit = true;
+
+                } else {
+                    setEnabledAllFloatingButtons(true);
+
+                    // Couleurs de l'unfocus
+                    fab2.setColorNormal(getResources().
+                            getColor(R.color.colorMenuFabUnselectedNormal));
+                    fab2.setColorPressed(getResources().
+                            getColor(R.color.colorMenuFabUnselectedPressed));
+                    fab2.setColorRipple(getResources().
+                            getColor(R.color.colorMenuFabUnselectedRipple));
+                    isEnabledButtonAddPointToVisit = false;
+                }
+            }
+        });
+
+        FloatingActionButton fab3 = findViewById(R.id.menu_item3);
+
+        // On sauvegarde nos boutons
+        fabMenuButtons = new ArrayList<>();
+        fabMenuButtons.add(fab);
+        fabMenuButtons.add(fab2);
+        fabMenuButtons.add(fab3);
+    }
+
+    /**
+     * Active ou désactive tous les floating buttons du menu
+     * @param isEnabled si true, false sinon
+     */
+    private void setEnabledAllFloatingButtons(boolean isEnabled) {
+        // (Dés) activer TOUS LES boutons de menu
+        FloatingActionMenu fabMenu = findViewById(R.id.menu_fab);
+        int nbChilren = fabMenu.getChildCount();
+
+        for (FloatingActionButton fab : fabMenuButtons) {
+            fab.setEnabled(isEnabled);
+        }
+
+        /*
+        for (int i = 0; i < nbChilren; i++){
+
+            View v = fabMenu.getChildAt(i);
+
+            if (v instanceof  FloatingActionButton && v != fabMenu){
+                v.setEnabled(isEnabled);
+            }
+        }
+        */
+    }
 
     /**
      * Manipulates the map once available.
@@ -187,16 +263,18 @@ public class MapActivity extends FragmentActivity implements
              * Au clic sur la map, on ajoute un marqueur à cet endroit
              */
             public void onMapClick(LatLng latLng) {
-                Marker newMarker = mMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title("Selected")
-                        .draggable(true));
+                if (isEnabledButtonAddPointToVisit) {
+                    Marker newMarker = mMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title("Selected")
+                            .draggable(true));
 
-                indexMarkers.put(latLng, markers.size());
-                markers.add(newMarker);
-                markersLatLng.add(latLng);
+                    indexMarkers.put(latLng, markers.size());
+                    markers.add(newMarker);
+                    markersLatLng.add(latLng);
 
-                drawPolygon();
+                    drawPolygon();
+                }
             }
         });
 

@@ -24,13 +24,13 @@
         tools:context="istic.m2.ila.firefighterapp.MapActivity">
 
         <!--Bouton flottant-->
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@android:drawable/ic_input_add" />
+        <!--<android.support.design.widget.FloatingActionButton-->
+            <!--android:id="@+id/fab"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="bottom|start"-->
+            <!--android:layout_margin="@dimen/fab_margin"-->
+            <!--app:srcCompat="@android:drawable/ic_input_add" />-->
 
         <!--Menu de boutons flottants-->
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -39,7 +39,7 @@
             android:layout_height="match_parent">
 
             <com.github.clans.fab.FloatingActionMenu
-                android:id="@+id/menu_flottant"
+                android:id="@+id/menu_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -53,7 +53,7 @@
                 fab:menu_colorNormal="#DA4336"
                 fab:menu_colorPressed="#E75043"
                 fab:menu_colorRipple="#99FFFFFF"
-                fab:menu_fab_label="your_label_here"
+                fab:menu_fab_label="@string/map_activity_fab_menu_label"
                 fab:menu_fab_size="normal"
                 fab:menu_icon="@drawable/fab_add"
                 fab:menu_labels_colorNormal="#333333"
@@ -87,19 +87,20 @@
 
                 <!--Menu item 1-->
                 <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/menu_item1"
+                    android:id="@+id/menu_removePointToVisit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    fab:fab_label="@string/fab_menu_item1"
+                    fab:fab_label="@string/map_activity_fab_menu_removePointToVisit_label"
                     fab:fab_size="mini" />
                 <!--android:src="@drawable/ic_star"-->
+                <!--fab:fab_colorNormal="@color/colorMenuFabSelectedNormal"/>-->
 
                 <!--Menu item 2-->
                 <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/menu_item2"
+                    android:id="@+id/menu_addPointToVisit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    fab:fab_label="@string/fab_menu_item2"
+                    fab:fab_label="@string/map_activity_fab_menu_addPointToVisit_label"
                     fab:fab_size="mini" />
                 <!--android:src="@drawable/ic_star"-->
 
@@ -108,7 +109,7 @@
                     android:id="@+id/menu_item3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    fab:fab_label="@string/fab_menu_item3"
+                    fab:fab_label="@string/map_activity_fab_menu_item3_label"
                     fab:fab_size="mini" />
                 <!--android:src="@drawable/ic_star"-->
 
