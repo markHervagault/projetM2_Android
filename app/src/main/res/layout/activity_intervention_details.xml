@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal" android:layout_width="match_parent"
+    android:id="@+id/layoutDetails"
     android:layout_height="match_parent">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,15 +13,15 @@
         android:layout_weight="2"
         tools:context="istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity">
     </fragment>
-    <fragment
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/interventionDetailsMoyens"
-        android:name="istic.m2.ila.firefighterapp.Intervention.InterventionDetailsStaticFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:context="istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity">
-    </fragment>
+    <!--<fragment-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:tools="http://schemas.android.com/tools"-->
+        <!--android:id="@+id/interventionDetailsMoyens"-->
+        <!--android:name="istic.m2.ila.firefighterapp.Intervention.InterventionDetailsStaticFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"-->
+        <!--tools:context="istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity">-->
+    <!--</fragment>-->
 
 </LinearLayout>
