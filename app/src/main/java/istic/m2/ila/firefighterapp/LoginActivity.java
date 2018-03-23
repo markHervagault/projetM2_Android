@@ -354,8 +354,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
                 // TODO: Ouvrir la bonne activity une fois l'utilisateur connecté
 //                startActivity(new Intent(LoginActivity.this, MapActivity.class));
-//                startActivity(new Intent(LoginActivity.this, DetailsInterventionActivity.class));
-                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
+                startActivity(new Intent(LoginActivity.this, DetailsInterventionActivity.class));
+//                startAcstivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
