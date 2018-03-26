@@ -6,9 +6,14 @@ import com.github.clans.fab.FloatingActionButton;
 import static android.content.ContentValues.TAG;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
+import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
+import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -61,10 +66,16 @@ public class MapActivity extends FragmentActivity implements
     private List<FloatingActionButton> fabMenuButtons;
     private final int STROKE_WIDTH = 3;
 
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        // initialise le layout CRM
+        initCRMFragment();
 
         // Obtenir le SupportMapFragment et être notifié quand la map est prête à être utilisée.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -87,6 +98,178 @@ public class MapActivity extends FragmentActivity implements
 
         // Initialisation des éléments du menu
         initMenuFlottant();
+    }
+
+    private void initCRMFragment(){
+
+        mRecyclerView = findViewById(R.id.recycler_list_crm);
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        // On peuple notre RecyclerView
+        List<Map<String, String>> myDataset = getSampleDataToTest();
+        mAdapter = new ItemListCrmAdapter(myDataset);
+
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private List<Map<String, String>> getSampleDataToTest() {
+        List<Map<String, String>> myDataset = new ArrayList<>();
+        // un item
+        HashMap<String, String> map = new HashMap<>();
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°254");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°132");
+        map.put("vehiculeTypeCrm", "SAP");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSR n°42");
+        map.put("vehiculeTypeCrm", "VSR");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°148");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "FPT n°12");
+        map.put("vehiculeTypeCrm", "FPT");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSR n°26");
+        map.put("vehiculeTypeCrm", "VSR");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSR n°62");
+        map.put("vehiculeTypeCrm", "VSR");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSR n°69");
+        map.put("vehiculeTypeCrm", "VSR");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°149");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°150");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°151");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°152");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°153");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°154");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°155");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°254");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°132");
+        map.put("vehiculeTypeCrm", "SAP");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSR n°42");
+        map.put("vehiculeTypeCrm", "VSR");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°148");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "FPT n°12");
+        map.put("vehiculeTypeCrm", "FPT");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSR n°26");
+        map.put("vehiculeTypeCrm", "VSR");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSR n°62");
+        map.put("vehiculeTypeCrm", "VSR");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSR n°69");
+        map.put("vehiculeTypeCrm", "VSR");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°149");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°150");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°151");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°152");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°153");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°154");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        map = new HashMap<>();
+        map.put("vehiculeIdCrm", "VSAV n°155");
+        map.put("vehiculeTypeCrm", "VSAV");
+        myDataset.add(map);
+
+        return myDataset;
     }
 
     private void initMenuFlottant() {
