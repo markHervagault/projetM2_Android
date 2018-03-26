@@ -32,9 +32,9 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     @Override
     public View getInfoContents(Marker marker) {
         // TODO - Adapter le contenu
-        TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.title));
+        TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.custom_info_window_title));
         tvTitle.setText(marker.getTitle());
-        TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.snippet));
+        TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.custom_info_window_snippet));
         tvSnippet.setText(marker.getSnippet());
 
         return myContentsView;

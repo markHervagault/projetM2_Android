@@ -87,32 +87,40 @@
 
                 <!--Menu item 1-->
                 <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/menu_removePointToVisit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    fab:fab_label="@string/map_activity_fab_menu_removePointToVisit_label"
-                    fab:fab_size="mini" />
-                <!--android:src="@drawable/ic_star"-->
-                <!--fab:fab_colorNormal="@color/colorMenuFabSelectedNormal"/>-->
-
-                <!--Menu item 2-->
-                <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/menu_addPointToVisit"
+                    android:id="@+id/fab_menu_addPointToVisit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     fab:fab_label="@string/map_activity_fab_menu_addPointToVisit_label"
                     fab:fab_size="mini" />
                 <!--android:src="@drawable/ic_star"-->
 
-                <!--Menu item 3-->
+                <!--Menu item 2-->
                 <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/menu_item3"
+                    android:id="@+id/fab_menu_trajet_open_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    fab:fab_label="@string/map_activity_fab_menu_item3_label"
+                    fab:fab_label="@string/map_activity_fab_menu_trajet_open_close"
+                    fab:fab_size="mini" />
+                <!--android:src="@drawable/ic_star"-->
+                <!--fab:fab_colorNormal="@color/colorMenuFabSelectedNormal"/>-->
+
+                <!--Menu item 3-->
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_menu_tracer_zone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_label="@string/map_activity_fab_menu_zone_polygon_label"
                     fab:fab_size="mini" />
                 <!--android:src="@drawable/ic_star"-->
 
+                <!--Menu item 4-->
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_menu_removePointToVisit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_label="@string/map_activity_fab_menu_removePointToVisit_label"
+                    fab:fab_size="mini" />
+                <!--android:src="@drawable/ic_star"-->
             </com.github.clans.fab.FloatingActionMenu>
         </FrameLayout>
     </fragment>

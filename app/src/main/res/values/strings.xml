@@ -34,7 +34,8 @@
 
     <!--Menu bouton flottant-->
     <string name="map_activity_fab_menu_label">Replier</string>
-    <string name="map_activity_fab_menu_removePointToVisit_label">Supprimer un point de passage</string>
-    <string name="map_activity_fab_menu_addPointToVisit_label">Ajouter des points de passage</string>
-    <string name="map_activity_fab_menu_item3_label">Menu item 3</string>
+    <string name="map_activity_fab_menu_removePointToVisit_label">Supprimer un élément</string>
+    <string name="map_activity_fab_menu_addPointToVisit_label">Tracer un trajet</string>
+    <string name="map_activity_fab_menu_zone_polygon_label">Tracer une zone</string>
+    <string name="map_activity_fab_menu_trajet_open_close">Ouvrir/fermer un trajet</string>
 </resources>

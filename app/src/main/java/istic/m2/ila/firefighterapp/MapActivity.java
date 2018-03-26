@@ -3,11 +3,11 @@ package istic.m2.ila.firefighterapp;
 import android.graphics.Color;
 import com.github.clans.fab.FloatingActionButton;
 
+import static android.content.ContentValues.TAG;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
-
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
 
 import com.github.clans.fab.FloatingActionMenu;
@@ -19,7 +19,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,16 +34,15 @@ public class MapActivity extends FragmentActivity implements
         OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Polygon mPolygon;
+    private Polyline mPolyline;
 
     private Map<LatLng, Integer> indexMarkers; // Récupérer l'index d'un marqueur
+    private Map<String, Integer> indexMarkers2; // Récupérer l'index d'un marqueur
 
     private List<Marker> markers; // Liste des marqueurs affichés sur la Google Map
-    private List<LatLng> markersLatLng; // Liste de coordonnés (LatLng) pour dessiner le polygon
-
-    // Quelques marqueurs de coordonnées afin de tester
-    private Marker mCannes;
-    private Marker mBrest;
-    private Marker mLondon;
+    private List<LatLng> markersLatLngPolygon; // Liste de coordonnés (LatLng) pour dessiner le polygon
+    private List<LatLng> markersLatLngPolylines; // Liste de coordonnés (LatLng) pour dessiner les segments
 
     // représente le marqueur courant sur lequel on a cliqué
     private Marker selectedMarker;
@@ -51,6 +53,8 @@ public class MapActivity extends FragmentActivity implements
     // Coordinates
     private static final LatLng BREST = new LatLng(48.4, -4.4833);
     private static final LatLng RENNES = new LatLng(48.0833, -1.6833);
+    private static final LatLng UNIVERSITE_RENNES_1 = new LatLng(48.114182, -1.636238);
+    private static final LatLng RENNES_ISTIC = new LatLng(48.115150, -1.638374);
     private static final LatLng LONDRES = new LatLng(51.5084, -0.1255);
     private static final LatLng CANNES = new LatLng(43.552849, 7.017369);
 //    private static final LatLng MENTON = new LatLng(43.774483, 7.497540);
@@ -63,7 +67,9 @@ public class MapActivity extends FragmentActivity implements
 
     // Contrôles d'interfaces
     private boolean isEnabledButtonAddPointToVisit;
+    private boolean isTrajetClosed;
     private List<FloatingActionButton> fabMenuButtons;
+    private final int STROKE_WIDTH = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,24 +80,27 @@ public class MapActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        initMenuFlottant();
 
+        // Initialisation des éléments du menu
+        initMenuFlottant();
 
         // Liste des marqueurs
         markers = new ArrayList<>();
 
         // Liste de coordonnées des marqueurs
-        markersLatLng = new ArrayList<>();
+        markersLatLngPolygon = new ArrayList<>();
+        markersLatLngPolylines = new ArrayList<>();
 
         // Map pour retrouver l'index d'un marqueur à partir de ses coordonnées
         indexMarkers = new HashMap<>();
+        indexMarkers2 = new HashMap<>();
 
         isEnabledButtonAddPointToVisit = false;
     }
 
     private void initMenuFlottant() {
         // removePointToVisit
-        FloatingActionButton fab = findViewById(R.id.menu_removePointToVisit);
+        FloatingActionButton fab = findViewById(R.id.fab_menu_removePointToVisit);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,9 +110,8 @@ public class MapActivity extends FragmentActivity implements
             }
         });
 
-
         // addPointToVisit
-        final FloatingActionButton fab2 = findViewById(R.id.menu_addPointToVisit);
+        final FloatingActionButton fab2 = findViewById(R.id.fab_menu_addPointToVisit);
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,13 +145,15 @@ public class MapActivity extends FragmentActivity implements
             }
         });
 
-        FloatingActionButton fab3 = findViewById(R.id.menu_item3);
+        FloatingActionButton fab3 = findViewById(R.id.fab_menu_trajet_open_close);
+        FloatingActionButton fab4 = findViewById(R.id.fab_menu_tracer_zone);
 
         // On sauvegarde nos boutons
         fabMenuButtons = new ArrayList<>();
         fabMenuButtons.add(fab);
         fabMenuButtons.add(fab2);
         fabMenuButtons.add(fab3);
+        fabMenuButtons.add(fab4);
     }
 
     /**
@@ -183,52 +193,30 @@ public class MapActivity extends FragmentActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mPolyline = null;
+        mPolygon = null;
 
         // Notre InfoWindow personnalisé
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
 
+        // On désactive le clic sur notre InfoWindow
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) { }
+        });
 
-        // Ajout du marqueur de positon du drône aux coordonnées RENNES
+        // Ajout du marqueur de positon du drône aux coordonnées RENNES_ISTIC
         mDrone = mMap.addMarker(new MarkerOptions()
-                .position(RENNES)
+                .position(RENNES_ISTIC)
                 .title("Drone")
                 .snippet("Iris Plus qui coûte 2K€")
                 .draggable(false) // Ce marqueur ne peut être déplacé
                 // On change la couleur du marqueur : ROSE
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+//                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+                .anchor(0.5f,0.5f)
+        );
 
-        // Ajout d'un marqueur de positon aux coordonnées BREST
-        mBrest = mMap.addMarker(new MarkerOptions()
-                .position(BREST)
-                .title("Marker in Brest")
-                .snippet("C'est humide il paraît..")
-                .draggable(true)); // Marqueur déplaçable
-        indexMarkers.put(mBrest.getPosition(), markers.size());
-        markers.add(mBrest);
-        markersLatLng.add(BREST);
-
-        // Ajout d'un marqueur de positon aux coordonnées CANNES
-        mCannes = mMap.addMarker(new MarkerOptions()
-                .position(CANNES)
-                .title("Festival de Cannes")
-                .snippet("Le lieu de tous les awards")
-                .draggable(true)); // Marqueur déplaçable
-        indexMarkers.put(mCannes.getPosition(), markers.size());
-        markers.add(mCannes);
-        markersLatLng.add(CANNES);
-
-        // Ajout d'un marqueur de positon aux coordonnées LONDRES
-        mLondon = mMap.addMarker(new MarkerOptions()
-                .position(LONDRES)
-                .title("Marker in Bordeaux")
-                .snippet("La couleur ou le vin ? ...")
-                .draggable(true)); // Marqueur déplaçable
-        indexMarkers.put(mLondon.getPosition(), markers.size());
-        markers.add(mLondon);
-        markersLatLng.add(LONDRES);
-
-        // Centre l'écran sur le Drône
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(RENNES));
 
         // On désactive la barre d'outils
         mMap.getUiSettings().setMapToolbarEnabled(false);
@@ -237,24 +225,31 @@ public class MapActivity extends FragmentActivity implements
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker marker) {
-                // Test - Afficher les coordonnées
-                LatLng p = marker.getPosition();
-                String str = "lat:" + p.latitude + " long: " + p.longitude;
-                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onMarkerDrag(Marker marker) {
-
             }
 
             @Override
             public void onMarkerDragEnd(Marker marker) {
-                // Test - Afficher les coordonnées
-                LatLng p = marker.getPosition();
-                String str = "lat:" + p.latitude + " long: " + p.longitude;
-                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
-            }
+
+                // Récupérer l'index de l'ancien marker
+                String oldMarkerTitle = marker.getTitle();
+                Integer matchMarker = indexMarkers2.get(oldMarkerTitle);
+                if (matchMarker != null) {
+                    int index = matchMarker;
+
+                    // Ajouter le nouveau marqueur à index + 1
+                    markers.add(index + 1, marker);
+                    markersLatLngPolygon.add(index + 1, marker.getPosition());
+                    markersLatLngPolylines.add(index + 1, marker.getPosition());
+
+                    // Supprimer l'ancien marqueur
+                    selectedMarker = markers.get(index);
+                    deleteMarker(selectedMarker);
+                }
+            } // onMarkerDragEnd
         });
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -264,16 +259,23 @@ public class MapActivity extends FragmentActivity implements
              */
             public void onMapClick(LatLng latLng) {
                 if (isEnabledButtonAddPointToVisit) {
+                    int previousSize = markers.size();
                     Marker newMarker = mMap.addMarker(new MarkerOptions()
                             .position(latLng)
-                            .title("Selected")
+                            .title("Selected ("+ (previousSize + 1) +")")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+//                            .anchor(0.5f, 0.5f)
                             .draggable(true));
 
-                    indexMarkers.put(latLng, markers.size());
-                    markers.add(newMarker);
-                    markersLatLng.add(latLng);
 
-                    drawPolygon();
+                    indexMarkers.put(latLng, previousSize);
+                    indexMarkers2.put(newMarker.getTitle(), previousSize);
+                    markers.add(newMarker);
+                    markersLatLngPolygon.add(latLng);
+                    markersLatLngPolylines.add(latLng);
+
+//                    drawPolygon();
+                    drawLines();
                 }
             }
         });
@@ -287,7 +289,13 @@ public class MapActivity extends FragmentActivity implements
             }
         });
 
-        drawPolygon();
+        mMap.setMaxZoomPreference(20.0f);
+
+        // Centre l'écran sur le Drône
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(RENNES));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(RENNES_ISTIC, 18.0f));
+
+//        drawPolygon();
     }
 
     /**
@@ -300,38 +308,96 @@ public class MapActivity extends FragmentActivity implements
 
         // Dessine le Polygône sur notre Google Maps
         PolygonOptions rectOptions = new PolygonOptions()
-                .addAll( markersLatLng )
+                .addAll(markersLatLngPolygon)
                 .strokeColor(Color.parseColor("#7F616161"))
                 .fillColor(Color.parseColor("#7FBDBDBD"))
-                .strokeWidth(3)
+                .strokeWidth(STROKE_WIDTH)
                 .geodesic(true);
 
         // Ajoute le polygône sur la map
-        if (!markersLatLng.isEmpty()) {
-            mMap.addPolygon(rectOptions);
+        if (!markersLatLngPolygon.isEmpty()) {
+            mPolygon = mMap.addPolygon(rectOptions);
         }
 
         // Réindexation de tous les marqueurs
         indexMarkers = new HashMap<>();
+        indexMarkers2 = new HashMap<>();
 
         for (Marker m : markers) {
             // Mise à jour de l'index
             indexMarkers.put(m.getPosition(), markers.indexOf(m));
+            indexMarkers2.put(m.getTitle(), markers.indexOf(m));
+            int previousSize = markers.size();
 
             // Afficher le marqueur sur la map
-            mMap.addMarker(new MarkerOptions()
+            Marker posMarker = mMap.addMarker(new MarkerOptions()
                     .position(m.getPosition())
                     .title(m.getTitle())
+                    .title("Selected ("+ (previousSize + 1) +")")
                     .snippet(m.getSnippet())
+                    .icon(BitmapDescriptorFactory.defaultMarker(R.drawable.marker))
+//                    .anchor(0.5f, 0.5f)
                     .draggable(m.isDraggable()));
         }
 
         // Afficher le marqueur du Drone sur la map
-        mMap.addMarker(new MarkerOptions()
+        mDrone = mMap.addMarker(new MarkerOptions()
                 .position(mDrone.getPosition())
                 .title(mDrone.getTitle())
                 .snippet(mDrone.getSnippet())
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+                .anchor(0.5f,0.5f)
+                .draggable(mDrone.isDraggable()));
+    }
+
+    /**
+     * (re) dessine les segments montrés sur Google Map
+     * suivant notre liste de marqueurs
+     */
+     public void drawLines(){
+
+        mMap.clear();
+        if (mPolyline != null) {
+            mPolyline.remove();
+        }
+
+        // Dessine le Polygône sur notre Google Maps
+        PolylineOptions lineOptions = new PolylineOptions()
+                .addAll(markersLatLngPolylines)
+                .width(STROKE_WIDTH)
+                .color(Color.BLUE);
+
+        // Ajoute le polygône sur la map
+        if (!markersLatLngPolylines.isEmpty()) {
+            mPolyline = mMap.addPolyline(lineOptions);
+        }
+
+        // Réindexation de tous les marqueurs
+        indexMarkers = new HashMap<>();
+        indexMarkers2 = new HashMap<>();
+
+        for (Marker m : markers) {
+            // Mise à jour de l'index
+            indexMarkers.put(m.getPosition(), markers.indexOf(m));
+            indexMarkers2.put(m.getTitle(), markers.indexOf(m));
+
+            // Afficher le marqueur sur la map
+            Marker posMarker = mMap.addMarker(new MarkerOptions()
+                    .position(m.getPosition())
+                    .title(m.getTitle())
+                    .snippet(m.getSnippet())
+                    .draggable(m.isDraggable()));
+
+            posMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+        }
+
+        // Afficher le marqueur du Drone sur la map
+        mDrone = mMap.addMarker(new MarkerOptions()
+                .position(mDrone.getPosition())
+                .title(mDrone.getTitle())
+                .snippet(mDrone.getSnippet())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+                .anchor(0.5f, 0.5f)
                 .draggable(mDrone.isDraggable()));
     }
 
@@ -344,21 +410,26 @@ public class MapActivity extends FragmentActivity implements
         if (marker != null && marker != mDrone) {
 
             // on récupère l'index du marqueur
+            String markerTitle = marker.getTitle();
             LatLng markerPosition = marker.getPosition();
-            Integer matchMarker = indexMarkers.get(markerPosition);
+//            Integer matchMarker = indexMarkers.get(markerPosition);
+            Integer matchMarker = indexMarkers2.get(markerTitle);
 
             if (matchMarker != null) {
                 int index = matchMarker;
 
                 // on retire le markers[index] de la map
                 markers.get(index).remove();
+                marker.remove();
 
                 // on retire le markers[index] des coordonnées sauvegardées
-                markersLatLng.remove(markerPosition);
+                markersLatLngPolygon.remove(markerPosition);
+                markersLatLngPolylines.remove(markerPosition);
 
                 // Supprime le marker[index] de la liste des marqueurs sur la Google Map
                 markers.remove(index);
-                drawPolygon();
+//                drawPolygon();
+                drawLines();
             }
 
             // l'ancien marqueur n'est plus sélectionné
