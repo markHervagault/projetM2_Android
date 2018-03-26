@@ -1,5 +1,7 @@
 package istic.m2.ila.firefighterapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import com.github.clans.fab.FloatingActionButton;
 
@@ -11,6 +13,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
 import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
 import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
@@ -636,7 +640,29 @@ public class MapActivity extends FragmentActivity implements
                 .draggable(mDrone.isDraggable()));
     }
 
+    /**
+     * Affiche une boîte de dialogue qui permet de confirmer (ou non)
+     * l'envoi des données au drone
+     */
+    public void confirmSendToDrone (View view) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(MapActivity.this);
 
+        adb.setTitle("Attention");
+        adb.setMessage("Voulez-vous vraiment envoyer les données de cette mission au drône ?");
+
+        adb.setPositiveButton("Confirm", new DialogInterface.OnClickListener()  {
+            public void onClick(DialogInterface dialog, int id) {
+                // TODO - envoyer les données au drône sélectionné
+                Toast.makeText(getApplicationContext(), "Tmp : Le message a été envoyé", Toast.LENGTH_SHORT);
+            }
+        });
+        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        adb.create().show();
+    }
 
     /**
      * Supprime un marqueur
