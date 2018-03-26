@@ -51,19 +51,9 @@ public class MapActivity extends FragmentActivity implements
     private Marker mDrone;
 
     // Coordinates
-    private static final LatLng BREST = new LatLng(48.4, -4.4833);
     private static final LatLng RENNES = new LatLng(48.0833, -1.6833);
     private static final LatLng UNIVERSITE_RENNES_1 = new LatLng(48.114182, -1.636238);
     private static final LatLng RENNES_ISTIC = new LatLng(48.115150, -1.638374);
-    private static final LatLng LONDRES = new LatLng(51.5084, -0.1255);
-    private static final LatLng CANNES = new LatLng(43.552849, 7.017369);
-//    private static final LatLng MENTON = new LatLng(43.774483, 7.497540);
-//    private static final LatLng DUNKIRK = new LatLng(51.050030, 2.397766);
-//    private static final LatLng LILLE = new LatLng(50.629250, 3.057256);
-//    private static final LatLng BEAUVAIS = new LatLng(49.431744, 2.089773);
-//    private static final LatLng MULHOUSE = new LatLng(47.750839, 7.335888);
-//    private static final LatLng BORDEAUX = new LatLng(44.836151, -0.580816);
-//    private static final LatLng BOULOGNE_BILLANCOURT = new LatLng(48.843933, 2.247391);
 
     // Contrôles d'interfaces
     private boolean isEnabledButtonAddPointToVisit;
@@ -81,8 +71,6 @@ public class MapActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Initialisation des éléments du menu
-        initMenuFlottant();
 
         // Liste des marqueurs
         markers = new ArrayList<>();
@@ -96,11 +84,27 @@ public class MapActivity extends FragmentActivity implements
         indexMarkers2 = new HashMap<>();
 
         isEnabledButtonAddPointToVisit = false;
+
+        // Initialisation des éléments du menu
+        initMenuFlottant();
     }
 
     private void initMenuFlottant() {
+
+        isTrajetClosed = false;
+
+        disableButtonOpenCloseTrajet();
+
         // removePointToVisit
         FloatingActionButton fab = findViewById(R.id.fab_menu_removePointToVisit);
+
+        // Bouton menu flottant - Ouvrir/fermer un trajet
+        final FloatingActionButton fab3 = findViewById(R.id.fab_menu_trajet_open_close);
+
+        // Bouton menu flottant - Tracer un trajet
+        final FloatingActionButton fab2 = findViewById(R.id.fab_menu_addPointToVisit);
+
+        // Listener bouton - Supprimer un élément
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,8 +114,7 @@ public class MapActivity extends FragmentActivity implements
             }
         });
 
-        // addPointToVisit
-        final FloatingActionButton fab2 = findViewById(R.id.fab_menu_addPointToVisit);
+        // Listener Bouton menu flottant - Tracer un trajet
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,7 +148,30 @@ public class MapActivity extends FragmentActivity implements
             }
         });
 
-        FloatingActionButton fab3 = findViewById(R.id.fab_menu_trajet_open_close);
+        // Listener Bouton menu flottant - Ouvrir/fermer un trajet
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Si le trajet est FERME
+                if (isTrajetClosed) {
+
+                    // On le passe à OUVERT
+                    fab3.setLabelText(getResources().getString(R.string.map_activity_fab_menu_trajet_close));
+                    isTrajetClosed = false;
+                }
+                // Si le trajet est OUVERT
+                else {
+
+                    // On le passe à FERME
+                    fab3.setLabelText(getResources().getString(R.string.map_activity_fab_menu_trajet_open));
+                    isTrajetClosed = true;
+                }
+
+                drawLines();
+            }
+        });
+
         FloatingActionButton fab4 = findViewById(R.id.fab_menu_tracer_zone);
 
         // On sauvegarde nos boutons
@@ -154,6 +180,16 @@ public class MapActivity extends FragmentActivity implements
         fabMenuButtons.add(fab2);
         fabMenuButtons.add(fab3);
         fabMenuButtons.add(fab4);
+    }
+
+    private void disableButtonOpenCloseTrajet() {
+        // Si on a moins de 3 points on ne peut fermer le trajet
+        FloatingActionButton fab3 = findViewById(R.id.fab_menu_trajet_open_close);
+        if (markersLatLngPolylines.size() < 3) {
+            fab3.setEnabled(false);
+        } else {
+            fab3.setEnabled(true);
+        }
     }
 
     /**
@@ -168,17 +204,6 @@ public class MapActivity extends FragmentActivity implements
         for (FloatingActionButton fab : fabMenuButtons) {
             fab.setEnabled(isEnabled);
         }
-
-        /*
-        for (int i = 0; i < nbChilren; i++){
-
-            View v = fabMenu.getChildAt(i);
-
-            if (v instanceof  FloatingActionButton && v != fabMenu){
-                v.setEnabled(isEnabled);
-            }
-        }
-        */
     }
 
     /**
@@ -263,8 +288,6 @@ public class MapActivity extends FragmentActivity implements
                     Marker newMarker = mMap.addMarker(new MarkerOptions()
                             .position(latLng)
                             .title("Selected ("+ (previousSize + 1) +")")
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-//                            .anchor(0.5f, 0.5f)
                             .draggable(true));
 
 
@@ -273,6 +296,8 @@ public class MapActivity extends FragmentActivity implements
                     markers.add(newMarker);
                     markersLatLngPolygon.add(latLng);
                     markersLatLngPolylines.add(latLng);
+
+                    disableButtonOpenCloseTrajet();
 
 //                    drawPolygon();
                     drawLines();
@@ -335,7 +360,7 @@ public class MapActivity extends FragmentActivity implements
                     .title(m.getTitle())
                     .title("Selected ("+ (previousSize + 1) +")")
                     .snippet(m.getSnippet())
-                    .icon(BitmapDescriptorFactory.defaultMarker(R.drawable.marker))
+                    .icon(BitmapDescriptorFactory.defaultMarker(R.drawable.marker_trim))
 //                    .anchor(0.5f, 0.5f)
                     .draggable(m.isDraggable()));
         }
@@ -351,21 +376,32 @@ public class MapActivity extends FragmentActivity implements
     }
 
     /**
-     * (re) dessine les segments montrés sur Google Map
-     * suivant notre liste de marqueurs
-     */
-     public void drawLines(){
+    * (re) dessine les segments montrés sur Google Map
+    * suivant notre liste de marqueurs
+    */
+    public void drawLines(){
 
-        mMap.clear();
-        if (mPolyline != null) {
+         mMap.clear();
+         if (mPolyline != null) {
             mPolyline.remove();
-        }
+         }
+
+         PolylineOptions lineOptions = new PolylineOptions();
+         List<LatLng> listToUse = new ArrayList<>(markersLatLngPolylines);
+         if (isTrajetClosed) {
+             // On reajoute le dernier
+             if (!markersLatLngPolylines.isEmpty()) {
+                 listToUse.add(markersLatLngPolylines.get(0));
+             }
+             lineOptions.color(Color.GREEN);
+         } else {
+             lineOptions.color(Color.BLUE);
+         }
 
         // Dessine le Polygône sur notre Google Maps
-        PolylineOptions lineOptions = new PolylineOptions()
-                .addAll(markersLatLngPolylines)
-                .width(STROKE_WIDTH)
-                .color(Color.BLUE);
+        lineOptions
+            .addAll(listToUse)
+            .width(STROKE_WIDTH);
 
         // Ajoute le polygône sur la map
         if (!markersLatLngPolylines.isEmpty()) {
@@ -383,12 +419,12 @@ public class MapActivity extends FragmentActivity implements
 
             // Afficher le marqueur sur la map
             Marker posMarker = mMap.addMarker(new MarkerOptions()
-                    .position(m.getPosition())
-                    .title(m.getTitle())
-                    .snippet(m.getSnippet())
-                    .draggable(m.isDraggable()));
+                .position(m.getPosition())
+                .title(m.getTitle())
+                .snippet(m.getSnippet())
+                .draggable(m.isDraggable()));
 
-            posMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+            posMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trim));
         }
 
         // Afficher le marqueur du Drone sur la map
@@ -400,6 +436,8 @@ public class MapActivity extends FragmentActivity implements
                 .anchor(0.5f, 0.5f)
                 .draggable(mDrone.isDraggable()));
     }
+
+
 
     /**
      * Supprime un marqueur
@@ -434,6 +472,8 @@ public class MapActivity extends FragmentActivity implements
 
             // l'ancien marqueur n'est plus sélectionné
             selectedMarker = null;
+
+            disableButtonOpenCloseTrajet();
         }
     }
 }

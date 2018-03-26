@@ -50,9 +50,9 @@
                 fab:menu_animationDelayPerItem="50"
                 fab:menu_backgroundColor="@android:color/transparent"
                 fab:menu_buttonSpacing="0dp"
-                fab:menu_colorNormal="#DA4336"
-                fab:menu_colorPressed="#E75043"
-                fab:menu_colorRipple="#99FFFFFF"
+                fab:menu_colorNormal="@color/colorMenuFabDefaultNormal"
+                fab:menu_colorPressed="@color/colorMenuFabDefaultPressed"
+                fab:menu_colorRipple="@color/colorMenuFabDefaultRipple"
                 fab:menu_fab_label="@string/map_activity_fab_menu_label"
                 fab:menu_fab_size="normal"
                 fab:menu_icon="@drawable/fab_add"
@@ -99,7 +99,7 @@
                     android:id="@+id/fab_menu_trajet_open_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    fab:fab_label="@string/map_activity_fab_menu_trajet_open_close"
+                    fab:fab_label="@string/map_activity_fab_menu_trajet_close"
                     fab:fab_size="mini" />
                 <!--android:src="@drawable/ic_star"-->
                 <!--fab:fab_colorNormal="@color/colorMenuFabSelectedNormal"/>-->
