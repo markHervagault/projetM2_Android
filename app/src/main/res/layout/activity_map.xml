@@ -1,16 +1,167 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/map"
-android:name="com.google.android.gms.maps.SupportMapFragment"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context="istic.m2.ila.firefighterapp.MapActivity">
-<android.support.design.widget.FloatingActionButton
-    android:id="@+id/fab"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom|end"
-    android:layout_margin="@dimen/fab_margin"
-    app:srcCompat="@android:drawable/ic_menu_delete" />
-</fragment>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="istic.m2.ila.firefighterapp.MapActivity" android:baselineAligned="false">
+
+    <!--Fragment CRM-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_list_crm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        tools:context="istic.m2.ila.firefighterapp.MapActivity">
+
+        <!--Bouton flottant-->
+        <!--<android.support.design.widget.FloatingActionButton-->
+            <!--android:id="@+id/fab"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="bottom|start"-->
+            <!--android:layout_margin="@dimen/fab_margin"-->
+            <!--app:srcCompat="@android:drawable/ic_input_add" />-->
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:fab="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--Menu de boutons flottants-->
+            <com.github.clans.fab.FloatingActionMenu
+                android:id="@+id/menu_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                fab:menu_animationDelayPerItem="50"
+                fab:menu_backgroundColor="@android:color/transparent"
+                fab:menu_buttonSpacing="0dp"
+                fab:menu_colorNormal="@color/colorMenuFabDefaultNormal"
+                fab:menu_colorPressed="@color/colorMenuFabDefaultPressed"
+                fab:menu_colorRipple="@color/colorMenuFabDefaultRipple"
+                fab:menu_fab_label="@string/map_activity_fab_menu_label"
+                fab:menu_fab_size="normal"
+                fab:menu_icon="@drawable/fab_add"
+                fab:menu_labels_colorNormal="#333333"
+                fab:menu_labels_colorPressed="#444444"
+                fab:menu_labels_colorRipple="#66FFFFFF"
+                fab:menu_labels_cornerRadius="3dp"
+                fab:menu_labels_ellipsize="none"
+                fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
+                fab:menu_labels_margin="0dp"
+                fab:menu_labels_maxLines="-1"
+                fab:menu_labels_padding="8dp"
+                fab:menu_labels_paddingBottom="4dp"
+                fab:menu_labels_paddingLeft="8dp"
+                fab:menu_labels_paddingRight="8dp"
+                fab:menu_labels_paddingTop="4dp"
+                fab:menu_labels_position="left"
+                fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
+                fab:menu_labels_showShadow="true"
+                fab:menu_labels_singleLine="false"
+                fab:menu_labels_textColor="#FFFFFF"
+                fab:menu_labels_textSize="14sp"
+                fab:menu_openDirection="up"
+                fab:menu_shadowColor="#66000000"
+                fab:menu_shadowRadius="4dp"
+                fab:menu_shadowXOffset="1dp"
+                fab:menu_shadowYOffset="3dp"
+                fab:menu_showShadow="true">
+                <!--fab:menu_labels_style="@style/YourCustomLabelsStyle"-->
+                <!--fab:menu_fab_show_animation="@anim/my_show_animation"-->
+                <!--fab:menu_fab_hide_animation="@anim/my_hide_animation"-->
+
+                <!--Menu item 1-->
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_menu_addPointToVisit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_size="mini"
+                    fab:fab_label="@string/map_activity_fab_menu_addPointToVisit_label"
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    />
+                <!--android:src="@drawable/ic_star"-->
+
+                <!--Menu item 2-->
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_menu_trajet_open_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_size="mini"
+                    fab:fab_label="@string/map_activity_fab_menu_trajet_close"
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/openloop"
+                    />
+
+                <!--Menu item 3-->
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_menu_tracer_zone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_size="mini"
+                    fab:fab_label="@string/map_activity_fab_menu_zone_polygon_label"
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/closedloop"
+                    />
+
+                <!--Menu item 4-->
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_menu_removePointToVisit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_size="mini"
+                    fab:fab_label="@string/map_activity_fab_menu_removePointToVisit_label"
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/dustbin"
+                    />
+            </com.github.clans.fab.FloatingActionMenu>
+
+            <!--Bouton d'envoi-->
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_menu2_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                fab:fab_size="normal"
+                fab:fab_label="@string/map_activity_fab_menu_removePointToVisit_label"
+                fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                android:src="@drawable/ic_send_black_24dp"
+                android:onClick="confirmSendToDrone"
+                />
+
+        </FrameLayout>
+    </fragment>
+
+</LinearLayout>
