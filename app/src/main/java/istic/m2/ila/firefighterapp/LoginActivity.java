@@ -30,9 +30,18 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
+
+import istic.m2.ila.firefighterapp.consumer.LoginConsumer;
+import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.dto.LoginDTO;
+import istic.m2.ila.firefighterapp.dto.UserDTO;
+import retrofit2.Response;
 
 import static android.content.ContentValues.TAG;
 
@@ -52,19 +61,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
      */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+    //private static final String[] DUMMY_CREDENTIALS = new String[]{
+      //      "foo@example.com:hello", "bar@example.com:world"
+   // };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private UserLoginTask mAuthTask = new UserLoginTask();
 
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private boolean isRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +84,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -159,11 +169,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
+
     private void attemptLogin() {
-        if (mAuthTask != null) {
+        if(isRunning) {
             return;
         }
-
+        if(mAuthTask == null) {
+            mAuthTask = new UserLoginTask();
+        }
+        Log.i("toto", "tototototototo");
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -201,9 +215,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask.setmEmail(email);
+            mAuthTask.setmPassword(password);
             Log.i(TAG, "Je me connecte");
-            mAuthTask.execute((Void) null);
+            mAuthTask.execute();
         }
     }
 
@@ -313,31 +328,38 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
+        private String mEmail;
+        private String mPassword;
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
+
+        UserLoginTask() {
+        }
+
+        public void setmEmail(String mail) {
+            this.mEmail = mail;
+        }
+
+        public void setmPassword(String pwd) {
+            this.mPassword = pwd;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
+            isRunning = true;
+            RestTemplate template = RestTemplate.getInstance();
+            LoginConsumer consumer = template.builConsumer(LoginConsumer.class);
+            LoginDTO dto = new LoginDTO(mEmail, mPassword);
+            UserDTO userDto = null;
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+                Response<UserDTO> response = consumer.login(dto).execute();
+                if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                    return true;
+                } else {
+                    Log.i("tag", "response code : " + response.code());
+                    return false;
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
             // TODO: register the new account here.
@@ -346,14 +368,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
             showProgress(false);
-
+            isRunning = false;
+            mAuthTask = new UserLoginTask();
             if (success) {
                 startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                Log.i("tag", "you shall not pass");
+                Toast.makeText(mEmailView.getContext(), "You shall not pass", Toast.LENGTH_LONG);
             }
         }
 
