@@ -95,8 +95,12 @@
                     android:id="@+id/fab_menu_addPointToVisit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    fab:fab_size="mini"
                     fab:fab_label="@string/map_activity_fab_menu_addPointToVisit_label"
-                    fab:fab_size="mini" />
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    />
                 <!--android:src="@drawable/ic_star"-->
 
                 <!--Menu item 2-->
@@ -104,28 +108,39 @@
                     android:id="@+id/fab_menu_trajet_open_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    fab:fab_size="mini"
                     fab:fab_label="@string/map_activity_fab_menu_trajet_close"
-                    fab:fab_size="mini" />
-                <!--android:src="@drawable/ic_star"-->
-                <!--fab:fab_colorNormal="@color/colorMenuFabSelectedNormal"/>-->
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/openloop"
+                    />
 
                 <!--Menu item 3-->
                 <com.github.clans.fab.FloatingActionButton
                     android:id="@+id/fab_menu_tracer_zone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    fab:fab_size="mini"
                     fab:fab_label="@string/map_activity_fab_menu_zone_polygon_label"
-                    fab:fab_size="mini" />
-                <!--android:src="@drawable/ic_star"-->
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/closedloop"
+                    />
 
                 <!--Menu item 4-->
                 <com.github.clans.fab.FloatingActionButton
                     android:id="@+id/fab_menu_removePointToVisit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    fab:fab_size="mini"
                     fab:fab_label="@string/map_activity_fab_menu_removePointToVisit_label"
-                    fab:fab_size="mini" />
-                <!--android:src="@drawable/ic_star"-->
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/dustbin"
+                    />
             </com.github.clans.fab.FloatingActionMenu>
         </FrameLayout>
     </fragment>

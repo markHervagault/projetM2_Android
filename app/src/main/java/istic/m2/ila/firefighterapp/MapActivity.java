@@ -321,11 +321,11 @@ public class MapActivity extends FragmentActivity implements
 
                     // Couleurs de l'unfocus
                     fab2.setColorNormal(getResources().
-                            getColor(R.color.colorMenuFabUnselectedNormal));
+                            getColor(R.color.colorMenuFabDefaultNormal));
                     fab2.setColorPressed(getResources().
-                            getColor(R.color.colorMenuFabUnselectedPressed));
+                            getColor(R.color.colorMenuFabDefaultPressed));
                     fab2.setColorRipple(getResources().
-                            getColor(R.color.colorMenuFabUnselectedRipple));
+                            getColor(R.color.colorMenuFabDefaultRipple));
                     isEnabledButtonAddPointToVisit = false;
                 }
             }
@@ -339,15 +339,31 @@ public class MapActivity extends FragmentActivity implements
                 // Si le trajet est FERME
                 if (isTrajetClosed) {
 
+                    fab3.setColorNormal(getResources().
+                            getColor(R.color.colorMenuFabDefaultNormal));
+                    fab3.setColorPressed(getResources().
+                            getColor(R.color.colorMenuFabDefaultPressed));
+                    fab3.setColorRipple(getResources().
+                            getColor(R.color.colorMenuFabDefaultRipple));
+
                     // On le passe à OUVERT
-                    fab3.setLabelText(getResources().getString(R.string.map_activity_fab_menu_trajet_close));
+//                    fab3.setLabelText(getResources().getString(R.string.map_activity_fab_menu_trajet_close));
+                    fab3.setImageResource(R.drawable.openloop);
                     isTrajetClosed = false;
                 }
                 // Si le trajet est OUVERT
                 else {
 
+                    fab3.setColorNormal(getResources().
+                            getColor(R.color.colorMenuFabSelectedNormal));
+                    fab3.setColorPressed(getResources().
+                            getColor(R.color.colorMenuFabSelectedPressed));
+                    fab3.setColorRipple(getResources().
+                            getColor(R.color.colorMenuFabSelectedRipple));
+
                     // On le passe à FERME
-                    fab3.setLabelText(getResources().getString(R.string.map_activity_fab_menu_trajet_open));
+//                    fab3.setLabelText(getResources().getString(R.string.map_activity_fab_menu_trajet_open));
+                    fab3.setImageResource(R.drawable.closedloop);
                     isTrajetClosed = true;
                 }
 
@@ -361,7 +377,7 @@ public class MapActivity extends FragmentActivity implements
         fabMenuButtons = new ArrayList<>();
         fabMenuButtons.add(fab);
         fabMenuButtons.add(fab2);
-        fabMenuButtons.add(fab3);
+//        fabMenuButtons.add(fab3);
         fabMenuButtons.add(fab4);
     }
 
