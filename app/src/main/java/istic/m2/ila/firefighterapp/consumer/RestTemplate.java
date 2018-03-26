@@ -1,5 +1,7 @@
 package istic.m2.ila.firefighterapp.consumer;
 
+import android.util.Log;
+
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -7,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by hakima on 3/21/18.
  */
-
+/** */
 public class RestTemplate {
     private static final String TAG = "REST-TEMPLATE";
     private static RestTemplate instance;
@@ -16,15 +18,18 @@ public class RestTemplate {
 
     }
 
-    public RestTemplate getInstance(){
+    public static RestTemplate getInstance(){
         if(instance == null){
             instance = new RestTemplate();
         }
         return instance;
     }
 
-    public Consumer builConsumer(Class<? extends Consumer> clazz){
-        Consumer consumer = new Retrofit.Builder()
+
+    public <T> T builConsumer(Class<T> clazz){
+
+        Log.i("TAG", "building object" + Endpoints.BASE);
+        T consumer = new Retrofit.Builder()
                 .baseUrl(Endpoints.BASE)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()

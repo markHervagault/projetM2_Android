@@ -4,16 +4,16 @@ package istic.m2.ila.firefighterapp.dto;
  * Created by hakima on 3/21/18.
  */
 
-public class LoginDto {
+public class LoginDTO {
 
     private String username;
     private String password;
 
-    public LoginDto(){
+    public LoginDTO(){
 
     }
 
-    public LoginDto(String username, String password){
+    public LoginDTO(String username, String password){
         this.username = username;
         this.password = password;
     }
