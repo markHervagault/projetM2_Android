@@ -1,9 +1,11 @@
 package istic.m2.ila.firefighterapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +30,8 @@ public class ListInterventionActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycler_list_intervention);
 
         // use a linear layout manager
-         mLayoutManager = new LinearLayoutManager(this);
-         mRecyclerView.setLayoutManager(mLayoutManager);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
 
         // On peuple notre RecyclerView
@@ -237,5 +239,13 @@ public class ListInterventionActivity extends AppCompatActivity {
         myDataset.add(map);
 
         return myDataset;
+    }
+
+    /**
+     * Ouvre l'activité pour ajouter une nouvelle Intervention
+     * @param view
+     */
+    public void openAddInterventionActivity(View view) {
+        startActivity(new Intent(ListInterventionActivity.this, AddInterventionActivity.class));
     }
 }

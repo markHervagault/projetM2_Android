@@ -3,6 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/item_intervention_layout"
     android:background="@drawable/border"
     >
 
