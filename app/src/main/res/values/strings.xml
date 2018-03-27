@@ -38,4 +38,6 @@
     <string name="map_activity_fab_menu_addPointToVisit_label">Tracer un trajet</string>
     <string name="map_activity_fab_menu_zone_polygon_label">Tracer une zone</string>
     <string name="map_activity_fab_menu_trajet_open_close">Ouvrir/fermer un trajet</string>
+    <string name="map_activity_fab_menu_trajet_open">Ouvrir le trajet</string>
+    <string name="map_activity_fab_menu_trajet_close">Fermer le trajet</string>
 </resources>

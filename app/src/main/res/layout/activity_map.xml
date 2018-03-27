@@ -13,6 +13,11 @@
         android:layout_weight="3"
         android:orientation="vertical">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_list_crm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 
     <fragment
@@ -32,12 +37,12 @@
             <!--android:layout_margin="@dimen/fab_margin"-->
             <!--app:srcCompat="@android:drawable/ic_input_add" />-->
 
-        <!--Menu de boutons flottants-->
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:fab="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <!--Menu de boutons flottants-->
             <com.github.clans.fab.FloatingActionMenu
                 android:id="@+id/menu_fab"
                 android:layout_width="wrap_content"
@@ -50,9 +55,9 @@
                 fab:menu_animationDelayPerItem="50"
                 fab:menu_backgroundColor="@android:color/transparent"
                 fab:menu_buttonSpacing="0dp"
-                fab:menu_colorNormal="#DA4336"
-                fab:menu_colorPressed="#E75043"
-                fab:menu_colorRipple="#99FFFFFF"
+                fab:menu_colorNormal="@color/colorMenuFabDefaultNormal"
+                fab:menu_colorPressed="@color/colorMenuFabDefaultPressed"
+                fab:menu_colorRipple="@color/colorMenuFabDefaultRipple"
                 fab:menu_fab_label="@string/map_activity_fab_menu_label"
                 fab:menu_fab_size="normal"
                 fab:menu_icon="@drawable/fab_add"
@@ -90,8 +95,12 @@
                     android:id="@+id/fab_menu_addPointToVisit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    fab:fab_size="mini"
                     fab:fab_label="@string/map_activity_fab_menu_addPointToVisit_label"
-                    fab:fab_size="mini" />
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    />
                 <!--android:src="@drawable/ic_star"-->
 
                 <!--Menu item 2-->
@@ -99,29 +108,59 @@
                     android:id="@+id/fab_menu_trajet_open_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    fab:fab_label="@string/map_activity_fab_menu_trajet_open_close"
-                    fab:fab_size="mini" />
-                <!--android:src="@drawable/ic_star"-->
-                <!--fab:fab_colorNormal="@color/colorMenuFabSelectedNormal"/>-->
+                    fab:fab_size="mini"
+                    fab:fab_label="@string/map_activity_fab_menu_trajet_close"
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/openloop"
+                    />
 
                 <!--Menu item 3-->
                 <com.github.clans.fab.FloatingActionButton
                     android:id="@+id/fab_menu_tracer_zone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    fab:fab_size="mini"
                     fab:fab_label="@string/map_activity_fab_menu_zone_polygon_label"
-                    fab:fab_size="mini" />
-                <!--android:src="@drawable/ic_star"-->
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/closedloop"
+                    />
 
                 <!--Menu item 4-->
                 <com.github.clans.fab.FloatingActionButton
                     android:id="@+id/fab_menu_removePointToVisit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    fab:fab_size="mini"
                     fab:fab_label="@string/map_activity_fab_menu_removePointToVisit_label"
-                    fab:fab_size="mini" />
-                <!--android:src="@drawable/ic_star"-->
+                    fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                    fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                    fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/dustbin"
+                    />
             </com.github.clans.fab.FloatingActionMenu>
+
+            <!--Bouton d'envoi-->
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_menu2_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                fab:fab_size="normal"
+                fab:fab_label="@string/map_activity_fab_menu_removePointToVisit_label"
+                fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+                fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+                fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                android:src="@drawable/ic_send_black_24dp"
+                android:onClick="confirmSendToDrone"
+                />
+
         </FrameLayout>
     </fragment>
 
