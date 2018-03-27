@@ -68,9 +68,7 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
         addresseTextView = getActivity().findViewById(R.id.addresse_textview);
 
 
-        String Address = interventionDTO.getAdresse().getNumero()+" "
-                +interventionDTO.getAdresse().getVoie()+" "
-                +interventionDTO.getAdresse().getVoie();
+        String Address = "Random address";
         addresseTextView.setText(Address);
 
     }
