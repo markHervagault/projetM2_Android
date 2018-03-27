@@ -722,7 +722,7 @@ public class MapActivity extends FragmentActivity implements
                         Log.i("Mission", "Token : " + token);
                         try
                         {
-                            Response<MissionDTO> response = dmc.createMission("Bearer "+token,currentMission).execute();
+                            Response<MissionDTO> response = dmc.createMission(token, currentMission).execute();
                             if(response.code() != HttpURLConnection.HTTP_OK)
                             {
                                 Log.i("Mission", Integer.toString(response.code()));
