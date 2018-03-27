@@ -4,13 +4,15 @@ package istic.m2.ila.firefighterapp.Intervention;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 
 /**
  * Created by adou on 02/02/18.
  */
 
-public class InterventionDTOParcelable implements Parcelable {
+public class InterventionDTOParcelable implements Parcelable, Serializable {
 
     InterventionDTO interventionDTO;
 

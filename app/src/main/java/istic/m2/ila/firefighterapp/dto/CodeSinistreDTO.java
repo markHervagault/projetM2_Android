@@ -1,10 +1,12 @@
 package istic.m2.ila.firefighterapp.dto;
 
+import java.io.Serializable;
+
 /**
  * Created by hakima on 3/27/18.
  */
 
-public class CodeSinistreDTO {
+public class CodeSinistreDTO implements Serializable {
 
     private Long id;
 
