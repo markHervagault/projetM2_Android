@@ -40,6 +40,7 @@ import java.util.List;
 import istic.m2.ila.firefighterapp.consumer.LoginConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.LoginDTO;
+import istic.m2.ila.firefighterapp.dto.TokenDTO;
 import istic.m2.ila.firefighterapp.dto.UserDTO;
 import retrofit2.Response;
 
@@ -201,11 +202,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
         }
+//        else if (!isEmailValid(email)) {
+//            mEmailView.setError(getString(R.string.error_invalid_email));
+//            focusView = mEmailView;
+//            cancel = true;
+//        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -349,10 +351,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             RestTemplate template = RestTemplate.getInstance();
             LoginConsumer consumer = template.builConsumer(LoginConsumer.class);
             LoginDTO dto = new LoginDTO(mEmail, mPassword);
-            UserDTO userDto = null;
+            UserDTO TokenDto = null;
             try {
-                Response<UserDTO> response = consumer.login(dto).execute();
+                Response<TokenDTO> response = consumer.login(dto).execute();
                 if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                    Log.i("tag","token: "+response.body().getId_token());
+
                     return true;
                 } else {
                     Log.i("tag", "response code : " + response.code());
@@ -372,10 +376,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             isRunning = false;
             mAuthTask = new UserLoginTask();
             if (success) {
-                // TODO: Ouvrir la bonne activity une fois l'utilisateur connecté
-                startActivity(new Intent(LoginActivity.this, MapActivity.class));
-//                startActivity(new Intent(LoginActivity.this, DetailsInterventionActivity.class));
-//                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
+                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
             } else {
                 Log.i("tag", "you shall not pass");
                 Toast.makeText(mEmailView.getContext(), "You shall not pass", Toast.LENGTH_LONG);
