@@ -55,4 +55,5 @@ public class SinistreDTO {
         this.interventionId = interventionId;
     }
 
+
 }
