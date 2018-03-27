@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp;
 
+import android.content.Intent;
 import android.graphics.Color;
 import com.github.clans.fab.FloatingActionButton;
 
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQDrone;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -96,6 +98,8 @@ public class MapActivity extends FragmentActivity implements
         indexMarkers2 = new HashMap<>();
 
         isEnabledButtonAddPointToVisit = false;
+
+        startService(new Intent(this, ServiceRabbitMQDrone.class));
     }
 
     private void initMenuFlottant() {
