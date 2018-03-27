@@ -49,6 +49,12 @@
             android:screenOrientation="landscape"
             android:value="@string/title_intervention_details">
         </activity>
+
+        <service
+            android:name=".clientRabbitMQ.ServiceRabbitMQDrone"
+            android:label="Service RabbitMQ" >
+        </service>
+
     </application>
 
 </manifest>
