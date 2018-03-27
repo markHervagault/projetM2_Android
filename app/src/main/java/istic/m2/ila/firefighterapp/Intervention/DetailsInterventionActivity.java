@@ -1,11 +1,13 @@
 package istic.m2.ila.firefighterapp.Intervention;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import istic.m2.ila.firefighterapp.R;
@@ -23,6 +25,12 @@ public class DetailsInterventionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intervention_details);
 
+        Intent intent = getIntent();
+        Bundle extra = intent.getExtras();
+
+        Log.i("FRagment ", intent + "");
+        Log.i("FRagment ", intent.getStringExtra("adresseString"));
+        Log.i("FRagment ", extra.getString("adresseString"));
 
 //        FragmentManager fragmentManager = getSupportFragmentManager();
 //        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

@@ -2,6 +2,7 @@ package istic.m2.ila.firefighterapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,24 +12,30 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity;
+import istic.m2.ila.firefighterapp.Intervention.InterventionDTOParcelable;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.dto.AdresseDTO;
+import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 
 /**
  * Created by adou on 02/02/18.
  */
 
 public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListInterventionAdapter.ViewHolder> {
-    private List<Map<String, String>> mDataset;
+    private List<InterventionDTO> mDataset;
     private Context context;
     private String TAG = "ItemListInterventionAdapter";
 
 
     // On fournit un constructeur adéquat (dépendant de notre jeu de données)
-    public ItemListInterventionAdapter(List<Map<String, String>> myDataset) {
+    public ItemListInterventionAdapter(List<InterventionDTO> myDataset) {
         mDataset = myDataset;
     }
 
@@ -73,19 +80,50 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
     public void onBindViewHolder(ViewHolder holder, final int position) {
         // - on récupère un élément dy dataset à cette position
         // - on remplace le contenu de la vue avec cet élément
-        Map<String, String> map = mDataset.get(position);
-        holder.dateIntervention.setText(map.get("dateIntervention"));
-        holder.codeSinistreIntervention.setText(map.get("codeSinistreIntervention"));
-        holder.adresseIntervention.setText(map.get("adresseIntervention"));
-        holder.statutIntervention.setText(map.get("statutIntervention"));
-        holder.imgMapIntervention.setImageResource(Integer.parseInt(map.get("imgMapIntervention")));
+        InterventionDTO intervention = mDataset.get(position);
+
+        // Date de l'intervention
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date dateHeureCreation = new Date();
+        System.out.println(); //2016/11/16 12:08:43
+        holder.dateIntervention.setText(dateFormat.format(dateHeureCreation));
+
+        // TODO
+        // Code sinistre
+        // holder.codeSinistreIntervention.setText(intervention.get("codeSinistreIntervention"));
+
+        // Adresse
+        AdresseDTO adresseDTO = intervention.getAdresse();
+        final String adresseString = adresseDTO.getNumero() + " " +
+                adresseDTO.getVoie() + " " +
+                adresseDTO.getCodePostal() + " " +
+                adresseDTO.getVille() + " ";
+        holder.adresseIntervention.setText(adresseString);
+
+        // Statut
+        String statut = (intervention.isFini()) ? "Terminé" : "En cours";
+        holder.statutIntervention.setText(statut);
+
+        // Gestion de la miniature
+//        holder.imgMapIntervention.setImageResource(Integer.parseInt(intervention.get("imgMapIntervention")));
+
+        // Gestion du clic
         holder.layoutItemIntervention.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 //(ListInterventionActivity).onClickIntervention();
                 Log.i(TAG, "Un clic a été effectué sur l'item " + position);
-                context.startActivity(new Intent(context, DetailsInterventionActivity.class));
+
+                Intent intent = new Intent(context, DetailsInterventionActivity.class);
+                Bundle bundle = intent.getExtras();
+                if (bundle == null) {
+                    bundle = new Bundle();
+                }
+                bundle.putParcelable("interventionDTO", new InterventionDTOParcelable(mDataset.get(position)));
+                bundle.putString("adresseString", adresseString);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
             }
         });
     }

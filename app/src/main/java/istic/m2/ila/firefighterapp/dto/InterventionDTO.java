@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp.dto;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
