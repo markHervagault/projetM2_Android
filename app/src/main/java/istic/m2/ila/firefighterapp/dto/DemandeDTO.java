@@ -1,6 +1,7 @@
 package istic.m2.ila.firefighterapp.dto;
 
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * Created by hakima on 3/23/18.
@@ -8,7 +9,7 @@ import java.time.ZonedDateTime;
 
 public class DemandeDTO {
     private Long id;
-    private ZonedDateTime dateHeureDemande;
+    private Date dateHeureDemande;
     private EEtatDeploiement state;
 
     private Boolean presenceCRM;
@@ -26,11 +27,11 @@ public class DemandeDTO {
         this.id = id;
     }
 
-    public ZonedDateTime getDateHeureDemande() {
+    public Date getDateHeureDemande() {
         return dateHeureDemande;
     }
 
-    public void setDateHeureDemande(ZonedDateTime dateHeureDemande) {
+    public void setDateHeureDemande(Date dateHeureDemande) {
         this.dateHeureDemande = dateHeureDemande;
     }
 
@@ -81,6 +82,4 @@ public class DemandeDTO {
     public void setInterventionId(Long interventionId) {
         this.interventionId = interventionId;
     }
-
-
 }

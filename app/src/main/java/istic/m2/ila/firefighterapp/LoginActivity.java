@@ -3,7 +3,9 @@ package istic.m2.ila.firefighterapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -77,6 +79,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private boolean isRunning = false;
+    SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -356,7 +360,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             try {
                 Response<TokenDTO> response = consumer.login(dto).execute();
                 if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                    sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("token", response.body().getId_token());
+                    editor.commit();
+                    //editor.putString("token", );
                     Log.i("tag","token: "+response.body().getId_token());
+                    Log.i("tag", "storedToken: "+ sharedPreferences.getString("token", response.body().getId_token()));
 
                     return true;
                 } else {

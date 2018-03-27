@@ -34,5 +34,4 @@ public class DroneDTO {
     public void setAdresseMac(String adresseMac) {
         this.adresseMac = adresseMac;
     }
-
 }
