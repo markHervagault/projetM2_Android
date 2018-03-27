@@ -10,7 +10,7 @@
     <string name="title_activity_list_intervention">Interventions</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
+    <string name="prompt_email">Username</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in_intervenant">Connexion en tant qu\'intervenant</string>
     <string name="action_sign_in_codis">Connexion en tant que CODIS</string>
