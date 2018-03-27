@@ -1,9 +1,7 @@
 package istic.m2.ila.firefighterapp.Intervention;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +12,8 @@ import android.widget.TextView;
 
 import istic.m2.ila.firefighterapp.MapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.dto.InterventionDTO;
+import istic.m2.ila.firefighterapp.dto.InterventionFullDTO;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,12 +22,13 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
 
     private TextView addresseTextView;
     private TextView codeSinistreTextView;
+    private TextView villeTextView;
     private TextView creatorTextView;
     private TextView heureCreationTextView;
     private Button openMap;
 
     //private pojo item
-    private String data;
+    private InterventionFullDTO interventionDTO;
 
     public InterventionDetailsStaticFragment() {
         // Required empty public constructor
@@ -37,7 +38,7 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
     public void onAttach(Context context){
         super.onAttach(context);
         //init pojo data
-        data = ((DetailsInterventionActivity)getActivity()).getData();
+        interventionDTO = ((DetailsInterventionActivity)getActivity()).getIntervention();
 
     }
 
@@ -61,7 +62,16 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
 
         //update fields
         addresseTextView = getActivity().findViewById(R.id.addresse_textview);
-        addresseTextView.setText(data);
+        addresseTextView = getActivity().findViewById(R.id.addresse_textview);
+        addresseTextView = getActivity().findViewById(R.id.addresse_textview);
+        addresseTextView = getActivity().findViewById(R.id.addresse_textview);
+        addresseTextView = getActivity().findViewById(R.id.addresse_textview);
+
+
+        String Address = interventionDTO.getAdresse().getNumero()+" "
+                +interventionDTO.getAdresse().getVoie()+" "
+                +interventionDTO.getAdresse().getVoie();
+        addresseTextView.setText(Address);
 
     }
 
