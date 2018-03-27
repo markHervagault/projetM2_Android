@@ -26,18 +26,27 @@
 
         <activity
             android:name=".LoginActivity"
-            android:screenOrientation="landscape"
             android:label="@string/app_name">
+        </activity>
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/title_activity_map"></activity>
+        <activity
+            android:name=".AddInterventionActivity"
+            android:label="Nouvelle Intervention">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>    <Button
+            android:id="@+id/validateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|bottom"
+            android:text="Create"
+            android:weight="1"
+            />
         </activity>
-        <activity
-            android:name=".MapActivity"
-            android:screenOrientation="landscape"
-            android:label="@string/title_activity_map"></activity>
         <activity
             android:name=".ListInterventionActivity"
             android:screenOrientation="landscape"

@@ -1,0 +1,119 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragmentFormulaire"
+    tools:context="istic.m2.ila.firefighterapp.addintervention.FragmentFormulaire">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/Localisation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#BAC4A2"
+            android:gravity="start"
+            android:text="Localisation"
+            android:textAlignment="viewStart"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textAdresse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Adresse"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <AutoCompleteTextView
+            android:id="@+id/search_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="#f4f4f4"
+            android:hint="Enter Address, City or Zip Code"
+            android:imeOptions="actionSearch"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textCoordonnee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Coordonnée GPS"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editText_lat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Lattitude"
+                android:inputType="numberSigned" />
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/darker_gray" />
+
+            <EditText
+                android:id="@+id/editText_lng"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Longitude"
+                android:inputType="numberSigned" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/codeSinistreBloc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#BAC4A2"
+            android:gravity="start"
+            android:text="Code Sinistre"
+            android:textAlignment="viewStart"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+
+        <TextView
+            android:id="@+id/textCodeSinistre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Code sinistre :"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <AutoCompleteTextView
+            android:id="@+id/searchCodeSinistre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:hint="Code sinistre"
+            android:imeOptions="actionSearch"
+            android:textColor="#000"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+
+</FrameLayout>
