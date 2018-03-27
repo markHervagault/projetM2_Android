@@ -28,12 +28,13 @@ import istic.m2.ila.firefighterapp.dto.UserDTO;
 
 public class DetailsInterventionActivity extends AppCompatActivity {
 
-    private InterventionFullDTO interventionDTO;
+    private InterventionDTOParcelable interventionDTOParcelable;
+    private InterventionFullDTO interventionFullDTO;
     private List<DeploiementDTO> deploiementList;
 
     //Todo : return POJO details
     public InterventionFullDTO getIntervention(){
-        return interventionDTO;
+        return interventionFullDTO;
     }
 
     public List<String> getDatas(){
@@ -53,37 +54,15 @@ public class DetailsInterventionActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extra = intent.getExtras();
 
-        Log.i("FRagment ", intent + "");
-        Log.i("FRagment ", intent.getStringExtra("adresseString"));
-        Log.i("FRagment ", extra.getString("adresseString"));
+        interventionDTOParcelable = extra.getParcelable("interventionDTO");
 
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//
-//        Bundle extras = getIntent().getExtras();
-//        if (extras != null) {
-//            //todo parse the DTO and get the full Intervention
-//            //items = extras.getParcelableArrayList(ARG_PERSON_LIST);
-//        } else {
-//            interventionDTO = new InterventionFullDTO();
-//            AdresseDTO adresseDTO = new AdresseDTO();
-//            SinistreDTO sinistreDTO = new SinistreDTO();
-//            UserDTO userDTO = new UserDTO();
-//
-//            adresseDTO.setNumero(12L);
-//            adresseDTO.setVoie("Rue de Verdun");
-//            adresseDTO.setVille("Fougère");
-//            adresseDTO.setCodePostal("35133 Fougères");
-//
-//            sinistreDTO.setType(new);
-//
-//            interventionDTO.setAdresse(adresseDTO);
-////            interventionDTO.setDateHeureCreation();
-////            interventionDTO.setDateHeureFin();
-////            interventionDTO.setFini();
-////            interventionDTO.setId();
-//        }
+        Log.i("Fragment ", intent + "");
+        Log.i("Fragment ", intent.getStringExtra("adresseString"));
+        Log.i("Fragment ", extra.getString("adresseString"));
+
+        String test = interventionDTOParcelable.getInterventionDTO().getAdresse().getNumero().toString();
+
+        Log.i("Fragment ", "Id Intervention : " + test);
 
     }
-
 }

@@ -387,8 +387,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             isRunning = false;
             mAuthTask = new UserLoginTask();
             if (success) {
-//                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
-                startActivity(new Intent(LoginActivity.this, DetailsInterventionActivity.class));
+                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
             } else {
                 Log.i("tag", "you shall not pass");
                 Toast.makeText(mEmailView.getContext(), "You shall not pass", Toast.LENGTH_LONG);

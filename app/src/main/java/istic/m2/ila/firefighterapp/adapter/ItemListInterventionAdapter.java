@@ -120,7 +120,10 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
                 if (bundle == null) {
                     bundle = new Bundle();
                 }
-                bundle.putParcelable("interventionDTO", new InterventionDTOParcelable(mDataset.get(position)));
+
+                InterventionDTOParcelable interventionDTOParcelable = new InterventionDTOParcelable(mDataset.get(position));
+
+                bundle.putParcelable("interventionDTO", interventionDTOParcelable);
                 bundle.putString("adresseString", adresseString);
                 intent.putExtras(bundle);
                 context.startActivity(intent);

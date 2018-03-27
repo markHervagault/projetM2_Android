@@ -46,4 +46,8 @@ public class InterventionDTOParcelable implements Parcelable, Serializable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(interventionDTO);
     }
+
+    public InterventionDTO getInterventionDTO() {
+        return interventionDTO;
+    }
 }
