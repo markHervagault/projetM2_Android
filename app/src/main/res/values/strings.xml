@@ -10,7 +10,7 @@
     <string name="title_activity_list_intervention">Interventions</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
+    <string name="prompt_email">Username</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in_intervenant">Connexion en tant qu\'intervenant</string>
     <string name="action_sign_in_codis">Connexion en tant que CODIS</string>
@@ -31,8 +31,13 @@
 
     <!--String a trier-->
     <string name="img_item_intervention">carte de l\'intervention</string>
-    <string name="fab_menu_item1">Menu item 1</string>
-    <string name="fab_menu_item2">Menu item 2</string>
-    <string name="fab_menu_item3">Menu item 3</string>
 
+    <!--Menu bouton flottant-->
+    <string name="map_activity_fab_menu_label">Replier</string>
+    <string name="map_activity_fab_menu_removePointToVisit_label">Supprimer un élément</string>
+    <string name="map_activity_fab_menu_addPointToVisit_label">Tracer un trajet</string>
+    <string name="map_activity_fab_menu_zone_polygon_label">Tracer une zone</string>
+    <string name="map_activity_fab_menu_trajet_open_close">Ouvrir/fermer un trajet</string>
+    <string name="map_activity_fab_menu_trajet_open">Ouvrir le trajet</string>
+    <string name="map_activity_fab_menu_trajet_close">Fermer le trajet</string>
 </resources>
