@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp;
 
+import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQDrone;
 import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
 import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
 
@@ -102,6 +104,8 @@ public class MapActivity extends FragmentActivity implements
 
         // Initialisation des éléments du menu
         initMenuFlottant();
+
+        startService(new Intent(this, ServiceRabbitMQDrone.class));
     }
 
     private void initCRMFragment(){
