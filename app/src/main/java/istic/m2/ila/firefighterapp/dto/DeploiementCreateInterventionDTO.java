@@ -5,6 +5,7 @@ package istic.m2.ila.firefighterapp.dto;
  */
 
 public class DeploiementCreateInterventionDTO {
+
     Long idVehicule;
     Long idTypeComposante;
 

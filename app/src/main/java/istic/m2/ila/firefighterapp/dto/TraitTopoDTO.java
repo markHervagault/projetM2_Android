@@ -56,7 +56,4 @@ public class TraitTopoDTO {
     public void setComposante(TypeComposanteDTO composante) {
         this.composante = composante;
     }
-
-
-
 }

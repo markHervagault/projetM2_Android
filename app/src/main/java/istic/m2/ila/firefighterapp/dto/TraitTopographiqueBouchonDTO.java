@@ -11,7 +11,7 @@ public class TraitTopographiqueBouchonDTO {
 
     private String label;
 
-    private TypeComposante composante;
+    private TypeComposanteDTO composante;
 
     private GeoPositionDTO geoPosition;
 
@@ -39,11 +39,11 @@ public class TraitTopographiqueBouchonDTO {
         this.label = label;
     }
 
-    public TypeComposante getComposante() {
+    public TypeComposanteDTO getComposante() {
         return composante;
     }
 
-    public void setComposante(TypeComposante composante) {
+    public void setComposante(TypeComposanteDTO composante) {
         this.composante = composante;
     }
 
@@ -54,5 +54,6 @@ public class TraitTopographiqueBouchonDTO {
     public void setGeoPosition(GeoPositionDTO geoPosition) {
         this.geoPosition = geoPosition;
     }
+
 
 }

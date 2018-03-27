@@ -1,6 +1,7 @@
 package istic.m2.ila.firefighterapp.dto;
 
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * Created by hakima on 3/23/18.
@@ -9,13 +10,13 @@ import java.time.ZonedDateTime;
 public class DeploiementDTO {
     private Long id;
 
-    private ZonedDateTime dateHeureDemande;
+    private Date dateHeureDemande;
 
-    private ZonedDateTime dateHeureValidation;
+    private Date dateHeureValidation;
 
-    private ZonedDateTime dateHeureEngagement;
+    private Date dateHeureEngagement;
 
-    private ZonedDateTime dateHeureDesengagement;
+    private Date dateHeureDesengagement;
 
     private EEtatDeploiement state;
 
@@ -75,35 +76,35 @@ public class DeploiementDTO {
         this.id = id;
     }
 
-    public ZonedDateTime getDateHeureDemande() {
+    public Date getDateHeureDemande() {
         return dateHeureDemande;
     }
 
-    public void setDateHeureDemande(ZonedDateTime dateHeureDemande) {
+    public void setDateHeureDemande(Date dateHeureDemande) {
         this.dateHeureDemande = dateHeureDemande;
     }
 
-    public ZonedDateTime getDateHeureValidation() {
+    public Date getDateHeureValidation() {
         return dateHeureValidation;
     }
 
-    public void setDateHeureValidation(ZonedDateTime dateHeureValidation) {
+    public void setDateHeureValidation(Date dateHeureValidation) {
         this.dateHeureValidation = dateHeureValidation;
     }
 
-    public ZonedDateTime getDateHeureEngagement() {
+    public Date getDateHeureEngagement() {
         return dateHeureEngagement;
     }
 
-    public void setDateHeureEngagement(ZonedDateTime dateHeureEngagement) {
+    public void setDateHeureEngagement(Date dateHeureEngagement) {
         this.dateHeureEngagement = dateHeureEngagement;
     }
 
-    public ZonedDateTime getDateHeureDesengagement() {
+    public Date getDateHeureDesengagement() {
         return dateHeureDesengagement;
     }
 
-    public void setDateHeureDesengagement(ZonedDateTime dateHeureDesengagement) {
+    public void setDateHeureDesengagement(Date dateHeureDesengagement) {
         this.dateHeureDesengagement = dateHeureDesengagement;
     }
 
@@ -130,7 +131,5 @@ public class DeploiementDTO {
     public void setInterventionId(Long interventionId) {
         this.interventionId = interventionId;
     }
-
-
 
 }
