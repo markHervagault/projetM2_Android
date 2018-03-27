@@ -25,6 +25,7 @@ public class DetailsInterventionActivity extends AppCompatActivity {
     }
 
     public List<String> getDatas(){
+
         List<String> datas = new ArrayList<>();
         datas.add("MDR");
         datas.add("LOL");

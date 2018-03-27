@@ -37,6 +37,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity;
 import istic.m2.ila.firefighterapp.consumer.LoginConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.LoginDTO;
@@ -376,7 +377,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             isRunning = false;
             mAuthTask = new UserLoginTask();
             if (success) {
-                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
+//                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
+                startActivity(new Intent(LoginActivity.this, DetailsInterventionActivity.class));
             } else {
                 Log.i("tag", "you shall not pass");
                 Toast.makeText(mEmailView.getContext(), "You shall not pass", Toast.LENGTH_LONG);

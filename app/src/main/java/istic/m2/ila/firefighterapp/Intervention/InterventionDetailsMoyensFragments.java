@@ -12,10 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -27,6 +30,7 @@ import istic.m2.ila.firefighterapp.R;
 public class InterventionDetailsMoyensFragments extends Fragment {
 
     private List<String> datas;
+    private Context context;
 
     public InterventionDetailsMoyensFragments() {
         // Required empty public constructor
@@ -36,7 +40,8 @@ public class InterventionDetailsMoyensFragments extends Fragment {
     public void onAttach(Context context){
         super.onAttach(context);
         //init pojo data
-        datas = ((DetailsInterventionActivity)this.getActivity()).getDatas();
+        this.context = context;
+        this.datas = ((DetailsInterventionActivity)this.getActivity()).getDatas();
     }
 
     @Override
@@ -87,6 +92,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
             private ExpandableLayout expandableLayout;
+            private LinearLayout expandedLinearLayout;
             private TextView expandButton;
 
             public ViewHolder(View itemView) {
@@ -96,8 +102,8 @@ public class InterventionDetailsMoyensFragments extends Fragment {
                 expandableLayout.setInterpolator(new OvershootInterpolator());
                 expandableLayout.setOnExpansionUpdateListener(this);
                 expandButton = itemView.findViewById(R.id.expand_button);
-
                 expandButton.setOnClickListener(this);
+                expandedLinearLayout = itemView.findViewById(R.id.list_layout_moyen);
             }
 
             public void bind() {
@@ -105,9 +111,21 @@ public class InterventionDetailsMoyensFragments extends Fragment {
                 String content = dataset.get(position);
 
                 boolean isSelected = position == selectedItem;
-                expandButton.setText(content + ". Tap to expand");
+                expandButton.setText(content);
                 expandButton.setSelected(isSelected);
                 expandableLayout.setExpanded(isSelected, false);
+
+                TextView tmpText1 = new TextView(itemView.getContext());
+                TextView tmpText2 = new TextView(itemView.getContext());
+                TextView tmpText3 = new TextView(itemView.getContext());
+                tmpText1.setText("Item 1");
+                tmpText2.setText("Item 2");
+                tmpText3.setText("Item 3");
+
+                //for each item add to layout
+                expandedLinearLayout.addView(tmpText1);
+                expandedLinearLayout.addView(tmpText2);
+                expandedLinearLayout.addView(tmpText3);
             }
 
             @Override
