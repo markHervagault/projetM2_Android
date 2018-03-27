@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp.Intervention;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,8 +14,6 @@ import istic.m2.ila.firefighterapp.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link InterventionDetailsStaticFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class InterventionDetailsStaticFragment extends Fragment {
 
@@ -23,26 +22,18 @@ public class InterventionDetailsStaticFragment extends Fragment {
     private TextView creatorTextView;
     private TextView heureCreationTextView;
 
+    //private pojo item
+    private String data;
+
     public InterventionDetailsStaticFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment InterventionDetailsStaticFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static InterventionDetailsStaticFragment newInstance() {
-        InterventionDetailsStaticFragment fragment = new InterventionDetailsStaticFragment();
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void onAttach(Context context){
+        super.onAttach(context);
+        //init pojo data
+        data = ((DetailsInterventionActivity)this.getActivity()).getData();
     }
 
     @Override
@@ -53,13 +44,11 @@ public class InterventionDetailsStaticFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        //TODO : Initialiser les diff textview ici
-        // Set values for view here
-        addresseTextView = (TextView) view.findViewById(R.id.addresse_textview);
-
-        // update view
-        addresseTextView.setText("3 rue test");
+    public void onResume() {
+        super.onResume();
+        //update fields
+        addresseTextView = getActivity().findViewById(R.id.addresse_textview);
+        addresseTextView.setText(data);
     }
 
 }

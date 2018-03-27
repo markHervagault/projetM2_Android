@@ -8,6 +8,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import istic.m2.ila.firefighterapp.R;
 
 /**
@@ -16,22 +19,23 @@ import istic.m2.ila.firefighterapp.R;
 
 public class DetailsInterventionActivity extends AppCompatActivity {
 
+    //Todo : return POJO details
+    public String getData(){
+        return "LOL";
+    }
 
+    public List<String> getDatas(){
+        List<String> datas = new ArrayList<>();
+        datas.add("MDR");
+        datas.add("LOL");
+        datas.add("YOLO");
+        return datas;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intervention_details);
-
-
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//
-//        InterventionDetailsStaticFragment staticFragment = new InterventionDetailsStaticFragment();
-//        fragmentTransaction.add(R.id.layoutDetails,staticFragment);
-//        fragmentTransaction.commit();
-
-
     }
 
 }
