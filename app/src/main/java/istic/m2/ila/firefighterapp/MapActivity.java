@@ -18,6 +18,10 @@ import android.widget.Toast;
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
 import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
 import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
+import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
+import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.dto.MissionDTO;
+import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,8 +39,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class MapActivity extends FragmentActivity implements
@@ -654,6 +660,55 @@ public class MapActivity extends FragmentActivity implements
             public void onClick(DialogInterface dialog, int id) {
                 // TODO - envoyer les données au drône sélectionné
                 Toast.makeText(getApplicationContext(), "Tmp : Le message a été envoyé", Toast.LENGTH_SHORT);
+
+                MapActivity.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        MissionDTO currentMission = new MissionDTO();
+
+                        // id de l'intervention
+                        Long interventionId = 123456789l;
+                        currentMission.setInterventionId(interventionId);
+
+                        // Itération infinie
+                        currentMission.setNbIteration(0);
+
+                        // Drône sélectionné
+                        Long droneId = 444l;
+                        currentMission.setDroneId(droneId);
+
+                        // Définir le type de trajet (Ouvert/Fermé)
+                        currentMission.setBoucleFermee(isTrajetClosed);
+
+                        // Liste des points à visiter
+                        Set<PointMissionDTO> points = new HashSet<>();
+
+                        // On convertit nos LatLng en PointMissionDTO
+                        int size = markersLatLngPolylines.size();
+                        for (int i = 0; i < size; i++) {
+                            LatLng p = markersLatLngPolylines.get(i);
+                            PointMissionDTO point = new PointMissionDTO();
+                            point.setIndex(Long.valueOf(i));
+
+                            // Prise de photo
+                            point.setAction(false);
+
+                            point.setLatitude(p.latitude);
+                            point.setLongitude(p.longitude);
+
+                            // Sauvegarder notre point
+                            points.add(point);
+                        }
+                        currentMission.setDronePositions(points);
+
+                        // Envoyer au serveur notre mission
+                        RestTemplate restTemplate = RestTemplate.getInstance();
+                        DroneMissionConsumer dmc = restTemplate.builConsumer(DroneMissionConsumer.class);
+
+                        // TODO - Récupérer le token
+                        String token = "dqsd5qs45f6sd1f6ds1";
+//                        dmc.createMission(token, currentMission);
+                    }
+                });
             }
         });
         adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
