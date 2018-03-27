@@ -5,6 +5,7 @@ package istic.m2.ila.firefighterapp.dto;
  */
 
 public class AdresseDTO {
+
     private Long numero;
 
     private String voie;

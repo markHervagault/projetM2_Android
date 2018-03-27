@@ -11,6 +11,8 @@ import java.util.Set;
 
 public class UserDTO {
 
+
+
     private Long id;
 
     @Size(min = 1, max = 50)
@@ -21,6 +23,7 @@ public class UserDTO {
 
     @Size(max = 50)
     private String lastName;
+
 
     @Size(min = 5, max = 100)
     private String email;
@@ -130,7 +133,6 @@ public class UserDTO {
     public Set<String> getAuthorities() {
         return authorities;
     }
-
 
 
 
