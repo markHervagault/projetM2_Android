@@ -33,9 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MapActivity"
-            android:label="@string/title_activity_map"></activity>
+
         <activity
             android:name=".AddInterventionActivity"
             android:label="Nouvelle Intervention">
