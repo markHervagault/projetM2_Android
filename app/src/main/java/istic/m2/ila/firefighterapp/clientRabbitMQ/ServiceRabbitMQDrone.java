@@ -3,47 +3,52 @@ package istic.m2.ila.firefighterapp.clientRabbitMQ;
 
 import android.app.Service;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.Binder;
 import android.os.IBinder;
-import android.os.Parcel;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
-import com.rabbitmq.client.QueueingConsumer;
 
-import java.io.IOException;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+
+import istic.m2.ila.firefighterapp.dto.DroneDTO;
 
 
 public class ServiceRabbitMQDrone extends Service {
 
-    Thread subscribeThread;
-    Thread publishThread;
+    public static String TAG = "Service RABBITMQ ";
+
     String incomingMessageHandler="";
+    RabbitMQThread subscribeThread;
 
     private BlockingDeque<String> queue = new LinkedBlockingDeque<String>();
 
     ConnectionFactory factory = new ConnectionFactory();
 
+    // This is the object that receives interactions from clients.
+    private final IBinder mBinder = new LocalBinder();
+
+    public class LocalBinder extends Binder {
+        public ServiceRabbitMQDrone getService() {
+            return ServiceRabbitMQDrone.this;
+        }
+    }
+
     /** Called when the service is being created. */
     @Override
     public void onCreate() {
-        setupConnectionFactory();
-        subscribe();
+//        setupConnectionFactory();
+        EventBus.getDefault().register(this);
+        start();
     }
 
     @Override
@@ -56,18 +61,17 @@ public class ServiceRabbitMQDrone extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        publishThread.interrupt();
+        EventBus.getDefault().unregister(this);
         subscribeThread.interrupt();
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_LONG).show();
     }
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
     }
 
-    private void setupConnectionFactory() {
+    /*private void setupConnectionFactory() {
         final URI uri = URI.create("amqp://guest:guest@nwanono.info:5672/");
         //final URI uri = URI.create("amqp://guest:guest@148.60.11.57:6005/");
         try {
@@ -77,42 +81,55 @@ public class ServiceRabbitMQDrone extends Service {
         } catch (KeyManagementException | NoSuchAlgorithmException | URISyntaxException e1) {
             e1.printStackTrace();
         }
+    }*/
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onEvent(DroneDTO event) {
+        Log.d(TAG, "======================================================= Je viens de recevoir dans le bus de données :"+event.getNom());
+        if(null!=subscribeThread){
+            subscribeThread.addSubscriptionForDrone(event);
+        }
     }
 
-    void subscribe() {
-        subscribeThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    try {
-                        Connection connection = factory.newConnection();
-                        Channel channel = connection.createChannel();
-                        channel.basicQos(1);
-
-                        channel.queueDeclare("0_info", false, false, false, null);
-
-                        Consumer consumer = new DefaultConsumer(channel) {
-                            @Override
-                            public void handleDelivery(String consumerTag, Envelope envelope,
-                                                       AMQP.BasicProperties properties, byte[] body) throws IOException {
-                                incomingMessageHandler = new String(body, "UTF-8");
-                                Log.d("Service RABBITMQ ", " [x] Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
-                            }
-                        };
-
-                        channel.basicConsume("0_info", true, consumer);
-
-                    } catch (Exception e1) {
-                        Log.d("", "Connection broken: " + e1.getClass().getName());
-                        try {
-                            Thread.sleep(4000); //sleep and then try again
-                        } catch (InterruptedException e) {
-                            break;
-                        }
-                    }
-                }
-            }
-        });
+    void start() {
+        subscribeThread = new RabbitMQThread();
         subscribeThread.start();
     }
+
+//    void subscribe() {
+//        subscribeThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while(true) {
+//                    try {
+//                        Connection connection = factory.newConnection();
+//                        Channel channel = connection.createChannel();
+//                        channel.basicQos(1);
+//
+//                        channel.queueDeclare("0_info", false, false, false, null);
+//
+//                        Consumer consumer = new DefaultConsumer(channel) {
+//                            @Override
+//                            public void handleDelivery(String consumerTag, Envelope envelope,
+//                                                       AMQP.BasicProperties properties, byte[] body) throws IOException {
+//                                incomingMessageHandler = new String(body, "UTF-8");
+//                                Log.d(TAG, " [x] Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
+//                            }
+//                        };
+//
+//                        channel.basicConsume("0_info", true, consumer);
+//
+//                    } catch (Exception e1) {
+//                        Log.d("", "Connection broken: " + e1.getClass().getName());
+//                        try {
+//                            Thread.sleep(4000); //sleep and then try again
+//                        } catch (InterruptedException e) {
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        });
+//        subscribeThread.start();
+//    }
 }

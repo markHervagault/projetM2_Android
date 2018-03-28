@@ -1,10 +1,12 @@
 package istic.m2.ila.firefighterapp.dto;
 
+import java.io.Serializable;
+
 /**
  * Created by hakima on 3/26/18.
  */
 
-public class AdresseDTO {
+public class AdresseDTO implements Serializable {
 
     private Long numero;
 

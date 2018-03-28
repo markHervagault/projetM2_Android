@@ -28,6 +28,7 @@
     <string name="intervention_detail_fragment_static_code_sinistre">Code Sinistre :</string>
     <string name="intervention_detail_fragment_static_heure_creation">Heure de création :</string>
     <string name="intervention_detail_fragment_static_createur">Crée par :</string>
+    <string name="intervention_detail_fragment_static_button_map">Ouvrir la carte</string>
 
     <!--String a trier-->
     <string name="img_item_intervention">carte de l\'intervention</string>
