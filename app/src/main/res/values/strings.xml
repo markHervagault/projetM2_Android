@@ -25,8 +25,10 @@
 
     <!--String related to intervention details-->
     <string name="intervention_detail_fragment_static_adresse">Adresse :</string>
+    <string name="intervention_detail_fragment_static_ville">Ville :</string>
     <string name="intervention_detail_fragment_static_code_sinistre">Code Sinistre :</string>
     <string name="intervention_detail_fragment_static_heure_creation">Heure de création :</string>
+    <string name="intervention_detail_fragment_static_heure_fin">Heure de fin :</string>
     <string name="intervention_detail_fragment_static_createur">Crée par :</string>
     <string name="intervention_detail_fragment_static_button_map">Ouvrir la carte</string>
 

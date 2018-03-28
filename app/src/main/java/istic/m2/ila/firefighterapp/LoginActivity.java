@@ -185,7 +185,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if(mAuthTask == null) {
             mAuthTask = new UserLoginTask();
         }
-        Log.i("toto", "tototototototo");
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
