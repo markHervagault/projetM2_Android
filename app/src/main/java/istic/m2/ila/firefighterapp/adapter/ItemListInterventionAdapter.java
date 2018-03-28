@@ -22,6 +22,7 @@ import istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDTOParcelable;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.AdresseDTO;
+import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 
 /**
@@ -83,14 +84,14 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
         InterventionDTO intervention = mDataset.get(position);
 
         // Date de l'intervention
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date dateHeureCreation = new Date();
-        System.out.println(); //2016/11/16 12:08:43
+        System.out.println(); //16/11/2016 12:08:43
         holder.dateIntervention.setText(dateFormat.format(dateHeureCreation));
 
-        // TODO
         // Code sinistre
-        // holder.codeSinistreIntervention.setText(intervention.get("codeSinistreIntervention"));
+        CodeSinistreDTO codeSinistreDTO = intervention.getCodeSinistre();
+        holder.codeSinistreIntervention.setText(codeSinistreDTO.getCode());
 
         // Adresse
         AdresseDTO adresseDTO = intervention.getAdresse();
@@ -107,6 +108,7 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
         // Gestion de la miniature
 //        holder.imgMapIntervention.setImageResource(Integer.parseInt(intervention.get("imgMapIntervention")));
 
+        // TODO
         // Gestion du clic
         holder.layoutItemIntervention.setOnClickListener(new View.OnClickListener() {
 

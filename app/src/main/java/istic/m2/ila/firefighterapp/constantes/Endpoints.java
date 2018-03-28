@@ -14,7 +14,7 @@ public class Endpoints {
     public static final String MISSION = "mission";
     public static final String MISSION_ID = "mission/{id}";
 
-    public static final String INTERVENTION = "intervention";
+    public static final String INTERVENTION = "intervention/en-cours";
     public static final String INTERVENTION_ID = "intervention/{id}";
 
     public static final String INTERVENTION_DEMANDE = "intervention/{id}/demande";
