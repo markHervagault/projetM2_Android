@@ -1,9 +1,6 @@
 package istic.m2.ila.firefighterapp.dto;
 
-<<<<<<< Updated upstream
 import java.io.Serializable;
-=======
->>>>>>> Stashed changes
 import java.util.Date;
 
 /**
@@ -14,11 +11,10 @@ public class InterventionDTO implements Serializable{
 
     private Long id;
 
-<<<<<<< Updated upstream
+
     private String nom;
 
-=======
->>>>>>> Stashed changes
+
     private Date dateHeureCreation;
 
     private Date dateHeureFin;
@@ -45,7 +41,6 @@ public class InterventionDTO implements Serializable{
         this.id = id;
     }
 
-<<<<<<< Updated upstream
     public String getNom() {
         return nom;
     }
@@ -54,8 +49,6 @@ public class InterventionDTO implements Serializable{
         this.nom = nom;
     }
 
-=======
->>>>>>> Stashed changes
     public Date getDateHeureCreation() {
         return dateHeureCreation;
     }
