@@ -25,8 +25,10 @@
 
     <!--String related to intervention details-->
     <string name="intervention_detail_fragment_static_adresse">Adresse :</string>
+    <string name="intervention_detail_fragment_static_ville">Ville :</string>
     <string name="intervention_detail_fragment_static_code_sinistre">Code Sinistre :</string>
     <string name="intervention_detail_fragment_static_heure_creation">Heure de création :</string>
+    <string name="intervention_detail_fragment_static_heure_fin">Heure de fin :</string>
     <string name="intervention_detail_fragment_static_createur">Crée par :</string>
     <string name="intervention_detail_fragment_static_button_map">Ouvrir la carte</string>
 
@@ -41,4 +43,11 @@
     <string name="map_activity_fab_menu_trajet_open_close">Ouvrir/fermer un trajet</string>
     <string name="map_activity_fab_menu_trajet_open">Ouvrir le trajet</string>
     <string name="map_activity_fab_menu_trajet_close">Fermer le trajet</string>
+
+
+    <!-- Formulaire d'ajout d'intervention-->
+    <string name="title_activity_add_intervention">Nouvelle intervention</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="google_place_api_key">AIzaSyAHBaS8v5L4ANEv9vztfqXSivkNws8TZjw</string>
 </resources>

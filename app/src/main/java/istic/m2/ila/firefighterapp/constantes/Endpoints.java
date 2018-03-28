@@ -9,6 +9,8 @@ public class Endpoints {
 //    public static final String BASE = "http://10.0.2.2:8080/api/"; // Local
     public static final String BASE = "http://148.60.11.57:6002/api/"; // Serveur
 
+    public static final String RABBITMQ = "amqp://guest:guest@148.60.11.57:6005/";
+
     public static final String AUTHENTICATE = "authenticate";
 
     public static final String BOUCHON_TRAIT_TOPO_ID = "api/bouchon/trait-topographique/{id}";
@@ -20,7 +22,7 @@ public class Endpoints {
     public static final String MISSION = "mission";
     public static final String MISSION_ID = "mission/{id}";
 
-    public static final String INTERVENTION = "intervention";
+    public static final String INTERVENTION = "intervention/en-cours";
     public static final String INTERVENTION_ID = "intervention/{id}";
 
     public static final String INTERVENTION_DEMANDE = "intervention/{id}/demande";
