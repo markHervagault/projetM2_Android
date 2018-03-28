@@ -11,6 +11,12 @@ public class Endpoints {
 
     public static final String AUTHENTICATE = "authenticate";
 
+    public static final String BOUCHON_TRAIT_TOPO_ID = "api/bouchon/trait-topographique/{id}";
+    public static final String BOUCHON_TRAIT_TOPO_RAYON = "api/bouchon/trait-topographique/{latitude}/{longitude}/{rayon}";
+
+    public static final String CODE_SINISTRE = "code-sinistre";
+    public static final String CODE_SINISTRE_BY_ID = "code-sinistre/{id}";
+
     public static final String MISSION = "mission";
     public static final String MISSION_ID = "mission/{id}";
 
@@ -32,6 +38,12 @@ public class Endpoints {
     public static final String VEHICULE = "vehicule";
     public static final String VEHICULE_DISPONIBLE = "vehicule/disponible";
     public static final String VEHICULE_DISPONIBLE_TYPE = "vehicule/disponible/par_type?type={TYPE}";
+
+    public static final String DEPLOIEMENT_ID_ACTION = "api/deploiement/{id}/etat/action";
+    public static final String DEPLOIEMENT_ID_DESENGAGE = "put /api/deploiement/{id}/etat/desengage";
+    public static final String DEPLOIEMENT_ID_ENGAGE = "api/deploiement/{id}/etat/engage";
+    public static final String DEPLOIEMENT_ID_VALIDE = "api/deploiement/{id}/etat/valide";
+    public static final String DEPLOIEMENT_ID_REFUSE = "/api/deploiement/{id}/etat/refuse";
 
 
 
