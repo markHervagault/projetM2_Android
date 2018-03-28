@@ -13,8 +13,8 @@ public class Endpoints {
 
     public static final String AUTHENTICATE = "authenticate";
 
-    public static final String BOUCHON_TRAIT_TOPO_ID = "api/bouchon/trait-topographique/{id}";
-    public static final String BOUCHON_TRAIT_TOPO_RAYON = "api/bouchon/trait-topographique/{latitude}/{longitude}/{rayon}";
+    public static final String BOUCHON_TRAIT_TOPO_ID = "bouchon/trait-topographique/{id}";
+    public static final String BOUCHON_TRAIT_TOPO_RAYON = "bouchon/trait-topographique/{latitude}/{longitude}/{rayon}";
 
     public static final String CODE_SINISTRE = "code-sinistre";
     public static final String CODE_SINISTRE_BY_ID = "code-sinistre/{id}";
