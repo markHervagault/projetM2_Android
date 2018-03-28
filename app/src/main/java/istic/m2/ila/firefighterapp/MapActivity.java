@@ -1,12 +1,17 @@
 package istic.m2.ila.firefighterapp;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import com.github.clans.fab.FloatingActionButton;
 
-import static android.content.ContentValues.TAG;
+import android.os.IBinder;
+import android.renderscript.ScriptGroup;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -22,6 +27,7 @@ import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
 import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
 import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 
@@ -39,6 +45,10 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,6 +59,11 @@ import java.util.Set;
 
 public class MapActivity extends FragmentActivity implements
         OnMapReadyCallback {
+
+    private ServiceRabbitMQDrone mServiceRabbitMQ;
+    private Boolean serviceRabbitMQIsBound = false;
+
+    private static String TAG = "MapActivity";
 
     private GoogleMap mMap;
     private Polygon mPolygon;
@@ -82,6 +97,52 @@ public class MapActivity extends FragmentActivity implements
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // This is called when the connection with the service has
+            // been established, giving us the service object we can use
+            // to interact with the service.  Because we have bound to a
+            // explicit service that we know is running in our own
+            // process, we can cast its IBinder to a concrete class and
+            // directly access it.
+            mServiceRabbitMQ = ((ServiceRabbitMQDrone.LocalBinder)service).getService();
+
+            List<DroneDTO> drones = simulateGetListDrone();
+            for(DroneDTO drone:drones){
+                Log.d(TAG, "================================================================ Envoi d'une donnee sur le bus : "+drone.getNom());
+                EventBus.getDefault().post(drone);
+            }
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has
+            // been unexpectedly disconnected -- that is, its process
+            // crashed. Because it is running in our same process, we
+            // should never see this happen.
+            mServiceRabbitMQ = null;
+        }
+    };
+
+    void doBindService() {
+        // Establish a connection with the service.  We use an explicit
+        // class name because we want a specific service implementation
+        // that we know will be running in our own process (and thus
+        // won't be supporting component replacement by other
+        // applications).
+        bindService(new Intent(this, ServiceRabbitMQDrone.class),
+                mConnection,
+                Context.BIND_AUTO_CREATE);
+        serviceRabbitMQIsBound = true;
+    }
+
+    void doUnbindService() {
+        if (serviceRabbitMQIsBound) {
+            // Detach our existing connection.
+            unbindService(mConnection);
+            serviceRabbitMQIsBound = false;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +172,19 @@ public class MapActivity extends FragmentActivity implements
         // Initialisation des éléments du menu
         initMenuFlottant();
 
-        startService(new Intent(this, ServiceRabbitMQDrone.class));
+        // partie service rabbitMQ
+        doBindService();
+
+    }
+
+    private List<DroneDTO> simulateGetListDrone(){
+        List<DroneDTO> drones = new ArrayList<DroneDTO>();
+        DroneDTO drone1 = new DroneDTO();
+        drone1.setAdresseMac("000000000");
+        drone1.setNom("drone1");
+        drone1.setId((long)1);
+        drones.add(drone1);
+        return drones;
     }
 
     private void initCRMFragment(){
@@ -759,5 +832,11 @@ public class MapActivity extends FragmentActivity implements
 
             disableButtonOpenCloseTrajet();
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        doUnbindService();
     }
 }

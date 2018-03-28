@@ -32,6 +32,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import java.util.List;
 
 import istic.m2.ila.firefighterapp.consumer.LoginConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.LoginDTO;
 import istic.m2.ila.firefighterapp.dto.TokenDTO;
 import istic.m2.ila.firefighterapp.dto.UserDTO;
@@ -119,6 +122,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
     }
 
     private void populateAutoComplete() {
@@ -376,7 +380,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             isRunning = false;
             mAuthTask = new UserLoginTask();
             if (success) {
-                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
+                startActivity(new Intent(LoginActivity.this, MapActivity.class));
             } else {
                 Log.i("tag", "you shall not pass");
                 Toast.makeText(mEmailView.getContext(), "You shall not pass", Toast.LENGTH_LONG);
