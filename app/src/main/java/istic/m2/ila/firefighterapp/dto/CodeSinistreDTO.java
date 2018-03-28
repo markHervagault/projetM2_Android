@@ -37,4 +37,9 @@ public class CodeSinistreDTO implements Serializable {
     public void setIntitule(String intitule) {
         this.intitule = intitule;
     }
+
+    @Override
+    public String toString(){
+        return code + " - " + intitule;
+    }
 }

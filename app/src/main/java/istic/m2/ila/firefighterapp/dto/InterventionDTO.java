@@ -11,7 +11,9 @@ public class InterventionDTO implements Serializable{
 
     private Long id;
 
+
     private String nom;
+
 
     private Date dateHeureCreation;
 
