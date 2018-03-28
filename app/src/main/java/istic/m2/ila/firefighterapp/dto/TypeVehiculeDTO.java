@@ -34,5 +34,4 @@ public class TypeVehiculeDTO {
     public void setComposante(TypeComposanteDTO composante) {
         this.composante = composante;
     }
-
 }

@@ -56,7 +56,4 @@ public class PointMissionDTO {
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
-
-
-
 }

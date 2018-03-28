@@ -1,6 +1,6 @@
 package istic.m2.ila.firefighterapp.dto;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,9 +15,9 @@ public class MissionDTO {
 
     private Boolean boucleFermee;
 
-    private ZonedDateTime dateHeureCreation;
+    private Date dateHeureCreation;
 
-    private ZonedDateTime dateHeureFin;
+    private Date dateHeureFin;
 
     private Long interventionId;
 
@@ -51,19 +51,19 @@ public class MissionDTO {
         this.boucleFermee = boucleFermee;
     }
 
-    public ZonedDateTime getDateHeureCreation() {
+    public Date getDateHeureCreation() {
         return dateHeureCreation;
     }
 
-    public void setDateHeureCreation(ZonedDateTime dateHeureCreation) {
+    public void setDateHeureCreation(Date dateHeureCreation) {
         this.dateHeureCreation = dateHeureCreation;
     }
 
-    public ZonedDateTime getDateHeureFin() {
+    public Date getDateHeureFin() {
         return dateHeureFin;
     }
 
-    public void setDateHeureFin(ZonedDateTime dateHeureFin) {
+    public void setDateHeureFin(Date dateHeureFin) {
         this.dateHeureFin = dateHeureFin;
     }
 
@@ -98,7 +98,6 @@ public class MissionDTO {
     public void setArchive(Boolean archive) {
         this.archive = archive;
     }
-
 
 
 }

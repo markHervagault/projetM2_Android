@@ -1,6 +1,6 @@
 package istic.m2.ila.firefighterapp.dto;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -10,7 +10,7 @@ import java.util.Objects;
 public class PhotoDTO {
     private Long id;
 
-    private ZonedDateTime dateHeure;
+    private Date dateHeure;
 
     private Long iteration;
 
@@ -24,11 +24,11 @@ public class PhotoDTO {
         this.id = id;
     }
 
-    public ZonedDateTime getDateHeure() {
+    public Date getDateHeure() {
         return dateHeure;
     }
 
-    public void setDateHeure(ZonedDateTime dateHeure) {
+    public void setDateHeure(Date dateHeure) {
         this.dateHeure = dateHeure;
     }
 
@@ -47,7 +47,5 @@ public class PhotoDTO {
     public void setPointMissionId(Long pointMissionId) {
         this.pointMissionId = pointMissionId;
     }
-
-
 
 }

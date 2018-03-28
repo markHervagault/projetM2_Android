@@ -5,6 +5,7 @@ package istic.m2.ila.firefighterapp.dto;
  */
 
 public class VehiculeDTO {
+
     private Long id;
 
     private String label;
@@ -34,7 +35,5 @@ public class VehiculeDTO {
     public void setType(TypeVehiculeDTO type) {
         this.type = type;
     }
-
-
 
 }
