@@ -11,16 +11,16 @@ import java.util.List;
  * Created by amendes on 26/03/18.
  */
 
-public class CodeSinistreAdapter extends ArrayAdapter<CodeSinistre> {
+public class CodeSinistreAdapter extends ArrayAdapter<CodeSinistreDTO> {
 
-    private ArrayList<CodeSinistre> codeSinistres = new ArrayList<>();
+    private ArrayList<CodeSinistreDTO> codeSinistres = new ArrayList<>();
 
-    public CodeSinistreAdapter(@NonNull Context context, int resource, @NonNull List<CodeSinistre> objects) {
+    public CodeSinistreAdapter(@NonNull Context context, int resource, @NonNull List<CodeSinistreDTO> objects) {
         super(context, resource, objects);
-        codeSinistres = (ArrayList<CodeSinistre>) objects;
+        codeSinistres = (ArrayList<CodeSinistreDTO>) objects;
     }
 
-    public ArrayList<CodeSinistre> getCodeSinistres(Long code) {
+    public ArrayList<CodeSinistreDTO> getCodeSinistres(Long code) {
         return codeSinistres;
     }
 }

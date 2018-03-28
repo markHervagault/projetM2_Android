@@ -4,11 +4,11 @@ package istic.m2.ila.firefighterapp.addintervention;
  * Created by amendes on 26/03/18.
  */
 
-public class CodeSinistre {
+public class CodeSinistreDTO {
     private Long code;
     private String description;
 
-    public CodeSinistre(Long code, String description) {
+    public CodeSinistreDTO(Long code, String description) {
         this.code = code;
         this.description = description;
     }

@@ -1,12 +1,13 @@
 package istic.m2.ila.firefighterapp.dto;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
- * Created by hakima on 3/26/18.
+ * A DTO for the create Intervention for CODIS.
  */
+public class CreateInterventionDTO implements Serializable {
 
-public class CreateInterventionDTO {
     private String nom;
 
     private AdresseDTO adresse;
@@ -46,4 +47,12 @@ public class CreateInterventionDTO {
     public void setDeploiements(Set<DeploiementCreateInterventionDTO> deploiements) {
         this.deploiements = deploiements;
     }
+
+    @Override
+    public String toString() {
+        return "CreateInterventionDTO [nom=" + nom + ", adresse=" + adresse + ", idCodeSinistre=" + idCodeSinistre
+                + ", deploiements=" + deploiements + "]";
+    }
+
+
 }

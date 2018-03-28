@@ -25,11 +25,12 @@ import istic.m2.ila.firefighterapp.R;
 
 public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, AdapterView.OnItemSelectedListener {
 
+    /*Champs du formulaire à enregistrer et vérfier*/
     private AutoCompleteTextView searchPlace;
     private AutoCompleteTextView searchCodeSinistre;
     private EditText editTextLat;
     private EditText editTextLng;
-
+    /*Champs du formulaire à enregistrer et vérfier*/
 
 
     private OnFragmentInteractionListener mListener;
@@ -71,9 +72,9 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
         */
 
         /*Temporaire en attendant les dto*/
-        CodeSinistre codeSinistre = new CodeSinistre((long) 1, "Code Sinistre");
-        CodeSinistre codeSinistre1 = new CodeSinistre((long) 2, "Code Sinistre");
-        ArrayList<CodeSinistre> autocompleteFields = new ArrayList<>();
+        CodeSinistreDTO codeSinistre = new CodeSinistreDTO((long) 1, "Code Sinistre");
+        CodeSinistreDTO codeSinistre1 = new CodeSinistreDTO((long) 2, "Code Sinistre");
+        ArrayList<CodeSinistreDTO> autocompleteFields = new ArrayList<>();
         autocompleteFields.add(codeSinistre);
         autocompleteFields.add(codeSinistre1);
         /*Temporaire en attendant les dto*/
@@ -143,17 +144,37 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
-    public Bundle getBundle(){
+    public Boolean isValidFormulaire() {
+        if (this.searchPlace.getText().toString().isEmpty()) {
+            return false;
+        }
+        if (this.searchCodeSinistre.getText().toString().isEmpty()) {
+            return false;
+        }
+        if (this.editTextLat.getText().toString().isEmpty()) {
+            return false;
+        }
+        if (this.editTextLng.getText().toString().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    public Bundle getBundle() {
         Bundle bundle = new Bundle();
-        bundle.putString("adresse", this.searchPlace.getText().toString());
-        //((CodeSinistreAdapter)this.searchCodeSinistre.getAdapter()).getCodeSinistres();
-        //bundle.putLong("codeSinistreId", this.searchCodeSinistre.getAdapter().getCode);
-        bundle.putLong("lattitude", Long.parseLong(this.editTextLat.getText().toString()));
-        bundle.putLong("longitude", Long.parseLong(this.editTextLng.getText().toString()));
-        return bundle;
+        if (isValidFormulaire()) {
+            String codeSinistreString = this.searchCodeSinistre.getText().toString();
+            bundle.putLong("codeSinistreId", Long.valueOf(codeSinistreString.substring(0, codeSinistreString.indexOf(" "))));
+            bundle.putString("adresse", this.searchPlace.getText().toString());
+            bundle.putLong("lattitude", Long.valueOf(this.editTextLat.getText().toString()));
+            bundle.putLong("longitude", Long.valueOf(this.editTextLng.getText().toString()));
+            return bundle;
+        }
+        else {
+            return null;
+        }
     }
 }

@@ -80,6 +80,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     private boolean isRunning = false;
     SharedPreferences sharedPreferences;
+    private String cleToken = "token";
 
 
     @Override
@@ -362,7 +363,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
                     sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("token", response.body().getId_token());
+                    editor.putString(cleToken, response.body().getId_token());
                     editor.commit();
                     //editor.putString("token", );
                     Log.i("tag","token: "+response.body().getId_token());
