@@ -3,24 +3,22 @@ package istic.m2.ila.firefighterapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -46,9 +44,8 @@ import istic.m2.ila.firefighterapp.dto.TokenDTO;
 import istic.m2.ila.firefighterapp.dto.UserDTO;
 import retrofit2.Response;
 
-import static android.content.ContentValues.TAG;
-
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.content.ContentValues.TAG;
 
 /**
  * A login screen that offers login via email/password.
@@ -78,6 +75,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private boolean isCodis;
     SharedPreferences sharedPreferences;
+    private String cleToken = "token";
 
 
     @Override
@@ -366,6 +364,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("token", "Bearer " + response.body().getId_token());
+                    editor.putBoolean("isCodis", isCodis);
                     editor.commit();
                     //editor.putString("token", );
                     Log.i("tag","token: "+response.body().getId_token());
@@ -390,7 +389,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             isRunning = false;
             mAuthTask = new UserLoginTask();
             if (success) {
-                nextActivity(ListInterventionActivity.class);
+                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
             } else {
                 Log.i("tag", "you shall not pass");
                 Toast.makeText(mEmailView.getContext(), "You shall not pass", Toast.LENGTH_LONG);
@@ -402,32 +401,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
-    }
-
-    /**
-     * Permet de lancer l'activity suivante
-     * @param clazz Activity à lancer
-     */
-
-
-    private void nextActivity(Class<?> clazz) {
-        Intent intent = new Intent(LoginActivity.this, clazz);
-
-        // Récupération du bundle de l'Intent
-        Bundle bundle = intent.getExtras();
-        if (bundle == null) {
-            // Si aucun bundle n'existe en créer un nouveau
-            bundle = new Bundle();
-        }
-
-        // Passer la variable isCodis dans le bundle
-        bundle.putBoolean("isCodis", isCodis);
-
-        // On fixe le bundle à utiliser sur notre Intent - au cas où un nouveau a été créé
-        intent.putExtras(bundle);
-
-        // Démarrer l'activité
-        startActivity(intent);
     }
 }
 
