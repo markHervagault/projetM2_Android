@@ -1,22 +1,17 @@
 package istic.m2.ila.firefighterapp;
 
-import android.app.ActivityManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Context;
 import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import com.github.clans.fab.FloatingActionButton;
 
 import android.os.IBinder;
-import android.renderscript.ScriptGroup;
 
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -27,9 +22,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQDrone;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
 import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
-import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.UpdateInfosDroneMessage;
 import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
@@ -50,12 +46,10 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +64,7 @@ import retrofit2.Response;
 public class MapActivity extends FragmentActivity implements
         OnMapReadyCallback {
 
-    private ServiceRabbitMQDrone mServiceRabbitMQ;
+    private ServiceRabbitMQ mServiceRabbitMQ;
     private Boolean serviceRabbitMQIsBound = false;
 
     private static String TAG = "MapActivity";
@@ -115,12 +109,13 @@ public class MapActivity extends FragmentActivity implements
             // explicit service that we know is running in our own
             // process, we can cast its IBinder to a concrete class and
             // directly access it.
-            mServiceRabbitMQ = ((ServiceRabbitMQDrone.LocalBinder)service).getService();
+            mServiceRabbitMQ = ((ServiceRabbitMQ.LocalBinder)service).getService();
 
             List<DroneDTO> drones = simulateGetListDrone();
             for(DroneDTO drone:drones){
+                NewDroneMessage message = new NewDroneMessage(drone.getId());
                 Log.d(TAG, "================================================================ Envoi d'une donnee sur le bus : "+drone.getNom());
-                EventBus.getDefault().post(drone);
+                EventBus.getDefault().post(message);
             }
         }
 
@@ -139,7 +134,7 @@ public class MapActivity extends FragmentActivity implements
         // that we know will be running in our own process (and thus
         // won't be supporting component replacement by other
         // applications).
-        bindService(new Intent(this, ServiceRabbitMQDrone.class),
+        bindService(new Intent(this, ServiceRabbitMQ.class),
                 mConnection,
                 Context.BIND_AUTO_CREATE);
         serviceRabbitMQIsBound = true;
@@ -156,6 +151,8 @@ public class MapActivity extends FragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // On s'enregistre pour écouter sur le bus
+        EventBus.getDefault().register(this);
         setContentView(R.layout.activity_map);
         // initialise le layout CRM
         initCRMFragment();
@@ -185,6 +182,11 @@ public class MapActivity extends FragmentActivity implements
         // partie service rabbitMQ
         doBindService();
 
+    }
+
+    @Subscribe
+    public void onEvent(UpdateInfosDroneMessage message){
+        Log.d(TAG, "======================================================================== j'ai recu les infos du drone n° : " + message.getDroneId());
     }
 
     private List<DroneDTO> simulateGetListDrone(){
@@ -858,7 +860,9 @@ public class MapActivity extends FragmentActivity implements
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
+        // On se désabonne du bus
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
         doUnbindService();
     }
