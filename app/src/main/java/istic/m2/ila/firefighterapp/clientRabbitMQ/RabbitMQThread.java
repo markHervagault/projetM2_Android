@@ -89,8 +89,8 @@ public class RabbitMQThread extends Thread {
                         Gson gson = builder.create();
                         DroneInfosDTO droneInfosDTO = gson.fromJson( incomingMessageHandler, DroneInfosDTO.class);
                         EventBus.getDefault().post(
-                                new UpdateInfosDroneMessage(droneInfosDTO.id_drone, droneInfosDTO.localisation.longitude,
-                                        droneInfosDTO.localisation.latitude, droneInfosDTO.battery_level));
+                                new UpdateInfosDroneMessage(droneInfosDTO.id_drone, droneInfosDTO.position.longitude,
+                                        droneInfosDTO.position.latitude, droneInfosDTO.battery_level, droneInfosDTO.orientation.yaw));
                     }
                 };
 

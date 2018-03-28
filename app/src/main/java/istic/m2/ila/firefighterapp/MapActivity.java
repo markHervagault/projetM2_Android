@@ -192,8 +192,16 @@ public class MapActivity extends FragmentActivity implements
     }
 
     @Subscribe
-    public void onEvent(UpdateInfosDroneMessage message){
+    public void onEvent(final UpdateInfosDroneMessage message){
         Log.d(TAG, "======================================================================== j'ai recu les infos du drone n° : " + message.getDroneId());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
+                mDrone.setRotation((float)Math.toDegrees((float)message.getYawOrientation()));
+            }
+        });
     }
 
     private List<DroneDTO> simulateGetListDrone(){

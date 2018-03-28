@@ -10,13 +10,15 @@ public class UpdateInfosDroneMessage implements MessageBus {
     private double longitude;
     private double latitude;
     private int battery;
+    private double yawOrientation;
 
     public UpdateInfosDroneMessage(long droneId, double longitude, double latitude,
-                                   int battery){
+                                   int battery, double yawOrientation){
         this.droneId = droneId;
         this.longitude = longitude;
         this.latitude = latitude;
         this.battery = battery;
+        this.yawOrientation = yawOrientation;
     }
 
     public long getDroneId() {
@@ -49,6 +51,14 @@ public class UpdateInfosDroneMessage implements MessageBus {
 
     public void setBattery(int battery) {
         this.battery = battery;
+    }
+
+    public double getYawOrientation() {
+        return yawOrientation;
+    }
+
+    public void setYawOrientation(double yawOrientation) {
+        this.yawOrientation = yawOrientation;
     }
 }
 

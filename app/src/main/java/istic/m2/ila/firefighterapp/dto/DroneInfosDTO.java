@@ -6,11 +6,11 @@ package istic.m2.ila.firefighterapp.dto;
 
 public class DroneInfosDTO {
 
-    public long timestamp;
+    public double timestamp;
     public int id_drone;
     public int id_mission;
     public int battery_level;
-    public LocalisationDroneDTO localisation;
+    public LocalisationDroneDTO position;
     public OrientationDroneDTO orientation;
     public VelocityDroneDTO velocity;
 
