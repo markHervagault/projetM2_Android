@@ -45,6 +45,16 @@ public class DetailsInterventionActivity extends AppCompatActivity {
         return datas;
     }
 
+    public List<List<DeploiementDTO>> getDeploimentsTri(){
+        //get Deploiment from server
+
+        ArrayList<List<DeploiementDTO>> deploimentsTri = new ArrayList<>();
+
+        //tri (map et...)
+
+        return deploimentsTri;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
