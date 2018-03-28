@@ -380,7 +380,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             isRunning = false;
             mAuthTask = new UserLoginTask();
             if (success) {
-                startActivity(new Intent(LoginActivity.this, MapActivity.class));
+                nextActivity(ListInterventionActivity.class);
             } else {
                 Log.i("tag", "you shall not pass");
                 Toast.makeText(mEmailView.getContext(), "You shall not pass", Toast.LENGTH_LONG);
@@ -392,6 +392,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    /**
+     * Permet de lancer l'activity suivante
+     * @param clazz Activity à lancer
+     */
+
+
+    private void nextActivity(Class<?> clazz) {
+        Intent intent = new Intent(LoginActivity.this, clazz);
+
+        // Récupération du bundle de l'Intent
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) {
+            // Si aucun bundle n'existe en créer un nouveau
+            bundle = new Bundle();
+        }
+
+        // Passer la variable isCodis dans le bundle
+        bundle.putBoolean("isCodis", isCodis);
+
+        // On fixe le bundle à utiliser sur notre Intent - au cas où un nouveau a été créé
+        intent.putExtras(bundle);
+
+        // Démarrer l'activité
+        startActivity(intent);
     }
 }
 
