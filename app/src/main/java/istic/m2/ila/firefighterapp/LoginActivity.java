@@ -34,17 +34,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity;
 import istic.m2.ila.firefighterapp.consumer.LoginConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
-import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.LoginDTO;
 import istic.m2.ila.firefighterapp.dto.TokenDTO;
 import istic.m2.ila.firefighterapp.dto.UserDTO;
@@ -64,13 +60,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    //private static final String[] DUMMY_CREDENTIALS = new String[]{
-      //      "foo@example.com:hello", "bar@example.com:world"
-   // };
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -82,6 +72,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private boolean isRunning = false;
+
+    /**
+     * Connexion en tant que Codis (true) ou Intervenant (false)
+     */
+    private boolean isCodis;
     SharedPreferences sharedPreferences;
 
 
@@ -89,28 +84,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
-
         mPasswordView = findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+        // Clic sur le bouton Entrer ou Next - sélectionne le TextView password
+        mEmailView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                if (id == EditorInfo.IME_ACTION_NEXT || id == EditorInfo.IME_NULL) {
+                    mPasswordView.requestFocus();
                     return true;
                 }
                 return false;
             }
         });
+        populateAutoComplete();
+
 
         // Bouton de connexion en tant qu'intervenant
         Button boutonIntervenant = (Button) findViewById(R.id.email_sign_in_intervenant);
         boutonIntervenant.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO - cas de lintervenant
+                isCodis = false;
                 attemptLogin();
             }
         });
@@ -120,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boutonCodis.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO - cas de CODIS
+                isCodis = true;
                 attemptLogin();
             }
         });
@@ -187,7 +185,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if(mAuthTask == null) {
             mAuthTask = new UserLoginTask();
         }
-        Log.i("toto", "tototototototo");
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -212,11 +209,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView = mEmailView;
             cancel = true;
         }
-//        else if (!isEmailValid(email)) {
-//            mEmailView.setError(getString(R.string.error_invalid_email));
-//            focusView = mEmailView;
-//            cancel = true;
-//        }
+      /*
+            // Validation de l'email
+            else if (!isEmailValid(email)) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailView;
+            cancel = true;
+        }*/
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -366,7 +365,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
                     sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("token", response.body().getId_token());
+                    editor.putString("token", "Bearer " + response.body().getId_token());
                     editor.commit();
                     //editor.putString("token", );
                     Log.i("tag","token: "+response.body().getId_token());
@@ -391,7 +390,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             isRunning = false;
             mAuthTask = new UserLoginTask();
             if (success) {
-                startActivity(new Intent(LoginActivity.this, MapActivity.class));
+                nextActivity(ListInterventionActivity.class);
             } else {
                 Log.i("tag", "you shall not pass");
                 Toast.makeText(mEmailView.getContext(), "You shall not pass", Toast.LENGTH_LONG);
@@ -403,6 +402,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    /**
+     * Permet de lancer l'activity suivante
+     * @param clazz Activity à lancer
+     */
+
+
+    private void nextActivity(Class<?> clazz) {
+        Intent intent = new Intent(LoginActivity.this, clazz);
+
+        // Récupération du bundle de l'Intent
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) {
+            // Si aucun bundle n'existe en créer un nouveau
+            bundle = new Bundle();
+        }
+
+        // Passer la variable isCodis dans le bundle
+        bundle.putBoolean("isCodis", isCodis);
+
+        // On fixe le bundle à utiliser sur notre Intent - au cas où un nouveau a été créé
+        intent.putExtras(bundle);
+
+        // Démarrer l'activité
+        startActivity(intent);
     }
 }
 

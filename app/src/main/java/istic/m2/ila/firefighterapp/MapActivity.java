@@ -128,6 +128,13 @@ public class MapActivity extends FragmentActivity implements
         }
     };
 
+    private void CallBackfunction(Object o)
+    {
+        //parsing
+
+        //update
+    }
+
     void doBindService() {
         // Establish a connection with the service.  We use an explicit
         // class name because we want a specific service implementation
