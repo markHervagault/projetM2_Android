@@ -29,12 +29,11 @@ import istic.m2.ila.firefighterapp.dto.UserDTO;
 public class DetailsInterventionActivity extends AppCompatActivity {
 
     private InterventionDTOParcelable interventionDTOParcelable;
-    private InterventionFullDTO interventionFullDTO;
     private List<DeploiementDTO> deploiementList;
 
     //Todo : return POJO details
-    public InterventionFullDTO getIntervention(){
-        return interventionFullDTO;
+    public InterventionDTO getIntervention(){
+        return interventionDTOParcelable.getInterventionDTO();
     }
 
     public List<String> getDatas(){
@@ -49,20 +48,19 @@ public class DetailsInterventionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_intervention_details);
+        Log.i("DetailsIntervention ", "onCreate Begin");
 
         Intent intent = getIntent();
         Bundle extra = intent.getExtras();
 
-        interventionDTOParcelable = extra.getParcelable("interventionDTO");
+        if(extra != null){
+            interventionDTOParcelable = extra.getParcelable("interventionDTO");
+            Log.i("Fragment ", "Get Parcelable : " + interventionDTOParcelable.toString());
+        } else {
+            Log.i("Fragment ", "Parcelable is empty");
+        }
 
-        Log.i("Fragment ", intent + "");
-        Log.i("Fragment ", intent.getStringExtra("adresseString"));
-        Log.i("Fragment ", extra.getString("adresseString"));
-
-        String test = interventionDTOParcelable.getInterventionDTO().getAdresse().getNumero().toString();
-
-        Log.i("Fragment ", "Id Intervention : " + test);
-
+        setContentView(R.layout.activity_intervention_details);
+        Log.i("DetailsIntervention ", "onCreate End");
     }
 }
