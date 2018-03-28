@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -81,10 +82,8 @@ public class AddInterventionActivity extends FragmentActivity implements Fragmen
 
             createInterventionDTO.setAdresse(adresseDTO);
             createInterventionDTO.setNom("TMP");
-            String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyMjI0OTk3Mn0.0pNWxo1ax-YYMMZ8KgHCjM56qGKwPg-tYS-L5CU1s0PN7wGB7z73ovrEwkJLwbyVfkPUGTW9_AflJmawowb_ZA";
 
-            Log.i("OnCreate", "TOKEN ======>"+ token);
-
+            String token = getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
             Call<InterventionDTO> interventionDTO = interventionConsumer.createIntervention(token, createInterventionDTO);
             try {
                 Log.i("Rest", "Rest call");

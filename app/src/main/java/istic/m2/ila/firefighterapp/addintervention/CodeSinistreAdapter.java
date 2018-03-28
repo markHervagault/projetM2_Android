@@ -7,6 +7,8 @@ import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
+
 /**
  * Created by amendes on 26/03/18.
  */

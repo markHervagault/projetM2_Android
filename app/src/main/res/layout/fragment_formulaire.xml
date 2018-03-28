@@ -16,7 +16,7 @@
             android:id="@+id/Localisation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#BAC4A2"
+            android:background="#e5e5e5"
             android:gravity="start"
             android:text="Localisation"
             android:textAlignment="viewStart"
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Adresse"
+            android:text="/!\\ Adresse autocomplete en chantier /!\\ "
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -39,6 +39,95 @@
             android:layout_centerVertical="true"
             android:background="#f4f4f4"
             android:hint="Enter Address, City or Zip Code"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textVille"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Ville"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editText_ville"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="#f4f4f4"
+            android:hint="Ville"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textcp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Code postal"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editText_cp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="#f4f4f4"
+            android:hint="Code postal"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textRue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Rue"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
+        <EditText
+            android:id="@+id/editText_rue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="#f4f4f4"
+            android:hint="Rue"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textNRue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Numéro "
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editText_nrue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="#f4f4f4"
+            android:hint="Numéro"
             android:imeOptions="flagNoExtractUi"
             android:inputType="text"
             android:maxLines="1"
@@ -92,7 +181,7 @@
             android:id="@+id/codeSinistreBloc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#BAC4A2"
+            android:background="#e5e5e5"
             android:gravity="start"
             android:text="Code Sinistre"
             android:textAlignment="viewStart"

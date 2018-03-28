@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
@@ -22,12 +21,19 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.ArrayList;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
 
-public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, AdapterView.OnItemSelectedListener {
+public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
     /*Champs du formulaire à enregistrer et vérfier*/
     private AutoCompleteTextView searchPlace;
     private AutoCompleteTextView searchCodeSinistre;
+
+    //TODO faire une liste de champs pour éviter la verbosité de la vérification
+    private EditText editTextVille;
+    private EditText editTextRue;
+    private EditText editTextCp;
+    private EditText editTextNRue;
     private EditText editTextLat;
     private EditText editTextLng;
     /*Champs du formulaire à enregistrer et vérfier*/
@@ -61,9 +67,13 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Log.i("FragmentFormulaire", "OnViewCreated");
 
-
         searchPlace = (AutoCompleteTextView) getView().findViewById(R.id.search_place);
         searchCodeSinistre = (AutoCompleteTextView) getView().findViewById(R.id.searchCodeSinistre);
+
+        editTextVille = (EditText) getView().findViewById(R.id.editText_ville);
+        editTextRue = (EditText) getView().findViewById(R.id.editText_rue);
+        editTextCp = (EditText) getView().findViewById(R.id.editText_cp);
+        editTextNRue = (EditText) getView().findViewById(R.id.editText_nrue);
         editTextLat = (EditText) getView().findViewById(R.id.editText_lat);
         editTextLng = (EditText) getView().findViewById(R.id.editText_lng);
 
@@ -71,13 +81,23 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
         searchPlace.setAdapter(searchPlaceAdapter);
         */
 
-        /*Temporaire en attendant les dto*/
-        CodeSinistreDTO codeSinistre = new CodeSinistreDTO((long) 1, "Code Sinistre");
-        CodeSinistreDTO codeSinistre1 = new CodeSinistreDTO((long) 2, "Code Sinistre");
+        /*Temporaire en attendant le Rest consumer*/
+        CodeSinistreDTO codeSinistre = new CodeSinistreDTO();
+        CodeSinistreDTO codeSinistre1 = new CodeSinistreDTO();
+
+        codeSinistre.setId((long) 1);
+        codeSinistre1.setId((long) 2);
+
+        codeSinistre.setCode("1110");
+        codeSinistre1.setCode("1320");
+
+        codeSinistre.setIntitule("AVP léger");
+        codeSinistre1.setIntitule("Accident PL avec désincarcération");
+
         ArrayList<CodeSinistreDTO> autocompleteFields = new ArrayList<>();
         autocompleteFields.add(codeSinistre);
         autocompleteFields.add(codeSinistre1);
-        /*Temporaire en attendant les dto*/
+        /*Temporaire en attendant les Rest consumer*/
 
         /*Adapter de l'autocomplete code sinistre*/
         CodeSinistreAdapter codeSinistreAdapter = new CodeSinistreAdapter(this.getContext(), android.R.layout.simple_dropdown_item_1line, autocompleteFields);
@@ -117,19 +137,6 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-    }
-
-    /*
-      Spinner code Incident
-    */
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
