@@ -10,19 +10,12 @@ import android.view.View;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
 import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
-import istic.m2.ila.firefighterapp.dto.AdresseDTO;
-import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import retrofit2.Response;
 
@@ -44,6 +37,17 @@ public class ListInterventionActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycler_list_intervention);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // Récupérer l'information de connexion Codis/Intervenant
+        boolean isCodis = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                .getBoolean("isCodis", false);
+
+        // Masquer afficher la possibilité de créer une intervention suivant le cas
+        if (isCodis) {
+            findViewById(R.id.layout_list_activity_fab).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.layout_list_activity_fab).setVisibility(View.GONE);
+        }
 
         AsyncTask.execute(new Runnable() {
             public void run() {

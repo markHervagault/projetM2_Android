@@ -13,22 +13,18 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import istic.m2.ila.firefighterapp.dto.DroneDTO;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
 
 
-public class ServiceRabbitMQDrone extends Service {
+public class ServiceRabbitMQ extends Service {
 
-    public static String TAG = "Service RABBITMQ ";
-
-    String incomingMessageHandler="";
-    RabbitMQThread subscribeThread;
+    public static String TAG = "Service RABBITMQ => ";
+    List<RabbitMQThread> subscribeThreadList = new ArrayList<RabbitMQThread>();
 
     private BlockingDeque<String> queue = new LinkedBlockingDeque<String>();
 
@@ -38,23 +34,19 @@ public class ServiceRabbitMQDrone extends Service {
     private final IBinder mBinder = new LocalBinder();
 
     public class LocalBinder extends Binder {
-        public ServiceRabbitMQDrone getService() {
-            return ServiceRabbitMQDrone.this;
+        public ServiceRabbitMQ getService() {
+            return ServiceRabbitMQ.this;
         }
     }
 
     /** Called when the service is being created. */
     @Override
     public void onCreate() {
-//        setupConnectionFactory();
         EventBus.getDefault().register(this);
-        start();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //setupConnectionFactory();
-        //subscribe();
         return START_STICKY;
     }
 
@@ -62,7 +54,9 @@ public class ServiceRabbitMQDrone extends Service {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        subscribeThread.interrupt();
+        for(RabbitMQThread thread: subscribeThreadList){
+            thread.interrupt();
+        }
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_LONG).show();
     }
 
@@ -84,16 +78,14 @@ public class ServiceRabbitMQDrone extends Service {
     }*/
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onEvent(DroneDTO event) {
-        Log.d(TAG, "======================================================= Je viens de recevoir dans le bus de données :"+event.getNom());
-        if(null!=subscribeThread){
-            subscribeThread.addSubscriptionForDrone(event);
-        }
+    public void onEvent(NewDroneMessage event) {
+        Log.d(TAG, "======================================================= Je viens de recevoir dans le bus de données le drone n° : "+event.getDroneId());
+        RabbitMQThread subscribeThread = new RabbitMQThread(event);
+        subscribeThread.start();
+        subscribeThreadList.add(subscribeThread);
     }
 
     void start() {
-        subscribeThread = new RabbitMQThread();
-        subscribeThread.start();
     }
 
 //    void subscribe() {
