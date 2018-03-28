@@ -91,7 +91,8 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
 
         // Code sinistre
         CodeSinistreDTO codeSinistreDTO = intervention.getCodeSinistre();
-        holder.codeSinistreIntervention.setText(codeSinistreDTO.getCode());
+        String codeSinistreLabel = codeSinistreDTO.getCode() + " - " + codeSinistreDTO.getIntitule();
+        holder.codeSinistreIntervention.setText(codeSinistreLabel);
 
         // Adresse
         AdresseDTO adresseDTO = intervention.getAdresse();
@@ -106,9 +107,8 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
         holder.statutIntervention.setText(statut);
 
         // Gestion de la miniature
-//        holder.imgMapIntervention.setImageResource(Integer.parseInt(intervention.get("imgMapIntervention")));
+        // holder.imgMapIntervention.setImageResource(Integer.parseInt(intervention.get("imgMapIntervention")));
 
-        // TODO
         // Gestion du clic
         holder.layoutItemIntervention.setOnClickListener(new View.OnClickListener() {
 
