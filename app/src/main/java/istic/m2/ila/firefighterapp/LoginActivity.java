@@ -84,18 +84,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mPasswordView = findViewById(R.id.password);
+
+        // Clic sur le bouton Entrer ou Next - sélectionne le TextView password
+        mEmailView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == EditorInfo.IME_ACTION_NEXT || id == EditorInfo.IME_NULL) {
+                    mPasswordView.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
         populateAutoComplete();
 
-        mPasswordView = findViewById(R.id.password);
 
         // Bouton de connexion en tant qu'intervenant
         Button boutonIntervenant = (Button) findViewById(R.id.email_sign_in_intervenant);
         boutonIntervenant.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO - cas de l'intervenant
                 isCodis = false;
                 attemptLogin();
             }
@@ -106,7 +118,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boutonCodis.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO - cas de CODIS
                 isCodis = true;
                 attemptLogin();
             }
