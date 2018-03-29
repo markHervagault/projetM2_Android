@@ -97,7 +97,7 @@ public class ServiceRabbitMQ extends Service {
         String queueName = channel.queueDeclare().getQueue();
         channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.info." + event.getDroneId());
 
-        new DefaultConsumer(channel) {
+        Consumer consumer = new DefaultConsumer(channel) {
             private String incomingMessageHandler = "";
 
             @Override
@@ -112,6 +112,7 @@ public class ServiceRabbitMQ extends Service {
                                 droneInfosDTO.position.latitude, droneInfosDTO.battery_level, droneInfosDTO.orientation.yaw));
             }
         };
+        channel.basicConsume(queueName, true, consumer);
     }
 
     void start()
