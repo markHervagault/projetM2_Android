@@ -27,6 +27,7 @@ import istic.m2.ila.firefighterapp.dto.InterventionFullDTO;
  */
 public class InterventionDetailsStaticFragment extends Fragment implements View.OnClickListener {
 
+    private TextView statusTextView;
     private TextView addresseTextView;
     private TextView codeSinistreTextView;
     private TextView villeTextView;
@@ -70,12 +71,19 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
         openMap.setOnClickListener(this);
 
         //Link fields
+        statusTextView = getActivity().findViewById(R.id.status_textview);
         addresseTextView = getActivity().findViewById(R.id.addresse_textview);
         codeSinistreTextView = getActivity().findViewById(R.id.code_sinistre_textview);
         villeTextView = getActivity().findViewById(R.id.ville_textview);
         creatorTextView = getActivity().findViewById(R.id.creator_textview);
         heureCreationTextView = getActivity().findViewById(R.id.heure_creation_textview);
         heureFinTextView = getActivity().findViewById(R.id.heure_fin_textview);
+
+        String statut = (interventionDTO.isFini()) ?
+                getResources().getString(R.string.intervention_detail_fragment_static_button_fini) :
+                getResources().getString(R.string.intervention_detail_fragment_static_status_encours);
+
+        statusTextView.setText(statut);
 
         if(interventionDTO.getAdresse() != null) {
             String address = interventionDTO.getAdresse().getNumero().toString()
