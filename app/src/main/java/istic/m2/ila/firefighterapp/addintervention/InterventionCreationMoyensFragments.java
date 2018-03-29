@@ -12,7 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
@@ -39,6 +42,7 @@ public class InterventionCreationMoyensFragments extends Fragment {
 
     private Map<String, List<VehiculeDTO>> mapVehiculesDisponibles;
     private Context context;
+    private List<VehiculeDTO> vehiculeSelected;
 
     public InterventionCreationMoyensFragments() {
         // Required empty public constructor
@@ -51,6 +55,7 @@ public class InterventionCreationMoyensFragments extends Fragment {
         this.context = context;
         //fill items
         this.mapVehiculesDisponibles = getVehicules();
+        this.vehiculeSelected = new ArrayList<>();
     }
 
     private Map<String, List<VehiculeDTO>>  getVehicules(){
@@ -90,6 +95,10 @@ public class InterventionCreationMoyensFragments extends Fragment {
         }
         Log.i(TAG, "getVehiculeDispo End");
         return mapSorted;
+    }
+
+    public List<VehiculeDTO> getVehiculesSelected(){
+        return vehiculeSelected;
     }
 
     @Override
@@ -159,26 +168,30 @@ public class InterventionCreationMoyensFragments extends Fragment {
                 int position = getAdapterPosition();
                 ArrayList<String> keys = new ArrayList<>(mapSorted.keySet());
 
-                List<VehiculeDTO> content = mapSorted.get(keys.get(position));
+                final List<VehiculeDTO> content = mapSorted.get(keys.get(position));
 
                 boolean isSelected = position == selectedItem;
 
                 expandButton.setText(keys.get(position));
                 expandButton.setSelected(isSelected);
                 expandableLayout.setExpanded(isSelected, false);
+//                expandableLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-                for (VehiculeDTO vehicule : content) {
-                    TextView tmpText1 = new TextView(itemView.getContext());
-//                    Button dtn = new Button();
-//                    dtn.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//
-//                        }
-//                    });
-                    tmpText1.setText(vehicule.getLabel());
-                    tmpText1.setTextColor(Color.WHITE);
-                    expandedLinearLayout.addView(tmpText1);
+                for (final VehiculeDTO vehicule : content) {
+                    Switch aSwitch = new Switch(itemView.getContext());
+
+                    aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if (isChecked) {
+                                vehiculeSelected.add(vehicule);
+                            } else {
+                                vehiculeSelected.remove(vehicule);
+                            }
+                        }
+                    });
+                    aSwitch.setText(vehicule.getLabel());
+                    aSwitch.setTextColor(Color.WHITE);
+                    expandedLinearLayout.addView(aSwitch);
                 }
 
 
