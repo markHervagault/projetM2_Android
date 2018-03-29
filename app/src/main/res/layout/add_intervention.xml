@@ -44,16 +44,14 @@
             android:layout_height="match_parent"
             android:background="@android:color/darker_gray" />
 
-        <TextView
-            android:id="@+id/textView"
+        <fragment
+            android:id="@+id/fragment_moyens"
+            android:name="istic.m2.ila.firefighterapp.addintervention.InterventionCreationMoyensFragments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#BAC4A2"
-            android:gravity="start"
-            android:text="LISTE MOYEN INC"
-            android:textAlignment="viewStart"
-            android:textSize="30sp" />
+            tools:layout="@layout/fragment_intervention_details_moyens_fragments" />
+
 
     </LinearLayout>
 
