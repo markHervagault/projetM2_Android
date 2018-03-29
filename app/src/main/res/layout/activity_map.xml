@@ -100,6 +100,7 @@
                     fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
                     fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
                     fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/ic_mode_edit_black_18dp"
                     />
                 <!--android:src="@drawable/ic_star"-->
 
