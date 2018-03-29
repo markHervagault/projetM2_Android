@@ -1038,13 +1038,13 @@ public class MapActivity extends FragmentActivity implements
         }
 
         // Afficher le marqueur du Drone sur la map
-        mDrone = mMap.addMarker(new MarkerOptions()
-                .position(mDrone.getPosition())
-                .title(mDrone.getTitle())
-                .snippet(mDrone.getSnippet())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
-                .anchor(0.5f, 0.5f)
-                .draggable(mDrone.isDraggable()));
+//        mDrone = mMap.addMarker(new MarkerOptions()
+//                .position(mDrone.getPosition())
+//                .title(mDrone.getTitle())
+//                .snippet(mDrone.getSnippet())
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+//                .anchor(0.5f, 0.5f)
+//                .draggable(mDrone.isDraggable()));
     }
 
     /**
