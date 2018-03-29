@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import istic.m2.ila.firefighterapp.MapActivity;
+import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionFullDTO;
@@ -59,7 +60,7 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
 
     @Override
     public void onClick(View v){
-        startActivity(new Intent(getActivity(), MapActivity.class));
+        startActivity(new Intent(getActivity(), NewMapActivity.class));
     }
 
     @Override
