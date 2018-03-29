@@ -1,5 +1,7 @@
 package istic.m2.ila.firefighterapp.consumer;
 
+import java.util.List;
+
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import istic.m2.ila.firefighterapp.dto.DemandeDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
@@ -30,6 +32,6 @@ public interface DeploimentConsumer {
 
     /** Récuperation de la liste des déploiments de l'intervention*/
     @GET(Endpoints.INTERVENTION_DEPLOIMENT)
-    Call<DeploiementDTO> getListDeploimentById(@Header("Authorization") String token,
-                                               @Path("id") String id );
+    Call<List<DeploiementDTO>> getListDeploimentById(@Header("Authorization") String token,
+                                                     @Path("id") String id );
 }

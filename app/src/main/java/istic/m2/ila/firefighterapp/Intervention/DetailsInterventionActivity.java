@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -12,9 +13,12 @@ import android.util.Log;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
@@ -24,6 +28,7 @@ import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionFullDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
+import istic.m2.ila.firefighterapp.dto.TypeVehiculeDTO;
 import istic.m2.ila.firefighterapp.dto.UserDTO;
 import retrofit2.Response;
 
@@ -33,44 +38,54 @@ import retrofit2.Response;
 
 public class DetailsInterventionActivity extends AppCompatActivity {
 
+    private static String TAG = "DetailIntervention";
+
     private InterventionDTOParcelable interventionDTOParcelable;
-    private List<DeploiementDTO> deploiementList;
+    private Map<String, List<DeploiementDTO>> mapSortDeploiment;
 
     //Todo : return POJO details
-    public InterventionDTO getIntervention(){
+    public InterventionDTO getIntervention() {
         return interventionDTOParcelable.getInterventionDTO();
     }
 
-    public List<String> getDatas(){
-
-        List<String> datas = new ArrayList<>();
-        datas.add("MDR");
-        datas.add("LOL");
-        datas.add("YOLO");
-        return datas;
-    }
-
-    public List<List<DeploiementDTO>> getDeploimentsTri() throws IOException {
-        //get Deploiment from server
+    public Map<String, List<DeploiementDTO>> getDeploimentsTri() {
         String token = getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
-        String id = "5";
-        DeploiementDTO deploiementDTO = new DeploiementDTO();
-        RestTemplate restTemplate = RestTemplate.getInstance();
+        String id = interventionDTOParcelable.getInterventionDTO().getId().toString();
 
+        RestTemplate restTemplate = RestTemplate.getInstance();
         DeploimentConsumer deploimentConsumer = restTemplate.builConsumer(DeploimentConsumer.class);
+        Response<List<DeploiementDTO>> response = null;
+
+        mapSortDeploiment = new HashMap<>();
+        List<DeploiementDTO> deploiementDTOList = null;
+
 
         try {
-            Response<DeploiementDTO> response = deploimentConsumer.getListDeploimentById(token,id).execute();
-        } catch (Exception e){
-            throw e;
+            response = deploimentConsumer.getListDeploimentById(token, id).execute();
+
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                deploiementDTOList = response.body();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+        String type = null;
+        for (DeploiementDTO deploiement : deploiementDTOList) {
 
-        ArrayList<List<DeploiementDTO>> deploimentsTri = new ArrayList<>();
+            try {
+                 type = deploiement.getVehicule().getType().getLabel();
+            }catch (Exception e){
+                Log.e(TAG,"Deploiment is not complete");
+                e.printStackTrace();
+            }
 
-        //tri (map et...)
+            List<DeploiementDTO> list = !mapSortDeploiment.containsKey(type) ? new ArrayList<DeploiementDTO>() : mapSortDeploiment.get(type);
+            list.add(deploiement);
 
-        return deploimentsTri;
+            mapSortDeploiment.put(type, list);
+        }
+        return mapSortDeploiment;
     }
 
     @Override
@@ -78,10 +93,12 @@ public class DetailsInterventionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.i("DetailsIntervention ", "onCreate Begin");
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         Intent intent = getIntent();
         Bundle extra = intent.getExtras();
-
-        if(extra != null){
+        if (extra != null) {
             interventionDTOParcelable = extra.getParcelable("interventionDTO");
             Log.i("Fragment ", "Get Parcelable : " + interventionDTOParcelable.toString());
         } else {
