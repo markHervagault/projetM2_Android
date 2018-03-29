@@ -9,13 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
 import istic.m2.ila.firefighterapp.constantes.IHMLabels;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 
@@ -90,11 +87,6 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
 
         }
         holder.statut_listDrone.setText(status);
-
-        // Envoie du nouveau drone sur le bus
-        NewDroneMessage message = new NewDroneMessage(drone.getId());
-        Log.d(TAG, "================================================================ Envoi d'une donnee sur le bus : "+drone.getNom());
-        EventBus.getDefault().post(message);
 
     }
 
