@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorLightGrey">#BDBDBD</color>
+    <color name="colorStrongGrey">#36393d</color>
+    <color name="colorLightBlack">#2a2e33</color>
 
     <color name="colorMenuFabUnselectedNormal">#DA4336</color>
     <color name="colorMenuFabUnselectedPressed">#E75043</color>
@@ -16,4 +18,7 @@
     <color name="colorMenuFabSelectedNormal">#05822b</color>
     <color name="colorMenuFabSelectedPressed">#0a9936</color>
     <color name="colorMenuFabSelectedRipple">#99FFFFFF</color>
+
+    <color name="colorItemListDroneUnSelected">#0343aa</color>
+    <color name="colorItemListDroneSelected">#0050d1</color>
 </resources>

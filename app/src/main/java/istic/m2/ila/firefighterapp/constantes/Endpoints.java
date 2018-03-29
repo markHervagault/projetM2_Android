@@ -17,6 +17,7 @@ public class Endpoints {
     public static final String RABBITMQ_SERVERADRESS= "148.60.11.57";
     public static final int RABBITMQ_SERVERPORT = 6005;
     public static final String RABBITMQ_EXCHANGE_NAME = "hub";
+    public static final String RABBITMQ_EXCHANGE_TYPE = "topic";
 
     //RABBITMQ EXCHANGENAME
 

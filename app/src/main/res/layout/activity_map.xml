@@ -28,14 +28,35 @@
         android:layout_weight="1"
         tools:context="istic.m2.ila.firefighterapp.MapActivity">
 
-        <!--Bouton flottant-->
-        <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/fab"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom|start"-->
-            <!--android:layout_margin="@dimen/fab_margin"-->
-            <!--app:srcCompat="@android:drawable/ic_input_add" />-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="left|bottom">
+
+            <ImageButton
+                android:id="@+id/button_stop_mission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="10dp"
+                android:scaleType="fitEnd"
+                android:adjustViewBounds="true"
+                android:maxHeight="75dp"
+                android:src="@drawable/stop" />
+
+            <ImageButton
+                android:id="@+id/button_play_pause_mission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="10dp"
+                android:scaleType="fitEnd"
+                android:adjustViewBounds="true"
+                android:maxHeight="75dp"
+                android:src="@drawable/pause" />
+
+        </LinearLayout>
 
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:fab="http://schemas.android.com/apk/res-auto"

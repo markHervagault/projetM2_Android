@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:background="@drawable/border"
+    android:background="@drawable/border_for_list_drone_unselected"
     android:orientation="horizontal">
 
     <!--Nom du véhicule-->

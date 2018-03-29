@@ -30,6 +30,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
@@ -38,6 +41,7 @@ import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
 import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.UpdateInfosDroneMessage;
 import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
@@ -51,6 +55,7 @@ import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -108,6 +113,11 @@ public class MapActivity extends FragmentActivity implements
      */
     RecyclerView listDroneOrCRM;
 
+    /**
+     * Adapter de la liste view
+     */
+    RecyclerView.Adapter mAdapter;
+
     /////////////////////////// VARIABLES MODE DRONE ///////////////////////
 
     /**
@@ -134,6 +144,11 @@ public class MapActivity extends FragmentActivity implements
      * Drone sélectionné dans la liste, null si aucun drone est sélectionné
      */
     private DroneDTO droneSelected;
+
+    /**
+     * Bouton stop mission
+     */
+    private ImageButton buttonStop;
 
     // Contrôles d'interfaces
     private boolean isEnabledButtonAddPointToVisit;
@@ -256,18 +271,27 @@ public class MapActivity extends FragmentActivity implements
         droneAdd.setNom("Le drone du turfu");
         drones.add(droneAdd);
 
+        buttonStop = findViewById(R.id.button_stop_mission);
+        buttonStop.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(null!=droneSelected){
+                    EventBus.getDefault().post(new StopMissionMessage(droneSelected.getId()));
+                }
+            }
+        });
+
     }
 
     @Subscribe
     public void onEvent(final UpdateInfosDroneMessage message)
     {
-        if(droneSelected==null || droneSelected.getId()!=message.getDroneId()){
-            return;
-        }
-        Log.d(TAG, "======================================================================== j'ai recu les infos du drone n° : " + message.getDroneId());
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+                if(droneSelected==null || droneSelected.getId()!=message.getDroneId()){
+                    return;
+                }
                 if(mDrone==null){
                     mDrone = mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(message.getLatitude(), message.getLongitude()))
@@ -276,6 +300,8 @@ public class MapActivity extends FragmentActivity implements
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
                             .anchor(0.5f,0.5f)
                             .draggable(false));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mDrone.getPosition()));
+                    Toast.makeText(getApplicationContext(),  droneSelected.getNom() + " trouvé", Toast.LENGTH_SHORT).show();
                 }else{
                     mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
                     mDrone.setRotation((float)Math.toDegrees((float)message.getYawOrientation()));
@@ -319,21 +345,27 @@ public class MapActivity extends FragmentActivity implements
         });
     }
 
-    public void onClickOnDrone(DroneDTO drone){
-        // Afficher le marqueur du Drone sur la map
-        /*if(drone.getId()==droneSelected.getId()){
-            droneSelected = null;
-        }*/
-        droneSelected = drone;
+    public Boolean onClickOnDrone(DroneDTO drone){
         if(null!=mDrone){
             mDrone.remove();
             mDrone = null;
         }
-        if(drone.getStatut()!=EDroneStatut.DECONNECTE){
-            Toast.makeText(getApplicationContext(), "Recherche la position de "+ drone.getNom(), Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(getApplicationContext(), drone.getNom()+ " est déconnecté, position inconnue", Toast.LENGTH_SHORT).show();
+        // Si on clique sur le drone qui est déjà sélectionné
+        if(droneSelected!=null && drone.getId()==droneSelected.getId()) {
+            droneSelected = null;
+            return true;
         }
+        // si on clique sur un drone
+        else {
+            droneSelected = drone;
+            if(drone.getStatut()!=EDroneStatut.DECONNECTE){
+                Toast.makeText(getApplicationContext(), "Recherche la position de "+ drone.getNom(), Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getApplicationContext(), drone.getNom()+ " est déconnecté, position inconnue", Toast.LENGTH_SHORT).show();
+            }
+            return false;
+        }
+
     }
 
     protected void initCRMFragment(){
@@ -345,7 +377,7 @@ public class MapActivity extends FragmentActivity implements
 
         // On peuple notre RecyclerView
         List<Map<String, String>> myDataset = getSampleDataToTest();
-        RecyclerView.Adapter mAdapter = new ItemListCrmAdapter(myDataset);
+        mAdapter = new ItemListCrmAdapter(myDataset);
         listDroneOrCRM.setAdapter(mAdapter);
     }
 
@@ -353,7 +385,7 @@ public class MapActivity extends FragmentActivity implements
 
         listDroneOrCRM = findViewById(R.id.recycler_list_map);
         // On peuple notre RecyclerView
-        RecyclerView.Adapter mAdapter = new ItemListDroneAdapter(this.drones);
+        mAdapter = new ItemListDroneAdapter(this.drones);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         listDroneOrCRM.setLayoutManager(mLayoutManager);
