@@ -130,6 +130,11 @@ public class MapActivity extends FragmentActivity implements
      */
     private List<DroneDTO> drones = new ArrayList<DroneDTO>();
 
+    /**
+     * Drone sélectionné dans la liste, null si aucun drone est sélectionné
+     */
+    private DroneDTO droneSelected;
+
     // Contrôles d'interfaces
     private boolean isEnabledButtonAddPointToVisit;
     private boolean isTrajetClosed;
@@ -207,12 +212,12 @@ public class MapActivity extends FragmentActivity implements
         setContentView(R.layout.activity_map);
         if(isOnModeDrone){
             // initialise le layout list drone
-            listDroneOrCRM = initDroneListFragment();
+            initDroneListFragment();
             // On récupère la liste des drones
             getDronesFromBDD();
         }else{
             // initialise le layout CRM
-            listDroneOrCRM = initCRMFragment();
+            initCRMFragment();
         }
 
         // Obtenir le SupportMapFragment et être notifié quand la map est prête à être utilisée.
@@ -244,6 +249,12 @@ public class MapActivity extends FragmentActivity implements
         // init referentiel icône
         final Map<ETypeTraitTopographiqueBouchon,Integer> referentiel = new HashMap<>();
 
+        DroneDTO droneAdd = new DroneDTO();
+        droneAdd.setId((long)51515);
+        droneAdd.setStatut(EDroneStatut.DECONNECTE);
+        droneAdd.setNom("Le drone du turfu");
+        drones.add(droneAdd);
+
     }
 
     @Subscribe
@@ -252,9 +263,20 @@ public class MapActivity extends FragmentActivity implements
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
-                mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
-                mDrone.setRotation((float)Math.toDegrees((float)message.getYawOrientation()));
+                if(droneSelected!=null && droneSelected.getId()==message.getDroneId()){
+                    if(mDrone==null){
+                        mDrone = mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(message.getLatitude(), message.getLongitude()))
+                                .rotation((float)Math.toDegrees((float)message.getYawOrientation()))
+                                .title(droneSelected.getNom())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+                                .anchor(0.5f,0.5f)
+                                .draggable(false));
+                    }else{
+                        mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
+                        mDrone.setRotation((float)Math.toDegrees((float)message.getYawOrientation()));
+                    }
+                }
             }
         });
     }
@@ -288,10 +310,24 @@ public class MapActivity extends FragmentActivity implements
                     e.printStackTrace();
                 }
 
-                drones = droneList;
+                drones.addAll(droneList);
 
             }
         });
+    }
+
+    public void onClickOnDrone(DroneDTO drone){
+        // Afficher le marqueur du Drone sur la map
+        droneSelected = drone;
+        if(null!=mDrone){
+            mDrone.remove();
+            mDrone = null;
+        }
+        if(drone.getStatut()!=EDroneStatut.DECONNECTE){
+            Toast.makeText(getApplicationContext(), "Recherche la position de "+ drone.getNom(), Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getApplicationContext(), drone.getNom()+ " est déconnecté, position inconnue", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private List<DroneDTO> simulateGetListDrone(){
@@ -398,33 +434,30 @@ public class MapActivity extends FragmentActivity implements
         return drones;
     }
 
-    private RecyclerView initCRMFragment(){
+    protected void initCRMFragment(){
 
-        RecyclerView mRecyclerView = findViewById(R.id.recycler_list_map);
+        listDroneOrCRM = findViewById(R.id.recycler_list_map);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        listDroneOrCRM.setLayoutManager(mLayoutManager);
+        listDroneOrCRM.setItemAnimator(new DefaultItemAnimator());
 
         // On peuple notre RecyclerView
         List<Map<String, String>> myDataset = getSampleDataToTest();
         RecyclerView.Adapter mAdapter = new ItemListCrmAdapter(myDataset);
-        mRecyclerView.setAdapter(mAdapter);
-
-        return mRecyclerView;
+        listDroneOrCRM.setAdapter(mAdapter);
     }
 
-    private RecyclerView initDroneListFragment(){
+    protected void initDroneListFragment(){
 
-        RecyclerView mRecyclerView = findViewById(R.id.recycler_list_map);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
+        listDroneOrCRM = findViewById(R.id.recycler_list_map);
         // On peuple notre RecyclerView
-        RecyclerView.Adapter mAdapter = new ItemListDroneAdapter(drones);
-        mRecyclerView.setAdapter(mAdapter);
+        RecyclerView.Adapter mAdapter = new ItemListDroneAdapter(this.drones);
 
-        return mRecyclerView;
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        listDroneOrCRM.setLayoutManager(mLayoutManager);
+        listDroneOrCRM.setItemAnimator(new DefaultItemAnimator());
+        listDroneOrCRM.setAdapter(mAdapter);
+
     }
 
     private List<Map<String, String>> getSampleDataToTest() {
@@ -974,15 +1007,6 @@ public class MapActivity extends FragmentActivity implements
 //                    .anchor(0.5f, 0.5f)
                     .draggable(m.isDraggable()));
         }
-
-        // Afficher le marqueur du Drone sur la map
-        mDrone = mMap.addMarker(new MarkerOptions()
-                .position(mDrone.getPosition())
-                .title(mDrone.getTitle())
-                .snippet(mDrone.getSnippet())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
-                .anchor(0.5f,0.5f)
-                .draggable(mDrone.isDraggable()));
     }
 
     /**
