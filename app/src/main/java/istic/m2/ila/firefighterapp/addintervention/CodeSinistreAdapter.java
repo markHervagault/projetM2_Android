@@ -22,7 +22,12 @@ public class CodeSinistreAdapter extends ArrayAdapter<CodeSinistreDTO> {
         codeSinistres = (ArrayList<CodeSinistreDTO>) objects;
     }
 
-    public ArrayList<CodeSinistreDTO> getCodeSinistres(Long code) {
-        return codeSinistres;
+    public Long getCodeSinistresId(String code) {
+        for(CodeSinistreDTO codeSinistreDTO: this.codeSinistres){
+         if(codeSinistreDTO.getCode().equals(code)){
+             return codeSinistreDTO.getId();
+         }
+        }
+        return null;
     }
 }

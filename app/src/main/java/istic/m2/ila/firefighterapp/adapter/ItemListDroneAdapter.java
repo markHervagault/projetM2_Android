@@ -1,12 +1,17 @@
 package istic.m2.ila.firefighterapp.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -14,6 +19,9 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 import java.util.Map;
 
+import istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity;
+import istic.m2.ila.firefighterapp.Intervention.InterventionDTOParcelable;
+import istic.m2.ila.firefighterapp.MapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
 import istic.m2.ila.firefighterapp.constantes.IHMLabels;
@@ -23,6 +31,8 @@ import istic.m2.ila.firefighterapp.dto.DroneDTO;
  * Created by markh on 28/03/2018.
  */
 public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdapter.ViewHolder> {
+
+    Context context;
 
     private String TAG = "ItemListDroneAdapter => ";
 
@@ -41,12 +51,14 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         public TextView drone_name_listDrone;
         public TextView statut_listDrone;
         public ImageView image_statut_listDrone;
+        public LinearLayout layoutItemDroneList;
 
         public ViewHolder(View v) {
             super(v);
             drone_name_listDrone = v.findViewById(R.id.drone_name_listDrone);
             statut_listDrone = v.findViewById(R.id.statut_listDrone);
             image_statut_listDrone = v.findViewById(R.id.image_statut_listDrone);
+            layoutItemDroneList = v.findViewById(R.id.item_Drone_List_layout);
         }
     }
 
@@ -57,7 +69,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         // créer une nouvelle vue
         View v =  LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_list_drone, parent, false);
-
+        context = parent.getContext();
         ViewHolder vh= new ViewHolder(v);
         return vh;
     }
@@ -67,7 +79,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - on récupère un élément dy dataset à cette position
         // - on remplace le contenu de la vue avec cet élément
-        DroneDTO drone = drones.get(position);
+        final DroneDTO drone = drones.get(position);
         holder.drone_name_listDrone.setText(drone.getNom());
         String status;
         switch (drone.getStatut()){
@@ -90,6 +102,15 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
 
         }
         holder.statut_listDrone.setText(status);
+
+        // Gestion du clic
+        holder.layoutItemDroneList.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                ((MapActivity)context).onClickOnDrone(drone);
+            }
+        });
 
         // Envoie du nouveau drone sur le bus
         NewDroneMessage message = new NewDroneMessage(drone.getId());
