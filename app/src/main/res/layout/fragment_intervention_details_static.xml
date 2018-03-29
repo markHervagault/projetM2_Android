@@ -18,6 +18,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/intervention_detail_fragment_static_status"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+        <TextView
+            android:id="@+id/status_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/intervention_detail_fragment_static_adresse"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
@@ -103,6 +116,5 @@
             app:layout_constraintStart_toStartOf="parent" />
 
     </LinearLayout>
-
 </ScrollView>
 

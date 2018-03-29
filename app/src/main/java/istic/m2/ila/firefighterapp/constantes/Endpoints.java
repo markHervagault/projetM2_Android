@@ -11,6 +11,16 @@ public class Endpoints {
 
     public static final String RABBITMQ = "amqp://guest:guest@148.60.11.57:6005/";
 
+    //RABBITMQ CREDENTIALS
+    public static final String RABBITMQ_USERNAME = "guest";
+    public static final String RABBITMQ_USERPASSWORD = "guest";
+    public static final String RABBITMQ_SERVERADRESS= "148.60.11.57";
+    public static final int RABBITMQ_SERVERPORT = 6005;
+    public static final String RABBITMQ_EXCHANGE_NAME = "hub";
+
+    //RABBITMQ EXCHANGENAME
+
+
     public static final String AUTHENTICATE = "authenticate";
 
     public static final String BOUCHON_TRAIT_TOPO_ID = "bouchon/trait-topographique/{id}";
