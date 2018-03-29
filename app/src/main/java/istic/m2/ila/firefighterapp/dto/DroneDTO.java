@@ -11,6 +11,16 @@ public class DroneDTO {
 
     private String adresseMac;
 
+    private EDroneStatut statut;
+
+    public EDroneStatut getStatut() {
+        return statut;
+    }
+
+    public void setStatut(EDroneStatut statut) {
+        this.statut = statut;
+    }
+
     public Long getId() {
         return id;
     }
