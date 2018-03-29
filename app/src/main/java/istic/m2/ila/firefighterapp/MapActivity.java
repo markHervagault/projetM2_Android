@@ -6,14 +6,25 @@ import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import com.github.clans.fab.FloatingActionButton;
 
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.IBinder;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,9 +37,11 @@ import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
 import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.UpdateInfosDroneMessage;
+import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
+import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 
@@ -58,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
 import retrofit2.Response;
 
 
@@ -91,15 +105,32 @@ public class MapActivity extends FragmentActivity implements
     private static final LatLng UNIVERSITE_RENNES_1 = new LatLng(48.114182, -1.636238);
     private static final LatLng RENNES_ISTIC = new LatLng(48.115150, -1.638374);
 
+    // Rayon de recherche des traits topographiques - Exprimé en mètre
+    private static final double RAYON_RECHERCHE_TRAIT_TOPO = 5000;
+
     // Contrôles d'interfaces
     private boolean isEnabledButtonAddPointToVisit;
     private boolean isTrajetClosed;
     private List<FloatingActionButton> fabMenuButtons;
     private final int STROKE_WIDTH = 3;
 
+    // Gestion du CRM
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    // init referentiel icône
+    private static final Map<ETypeTraitTopographiqueBouchon,Integer> referentiel = createReferentiel ();
+
+    private static Map<ETypeTraitTopographiqueBouchon,Integer> createReferentiel(){
+        Map<ETypeTraitTopographiqueBouchon,Integer> map = new HashMap<>();
+        map.put(ETypeTraitTopographiqueBouchon.DANGER, R.drawable.danger_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.SENSIBLE, R.drawable.sensible_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PDR, R.drawable.pdr_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PENP, R.drawable.penp_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PEP, R.drawable.pep_24dp);
+        return map;
+    }
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -128,8 +159,7 @@ public class MapActivity extends FragmentActivity implements
         }
     };
 
-    private void CallBackfunction(Object o)
-    {
+    private void CallBackfunction(Object o) {
         //parsing
 
         //update
@@ -188,6 +218,10 @@ public class MapActivity extends FragmentActivity implements
 
         // partie service rabbitMQ
         doBindService();
+
+
+        // init referentiel icône
+        final Map<ETypeTraitTopographiqueBouchon,Integer> referentiel = new HashMap<>();
 
     }
 
@@ -634,6 +668,118 @@ public class MapActivity extends FragmentActivity implements
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(RENNES_ISTIC, 18.0f));
 
 //        drawPolygon();
+
+        drawTraitTopographiques();
+    }
+
+    /**
+     * Dessine les traits topographiques venant du Bouchon
+     * - Ceux qui ne changent pas (PEP, PENP, PDR)
+     * - Ceux qui changent ("danger", "sensibles")
+     */
+    public void drawTraitTopographiques() {
+
+        // TODO - Renseigner ces valeurs avec les coordonnées du centre de la carte actuelle
+        LatLng mapCenter = mMap.getCameraPosition().target;
+        final double latitude = mapCenter.latitude;
+        final double longitude = mapCenter.longitude;
+
+        // Récupérer les traits depuis le bouchon
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+
+                // Nos traits
+                List<TraitTopographiqueBouchonDTO> traits = new ArrayList<>();
+
+                // Construction de notre appel REST
+                RestTemplate restTemplate = RestTemplate.getInstance();
+                BouchonConsumer bouchonConsumer = restTemplate.builConsumer(BouchonConsumer.class);
+
+                Response<List<TraitTopographiqueBouchonDTO>> response = null;
+                try {
+                    // Récupération du token
+                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                            .getString("token", "null");
+
+                    response = bouchonConsumer.getTraitTopoByLocalisation(
+                            token, latitude, longitude, RAYON_RECHERCHE_TRAIT_TOPO).execute();
+
+                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                        traits = response.body();
+                        Log.i("MapActivity",  "Traits topo récupérés=" + traits.size());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                final List<TraitTopographiqueBouchonDTO> finalTraits = traits;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (TraitTopographiqueBouchonDTO trait: finalTraits) {
+
+                            // Récupération des icônes en fonction du type (change ou change pas)
+                            int rIcone = referentiel.get(trait.getType());
+
+                            // Différenciation de la couleur en fonction pour les types qui changent
+                            Drawable drawableIcon= ContextCompat.getDrawable(getApplicationContext(), rIcone);
+
+                            // Par défaut, on récupère notre ressource sous forme de Bitmap
+                            Bitmap icon = BitmapFactory.decodeResource(
+                                    getApplicationContext().getResources(), rIcone);
+
+                            String rgbNoA = trait.getComposante().getCouleur().substring(0,7);
+
+                            switch (trait.getType()) {
+                                case PDR: break;
+                                case PEP: break;
+                                case PENP:break;
+                                case DANGER:
+                                    Log.i(trait.getLabel(), rgbNoA);
+                                    icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
+                                    break;
+                                case SENSIBLE:
+                                    Log.i(trait.getLabel(), rgbNoA);
+                                    icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
+                                    break;
+                            }
+
+                            // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
+                            LatLng pos = new LatLng(trait.getGeoPosition().getLatitude(), trait.getGeoPosition().getLongitude());
+                            Marker posMarker = mMap.addMarker(new MarkerOptions()
+                                    .position(pos)
+                                    .title(trait.getLabel())
+                                    .snippet(trait.getType().getDescription() + " - " + trait.getComposante().getDescription())
+//                                    .icon(BitmapDescriptorFactory.fromResource(rIcone))
+                                    .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                                    .draggable(false));
+                        };
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Helper pour convertir les Drawable en Bitmap en modifiant la couleur
+     * Utile pour le changement de couleur programmatiquement
+     * @param resDrawableId drawabme à utiliser
+     * @param colorRequested couleur du remplissage
+     * @return
+     */
+    @NonNull
+    private Bitmap getNewBitmapRenderedWithColor(int resDrawableId, String colorRequested) {
+        Bitmap icon;// Copier le bitmap et le passer en Canvas sinon on aura une exception
+        icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), resDrawableId)
+                .copy(Bitmap.Config.ARGB_8888, true);
+
+        Paint paint = new Paint();
+        ColorFilter filter = new PorterDuffColorFilter(Color.parseColor(colorRequested), PorterDuff.Mode.SRC_IN);
+        paint.setColorFilter(filter);
+
+        Canvas canvas = new Canvas(icon);
+        canvas.drawBitmap(icon, 0, 0, paint);
+        return icon;
     }
 
     /**

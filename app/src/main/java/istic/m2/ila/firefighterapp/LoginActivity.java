@@ -100,6 +100,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
         populateAutoComplete();
 
+        // TODO - A supprimer : valeur par defaut des champs admin/adin
+        mEmailView.setText("admin");
+        mPasswordView.setText("admin");
+
 
         // Bouton de connexion en tant qu'intervenant
         Button boutonIntervenant = (Button) findViewById(R.id.email_sign_in_intervenant);
