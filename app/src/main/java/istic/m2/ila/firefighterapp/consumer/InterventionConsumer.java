@@ -41,7 +41,7 @@ public interface InterventionConsumer {
 
     /** Récupérations de toutes les interventions en cours*/
     @GET(Endpoints.INTERVENTION_ENCOUR)
-    Call<List<InterventionDTO>> getListInterventionEnCour(@Header("Authorization") String token);
+    Call<List<InterventionDTO>> getListInterventionEnCours(@Header("Authorization") String token);
 
     /** Archivage d'une intervention*/
     @DELETE(Endpoints.INTERVENTION_ID)

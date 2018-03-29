@@ -66,7 +66,7 @@ public class ListInterventionActivity extends AppCompatActivity {
                             .getString("token", "null");
 
                     // On récupère toutes les interventions du Serveur
-                    response = interventionConsumer.getIntervention(token).execute();
+                    response = interventionConsumer.getListInterventionEnCours(token).execute();
                     if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
                         myDataset = response.body();
                     }
