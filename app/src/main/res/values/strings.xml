@@ -34,6 +34,7 @@
     <string name="intervention_detail_fragment_static_button_map">Ouvrir la carte</string>
     <string name="intervention_detail_fragment_static_status_encours">En cours</string>
     <string name="intervention_detail_fragment_static_button_fini">Fini</string>
+    <string name="intervention_detail_fragment_moyens_status_demande">demandé</string>
 
 
     <!--String a trier-->
