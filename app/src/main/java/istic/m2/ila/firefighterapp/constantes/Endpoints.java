@@ -33,7 +33,7 @@ public class Endpoints {
     public static final String VEHICULE_DISPONIBLE = "vehicule/disponible";
     public static final String VEHICULE_DISPONIBLE_TYPE = "vehicule/disponible/par_type?type={TYPE}";
 
-
+    public static final String CODE_SINISTRE = "code-sinistre";
 
 
 }
