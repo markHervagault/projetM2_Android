@@ -52,6 +52,6 @@ public class NewMapActivity extends AppCompatActivity {
         googleMap.setMaxZoomPreference(20.0f);
         // Centre l'écran sur le Drône sur RENNES
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.1119800, -1.6742900), 18.0f));
-
+        googleMap.setBuildingsEnabled(false); //2D pour améliorer les performances
     }
 }
