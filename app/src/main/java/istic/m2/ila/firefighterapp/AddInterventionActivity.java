@@ -14,14 +14,17 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.List;
 
 import istic.m2.ila.firefighterapp.addintervention.FragmentFormulaire;
+import istic.m2.ila.firefighterapp.addintervention.InterventionCreationMoyensFragments;
 import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.AdresseDTO;
 import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
+import istic.m2.ila.firefighterapp.dto.VehiculeDTO;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -32,6 +35,7 @@ import retrofit2.Response;
 public class AddInterventionActivity extends FragmentActivity implements FragmentFormulaire.OnFragmentInteractionListener {
     private Button validateButton;
     FragmentFormulaire fragmentFormulaire;
+    InterventionCreationMoyensFragments fragmentMoyen;
     FragmentManager fragmentManager;
 
 
@@ -46,6 +50,7 @@ public class AddInterventionActivity extends FragmentActivity implements Fragmen
 
         fragmentManager = getSupportFragmentManager();
         fragmentFormulaire = (FragmentFormulaire) fragmentManager.findFragmentById(R.id.fragment);
+        fragmentMoyen = (InterventionCreationMoyensFragments) fragmentManager.findFragmentById(R.id.fragment_moyens);
 
         validateButton = findViewById(R.id.validateButton);
         validateButton.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +80,7 @@ public class AddInterventionActivity extends FragmentActivity implements Fragmen
         else{
             CreateInterventionDTO createInterventionDTO = new CreateInterventionDTO();
             AdresseDTO adresseDTO = new AdresseDTO();
+            List<VehiculeDTO> vehiculeList;
 
             /*Valeur localisation*/
             adresseDTO.setVille(bundleFormulaire.getString("ville"));
@@ -87,6 +93,11 @@ public class AddInterventionActivity extends FragmentActivity implements Fragmen
             geoPositionDTO.setLongitude(bundleFormulaire.getDouble("longitude"));
             adresseDTO.setGeoPosition(geoPositionDTO);
             /*Valeur localisation*/
+
+
+            vehiculeList = fragmentMoyen.getVehiculesSelected();
+            //todo uncomment when DTOs are up to date
+            //createInterventionDTO.setVehicules(vehiculeList);
 
             createInterventionDTO.setAdresse(adresseDTO);
             createInterventionDTO.setNom(bundleFormulaire.getString("nom"));
