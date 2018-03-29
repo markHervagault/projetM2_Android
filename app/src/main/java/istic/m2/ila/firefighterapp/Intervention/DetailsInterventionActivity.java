@@ -49,6 +49,7 @@ public class DetailsInterventionActivity extends AppCompatActivity {
     }
 
     public Map<String, List<DeploiementDTO>> getDeploimentsTri() {
+        Log.i(TAG,"getDeploimentsTri Begin");
         String token = getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
         String id = interventionDTOParcelable.getInterventionDTO().getId().toString();
 
@@ -73,25 +74,26 @@ public class DetailsInterventionActivity extends AppCompatActivity {
         String type = null;
         for (DeploiementDTO deploiement : deploiementDTOList) {
 
-            try {
-                 type = deploiement.getVehicule().getType().getLabel();
-            }catch (Exception e){
-                Log.e(TAG,"Deploiment is not complete");
-                e.printStackTrace();
+            if(deploiement.getVehicule()!=null){
+                type = deploiement.getVehicule().getType().getLabel();
+            }else {
+                type = deploiement.getTypeDemande().getLabel();
             }
+
 
             List<DeploiementDTO> list = !mapSortDeploiment.containsKey(type) ? new ArrayList<DeploiementDTO>() : mapSortDeploiment.get(type);
             list.add(deploiement);
 
             mapSortDeploiment.put(type, list);
         }
+        Log.i(TAG,"getDeploimentsTri End");
         return mapSortDeploiment;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("DetailsIntervention ", "onCreate Begin");
+        Log.i(TAG, "onCreate Begin");
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -106,6 +108,6 @@ public class DetailsInterventionActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_intervention_details);
-        Log.i("DetailsIntervention ", "onCreate End");
+        Log.i(TAG, "onCreate End");
     }
 }

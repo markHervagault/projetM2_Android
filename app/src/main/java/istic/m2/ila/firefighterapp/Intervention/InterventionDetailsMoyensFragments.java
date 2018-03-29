@@ -39,6 +39,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
     private Map<String, List<DeploiementDTO>> mapSortDeploiment;
     private Context context;
 
+    
     public InterventionDetailsMoyensFragments() {
         // Required empty public constructor
     }
@@ -68,7 +69,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
         //update fields
     }
 
-    private static class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder> {
+    private class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder> {
         private static final int UNSELECTED = -1;
 
         private RecyclerView recyclerView;
@@ -135,8 +136,18 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 //
 //                        }
 //                    });
-                    tmpText1.setText(deploiment.getVehicule().getLabel());
-                    tmpText1.setTextColor(Color.WHITE);;
+                    if (deploiment.getVehicule() != null) {
+                        tmpText1.setText(deploiment.getVehicule().getLabel());
+                        tmpText1.setTextColor(Color.WHITE);
+
+                    } else {
+                        String text = deploiment.getTypeDemande().getLabel()
+                                + " "
+                                + getResources().getString(R.string.intervention_detail_fragment_moyens_status_demande);
+                        tmpText1.setText(text);
+                        tmpText1.setTextColor(Color.YELLOW);
+                    }
+
                     expandedLinearLayout.addView(tmpText1);
                 }
 
@@ -146,16 +157,16 @@ public class InterventionDetailsMoyensFragments extends Fragment {
             @Override
             public void onClick(View view) {
                 ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(selectedItem);
-                    if (holder != null) {
-                        holder.expandButton.setSelected(false);
-                        holder.expandableLayout.collapse();
-                    }
+                if (holder != null) {
+                    holder.expandButton.setSelected(false);
+                    holder.expandableLayout.collapse();
+                }
 
-                    int position = getAdapterPosition();
-                    if (position == selectedItem) {
-                        selectedItem = UNSELECTED;
-                    } else {
-                        expandButton.setSelected(true);
+                int position = getAdapterPosition();
+                if (position == selectedItem) {
+                    selectedItem = UNSELECTED;
+                } else {
+                    expandButton.setSelected(true);
                     expandableLayout.expand();
                     selectedItem = position;
                 }
