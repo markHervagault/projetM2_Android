@@ -36,14 +36,14 @@ import retrofit2.Response;
  * Created by markh on 20/03/2018.
  */
 
-public class DetailsInterventionActivity extends AppCompatActivity implements InterventionDetailsMoyensFragments.ActivityMoyens {
+public class DetailsInterventionActivity extends AppCompatActivity implements InterventionDetailsMoyensFragments.ActivityMoyens, InterventionDetailsStaticFragment.ActivityDetails {
 
     private static String TAG = "DetailIntervention";
 
     private InterventionDTOParcelable interventionDTOParcelable;
     private Map<String, List<DeploiementDTO>> mapSortDeploiment;
 
-    //Todo : return POJO details
+    @Override
     public InterventionDTO getIntervention() {
         return interventionDTOParcelable.getInterventionDTO();
     }
