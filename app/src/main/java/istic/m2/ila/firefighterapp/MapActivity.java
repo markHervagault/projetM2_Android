@@ -180,6 +180,7 @@ public class MapActivity extends FragmentActivity implements
     void doBindService() {
         bindService(new Intent(this, ServiceRabbitMQ.class), mConnection, Context.BIND_AUTO_CREATE);
         serviceRabbitMQIsBound = true;
+
     }
 
     /**
@@ -247,7 +248,8 @@ public class MapActivity extends FragmentActivity implements
     }
 
     @Subscribe
-    public void onEvent(final UpdateInfosDroneMessage message){
+    public void onEvent(final UpdateInfosDroneMessage message)
+    {
         Log.d(TAG, "======================================================================== j'ai recu les infos du drone n° : " + message.getDroneId());
         runOnUiThread(new Runnable() {
             @Override
@@ -1141,6 +1143,7 @@ public class MapActivity extends FragmentActivity implements
 
         if (marker != null && marker != mDrone) {
 
+            mDrone.setRotation(1.5f);
             // on récupère l'index du marqueur
             String markerTitle = marker.getTitle();
             LatLng markerPosition = marker.getPosition();
