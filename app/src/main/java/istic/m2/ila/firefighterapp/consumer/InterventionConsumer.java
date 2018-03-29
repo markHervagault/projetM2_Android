@@ -28,15 +28,6 @@ import retrofit2.http.Path;
  * Consumer des services rest, en relation avec les interventions, exposé par le serveur
  */
 public interface InterventionConsumer {
-
-<<<<<<< HEAD
-    /**
-     * Création d'une intervention
-     */
-    @POST(Endpoints.INTERVENTION)
-    Call<InterventionDTO> createIntervention(@Header("Authorization") String token
-            , @Body CreateInterventionDTO interventionDto);
-
     /**
      * Récuperation de toutes les interventions
      */
@@ -56,7 +47,7 @@ public interface InterventionConsumer {
     @DELETE(Endpoints.INTERVENTION_ID)
     Call<InterventionDTO> closeIntervention(@Header("Authorization") String token
             , @Path("id") String id);
-=======
+
     /** Récupération de toutes les demandes de déploiements de toutes interventions*/
     @GET(Endpoints.DEPLOIEMENT_DEMANDE)
     Call<List<DemandeDTO>> getListDemandeDeploiement(@Header("Authorization")String token);
@@ -136,14 +127,6 @@ public interface InterventionConsumer {
 //    @DELETE(Endpoints.INTERVENTION_ID)
 //    Call<InterventionDTO> closeIntervention(@Header("Authorization") String token
 //                                            , @Path("id") String id);
-
-
-
-
-
-
-
->>>>>>> develop
 
     /**
      * Récuperation de tout les codes sinistres
