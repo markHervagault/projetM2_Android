@@ -41,6 +41,8 @@ import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
 import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.UpdateInfosDroneMessage;
 import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
@@ -149,6 +151,11 @@ public class MapActivity extends FragmentActivity implements
      * Bouton stop mission
      */
     private ImageButton buttonStop;
+
+    /**
+     * Bouton play/pause mission
+     */
+    private ImageButton buttonPlayPause;
 
     // Contrôles d'interfaces
     private boolean isEnabledButtonAddPointToVisit;
@@ -295,6 +302,17 @@ public class MapActivity extends FragmentActivity implements
             public void onClick(View v) {
                 if(null!=droneSelected){
                     EventBus.getDefault().post(new StopMissionMessage(droneSelected.getId()));
+                }
+            }
+        });
+
+        buttonPlayPause = findViewById(R.id.button_play_pause_mission);
+        buttonPlayPause.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(null!=droneSelected){
+                    // REGARDER LE STATUT DE LA MISSION POUR SAVOIR SI ELLE EST EN PAUSE OU PAS
+                    EventBus.getDefault().post(new PauseMissionMessage(droneSelected.getId()));
+                    //EventBus.getDefault().post(new PlayMissionMessage(droneSelected.getId()));
                 }
             }
         });
