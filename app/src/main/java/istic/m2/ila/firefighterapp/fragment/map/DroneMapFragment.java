@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -22,6 +21,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +32,11 @@ import java.util.Map;
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DroneInfoUpdateMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
+import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 
 public class DroneMapFragment extends Fragment
@@ -52,6 +58,7 @@ public class DroneMapFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -110,6 +117,7 @@ public class DroneMapFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -265,9 +273,13 @@ public class DroneMapFragment extends Fragment
     //Style
     private final int STROKE_WIDTH = 3;
 
-    //Drone
+    //Selected Drone
     private DroneDTO selectedDrone;
-    private Marker droneMarker;
+    private Marker selectedDroneMarker;
+
+    //Drone List
+    private List<DroneInfosDTO> drones;
+    private Map<Long, Marker> droneMarkersById;
 
     //Mission
     private MissionDTO currentMission;
@@ -292,6 +304,9 @@ public class DroneMapFragment extends Fragment
         markers = new ArrayList<>();
         markersIndexByName = new HashMap<>();
         markersPositions = new ArrayList<>();
+
+        drones = new ArrayList<>();
+        droneMarkersById = new HashMap<>();
 
         //InfoWindow Custom?
         googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
@@ -420,7 +435,7 @@ public class DroneMapFragment extends Fragment
      */
     public void DeleteMarker(Marker marker)
     {
-        if (marker != null && marker != droneMarker) {
+        if (marker != null && marker != selectedDroneMarker) {
             // on récupère l'index du marqueur
             String markerTitle = marker.getTitle();
             Integer matchMarker = markersIndexByName.get(markerTitle);
@@ -450,9 +465,85 @@ public class DroneMapFragment extends Fragment
 
     // =================================================================== //MAP
 
+
+    // =================================================================== MISSION
+
+    private void UpdateCurrentMission()
+    {
+        //TODO récupérer mission en cours depuis le serveur et mettre a jour map et markers
+        //ATTENTION, GROSSE FONCTION INCOMMING
+    }
+
+    // =================================================================== //MISSION
+
     // =================================================================== EVENT
 
+    @Subscribe
+    public void OnSelectedDroneChangedEvent(final SelectedDroneChangedMessage message)
+    {
+        //Si pas de changement, on ne fair rien
+        if(selectedDrone.getId().equals(message.Drone.getId()))
+            return;
 
+        //Sinon, mise a jour du drone Selectionné et récupération de la mission en cours
+        selectedDrone = message.Drone;
+        UpdateCurrentMission();
+    }
+
+    @Subscribe
+    public void OnDroneInfoUpdateEvent(final DroneInfoUpdateMessage message)
+    {
+        //Si le drone n'existe pas, on l'ajoute
+        if(!DroneAlreadyExist(message.getDroneId()))
+            AddNewDroneOnMap(message);
+        else //Sinon, mise a jour du drone
+            UpdateDroneOnMap(message);
+    }
+
+    private boolean DroneAlreadyExist(long droneId)
+    {
+        if(selectedDrone != null && selectedDrone.getId().equals(droneId))
+            return true;
+
+        for(DroneInfosDTO dto : drones)
+        {
+            if(dto.id_drone == droneId)
+                return true;
+        }
+        return false;
+    }
+
+    private void UpdateDroneOnMap(final DroneInfoUpdateMessage message)
+    {
+        final Marker droneMarker = droneMarkersById.get(message.getDroneId());
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                droneMarker.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
+                droneMarker.setRotation((float)Math.toDegrees(googleMap.getCameraPosition().bearing + (float)message.getYawOrientation()));
+            }
+        });
+    }
+
+    private void AddNewDroneOnMap(final DroneInfoUpdateMessage message)
+    {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                Marker droneMarker = googleMap.addMarker(new MarkerOptions().
+                        position(new LatLng(message.getLatitude(), message.getLongitude()))
+                        .rotation((float)Math.toDegrees((float)message.getYawOrientation()))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+                        .anchor(0.5f,0.5f)
+                        .draggable(false));
+
+                droneMarkersById.put(message.getDroneId(), droneMarker);
+            }
+        });
+    }
 
     // =================================================================== //EVENT
 }

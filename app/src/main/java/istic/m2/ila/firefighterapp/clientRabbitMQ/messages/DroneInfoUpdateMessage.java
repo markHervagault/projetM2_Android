@@ -1,10 +1,12 @@
 package istic.m2.ila.firefighterapp.clientRabbitMQ.messages;
 
+import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
+
 /**
  * Created by markh on 28/03/2018.
  */
 
-public class UpdateInfosDroneMessage implements MessageBus {
+public class DroneInfoUpdateMessage implements MessageBus {
 
     private long droneId;
     private double longitude;
@@ -12,8 +14,8 @@ public class UpdateInfosDroneMessage implements MessageBus {
     private int battery;
     private double yawOrientation;
 
-    public UpdateInfosDroneMessage(long droneId, double longitude, double latitude,
-                                   int battery, double yawOrientation){
+    public DroneInfoUpdateMessage(long droneId, double longitude, double latitude,
+                                  int battery, double yawOrientation){
         this.droneId = droneId;
         this.longitude = longitude;
         this.latitude = latitude;

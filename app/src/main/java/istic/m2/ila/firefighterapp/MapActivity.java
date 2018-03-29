@@ -35,7 +35,7 @@ import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
 import istic.m2.ila.firefighterapp.adapter.ItemListDroneAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
 import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.UpdateInfosDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DroneInfoUpdateMessage;
 import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
@@ -216,7 +216,7 @@ public class MapActivity extends FragmentActivity implements
     }
 
     @Subscribe
-    public void onEvent(final UpdateInfosDroneMessage message)
+    public void onEvent(final DroneInfoUpdateMessage message)
     {
         if(droneSelected==null || droneSelected.getId()!=message.getDroneId()){
             return;
@@ -234,7 +234,7 @@ public class MapActivity extends FragmentActivity implements
                             .anchor(0.5f,0.5f)
                             .draggable(false));
                 }else{
-                    mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
+            mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
                     mDrone.setRotation((float)Math.toDegrees((float)message.getYawOrientation()));
                 }
             }
