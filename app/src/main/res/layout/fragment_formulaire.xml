@@ -5,211 +5,237 @@
     android:layout_height="match_parent"
     android:imeOptions="flagNoExtractUi"
     tools:context="istic.m2.ila.firefighterapp.addintervention.FragmentFormulaire">
-
-    <!-- TODO: Update blank fragment layout -->
+    <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
     <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/Localisation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#e5e5e5"
-            android:gravity="start"
-            android:text="Localisation"
-            android:textAlignment="viewStart"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textAdresse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="/!\\ Adresse autocomplete en chantier /!\\ "
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <AutoCompleteTextView
-            android:id="@+id/search_place"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="#f4f4f4"
-            android:hint="Enter Address, City or Zip Code"
-            android:imeOptions="flagNoExtractUi"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColor="#000"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/textVille"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Ville"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/editText_ville"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="#f4f4f4"
-            android:hint="Ville"
-            android:imeOptions="flagNoExtractUi"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColor="#000"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/textcp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Code postal"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/editText_cp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="#f4f4f4"
-            android:hint="Code postal"
-            android:imeOptions="flagNoExtractUi"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColor="#000"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/textRue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Rue"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-
-        <EditText
-            android:id="@+id/editText_rue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="#f4f4f4"
-            android:hint="Rue"
-            android:imeOptions="flagNoExtractUi"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColor="#000"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/textNRue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Numéro "
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/editText_nrue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="#f4f4f4"
-            android:hint="Numéro"
-            android:imeOptions="flagNoExtractUi"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColor="#000"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/textCoordonnee"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Coordonnée GPS"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/editText_lat"
+
+            <TextView
+                android:id="@+id/Nom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#e5e5e5"
+                android:gravity="start"
+                android:text="Nom de l'intervention"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textNom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Lattitude"
-                android:imeOptions="flagNoExtractUi"
-                android:inputType="numberSigned"
-                android:maxLines="1" />
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@android:color/darker_gray" />
+                android:layout_marginTop="16dp"
+                android:text="Nom de l'intervention"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/editText_lng"
+                android:id="@+id/editText_nom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Longitude"
+                android:layout_centerVertical="true"
+                android:hint="Nom de l'intervention"
                 android:imeOptions="flagNoExtractUi"
-                android:inputType="numberSigned"
+                android:inputType="text"
+                android:maxLines="1"/>
+
+            <TextView
+                android:id="@+id/codeSinistreBloc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#e5e5e5"
+                android:gravity="start"
+                android:text="Code Sinistre"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textCodeSinistre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Code sinistre :"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <AutoCompleteTextView
+                android:id="@+id/searchCodeSinistre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:hint="Code sinistre"
+                android:imeOptions="flagNoExtractUi"
+                android:inputType="textAutoComplete"
                 android:maxLines="1" />
 
+            <TextView
+                android:id="@+id/Localisation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#e5e5e5"
+                android:gravity="start"
+                android:text="Localisation"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textAdresse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="/!\\ Adresse autocomplete en chantier /!\\ "
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <AutoCompleteTextView
+                android:id="@+id/search_place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="#f4f4f4"
+                android:hint="Enter Address, City or Zip Code"
+                android:imeOptions="flagNoExtractUi"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="#000"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/textVille"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Ville"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editText_ville"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:hint="Ville"
+                android:imeOptions="flagNoExtractUi"
+                android:inputType="text"
+                android:maxLines="1"/>
+
+            <TextView
+                android:id="@+id/textcp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Code postal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editText_cp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:hint="Code postal"
+                android:imeOptions="flagNoExtractUi"
+                android:inputType="text"
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/textRue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Rue"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+
+            <EditText
+                android:id="@+id/editText_rue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:hint="Rue"
+                android:imeOptions="flagNoExtractUi"
+                android:inputType="text"
+                android:maxLines="1" />
+
+
+            <TextView
+                android:id="@+id/textNRue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Numéro"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editText_nrue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:hint="Numéro"
+                android:imeOptions="flagNoExtractUi"
+                android:inputType="number"
+                android:maxLines="1"/>
+
+            <TextView
+                android:id="@+id/textCoordonnee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Coordonnée GPS"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editText_lat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="Latitude"
+                    android:imeOptions="flagNoExtractUi"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/darker_gray" />
+
+                <EditText
+                    android:id="@+id/editText_lng"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="Longitude"
+                    android:imeOptions="flagNoExtractUi"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1" />
+
+            </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/codeSinistreBloc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#e5e5e5"
-            android:gravity="start"
-            android:text="Code Sinistre"
-            android:textAlignment="viewStart"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textCodeSinistre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Code sinistre :"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <AutoCompleteTextView
-            android:id="@+id/searchCodeSinistre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:hint="Code sinistre"
-            android:imeOptions="flagNoExtractUi"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColor="#000"
-            android:textSize="15sp" />
-    </LinearLayout>
-
-
+    </ScrollView>
 </FrameLayout>

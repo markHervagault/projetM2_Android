@@ -3,6 +3,7 @@ package istic.m2.ila.firefighterapp.addintervention;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,10 +19,15 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
+import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
+import retrofit2.Response;
 
 public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
@@ -36,6 +42,7 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
     private EditText editTextNRue;
     private EditText editTextLat;
     private EditText editTextLng;
+    private EditText editTextNom;
     /*Champs du formulaire à enregistrer et vérfier*/
 
 
@@ -45,15 +52,13 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
         // Required empty public constructor
     }
 
-    public static FragmentFormulaire newInstance(String param1, String param2) {
-        FragmentFormulaire fragment = new FragmentFormulaire();
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i("FragmentFormulaire", "OnCreate");
         super.onCreate(savedInstanceState);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
     }
 
     @Override
@@ -76,33 +81,31 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
         editTextNRue = (EditText) getView().findViewById(R.id.editText_nrue);
         editTextLat = (EditText) getView().findViewById(R.id.editText_lat);
         editTextLng = (EditText) getView().findViewById(R.id.editText_lng);
-
+        editTextNom = (EditText) getView().findViewById(R.id.editText_nom);
         /*TODO
         searchPlace.setAdapter(searchPlaceAdapter);
         */
 
-        /*Temporaire en attendant le Rest consumer*/
-        CodeSinistreDTO codeSinistre = new CodeSinistreDTO();
-        CodeSinistreDTO codeSinistre1 = new CodeSinistreDTO();
+        String token = this.getActivity().getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        InterventionConsumer interventionConsumer = restTemplate.builConsumer(InterventionConsumer.class);
 
-        codeSinistre.setId((long) 1);
-        codeSinistre1.setId((long) 2);
+        try {
+            //Appel de l'api pour les codes sinistre
+            Response<List<CodeSinistreDTO>> responseCodeSinistreDTOS = interventionConsumer.getAllCodeSinistre(token).execute();
 
-        codeSinistre.setCode("1110");
-        codeSinistre1.setCode("1320");
-
-        codeSinistre.setIntitule("AVP léger");
-        codeSinistre1.setIntitule("Accident PL avec désincarcération");
-
-        ArrayList<CodeSinistreDTO> autocompleteFields = new ArrayList<>();
-        autocompleteFields.add(codeSinistre);
-        autocompleteFields.add(codeSinistre1);
-        /*Temporaire en attendant les Rest consumer*/
-
-        /*Adapter de l'autocomplete code sinistre*/
-        CodeSinistreAdapter codeSinistreAdapter = new CodeSinistreAdapter(this.getContext(), android.R.layout.simple_dropdown_item_1line, autocompleteFields);
-        searchCodeSinistre.setAdapter(codeSinistreAdapter);
-        /*Adapter de l'autocomplete code sinistre*/
+            if(responseCodeSinistreDTOS != null && responseCodeSinistreDTOS.code() == HttpURLConnection.HTTP_OK) {
+               /*Adapter de l'autocomplete code sinistre*/
+                CodeSinistreAdapter codeSinistreAdapter = new CodeSinistreAdapter(this.getContext(), R.layout.item_autocomplete, responseCodeSinistreDTOS.body());
+                searchCodeSinistre.setAdapter(codeSinistreAdapter);
+                /*Adapter de l'autocomplete code sinistre*/
+            }
+            else{
+                Log.e("CodeSinitre", "Error From Server : " + responseCodeSinistreDTOS.errorBody().string());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -154,13 +157,27 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
         void onFragmentInteraction(Uri uri);
     }
 
-    public Boolean isValidFormulaire() {
-        if (this.searchPlace.getText().toString().isEmpty()) {
-            return false;
-        }
+    public Boolean isFormulaireValide() {
         if (this.searchCodeSinistre.getText().toString().isEmpty()) {
             return false;
         }
+        if (this.editTextVille.getText().toString().isEmpty()) {
+            return false;
+        }
+        if (this.editTextCp.getText().toString().isEmpty()) {
+            return false;
+        }
+        if (this.editTextNRue.getText().toString().isEmpty()) {
+            return false;
+        }
+        if (this.editTextRue.getText().toString().isEmpty()) {
+            return false;
+        }
+        if (this.editTextRue.getText().toString().isEmpty()) {
+            return false;
+        }
+
+        //TODO Plus de verif necessaire
         if (this.editTextLat.getText().toString().isEmpty()) {
             return false;
         }
@@ -172,12 +189,21 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
 
     public Bundle getBundle() {
         Bundle bundle = new Bundle();
-        if (isValidFormulaire()) {
-            String codeSinistreString = this.searchCodeSinistre.getText().toString();
-            bundle.putLong("codeSinistreId", Long.valueOf(codeSinistreString.substring(0, codeSinistreString.indexOf(" "))));
+        if (isFormulaireValide()) {
+            String codeSinistreString = this.searchCodeSinistre.getText().toString().split(" ")[0];
+            Long codeSinistreId = ((CodeSinistreAdapter)this.searchCodeSinistre.getAdapter()).getCodeSinistresId(codeSinistreString);
+
+            bundle.putString("nom", this.editTextNom.getText().toString());
+            bundle.putString("ville", this.editTextVille.getText().toString());
+            bundle.putString("cp", this.editTextCp.getText().toString());
+            bundle.putString("rue", this.editTextRue.getText().toString());
+            bundle.putLong("numero", Long.valueOf(this.editTextNRue.getText().toString()));
+            bundle.putLong("codeSinistreId", codeSinistreId);
+
+            bundle.putDouble("latitude", Double.valueOf(this.editTextLat.getText().toString()));
+            bundle.putDouble("longitude", Double.valueOf(this.editTextLng.getText().toString()));
+
             bundle.putString("adresse", this.searchPlace.getText().toString());
-            bundle.putLong("lattitude", Long.valueOf(this.editTextLat.getText().toString()));
-            bundle.putLong("longitude", Long.valueOf(this.editTextLng.getText().toString()));
             return bundle;
         }
         else {

@@ -3,6 +3,7 @@ package istic.m2.ila.firefighterapp.consumer;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
+import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
 import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DemandeDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
@@ -22,9 +23,40 @@ import retrofit2.http.Path;
 /**
  * Created by hakima on 3/21/18.
  */
-/** Consumer des services rest, en relation avec les interventions, exposé par le serveur */
+
+/**
+ * Consumer des services rest, en relation avec les interventions, exposé par le serveur
+ */
 public interface InterventionConsumer {
 
+<<<<<<< HEAD
+    /**
+     * Création d'une intervention
+     */
+    @POST(Endpoints.INTERVENTION)
+    Call<InterventionDTO> createIntervention(@Header("Authorization") String token
+            , @Body CreateInterventionDTO interventionDto);
+
+    /**
+     * Récuperation de toutes les interventions
+     */
+    @GET(Endpoints.INTERVENTION)
+    Call<List<InterventionDTO>> getIntervention(@Header("Authorization") String token);
+
+    /**
+     * Récuperation d'une intervention par id
+     */
+    @GET(Endpoints.INTERVENTION_ID)
+    Call<InterventionDTO> getInterventionById(@Header("Authorization") String token,
+                                              @Path("id") String id);
+
+    /**
+     * Fermer l'intervention en cours
+     */
+    @DELETE(Endpoints.INTERVENTION_ID)
+    Call<InterventionDTO> closeIntervention(@Header("Authorization") String token
+            , @Path("id") String id);
+=======
     /** Récupération de toutes les demandes de déploiements de toutes interventions*/
     @GET(Endpoints.DEPLOIEMENT_DEMANDE)
     Call<List<DemandeDTO>> getListDemandeDeploiement(@Header("Authorization")String token);
@@ -111,7 +143,13 @@ public interface InterventionConsumer {
 
 
 
+>>>>>>> develop
 
+    /**
+     * Récuperation de tout les codes sinistres
+     */
+    @GET(Endpoints.CODE_SINISTRE)
+    Call<List<CodeSinistreDTO>> getAllCodeSinistre(@Header("Authorization") String token);
 
 
 }
