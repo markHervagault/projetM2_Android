@@ -82,18 +82,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mPasswordView = findViewById(R.id.password);
+
+        // Clic sur le bouton Entrer ou Next - sélectionne le TextView password
+        mEmailView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == EditorInfo.IME_ACTION_NEXT || id == EditorInfo.IME_NULL) {
+                    mPasswordView.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
         populateAutoComplete();
 
-        mPasswordView = findViewById(R.id.password);
+        // TODO - A supprimer : valeur par defaut des champs admin/adin
+        mEmailView.setText("admin");
+        mPasswordView.setText("admin");
+
 
         // Bouton de connexion en tant qu'intervenant
         Button boutonIntervenant = (Button) findViewById(R.id.email_sign_in_intervenant);
         boutonIntervenant.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO - cas de l'intervenant
                 isCodis = false;
                 attemptLogin();
             }
@@ -104,7 +120,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boutonCodis.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO - cas de CODIS
                 isCodis = true;
                 attemptLogin();
             }
@@ -172,7 +187,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if(mAuthTask == null) {
             mAuthTask = new UserLoginTask();
         }
-        Log.i("toto", "tototototototo");
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -354,6 +368,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("token", "Bearer " + response.body().getId_token());
+                    editor.putBoolean("isCodis", isCodis);
                     editor.commit();
                     //editor.putString("token", );
                     Log.i("tag","token: "+response.body().getId_token());
@@ -378,7 +393,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             isRunning = false;
             mAuthTask = new UserLoginTask();
             if (success) {
-                nextActivity(ListInterventionActivity.class);
+                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
             } else {
                 Log.i("tag", "you shall not pass");
                 Toast.makeText(mEmailView.getContext(), "You shall not pass", Toast.LENGTH_LONG);
@@ -390,32 +405,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
-    }
-
-    /**
-     * Permet de lancer l'activity suivante
-     * @param clazz Activity à lancer
-     */
-
-
-    private void nextActivity(Class<?> clazz) {
-        Intent intent = new Intent(LoginActivity.this, clazz);
-
-        // Récupération du bundle de l'Intent
-        Bundle bundle = intent.getExtras();
-        if (bundle == null) {
-            // Si aucun bundle n'existe en créer un nouveau
-            bundle = new Bundle();
-        }
-
-        // Passer la variable isCodis dans le bundle
-        bundle.putBoolean("isCodis", isCodis);
-
-        // On fixe le bundle à utiliser sur notre Intent - au cas où un nouveau a été créé
-        intent.putExtras(bundle);
-
-        // Démarrer l'activité
-        startActivity(intent);
     }
 }
 

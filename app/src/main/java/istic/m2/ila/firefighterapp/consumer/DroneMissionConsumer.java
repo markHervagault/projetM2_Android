@@ -22,21 +22,14 @@ public interface DroneMissionConsumer {
     Call<MissionDTO> createMission(@Header("Authorization")String token,
                                    @Body MissionDTO droneMission);
     /** Modification d'une mission*/
-    @PUT(Endpoints.MISSION_ID)
+    @PUT(Endpoints.MISSION)
     Call<MissionDTO> updateMission(@Header("Authorization")String token,
-                                        @Path("id")String id,
                                         @Body MissionDTO droneMissionDTO);
 
-    /** Récuperation de la mission avec la liste des point    not sure */
+    /** Récuperation de la mission avec la liste des point  */
     @GET(Endpoints.MISSION_ID)
     Call<MissionDTO> getMission(@Header("Authorization")String token,
-                                     @Path("id")String id);
-
-    /** Archiver une mission*/
-    @DELETE(Endpoints.MISSION_ID)
-    Call<MissionDTO> deleteMission(@Header("Authorization")String token,
-                                        @Path("id")String id );
-
+                                     @Path("id")int  id);
 
 }
 

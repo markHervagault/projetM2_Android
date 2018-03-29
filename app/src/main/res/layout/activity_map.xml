@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_list_crm"
+            android:id="@+id/recycler_list_map"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -100,6 +100,7 @@
                     fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
                     fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
                     fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+                    android:src="@drawable/ic_mode_edit_black_18dp"
                     />
                 <!--android:src="@drawable/ic_star"-->
 

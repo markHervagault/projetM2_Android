@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,6 +24,7 @@ import istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDTOParcelable;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.AdresseDTO;
+import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 
 /**
@@ -44,20 +47,20 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
     // vous fournir un accès aux vues pour une donnée d'item dans le view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        public TextView idIntervention;
         public TextView codeSinistreIntervention;
         public TextView dateIntervention;
         public TextView adresseIntervention;
         public TextView statutIntervention;
-        public ImageView imgMapIntervention;
         public LinearLayout layoutItemIntervention;
 
         public ViewHolder(View v) {
             super(v);
+            idIntervention = v.findViewById(R.id.id_intervention);
             dateIntervention = v.findViewById(R.id.date_intervention);
             codeSinistreIntervention = v.findViewById(R.id.code_sinistre_intervention);
             adresseIntervention = v.findViewById(R.id.adresse_intervention);
             statutIntervention = v.findViewById(R.id.statut_intervention);
-            imgMapIntervention = v.findViewById(R.id.img_map_intervention);
             layoutItemIntervention = v.findViewById(R.id.item_intervention_layout);
         }
     }
@@ -82,15 +85,19 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
         // - on remplace le contenu de la vue avec cet élément
         InterventionDTO intervention = mDataset.get(position);
 
+        // ID de l'intervention
+        holder.idIntervention.setText(intervention.getId().toString());
+
         // Date de l'intervention
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date dateHeureCreation = new Date();
-        System.out.println(); //2016/11/16 12:08:43
+        System.out.println(); //16/11/2016 12:08:43
         holder.dateIntervention.setText(dateFormat.format(dateHeureCreation));
 
-        // TODO
         // Code sinistre
-        // holder.codeSinistreIntervention.setText(intervention.get("codeSinistreIntervention"));
+        CodeSinistreDTO codeSinistreDTO = intervention.getCodeSinistre();
+        String codeSinistreLabel = codeSinistreDTO.getCode() + " - " + codeSinistreDTO.getIntitule();
+        holder.codeSinistreIntervention.setText(codeSinistreLabel);
 
         // Adresse
         AdresseDTO adresseDTO = intervention.getAdresse();
@@ -103,9 +110,6 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
         // Statut
         String statut = (intervention.isFini()) ? "Terminé" : "En cours";
         holder.statutIntervention.setText(statut);
-
-        // Gestion de la miniature
-//        holder.imgMapIntervention.setImageResource(Integer.parseInt(intervention.get("imgMapIntervention")));
 
         // Gestion du clic
         holder.layoutItemIntervention.setOnClickListener(new View.OnClickListener() {

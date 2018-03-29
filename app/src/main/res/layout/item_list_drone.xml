@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_Drone_List_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:background="@drawable/border"
+    android:orientation="horizontal">
+
+    <!--Nom du véhicule-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/drone_name_listDrone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="DroneXbyoo"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/image_statut_listDrone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingRight="10dp"
+            android:scaleType="fitEnd"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/rond_vert"
+            android:maxHeight="15dp"/>
+
+        <TextView
+            android:id="@+id/statut_listDrone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:paddingRight="10dp"
+            android:text="En mission" />
+    </LinearLayout>
+
+</LinearLayout>

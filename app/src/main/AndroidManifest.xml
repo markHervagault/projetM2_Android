@@ -55,7 +55,7 @@
         </activity>
 
         <service
-            android:name=".clientRabbitMQ.ServiceRabbitMQDrone"
+            android:name=".clientRabbitMQ.ServiceRabbitMQ"
             android:label="Service RabbitMQ" >
         </service>
 

@@ -1,24 +1,30 @@
 package istic.m2.ila.firefighterapp;
 
-import android.app.ActivityManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Context;
 import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import com.github.clans.fab.FloatingActionButton;
 
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.IBinder;
-import android.renderscript.ScriptGroup;
 
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,12 +33,20 @@ import android.view.View;
 import android.widget.Toast;
 
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQDrone;
-import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
+import istic.m2.ila.firefighterapp.adapter.ItemListDroneAdapter;
 import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
+import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.UpdateInfosDroneMessage;
+import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
+import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
+import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
+import istic.m2.ila.firefighterapp.dto.EDroneStatut;
+import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 
@@ -50,12 +64,10 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,21 +76,74 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
 import retrofit2.Response;
 
 
 public class MapActivity extends FragmentActivity implements
         OnMapReadyCallback {
 
-    private ServiceRabbitMQDrone mServiceRabbitMQ;
+    //////////////////////////// VARIABLES GENERALES ///////////////////////
+
+    /**
+     * Tag qui identifie la classe pour les LOGs
+     */
+    private static String TAG = "MapActivity => ";
+
+    /**
+     * TRUE si l'activité est en mode drone, FALSE si elle est en mode intervention
+     */
+    private Boolean isOnModeDrone;
+
+    private ServiceRabbitMQ mServiceRabbitMQ;
     private Boolean serviceRabbitMQIsBound = false;
 
-    private static String TAG = "MapActivity";
-
+    /**
+     * La map de base affichée tout le temps
+     */
     private GoogleMap mMap;
+
+    /**
+     * Liste sur le côté droit de l'activity pour afficher soit la liste des drones soit la CRM
+     */
+    RecyclerView listDroneOrCRM;
+
+    /////////////////////////// VARIABLES MODE DRONE ///////////////////////
+
+    /**
+     * Zone pour le drone
+     */
     private Polygon mPolygon;
+
+    /**
+     * Trajet pour le drone
+     */
     private Polyline mPolyline;
 
+    /**
+     * Marqueur qui représente le drone sélectionné
+     */
+    private Marker mDrone;
+
+    /**
+     * Liste des drones
+     */
+    private List<DroneDTO> drones = new ArrayList<DroneDTO>();
+
+    /**
+     * Drone sélectionné dans la liste, null si aucun drone est sélectionné
+     */
+    private DroneDTO droneSelected;
+
+    // Contrôles d'interfaces
+    private boolean isEnabledButtonAddPointToVisit;
+    private boolean isTrajetClosed;
+    private List<FloatingActionButton> fabMenuButtons;
+    private final int STROKE_WIDTH = 3;
+
+    //////////////////////// VARIABLES MODE INTERVENTION ///////////////////
+
+    /////////////////////// VARIABLES QUI SERT A QUOI ? ///////////////////:
     private Map<LatLng, Integer> indexMarkers; // Récupérer l'index d'un marqueur
     private Map<String, Integer> indexMarkers2; // Récupérer l'index d'un marqueur
 
@@ -89,69 +154,52 @@ public class MapActivity extends FragmentActivity implements
     // représente le marqueur courant sur lequel on a cliqué
     private Marker selectedMarker;
 
-    // Marqueur de position du Drone
-    private Marker mDrone;
-
-    // Coordinates
-    private static final LatLng RENNES = new LatLng(48.0833, -1.6833);
-    private static final LatLng UNIVERSITE_RENNES_1 = new LatLng(48.114182, -1.636238);
-    private static final LatLng RENNES_ISTIC = new LatLng(48.115150, -1.638374);
-
-    // Contrôles d'interfaces
-    private boolean isEnabledButtonAddPointToVisit;
-    private boolean isTrajetClosed;
-    private List<FloatingActionButton> fabMenuButtons;
-    private final int STROKE_WIDTH = 3;
-
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    /**
+     * Permet d'avoir le statut du service rabbitMQ
+     */
+    private static final double RAYON_RECHERCHE_TRAIT_TOPO = 5000;
+    private static final Map<ETypeTraitTopographiqueBouchon,Integer> referentiel = createReferentiel ();
+    private static Map<ETypeTraitTopographiqueBouchon,Integer> createReferentiel(){
+        Map<ETypeTraitTopographiqueBouchon,Integer> map = new HashMap<>();
+        map.put(ETypeTraitTopographiqueBouchon.DANGER, R.drawable.danger_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.SENSIBLE, R.drawable.sensible_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PDR, R.drawable.pdr_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PENP, R.drawable.penp_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PEP, R.drawable.pep_24dp);
+        return map;
+    }
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            // This is called when the connection with the service has
-            // been established, giving us the service object we can use
-            // to interact with the service.  Because we have bound to a
-            // explicit service that we know is running in our own
-            // process, we can cast its IBinder to a concrete class and
-            // directly access it.
-            mServiceRabbitMQ = ((ServiceRabbitMQDrone.LocalBinder)service).getService();
-
-            List<DroneDTO> drones = simulateGetListDrone();
-            for(DroneDTO drone:drones){
-                Log.d(TAG, "================================================================ Envoi d'une donnee sur le bus : "+drone.getNom());
-                EventBus.getDefault().post(drone);
+            mServiceRabbitMQ = ((ServiceRabbitMQ.LocalBinder)service).getService();
+            if(isOnModeDrone){
+                // initialise le layout list drone
+                initDroneListFragment();
+                // On récupère la liste des drones
+                getDronesFromBDD();
+            }else{
+                // initialise le layout CRM
+                initCRMFragment();
             }
         }
 
         public void onServiceDisconnected(ComponentName className) {
-            // This is called when the connection with the service has
-            // been unexpectedly disconnected -- that is, its process
-            // crashed. Because it is running in our same process, we
-            // should never see this happen.
             mServiceRabbitMQ = null;
         }
     };
 
-    private void CallBackfunction(Object o)
-    {
-        //parsing
-
-        //update
-    }
-
+    /**
+     * Lie le service RabbitMQ à l'activity
+     */
     void doBindService() {
-        // Establish a connection with the service.  We use an explicit
-        // class name because we want a specific service implementation
-        // that we know will be running in our own process (and thus
-        // won't be supporting component replacement by other
-        // applications).
-        bindService(new Intent(this, ServiceRabbitMQDrone.class),
-                mConnection,
-                Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, ServiceRabbitMQ.class), mConnection, Context.BIND_AUTO_CREATE);
         serviceRabbitMQIsBound = true;
+
     }
 
+    /**
+     * Détache le service RabbitMQ de l'activity
+     */
     void doUnbindService() {
         if (serviceRabbitMQIsBound) {
             // Detach our existing connection.
@@ -163,9 +211,15 @@ public class MapActivity extends FragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ////////////////////////////////////////////////////////
+        ////////// On démarre l'activité en mode drone /////////
+        isOnModeDrone = true;
+        ////////////////////////////////////////////////////////
+
+        // On s'enregistre pour écouter sur le bus
+        EventBus.getDefault().register(this);
         setContentView(R.layout.activity_map);
-        // initialise le layout CRM
-        initCRMFragment();
 
         // Obtenir le SupportMapFragment et être notifié quand la map est prête à être utilisée.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -192,30 +246,120 @@ public class MapActivity extends FragmentActivity implements
         // partie service rabbitMQ
         doBindService();
 
+
+        // init referentiel icône
+        final Map<ETypeTraitTopographiqueBouchon,Integer> referentiel = new HashMap<>();
+
+        DroneDTO droneAdd = new DroneDTO();
+        droneAdd.setId((long)51515);
+        droneAdd.setStatut(EDroneStatut.DECONNECTE);
+        droneAdd.setNom("Le drone du turfu");
+        drones.add(droneAdd);
+
     }
 
-    private List<DroneDTO> simulateGetListDrone(){
-        List<DroneDTO> drones = new ArrayList<DroneDTO>();
-        DroneDTO drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)1);
-        drones.add(drone1);
-        return drones;
+    @Subscribe
+    public void onEvent(final UpdateInfosDroneMessage message)
+    {
+        if(droneSelected==null || droneSelected.getId()!=message.getDroneId()){
+            return;
+        }
+        Log.d(TAG, "======================================================================== j'ai recu les infos du drone n° : " + message.getDroneId());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(mDrone==null){
+                    mDrone = mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(message.getLatitude(), message.getLongitude()))
+                            .rotation((float)Math.toDegrees((float)message.getYawOrientation()))
+                            .title(droneSelected.getNom())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+                            .anchor(0.5f,0.5f)
+                            .draggable(false));
+                }else{
+                    mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
+                    mDrone.setRotation((float)Math.toDegrees((float)message.getYawOrientation()));
+                }
+            }
+        });
     }
 
-    private void initCRMFragment(){
+    /**
+     * Appel le REST pour récupérer tout les drones présents en BDD
+     */
+    private void getDronesFromBDD(){
+        AsyncTask.execute(new Runnable() {
+            public void run() {
 
-        mRecyclerView = findViewById(R.id.recycler_list_crm);
-        mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                // On peuple notre RecyclerView
+                List<DroneDTO> droneList = new ArrayList<>();
+
+                // Construction de notre appel REST
+                RestTemplate restTemplate = RestTemplate.getInstance();
+                DroneConsumer droneConsumer = restTemplate.builConsumer(DroneConsumer.class);
+
+                Response<List<DroneDTO>> response = null;
+                try {
+                    // Récupération du token
+                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                            .getString("token", "null");
+
+                    // On récupère toutes les interventions du Serveur
+                    response = droneConsumer.getListDrone(token).execute();
+                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                        droneList = response.body();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                drones.addAll(droneList);
+
+            }
+        });
+    }
+
+    public void onClickOnDrone(DroneDTO drone){
+        // Afficher le marqueur du Drone sur la map
+        /*if(drone.getId()==droneSelected.getId()){
+            droneSelected = null;
+        }*/
+        droneSelected = drone;
+        if(null!=mDrone){
+            mDrone.remove();
+            mDrone = null;
+        }
+        if(drone.getStatut()!=EDroneStatut.DECONNECTE){
+            Toast.makeText(getApplicationContext(), "Recherche la position de "+ drone.getNom(), Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getApplicationContext(), drone.getNom()+ " est déconnecté, position inconnue", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    protected void initCRMFragment(){
+
+        listDroneOrCRM = findViewById(R.id.recycler_list_map);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        listDroneOrCRM.setLayoutManager(mLayoutManager);
+        listDroneOrCRM.setItemAnimator(new DefaultItemAnimator());
 
         // On peuple notre RecyclerView
         List<Map<String, String>> myDataset = getSampleDataToTest();
-        mAdapter = new ItemListCrmAdapter(myDataset);
+        RecyclerView.Adapter mAdapter = new ItemListCrmAdapter(myDataset);
+        listDroneOrCRM.setAdapter(mAdapter);
+    }
 
-        mRecyclerView.setAdapter(mAdapter);
+    protected void initDroneListFragment(){
+
+        listDroneOrCRM = findViewById(R.id.recycler_list_map);
+        // On peuple notre RecyclerView
+        RecyclerView.Adapter mAdapter = new ItemListDroneAdapter(this.drones);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        listDroneOrCRM.setLayoutManager(mLayoutManager);
+        listDroneOrCRM.setItemAnimator(new DefaultItemAnimator());
+        listDroneOrCRM.setAdapter(mAdapter);
+
     }
 
     private List<Map<String, String>> getSampleDataToTest() {
@@ -533,19 +677,6 @@ public class MapActivity extends FragmentActivity implements
             public void onInfoWindowClick(Marker marker) { }
         });
 
-        // Ajout du marqueur de positon du drône aux coordonnées RENNES_ISTIC
-        mDrone = mMap.addMarker(new MarkerOptions()
-                .position(RENNES_ISTIC)
-                .title("Drone")
-                .snippet("Iris Plus qui coûte 2K€")
-                .draggable(false) // Ce marqueur ne peut être déplacé
-                // On change la couleur du marqueur : ROSE
-//                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
-                .anchor(0.5f,0.5f)
-        );
-
-
         // On désactive la barre d'outils
         mMap.getUiSettings().setMapToolbarEnabled(false);
 
@@ -619,11 +750,122 @@ public class MapActivity extends FragmentActivity implements
 
         mMap.setMaxZoomPreference(20.0f);
 
-        // Centre l'écran sur le Drône
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(RENNES));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(RENNES_ISTIC, 18.0f));
+        // Centre l'écran sur le Drône sur RENNES
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.1119800, -1.6742900), 18.0f));
 
 //        drawPolygon();
+
+        drawTraitTopographiques();
+    }
+
+    /**
+     * Dessine les traits topographiques venant du Bouchon
+     * - Ceux qui ne changent pas (PEP, PENP, PDR)
+     * - Ceux qui changent ("danger", "sensibles")
+     */
+    public void drawTraitTopographiques() {
+
+        // TODO - Renseigner ces valeurs avec les coordonnées du centre de la carte actuelle
+        LatLng mapCenter = mMap.getCameraPosition().target;
+        final double latitude = mapCenter.latitude;
+        final double longitude = mapCenter.longitude;
+
+        // Récupérer les traits depuis le bouchon
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+
+                // Nos traits
+                List<TraitTopographiqueBouchonDTO> traits = new ArrayList<>();
+
+                // Construction de notre appel REST
+                RestTemplate restTemplate = RestTemplate.getInstance();
+                BouchonConsumer bouchonConsumer = restTemplate.builConsumer(BouchonConsumer.class);
+
+                Response<List<TraitTopographiqueBouchonDTO>> response = null;
+                try {
+                    // Récupération du token
+                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                            .getString("token", "null");
+
+                    response = bouchonConsumer.getTraitTopoByLocalisation(
+                            token, latitude, longitude, RAYON_RECHERCHE_TRAIT_TOPO).execute();
+
+                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                        traits = response.body();
+                        Log.i("MapActivity",  "Traits topo récupérés=" + traits.size());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                final List<TraitTopographiqueBouchonDTO> finalTraits = traits;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (TraitTopographiqueBouchonDTO trait: finalTraits) {
+
+                            // Récupération des icônes en fonction du type (change ou change pas)
+                            int rIcone = referentiel.get(trait.getType());
+
+                            // Différenciation de la couleur en fonction pour les types qui changent
+                            Drawable drawableIcon= ContextCompat.getDrawable(getApplicationContext(), rIcone);
+
+                            // Par défaut, on récupère notre ressource sous forme de Bitmap
+                            Bitmap icon = BitmapFactory.decodeResource(
+                                    getApplicationContext().getResources(), rIcone);
+
+                            String rgbNoA = trait.getComposante().getCouleur().substring(0,7);
+
+                            switch (trait.getType()) {
+                                case PDR: break;
+                                case PEP: break;
+                                case PENP:break;
+                                case DANGER:
+                                    Log.i(trait.getLabel(), rgbNoA);
+                                    icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
+                                    break;
+                                case SENSIBLE:
+                                    Log.i(trait.getLabel(), rgbNoA);
+                                    icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
+                                    break;
+                            }
+
+                            // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
+                            LatLng pos = new LatLng(trait.getGeoPosition().getLatitude(), trait.getGeoPosition().getLongitude());
+                            Marker posMarker = mMap.addMarker(new MarkerOptions()
+                                    .position(pos)
+                                    .title(trait.getLabel())
+                                    .snippet(trait.getType().getDescription() + " - " + trait.getComposante().getDescription())
+//                                    .icon(BitmapDescriptorFactory.fromResource(rIcone))
+                                    .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                                    .draggable(false));
+                        };
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Helper pour convertir les Drawable en Bitmap en modifiant la couleur
+     * Utile pour le changement de couleur programmatiquement
+     * @param resDrawableId drawabme à utiliser
+     * @param colorRequested couleur du remplissage
+     * @return
+     */
+    @NonNull
+    private Bitmap getNewBitmapRenderedWithColor(int resDrawableId, String colorRequested) {
+        Bitmap icon;// Copier le bitmap et le passer en Canvas sinon on aura une exception
+        icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), resDrawableId)
+                .copy(Bitmap.Config.ARGB_8888, true);
+
+        Paint paint = new Paint();
+        ColorFilter filter = new PorterDuffColorFilter(Color.parseColor(colorRequested), PorterDuff.Mode.SRC_IN);
+        paint.setColorFilter(filter);
+
+        Canvas canvas = new Canvas(icon);
+        canvas.drawBitmap(icon, 0, 0, paint);
+        return icon;
     }
 
     /**
@@ -667,15 +909,6 @@ public class MapActivity extends FragmentActivity implements
 //                    .anchor(0.5f, 0.5f)
                     .draggable(m.isDraggable()));
         }
-
-        // Afficher le marqueur du Drone sur la map
-        mDrone = mMap.addMarker(new MarkerOptions()
-                .position(mDrone.getPosition())
-                .title(mDrone.getTitle())
-                .snippet(mDrone.getSnippet())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
-                .anchor(0.5f,0.5f)
-                .draggable(mDrone.isDraggable()));
     }
 
     /**
@@ -731,13 +964,13 @@ public class MapActivity extends FragmentActivity implements
         }
 
         // Afficher le marqueur du Drone sur la map
-        mDrone = mMap.addMarker(new MarkerOptions()
-                .position(mDrone.getPosition())
-                .title(mDrone.getTitle())
-                .snippet(mDrone.getSnippet())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
-                .anchor(0.5f, 0.5f)
-                .draggable(mDrone.isDraggable()));
+//        mDrone = mMap.addMarker(new MarkerOptions()
+//                .position(mDrone.getPosition())
+//                .title(mDrone.getTitle())
+//                .snippet(mDrone.getSnippet())
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+//                .anchor(0.5f, 0.5f)
+//                .draggable(mDrone.isDraggable()));
     }
 
     /**
@@ -834,6 +1067,7 @@ public class MapActivity extends FragmentActivity implements
 
         if (marker != null && marker != mDrone) {
 
+            mDrone.setRotation(1.5f);
             // on récupère l'index du marqueur
             String markerTitle = marker.getTitle();
             LatLng markerPosition = marker.getPosition();
@@ -865,7 +1099,9 @@ public class MapActivity extends FragmentActivity implements
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
+        // On se désabonne du bus
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
         doUnbindService();
     }

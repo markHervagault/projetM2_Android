@@ -3,6 +3,7 @@ package istic.m2.ila.firefighterapp.Intervention;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -20,37 +22,43 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
+import istic.m2.ila.firefighterapp.dto.TypeVehiculeDTO;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class InterventionDetailsMoyensFragments extends Fragment {
 
-    private List<String> datas;
+    private Map<String, List<DeploiementDTO>> mapSortDeploiment;
     private Context context;
 
+    
     public InterventionDetailsMoyensFragments() {
         // Required empty public constructor
     }
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
         //init pojo data
         this.context = context;
-        this.datas = ((DetailsInterventionActivity)this.getActivity()).getDatas();
+        this.mapSortDeploiment = ((DetailsInterventionActivity) this.getActivity()).getDeploimentsTri();
     }
 
     @Override
-    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_intervention_details_moyens_fragments, container, false);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.interventionDetailsMoyenRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new SimpleAdapter(recyclerView,datas));
+        recyclerView.setAdapter(new SimpleAdapter(recyclerView, mapSortDeploiment));
 
         return rootView;
     }
@@ -61,16 +69,17 @@ public class InterventionDetailsMoyensFragments extends Fragment {
         //update fields
     }
 
-    private static class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder> {
+    private class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder> {
         private static final int UNSELECTED = -1;
 
         private RecyclerView recyclerView;
         private int selectedItem = UNSELECTED;
-        private List<String> dataset;
+        private Map<String, List<DeploiementDTO>> mapSortDeploiment;
 
-        public SimpleAdapter(RecyclerView recyclerView,List<String> dataset) {
+
+        public SimpleAdapter(RecyclerView recyclerView, Map<String, List<DeploiementDTO>> mapSortDeploiment) {
             this.recyclerView = recyclerView;
-            this.dataset = dataset;
+            this.mapSortDeploiment = mapSortDeploiment;
         }
 
         @Override
@@ -87,7 +96,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
         @Override
         public int getItemCount() {
-            return dataset.size();
+            return mapSortDeploiment.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
@@ -108,24 +117,41 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
             public void bind() {
                 int position = getAdapterPosition();
-                String content = dataset.get(position);
+                ArrayList<String> keys = new ArrayList<>(mapSortDeploiment.keySet());
+
+                List<DeploiementDTO> content = mapSortDeploiment.get(keys.get(position));
 
                 boolean isSelected = position == selectedItem;
-                expandButton.setText(content);
+
+                expandButton.setText(keys.get(position));
                 expandButton.setSelected(isSelected);
                 expandableLayout.setExpanded(isSelected, false);
 
-                TextView tmpText1 = new TextView(itemView.getContext());
-                TextView tmpText2 = new TextView(itemView.getContext());
-                TextView tmpText3 = new TextView(itemView.getContext());
-                tmpText1.setText("Item 1");
-                tmpText2.setText("Item 2");
-                tmpText3.setText("Item 3");
+                for (DeploiementDTO deploiment : content) {
+                    TextView tmpText1 = new TextView(itemView.getContext());
+//                    Button dtn = new Button();
+//                    dtn.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//
+//                        }
+//                    });
+                    if (deploiment.getVehicule() != null) {
+                        tmpText1.setText(deploiment.getVehicule().getLabel());
+                        tmpText1.setTextColor(Color.WHITE);
 
-                //for each item add to layout
-                expandedLinearLayout.addView(tmpText1);
-                expandedLinearLayout.addView(tmpText2);
-                expandedLinearLayout.addView(tmpText3);
+                    } else {
+                        String text = deploiment.getTypeDemande().getLabel()
+                                + " "
+                                + getResources().getString(R.string.intervention_detail_fragment_moyens_status_demande);
+                        tmpText1.setText(text);
+                        tmpText1.setTextColor(Color.YELLOW);
+                    }
+
+                    expandedLinearLayout.addView(tmpText1);
+                }
+
+
             }
 
             @Override
