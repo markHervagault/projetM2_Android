@@ -16,7 +16,6 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.IBinder;
 
@@ -34,15 +33,12 @@ import android.widget.Toast;
 
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
 import istic.m2.ila.firefighterapp.adapter.ItemListDroneAdapter;
-import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
 import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.UpdateInfosDroneMessage;
 import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
-import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.EDroneStatut;
@@ -60,18 +56,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.Console;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -491,13 +484,13 @@ public class MapActivity extends FragmentActivity implements
         disableButtonOpenCloseTrajet();
 
         // removePointToVisit
-        FloatingActionButton fab = findViewById(R.id.fab_menu_removePointToVisit);
+        FloatingActionButton fab = findViewById(R.id.fabMenu_removeSelectedMarker);
 
         // Bouton menu flottant - Ouvrir/fermer un trajet
-        final FloatingActionButton fab3 = findViewById(R.id.fab_menu_trajet_open_close);
+        final FloatingActionButton fab3 = findViewById(R.id.fabMenu_openClosePath);
 
         // Bouton menu flottant - Tracer un trajet
-        final FloatingActionButton fab2 = findViewById(R.id.fab_menu_addPointToVisit);
+        final FloatingActionButton fab2 = findViewById(R.id.fabMenu_addMarker);
 
         // Listener bouton - Supprimer un élément
         fab.setOnClickListener(new View.OnClickListener() {
@@ -583,7 +576,7 @@ public class MapActivity extends FragmentActivity implements
             }
         });
 
-        FloatingActionButton fab4 = findViewById(R.id.fab_menu_tracer_zone);
+        FloatingActionButton fab4 = findViewById(R.id.fabMenu_zone);
 
         // On sauvegarde nos boutons
         fabMenuButtons = new ArrayList<>();
@@ -595,7 +588,7 @@ public class MapActivity extends FragmentActivity implements
 
     private void disableButtonOpenCloseTrajet() {
         // Si on a moins de 3 points on ne peut fermer le trajet
-        FloatingActionButton fab3 = findViewById(R.id.fab_menu_trajet_open_close);
+        FloatingActionButton fab3 = findViewById(R.id.fabMenu_openClosePath);
         if (markersLatLngPolylines.size() < 3) {
             fab3.setEnabled(false);
         } else {
@@ -704,7 +697,6 @@ public class MapActivity extends FragmentActivity implements
                         .position(latLng)
                         .title("Point de passage : " + (_markers.size()))
                         .draggable(true));
-
                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trim));
 
                 indexMarkerByTitle.put(marker.getTitle(),  _markers.size());
