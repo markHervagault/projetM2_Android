@@ -39,7 +39,10 @@ public class InterventionDetailsMoyensFragments extends Fragment {
     private Map<String, List<DeploiementDTO>> mapSortDeploiment;
     private Context context;
 
-    
+    public interface ActivityMoyens {
+        Map<String, List<DeploiementDTO>> getDeploiments();
+    }
+
     public InterventionDetailsMoyensFragments() {
         // Required empty public constructor
     }
@@ -49,7 +52,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
         super.onAttach(context);
         //init pojo data
         this.context = context;
-        this.mapSortDeploiment = ((DetailsInterventionActivity) this.getActivity()).getDeploimentsTri();
+        this.mapSortDeploiment = ((ActivityMoyens) this.getActivity()).getDeploiments();
     }
 
     @Override

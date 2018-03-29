@@ -36,7 +36,7 @@ import retrofit2.Response;
  * Created by markh on 20/03/2018.
  */
 
-public class DetailsInterventionActivity extends AppCompatActivity {
+public class DetailsInterventionActivity extends AppCompatActivity implements InterventionDetailsMoyensFragments.ActivityMoyens {
 
     private static String TAG = "DetailIntervention";
 
@@ -48,8 +48,9 @@ public class DetailsInterventionActivity extends AppCompatActivity {
         return interventionDTOParcelable.getInterventionDTO();
     }
 
-    public Map<String, List<DeploiementDTO>> getDeploimentsTri() {
-        Log.i(TAG,"getDeploimentsTri Begin");
+    @Override
+    public Map<String, List<DeploiementDTO>> getDeploiments() {
+        Log.i(TAG, "getDeploimentsTri Begin");
         String token = getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
         String id = interventionDTOParcelable.getInterventionDTO().getId().toString();
 
@@ -64,7 +65,7 @@ public class DetailsInterventionActivity extends AppCompatActivity {
         try {
             response = deploimentConsumer.getListDeploimentById(token, id).execute();
 
-            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+            if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
                 deploiementDTOList = response.body();
             }
         } catch (Exception e) {
@@ -72,21 +73,21 @@ public class DetailsInterventionActivity extends AppCompatActivity {
         }
 
         String type = null;
-        for (DeploiementDTO deploiement : deploiementDTOList) {
+        if (deploiementDTOList != null) {
+            for (DeploiementDTO deploiement : deploiementDTOList) {
 
-            if(deploiement.getVehicule()!=null){
-                type = deploiement.getVehicule().getType().getLabel();
-            }else {
-                type = deploiement.getTypeDemande().getLabel();
+                if (deploiement.getVehicule() != null) {
+                    type = deploiement.getVehicule().getType().getLabel();
+                } else {
+                    type = deploiement.getTypeDemande().getLabel();
+                }
+                List<DeploiementDTO> list = !mapSortDeploiment.containsKey(type) ? new ArrayList<DeploiementDTO>() : mapSortDeploiment.get(type);
+                list.add(deploiement);
+
+                mapSortDeploiment.put(type, list);
             }
-
-
-            List<DeploiementDTO> list = !mapSortDeploiment.containsKey(type) ? new ArrayList<DeploiementDTO>() : mapSortDeploiment.get(type);
-            list.add(deploiement);
-
-            mapSortDeploiment.put(type, list);
         }
-        Log.i(TAG,"getDeploimentsTri End");
+        Log.i(TAG, "getDeploimentsTri End");
         return mapSortDeploiment;
     }
 
@@ -110,4 +111,6 @@ public class DetailsInterventionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intervention_details);
         Log.i(TAG, "onCreate End");
     }
+
+
 }
