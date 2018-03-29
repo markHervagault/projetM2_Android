@@ -172,6 +172,15 @@ public class MapActivity extends FragmentActivity implements
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mServiceRabbitMQ = ((ServiceRabbitMQ.LocalBinder)service).getService();
+            if(isOnModeDrone){
+                // initialise le layout list drone
+                initDroneListFragment();
+                // On récupère la liste des drones
+                getDronesFromBDD();
+            }else{
+                // initialise le layout CRM
+                initCRMFragment();
+            }
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -211,15 +220,6 @@ public class MapActivity extends FragmentActivity implements
         // On s'enregistre pour écouter sur le bus
         EventBus.getDefault().register(this);
         setContentView(R.layout.activity_map);
-        if(isOnModeDrone){
-            // initialise le layout list drone
-            initDroneListFragment();
-            // On récupère la liste des drones
-            getDronesFromBDD();
-        }else{
-            // initialise le layout CRM
-            initCRMFragment();
-        }
 
         // Obtenir le SupportMapFragment et être notifié quand la map est prête à être utilisée.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -261,23 +261,24 @@ public class MapActivity extends FragmentActivity implements
     @Subscribe
     public void onEvent(final UpdateInfosDroneMessage message)
     {
+        if(droneSelected==null || droneSelected.getId()!=message.getDroneId()){
+            return;
+        }
         Log.d(TAG, "======================================================================== j'ai recu les infos du drone n° : " + message.getDroneId());
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(droneSelected!=null && droneSelected.getId()==message.getDroneId()){
-                    if(mDrone==null){
-                        mDrone = mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(message.getLatitude(), message.getLongitude()))
-                                .rotation((float)Math.toDegrees((float)message.getYawOrientation()))
-                                .title(droneSelected.getNom())
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
-                                .anchor(0.5f,0.5f)
-                                .draggable(false));
-                    }else{
-                        mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
-                        mDrone.setRotation((float)Math.toDegrees((float)message.getYawOrientation()));
-                    }
+                if(mDrone==null){
+                    mDrone = mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(message.getLatitude(), message.getLongitude()))
+                            .rotation((float)Math.toDegrees((float)message.getYawOrientation()))
+                            .title(droneSelected.getNom())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+                            .anchor(0.5f,0.5f)
+                            .draggable(false));
+                }else{
+                    mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
+                    mDrone.setRotation((float)Math.toDegrees((float)message.getYawOrientation()));
                 }
             }
         });
@@ -320,6 +321,9 @@ public class MapActivity extends FragmentActivity implements
 
     public void onClickOnDrone(DroneDTO drone){
         // Afficher le marqueur du Drone sur la map
+        /*if(drone.getId()==droneSelected.getId()){
+            droneSelected = null;
+        }*/
         droneSelected = drone;
         if(null!=mDrone){
             mDrone.remove();
@@ -330,110 +334,6 @@ public class MapActivity extends FragmentActivity implements
         }else{
             Toast.makeText(getApplicationContext(), drone.getNom()+ " est déconnecté, position inconnue", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private List<DroneDTO> simulateGetListDrone(){
-        List<DroneDTO> drones = new ArrayList<DroneDTO>();
-        DroneDTO drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)1);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)2);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)3);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)4);
-        drone1.setStatut(EDroneStatut.DECONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)5);
-        drone1.setStatut(EDroneStatut.DECONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)6);
-        drone1.setStatut(EDroneStatut.DECONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)7);
-        drone1.setStatut(EDroneStatut.EN_MISSION);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)8);
-        drone1.setStatut(EDroneStatut.EN_MISSION);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)9);
-        drone1.setStatut(EDroneStatut.EN_MISSION);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)10);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)11);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)12);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)13);
-        drone1.setStatut(EDroneStatut.EN_MISSION);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)14);
-        drone1.setStatut(EDroneStatut.EN_MISSION);
-        drones.add(drone1);
-
-
-        return drones;
     }
 
     protected void initCRMFragment(){
