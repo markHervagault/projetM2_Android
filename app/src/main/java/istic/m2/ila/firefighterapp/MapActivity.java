@@ -128,7 +128,7 @@ public class MapActivity extends FragmentActivity implements
     /**
      * Liste des drones
      */
-    private List<DroneDTO> drones;
+    private List<DroneDTO> drones = new ArrayList<DroneDTO>();
 
     // Contrôles d'interfaces
     private boolean isEnabledButtonAddPointToVisit;
@@ -167,13 +167,6 @@ public class MapActivity extends FragmentActivity implements
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mServiceRabbitMQ = ((ServiceRabbitMQ.LocalBinder)service).getService();
-
-            List<DroneDTO> drones = simulateGetListDrone();
-            for(DroneDTO drone:drones){
-                NewDroneMessage message = new NewDroneMessage(drone.getId());
-                Log.d(TAG, "================================================================ Envoi d'une donnee sur le bus : "+drone.getNom());
-                EventBus.getDefault().post(message);
-            }
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -822,9 +815,8 @@ public class MapActivity extends FragmentActivity implements
 
         mMap.setMaxZoomPreference(20.0f);
 
-        // Centre l'écran sur le Drône
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(RENNES));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(RENNES_ISTIC, 18.0f));
+        // Centre l'écran sur le Drône sur RENNES
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.1119800, -1.6742900), 18.0f));
 
 //        drawPolygon();
 
