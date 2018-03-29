@@ -19,10 +19,21 @@
         <TextView
             android:id="@+id/drone_name_listDrone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="DroneXbyoo"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+        <ImageView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/image_battery_listDrone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true"
+            android:maxHeight="20dp"
+         />
+
     </LinearLayout>
 
     <LinearLayout
@@ -40,7 +51,6 @@
             android:paddingRight="10dp"
             android:scaleType="fitEnd"
             android:adjustViewBounds="true"
-            app:srcCompat="@drawable/rond_vert"
             android:maxHeight="15dp"/>
 
         <TextView

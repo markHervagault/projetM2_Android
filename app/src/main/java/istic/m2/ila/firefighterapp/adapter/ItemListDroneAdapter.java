@@ -55,6 +55,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         public TextView drone_name_listDrone;
         public TextView statut_listDrone;
         public ImageView image_statut_listDrone;
+        public ImageView image_battery_listDrone;
         public LinearLayout layoutItemDroneList;
 
         public ViewHolder(View v) {
@@ -62,6 +63,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
             drone_name_listDrone = v.findViewById(R.id.drone_name_listDrone);
             statut_listDrone = v.findViewById(R.id.statut_listDrone);
             image_statut_listDrone = v.findViewById(R.id.image_statut_listDrone);
+            image_battery_listDrone = v.findViewById(R.id.image_battery_listDrone);
             layoutItemDroneList = v.findViewById(R.id.item_Drone_List_layout);
         }
     }
@@ -90,22 +92,45 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
             case CONNECTE:
                 status = IHMLabels.DRONE_STATUT_CONNECTE;
                 holder.image_statut_listDrone.setImageResource(R.drawable.connected);
+                holder.image_battery_listDrone.setVisibility(View.VISIBLE);
                 break;
             case DECONNECTE:
                 status = IHMLabels.DRONE_STATUT_DECONNECTE;
                 holder.image_statut_listDrone.setImageResource(R.drawable.disconnected);
+                holder.image_battery_listDrone.setVisibility(View.GONE);
                 break;
             case EN_MISSION:
                 status = IHMLabels.DRONE_STATUT_EN_MISSION;
                 holder.image_statut_listDrone.setImageResource(R.drawable.droneenmission);
+                holder.image_battery_listDrone.setVisibility(View.VISIBLE);
                 break;
             default:
                 Log.d(TAG, "Statut du drone inconnu");
                 holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
+                holder.image_battery_listDrone.setVisibility(View.GONE);
                 status = IHMLabels.DRONE_STATUT_INCONNU;
-
         }
+
+        int battery = drone.getBattery();
+
+        if(battery>70)
+        {
+            holder.image_battery_listDrone.setImageResource(R.drawable.fullbattery);
+        }
+        else if (battery > 45 )
+        {
+            holder.image_battery_listDrone.setImageResource(R.drawable.midbattery);
+        }
+        else if (battery > 20)
+        {
+            holder.image_battery_listDrone.setImageResource(R.drawable.criticalbattery);
+        }
+        else {
+            holder.image_battery_listDrone.setImageResource(R.drawable.emptybattery);
+        }
+
         holder.statut_listDrone.setText(status);
+
 
         if(indexSelected==position){
             holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_selected));

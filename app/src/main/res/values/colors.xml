@@ -6,6 +6,7 @@
     <color name="colorLightGrey">#BDBDBD</color>
     <color name="colorStrongGrey">#36393d</color>
     <color name="colorLightBlack">#2a2e33</color>
+    <color name="colorBlack">#040b14</color>
 
     <color name="colorMenuFabUnselectedNormal">#DA4336</color>
     <color name="colorMenuFabUnselectedPressed">#E75043</color>

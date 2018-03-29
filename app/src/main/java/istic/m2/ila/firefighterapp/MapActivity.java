@@ -267,8 +267,27 @@ public class MapActivity extends FragmentActivity implements
 
         DroneDTO droneAdd = new DroneDTO();
         droneAdd.setId((long)51515);
-        droneAdd.setStatut(EDroneStatut.DECONNECTE);
+        droneAdd.setStatut(EDroneStatut.CONNECTE);
         droneAdd.setNom("Le drone du turfu");
+        droneAdd.setBattery(100);
+        drones.add(droneAdd);
+        droneAdd = new DroneDTO();
+        droneAdd.setId((long)5151);
+        droneAdd.setStatut(EDroneStatut.CONNECTE);
+        droneAdd.setNom("Le drone du turfu 2 ");
+        droneAdd.setBattery(55);
+        drones.add(droneAdd);
+        droneAdd = new DroneDTO();
+        droneAdd.setId((long)515);
+        droneAdd.setStatut(EDroneStatut.CONNECTE);
+        droneAdd.setNom("Le drone du turfu 3 ");
+        droneAdd.setBattery(40);
+        drones.add(droneAdd);
+        droneAdd = new DroneDTO();
+        droneAdd.setId((long)51);
+        droneAdd.setStatut(EDroneStatut.CONNECTE);
+        droneAdd.setNom("Le drone du turfu 4 ");
+        droneAdd.setBattery(18);
         drones.add(droneAdd);
 
         buttonStop = findViewById(R.id.button_stop_mission);
