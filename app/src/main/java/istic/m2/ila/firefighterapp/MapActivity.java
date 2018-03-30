@@ -80,6 +80,8 @@ import java.util.Set;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.services.IMapService;
+import istic.m2.ila.firefighterapp.services.impl.MapService;
 import retrofit2.Response;
 
 
@@ -92,6 +94,8 @@ public class MapActivity extends FragmentActivity implements
      * Tag qui identifie la classe pour les LOGs
      */
     private static String TAG = "MapActivity => ";
+
+    private IMapService mapService = MapService.getInstance();
 
     /**
      * TRUE si l'activité est en mode drone, FALSE si elle est en mode intervention
@@ -320,30 +324,9 @@ public class MapActivity extends FragmentActivity implements
     private void getDronesFromBDD(){
         AsyncTask.execute(new Runnable() {
             public void run() {
-
-                // On peuple notre RecyclerView
-                List<DroneDTO> droneList = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                DroneConsumer droneConsumer = restTemplate.builConsumer(DroneConsumer.class);
-
-                Response<List<DroneDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    // On récupère toutes les interventions du Serveur
-                    response = droneConsumer.getListDrone(token).execute();
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        droneList = response.body();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                drones.addAll(droneList);
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                drones.addAll(mapService.getDrone(token));
 
             }
         });
@@ -799,32 +782,11 @@ public class MapActivity extends FragmentActivity implements
         // Récupérer les traits depuis le bouchon
         AsyncTask.execute(new Runnable() {
             public void run() {
+                // Récupération du token
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
 
-                // Nos traits
-                List<DeploiementDTO> deploy = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                InterventionConsumer consumer = restTemplate.builConsumer(InterventionConsumer.class);
-
-                Response<List<DeploiementDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    //TODO VDS idInterv
-                    response = consumer.getListDeploiement(token,2).execute();
-
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        deploy = response.body();
-                        Log.i("MapActivity",  "Traits topo récupérés=" + deploy.size());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final List<DeploiementDTO> finalDeploy = deploy;
+                final List<DeploiementDTO> finalDeploy = mapService.getDeploy(token);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -865,32 +827,10 @@ public class MapActivity extends FragmentActivity implements
         // Récupérer les traits depuis le bouchon
         AsyncTask.execute(new Runnable() {
             public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
 
-                // Nos traits
-                List<SinistreDTO> sinistre = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                InterventionConsumer consumer = restTemplate.builConsumer(InterventionConsumer.class);
-
-                Response<List<SinistreDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    //TODO VDS idInterv
-                    response = consumer.getListSinistre(token,2).execute();
-
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        sinistre = response.body();
-                        Log.i("MapActivity",  "Traits topo récupérés=" + sinistre.size());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final List<SinistreDTO> finalSinistres = sinistre;
+                final List<SinistreDTO> finalSinistres = mapService.getTraitFromBouchon(token);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -926,32 +866,9 @@ public class MapActivity extends FragmentActivity implements
         // Récupérer les traits depuis le bouchon
         AsyncTask.execute(new Runnable() {
             public void run() {
-
-                // Nos traits
-                List<TraitTopoDTO> traits = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                InterventionConsumer consumer = restTemplate.builConsumer(InterventionConsumer.class);
-
-                Response<List<TraitTopoDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    //TODO VDS idInterv
-                    response = consumer.getListTraitTopo(token,2).execute();
-
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        traits = response.body();
-                        Log.i("MapActivity",  "Traits topo récupérés=" + traits.size());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final List<TraitTopoDTO> finalTraits = traits;
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                final List<TraitTopoDTO> finalTraits = mapService.getTraitTopo(token);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -984,42 +901,23 @@ public class MapActivity extends FragmentActivity implements
      * - Ceux qui ne changent pas (PEP, PENP, PDR)
      * - Ceux qui changent ("danger", "sensibles")
      */
-    public void drawTraitTopographiquesBouchon() {
+
+
+    private void drawTraitTopographiquesBouchon() {
+
 
         // TODO - Renseigner ces valeurs avec les coordonnées du centre de la carte actuelle
         LatLng mapCenter = mMap.getCameraPosition().target;
         final double latitude = mapCenter.latitude;
         final double longitude = mapCenter.longitude;
 
+
         // Récupérer les traits depuis le bouchon
         AsyncTask.execute(new Runnable() {
             public void run() {
-
-                // Nos traits
-                List<TraitTopographiqueBouchonDTO> traits = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                BouchonConsumer bouchonConsumer = restTemplate.builConsumer(BouchonConsumer.class);
-
-                Response<List<TraitTopographiqueBouchonDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    response = bouchonConsumer.getTraitTopoByLocalisation(
-                            token, latitude, longitude, RAYON_RECHERCHE_TRAIT_TOPO).execute();
-
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        traits = response.body();
-                        Log.i("MapActivity",  "Traits topo récupérés=" + traits.size());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final List<TraitTopographiqueBouchonDTO> finalTraits = traits;
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                final List<TraitTopographiqueBouchonDTO> finalTraits = mapService.getTraitTopoFromBouchon(token, longitude, latitude, RAYON_RECHERCHE_TRAIT_TOPO);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
