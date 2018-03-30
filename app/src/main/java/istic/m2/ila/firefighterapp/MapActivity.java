@@ -786,7 +786,7 @@ public class MapActivity extends FragmentActivity implements
                 String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
                         .getString("token", "null");
 
-                final List<DeploiementDTO> finalDeploy = mapService.getDeploy(token);
+                final List<DeploiementDTO> finalDeploy = mapService.getDeploy(token,2);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -830,7 +830,7 @@ public class MapActivity extends FragmentActivity implements
                 String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
                         .getString("token", "null");
 
-                final List<SinistreDTO> finalSinistres = mapService.getTraitFromBouchon(token);
+                final List<SinistreDTO> finalSinistres = mapService.getSinistre(token,2);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -868,7 +868,7 @@ public class MapActivity extends FragmentActivity implements
             public void run() {
                 String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
                         .getString("token", "null");
-                final List<TraitTopoDTO> finalTraits = mapService.getTraitTopo(token);
+                final List<TraitTopoDTO> finalTraits = mapService.getTraitTopo(token,2);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -917,7 +917,7 @@ public class MapActivity extends FragmentActivity implements
             public void run() {
                 String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
                         .getString("token", "null");
-                final List<TraitTopographiqueBouchonDTO> finalTraits = mapService.getTraitTopoFromBouchon(token, longitude, latitude, RAYON_RECHERCHE_TRAIT_TOPO);
+                final List<TraitTopographiqueBouchonDTO> finalTraits = mapService.getTraitTopoFromBouchon(token,2, longitude, latitude, RAYON_RECHERCHE_TRAIT_TOPO);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
