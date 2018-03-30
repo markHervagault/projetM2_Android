@@ -290,10 +290,9 @@ public class DroneMapFragment extends Fragment
 
     //Selected Drone
     private DroneDTO selectedDrone;
-    private Marker selectedDroneMarker;
 
     //Drone List
-    private List<DroneInfosDTO> drones;
+    private List<DroneInfoUpdateMessage> drones;
     private Map<Long, Marker> droneMarkersById;
 
     //Mission
@@ -450,7 +449,7 @@ public class DroneMapFragment extends Fragment
      */
     public void DeleteMarker(Marker marker)
     {
-        if (marker != null && marker != selectedDroneMarker) {
+        if (marker != null) {
             // on récupère l'index du marqueur
             String markerTitle = marker.getTitle();
             Integer matchMarker = markersIndexByName.get(markerTitle);
@@ -577,15 +576,14 @@ public class DroneMapFragment extends Fragment
         //Sinon, mise a jour du drone Selectionné et récupération de la mission en cours
         selectedDrone = message.Drone;
 
-        final Marker drone = droneMarkersById.get(message.Drone.getId());
-
         getActivity().runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
+                Marker drone = droneMarkersById.get(message.Drone.getId());
                 if(drone != null)
-                    CameraUpdateFactory.newLatLngZoom(drone.getPosition(), 18.0f);
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(drone.getPosition(), 18.0f));
 
                 UpdateCurrentMission();
             }
@@ -597,7 +595,10 @@ public class DroneMapFragment extends Fragment
     {
         //Si le drone n'existe pas, on l'ajoute
         if(!DroneAlreadyExist(message.getDroneId()))
+        {
+            drones.add(message);
             AddNewDroneOnMap(message);
+        }
         else //Sinon, mise a jour du drone
             UpdateDroneOnMap(message);
     }
@@ -607,9 +608,9 @@ public class DroneMapFragment extends Fragment
         if(selectedDrone != null && selectedDrone.getId().equals(droneId))
             return true;
 
-        for(DroneInfosDTO dto : drones)
+        for(DroneInfoUpdateMessage droneInfo : drones)
         {
-            if(dto.id_drone == droneId)
+            if(droneInfo.getDroneId() == droneId)
                 return true;
         }
         return false;
@@ -617,14 +618,14 @@ public class DroneMapFragment extends Fragment
 
     private void UpdateDroneOnMap(final DroneInfoUpdateMessage message)
     {
-        final Marker droneMarker = droneMarkersById.get(message.getDroneId());
         getActivity().runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
+                Marker droneMarker = droneMarkersById.get(message.getDroneId());
                 droneMarker.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
-                droneMarker.setRotation((float)Math.toDegrees(googleMap.getCameraPosition().bearing + (float)message.getYawOrientation()));
+                droneMarker.setRotation((float)Math.toDegrees(message.getYawOrientation()) - googleMap.getCameraPosition().bearing);
             }
         });
     }
