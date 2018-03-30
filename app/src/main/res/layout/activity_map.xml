@@ -92,7 +92,7 @@
 
                 <!--Menu item 1-->
                 <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/fab_menu_addPointToVisit"
+                    android:id="@+id/fabMenu_addMarker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     fab:fab_size="mini"
@@ -106,7 +106,7 @@
 
                 <!--Menu item 2-->
                 <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/fab_menu_trajet_open_close"
+                    android:id="@+id/fabMenu_openClosePath"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     fab:fab_size="mini"
@@ -119,7 +119,7 @@
 
                 <!--Menu item 3-->
                 <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/fab_menu_tracer_zone"
+                    android:id="@+id/fabMenu_zone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     fab:fab_size="mini"
@@ -132,7 +132,7 @@
 
                 <!--Menu item 4-->
                 <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/fab_menu_removePointToVisit"
+                    android:id="@+id/fabMenu_removeSelectedMarker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     fab:fab_size="mini"

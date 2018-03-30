@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.UpdateInfosDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DroneInfoUpdateMessage;
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 
@@ -107,7 +107,7 @@ public class ServiceRabbitMQ extends Service {
                 Gson gson = builder.create();
                 DroneInfosDTO droneInfosDTO = gson.fromJson(incomingMessageHandler, DroneInfosDTO.class);
                 EventBus.getDefault().post(
-                        new UpdateInfosDroneMessage(droneInfosDTO.id_drone, droneInfosDTO.position.longitude,
+                        new DroneInfoUpdateMessage(droneInfosDTO.id_drone, droneInfosDTO.position.longitude,
                                 droneInfosDTO.position.latitude, droneInfosDTO.battery_level, droneInfosDTO.orientation.yaw));
             }
         };

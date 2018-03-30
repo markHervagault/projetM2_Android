@@ -29,36 +29,35 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".AddInterventionActivity"
-            android:label="Nouvelle Intervention"
-            android:screenOrientation="landscape">
-        </activity>
+        </activity>        <activity
+        android:name=".AddInterventionActivity"
+        android:label="Nouvelle Intervention"
+        android:screenOrientation="landscape">
+    </activity>
         <activity
             android:name=".MapActivity"
-            android:screenOrientation="landscape"
-            android:label="@string/title_activity_map">
-        </activity>
+            android:label="@string/title_activity_map"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".NewMapActivity"
+            android:label="@string/title_activity_map"
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".ListInterventionActivity"
-            android:screenOrientation="landscape"
-            android:label="@string/title_activity_list_intervention">
-        </activity>
+            android:label="@string/title_activity_list_intervention"
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".Intervention.DetailsInterventionActivity"
             android:screenOrientation="landscape"
             android:value="@string/title_intervention_details">
-        </activity>
-
-        <service
-            android:name=".clientRabbitMQ.ServiceRabbitMQ"
-            android:label="Service RabbitMQ" >
-        </service>
-
+        </activity>        <service
+        android:name=".clientRabbitMQ.ServiceRabbitMQ"
+        android:label="Service RabbitMQ" >
+    </service>
+        Zone de message
     </application>
 
 </manifest>

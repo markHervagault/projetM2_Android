@@ -13,6 +13,8 @@ public class DroneDTO {
 
     private EDroneStatut statut;
 
+    private int battery;
+
     public EDroneStatut getStatut() {
         return statut;
     }
@@ -43,5 +45,13 @@ public class DroneDTO {
 
     public void setAdresseMac(String adresseMac) {
         this.adresseMac = adresseMac;
+    }
+
+    public int getBattery() {
+        return battery;
+    }
+
+    public void setBattery(int battery) {
+        this.battery = battery;
     }
 }
