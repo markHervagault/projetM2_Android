@@ -32,7 +32,6 @@ import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 public class ServiceRabbitMQ extends Service {
 
     public static String TAG = "Service RABBITMQ => ";
-    private ConnectionFactory _factory;
     Connection _connection;
 
     // This is the object that receives interactions from clients.
@@ -50,7 +49,7 @@ public class ServiceRabbitMQ extends Service {
     public void onCreate()
     {
         EventBus.getDefault().register(this);
-        _factory = new ConnectionFactory();
+        ConnectionFactory _factory = new ConnectionFactory();
 
         _factory.setHost(Endpoints.RABBITMQ_SERVERADRESS);
         _factory.setUsername(Endpoints.RABBITMQ_USERNAME);
@@ -84,7 +83,7 @@ public class ServiceRabbitMQ extends Service {
         return mBinder;
     }
 
-
+    //SUBSCRIBING
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onEvent(final NewDroneMessage event) throws Exception
     {
@@ -103,7 +102,7 @@ public class ServiceRabbitMQ extends Service {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 incomingMessageHandler = new String(body, "UTF-8");
-                Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
+                //Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
                 DroneInfosDTO droneInfosDTO = gson.fromJson(incomingMessageHandler, DroneInfosDTO.class);
