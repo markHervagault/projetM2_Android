@@ -28,6 +28,10 @@ import retrofit2.http.Path;
  * Consumer des services rest, en relation avec les interventions, exposé par le serveur
  */
 public interface InterventionConsumer {
+
+    @GET(Endpoints.CODE_SINISTRE)
+    Call<List<CodeSinistreDTO>> getAllCodeSinistre(@Header("Authorization") String token);
+
     /**
      * Récuperation de toutes les interventions
      */
