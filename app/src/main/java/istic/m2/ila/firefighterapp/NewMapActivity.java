@@ -186,6 +186,54 @@ public class NewMapActivity extends AppCompatActivity {
         // Centre l'écran sur le Drône sur RENNES ISTIC
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getGeoPositionIntervention().getLatitude(), getGeoPositionIntervention().getLongitude()), 18.0f));
         googleMap.setBuildingsEnabled(false); //2D pour améliorer les performances
+        getTraitTopoBouchons(googleMap);
+        getTraitTopo(googleMap);
+        getSinistre(googleMap);
+    }
+
+    public void getTraitTopoBouchons(final GoogleMap googleMap) {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getGeoPositionIntervention();
+                List<TraitTopographiqueBouchonDTO> traits = getService()
+                        .getTraitTopoFromBouchon(token, geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
+                for(TraitTopographiqueBouchonDTO trait : traits) {
+                    drawTraitTopoBouchons(googleMap,trait);
+                }
+            }
+        });
+    }
+
+    public void getTraitTopo(final GoogleMap googleMap) {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getGeoPositionIntervention();
+                List<TraitTopoDTO> traits = getService()
+                        .getTraitTopo(token);
+                for(TraitTopoDTO trait : traits) {
+                    drawTraitTopo(googleMap,trait);
+                }
+            }
+        });
+    }
+
+    public void getSinistre(final GoogleMap googleMap) {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getGeoPositionIntervention();
+                List<SinistreDTO> sinistres = getService()
+                        .getTraitFromBouchon(token);
+                for(SinistreDTO sinistre : sinistres) {
+                    drawSinistre(googleMap, sinistre);
+                }
+            }
+        });
     }
 
     public void drawTraitTopoBouchons(final GoogleMap googleMap, final TraitTopographiqueBouchonDTO traitTopo) {
