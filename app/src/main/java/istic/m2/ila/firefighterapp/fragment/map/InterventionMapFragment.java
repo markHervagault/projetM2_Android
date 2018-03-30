@@ -3,7 +3,6 @@ package istic.m2.ila.firefighterapp.fragment.map;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +90,7 @@ public class InterventionMapFragment extends Fragment {
                         .getString("token", "null");
                 GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
                 List<TraitTopographiqueBouchonDTO> traits = getMeActivity().getService()
-                        .getTraitTopoFromBouchon(token, geo.getLongitude(), geo.getLatitude(), getMeActivity().RAYON_RECHERCHE_TRAIT_TOPO);
+                        .getTraitTopoFromBouchon(token,2 , geo.getLongitude(), geo.getLatitude(), getMeActivity().RAYON_RECHERCHE_TRAIT_TOPO);
                 for(TraitTopographiqueBouchonDTO trait : traits) {
                     getMeActivity().drawTraitTopoBouchons(googleMap,trait);
                 }
@@ -106,7 +105,7 @@ public class InterventionMapFragment extends Fragment {
                         .getString("token", "null");
                 GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
                 List<TraitTopoDTO> traits = getMeActivity().getService()
-                        .getTraitTopo(token);
+                        .getTraitTopo(token,2);
                 for(TraitTopoDTO trait : traits) {
                     getMeActivity().drawTraitTopo(googleMap,trait);
                 }
@@ -121,7 +120,7 @@ public class InterventionMapFragment extends Fragment {
                         .getString("token", "null");
                 GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
                 List<SinistreDTO> sinistres = getMeActivity().getService()
-                        .getTraitFromBouchon(token);
+                        .getSinistre(token,2);
                 for(SinistreDTO sinistre : sinistres) {
                     getMeActivity().drawSinistre(googleMap, sinistre);
                 }
@@ -136,7 +135,7 @@ public class InterventionMapFragment extends Fragment {
                         .getString("token", "null");
                 GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
                 List<DeploiementDTO> deploys = getMeActivity().getService()
-                        .getDeploy(token);
+                        .getDeploy(token,2);
                 for(DeploiementDTO deploy : deploys) {
                     getMeActivity().drawVehicule(googleMap,deploy);
                 }
