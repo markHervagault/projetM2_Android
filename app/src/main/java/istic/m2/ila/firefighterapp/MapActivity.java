@@ -61,12 +61,14 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.Console;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -711,6 +713,7 @@ public class MapActivity extends FragmentActivity implements
                         .position(latLng)
                         .title("Point de passage : " + (_markers.size()))
                         .draggable(true));
+
                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trim));
 
                 indexMarkerByTitle.put(marker.getTitle(),  _markers.size());

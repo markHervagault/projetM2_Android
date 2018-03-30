@@ -40,6 +40,10 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
     //private pojo item
     private InterventionDTO interventionDTO;
 
+    public interface ActivityDetails {
+        InterventionDTO getIntervention();
+    }
+
     public InterventionDetailsStaticFragment() {
         // Required empty public constructor
     }
@@ -48,7 +52,7 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
     public void onAttach(Context context){
         super.onAttach(context);
         //fetch data from activity
-        interventionDTO = ((DetailsInterventionActivity)getActivity()).getIntervention();
+        interventionDTO = ((ActivityDetails) getActivity()).getIntervention();
     }
 
     @Override
