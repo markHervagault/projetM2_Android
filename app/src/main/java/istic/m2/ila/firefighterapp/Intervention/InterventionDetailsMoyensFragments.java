@@ -22,29 +22,80 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 import org.w3c.dom.Text;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
+import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.TypeVehiculeDTO;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class InterventionDetailsMoyensFragments extends Fragment {
 
+    private static String TAG = "FragmentMoyens";
+
+
+    private Long idIntervention;
     private Map<String, List<DeploiementDTO>> mapSortDeploiment;
     private Context context;
 
     public interface ActivityMoyens {
-        Map<String, List<DeploiementDTO>> getDeploiments();
+        Long getIdIntervention();
     }
 
     public InterventionDetailsMoyensFragments() {
         // Required empty public constructor
+    }
+
+    private Map<String, List<DeploiementDTO>> getDeploiments() {
+        Log.i(TAG, "getDeploimentsTri Begin");
+        String token = this.getActivity().getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
+        String id = this.idIntervention.toString();
+
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        DeploimentConsumer deploimentConsumer = restTemplate.builConsumer(DeploimentConsumer.class);
+        Response<List<DeploiementDTO>> response = null;
+
+        mapSortDeploiment = new HashMap<>();
+        List<DeploiementDTO> deploiementDTOList = null;
+
+
+        try {
+            response = deploimentConsumer.getListDeploimentById(token, id).execute();
+
+            if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                deploiementDTOList = response.body();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String type = null;
+        if (deploiementDTOList != null) {
+            for (DeploiementDTO deploiement : deploiementDTOList) {
+
+                if (deploiement.getVehicule() != null) {
+                    type = deploiement.getVehicule().getType().getLabel();
+                } else {
+                    type = deploiement.getTypeDemande().getLabel();
+                }
+                List<DeploiementDTO> list = !mapSortDeploiment.containsKey(type) ? new ArrayList<DeploiementDTO>() : mapSortDeploiment.get(type);
+                list.add(deploiement);
+
+                mapSortDeploiment.put(type, list);
+            }
+        }
+        Log.i(TAG, "getDeploimentsTri End");
+        return mapSortDeploiment;
     }
 
     @Override
@@ -52,7 +103,8 @@ public class InterventionDetailsMoyensFragments extends Fragment {
         super.onAttach(context);
         //init pojo data
         this.context = context;
-        this.mapSortDeploiment = ((ActivityMoyens) this.getActivity()).getDeploiments();
+        this.idIntervention = ((ActivityMoyens) this.getActivity()).getIdIntervention();
+        this.mapSortDeploiment = getDeploiments();
     }
 
     @Override
