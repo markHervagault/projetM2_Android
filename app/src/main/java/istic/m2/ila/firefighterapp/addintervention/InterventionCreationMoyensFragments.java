@@ -23,12 +23,15 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.consumer.VehiculeConsumer;
+import istic.m2.ila.firefighterapp.dto.DeploiementCreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.VehiculeDTO;
 import retrofit2.Response;
@@ -97,8 +100,15 @@ public class InterventionCreationMoyensFragments extends Fragment {
         return mapSorted;
     }
 
-    public List<VehiculeDTO> getVehiculesSelected(){
-        return vehiculeSelected;
+    public Set<DeploiementCreateInterventionDTO> getVehiculesSelected(){
+        Set<DeploiementCreateInterventionDTO> deploimentSet = new HashSet<>();
+        for (VehiculeDTO vehiculeDTO: vehiculeSelected) {
+            DeploiementCreateInterventionDTO deploiement = new DeploiementCreateInterventionDTO();
+            deploiement.setIdVehicule(vehiculeDTO.getId());
+            deploiement.setIdTypeComposante(vehiculeDTO.getType().getId());
+            deploimentSet.add(deploiement);
+        }
+        return deploimentSet;
     }
 
     @Override
