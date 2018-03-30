@@ -49,46 +49,8 @@ public class DetailsInterventionActivity extends AppCompatActivity implements In
     }
 
     @Override
-    public Map<String, List<DeploiementDTO>> getDeploiments() {
-        Log.i(TAG, "getDeploimentsTri Begin");
-        String token = getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
-        String id = interventionDTOParcelable.getInterventionDTO().getId().toString();
-
-        RestTemplate restTemplate = RestTemplate.getInstance();
-        DeploimentConsumer deploimentConsumer = restTemplate.builConsumer(DeploimentConsumer.class);
-        Response<List<DeploiementDTO>> response = null;
-
-        mapSortDeploiment = new HashMap<>();
-        List<DeploiementDTO> deploiementDTOList = null;
-
-
-        try {
-            response = deploimentConsumer.getListDeploimentById(token, id).execute();
-
-            if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                deploiementDTOList = response.body();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String type = null;
-        if (deploiementDTOList != null) {
-            for (DeploiementDTO deploiement : deploiementDTOList) {
-
-                if (deploiement.getVehicule() != null) {
-                    type = deploiement.getVehicule().getType().getLabel();
-                } else {
-                    type = deploiement.getTypeDemande().getLabel();
-                }
-                List<DeploiementDTO> list = !mapSortDeploiment.containsKey(type) ? new ArrayList<DeploiementDTO>() : mapSortDeploiment.get(type);
-                list.add(deploiement);
-
-                mapSortDeploiment.put(type, list);
-            }
-        }
-        Log.i(TAG, "getDeploimentsTri End");
-        return mapSortDeploiment;
+    public Long getIdIntervention() {
+        return interventionDTOParcelable.getInterventionDTO().getId();
     }
 
     @Override
