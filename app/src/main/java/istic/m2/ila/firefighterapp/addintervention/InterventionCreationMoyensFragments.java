@@ -1,7 +1,6 @@
-package istic.m2.ila.firefighterapp.Intervention;
+package istic.m2.ila.firefighterapp.addintervention;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,36 +13,41 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-import org.w3c.dom.Text;
-
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.consumer.VehiculeConsumer;
+import istic.m2.ila.firefighterapp.dto.DeploiementCreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
-import istic.m2.ila.firefighterapp.dto.TypeVehiculeDTO;
+import istic.m2.ila.firefighterapp.dto.VehiculeDTO;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InterventionDetailsMoyensFragments extends Fragment {
+public class InterventionCreationMoyensFragments extends Fragment {
 
-    private Map<String, List<DeploiementDTO>> mapSortDeploiment;
+    private static String TAG = "CreationInterventionMoyens";
+
+    private Map<String, List<VehiculeDTO>> mapVehiculesDisponibles;
     private Context context;
+    private List<VehiculeDTO> vehiculeSelected;
 
-    public interface ActivityMoyens {
-        Map<String, List<DeploiementDTO>> getDeploiments();
-    }
-
-    public InterventionDetailsMoyensFragments() {
+    public InterventionCreationMoyensFragments() {
         // Required empty public constructor
     }
 
@@ -52,7 +56,59 @@ public class InterventionDetailsMoyensFragments extends Fragment {
         super.onAttach(context);
         //init pojo data
         this.context = context;
-        this.mapSortDeploiment = ((ActivityMoyens) this.getActivity()).getDeploiments();
+        //fill items
+        this.mapVehiculesDisponibles = getVehicules();
+        this.vehiculeSelected = new ArrayList<>();
+    }
+
+    private Map<String, List<VehiculeDTO>>  getVehicules(){
+        Log.i(TAG, "getVehiculeDispo Begin");
+        String token = this.getActivity().getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
+
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        VehiculeConsumer vehiculeConsumer = restTemplate.builConsumer(VehiculeConsumer.class);
+        Response<List<VehiculeDTO>> response = null;
+
+        Map<String, List<VehiculeDTO>> mapSorted = new HashMap<>();
+        List<VehiculeDTO> vehiculeDTOList = null;
+
+
+        try {
+            response = vehiculeConsumer.getListVehiculeDispo(token).execute();
+
+            if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                vehiculeDTOList = response.body();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String type = null;
+        if (vehiculeDTOList != null) {
+            for (VehiculeDTO vehicule  : vehiculeDTOList) {
+
+
+                type = vehicule.getType().getLabel();
+
+                List<VehiculeDTO> list = !mapSorted.containsKey(type) ? new ArrayList<VehiculeDTO>() : mapSorted.get(type);
+                list.add(vehicule);
+
+                mapSorted.put(type, list);
+            }
+        }
+        Log.i(TAG, "getVehiculeDispo End");
+        return mapSorted;
+    }
+
+    public Set<DeploiementCreateInterventionDTO> getVehiculesSelected(){
+        Set<DeploiementCreateInterventionDTO> deploimentSet = new HashSet<>();
+        for (VehiculeDTO vehiculeDTO: vehiculeSelected) {
+            DeploiementCreateInterventionDTO deploiement = new DeploiementCreateInterventionDTO();
+            deploiement.setIdVehicule(vehiculeDTO.getId());
+            deploiement.setIdTypeComposante(vehiculeDTO.getType().getId());
+            deploimentSet.add(deploiement);
+        }
+        return deploimentSet;
     }
 
     @Override
@@ -61,7 +117,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
         RecyclerView recyclerView = rootView.findViewById(R.id.interventionDetailsMoyenRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new SimpleAdapter(recyclerView, mapSortDeploiment));
+        recyclerView.setAdapter(new SimpleAdapter(recyclerView, mapVehiculesDisponibles));
 
         return rootView;
     }
@@ -77,12 +133,12 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
         private RecyclerView recyclerView;
         private int selectedItem = UNSELECTED;
-        private Map<String, List<DeploiementDTO>> mapSortDeploiment;
+        private Map<String, List<VehiculeDTO>> mapSorted;
 
 
-        public SimpleAdapter(RecyclerView recyclerView, Map<String, List<DeploiementDTO>> mapSortDeploiment) {
+        public SimpleAdapter(RecyclerView recyclerView, Map<String, List<VehiculeDTO>> mapSorted) {
             this.recyclerView = recyclerView;
-            this.mapSortDeploiment = mapSortDeploiment;
+            this.mapSorted = mapSorted;
         }
 
         @Override
@@ -99,7 +155,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
         @Override
         public int getItemCount() {
-            return mapSortDeploiment.size();
+            return mapSorted.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
@@ -120,38 +176,32 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
             public void bind() {
                 int position = getAdapterPosition();
-                ArrayList<String> keys = new ArrayList<>(mapSortDeploiment.keySet());
+                ArrayList<String> keys = new ArrayList<>(mapSorted.keySet());
 
-                List<DeploiementDTO> content = mapSortDeploiment.get(keys.get(position));
+                final List<VehiculeDTO> content = mapSorted.get(keys.get(position));
 
                 boolean isSelected = position == selectedItem;
 
                 expandButton.setText(keys.get(position));
                 expandButton.setSelected(isSelected);
                 expandableLayout.setExpanded(isSelected, false);
+//                expandableLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-                for (DeploiementDTO deploiment : content) {
-                    TextView tmpText1 = new TextView(itemView.getContext());
-//                    Button dtn = new Button();
-//                    dtn.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//
-//                        }
-//                    });
-                    if (deploiment.getVehicule() != null) {
-                        tmpText1.setText(deploiment.getVehicule().getLabel());
-                        tmpText1.setTextColor(Color.WHITE);
+                for (final VehiculeDTO vehicule : content) {
+                    Switch aSwitch = new Switch(itemView.getContext());
 
-                    } else {
-                        String text = deploiment.getTypeDemande().getLabel()
-                                + " "
-                                + getResources().getString(R.string.intervention_detail_fragment_moyens_status_demande);
-                        tmpText1.setText(text);
-                        tmpText1.setTextColor(Color.YELLOW);
-                    }
-
-                    expandedLinearLayout.addView(tmpText1);
+                    aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if (isChecked) {
+                                vehiculeSelected.add(vehicule);
+                            } else {
+                                vehiculeSelected.remove(vehicule);
+                            }
+                        }
+                    });
+                    aSwitch.setText(vehicule.getLabel());
+                    aSwitch.setTextColor(Color.WHITE);
+                    expandedLinearLayout.addView(aSwitch);
                 }
 
 

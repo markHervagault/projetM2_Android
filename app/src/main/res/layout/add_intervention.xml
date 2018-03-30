@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"
@@ -19,13 +20,16 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         android:weightSum="2"
+        android:layout_weight="1"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title">
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp">
 
         <fragment
             android:id="@+id/fragment"
@@ -40,32 +44,22 @@
             android:layout_height="match_parent"
             android:background="@android:color/darker_gray" />
 
-        <TextView
-            android:id="@+id/textView"
+        <fragment
+            android:id="@+id/fragment_moyens"
+            android:name="istic.m2.ila.firefighterapp.addintervention.InterventionCreationMoyensFragments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#BAC4A2"
-            android:gravity="start"
-            android:text="LISTE MOYEN INC"
-            android:textAlignment="viewStart"
-            android:textSize="30sp" />
+            tools:layout="@layout/fragment_intervention_details_moyens_fragments" />
+
 
     </LinearLayout>
 
-
-    <FrameLayout
-        android:id="@+id/frameLayout"
+    <Button
+        android:id="@+id/validateButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:gravity="center|bottom"
+        android:text="Create" />
 
-        <Button
-            android:id="@+id/validateButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center|bottom"
-            android:text="Create" />
-    </FrameLayout>
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

@@ -71,6 +71,4 @@ public class Endpoints {
     public static final String TRAIT_TOPOS ="trait-topos";
     public static final String TRAIT_TOPOS_ID = "trait-topos/{id}";
 
-
-
 }
