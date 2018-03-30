@@ -69,41 +69,41 @@ public interface InterventionConsumer {
     /** Archivage d'une intervention*/
     @DELETE(Endpoints.INTERVENTION_ID)
     Call<DemandeDTO> deleteIntervention(@Header("Authorization") String token,
-                                        @Path("id") int id);
+                                        @Path("id") Long id);
 
     /** Récupération d'une intervention avec tous les attributs*/
     @GET(Endpoints.INTERVENTION_ID)
     Call<InterventionFullDTO> getFullInterventionDetails(@Header("Authorization")String token,
-                                                         @Path("id") int id);
+                                                         @Path("id") Long id);
 
     /** Récupération de toutes les demandes de déploiements d'une intervention*/
     @GET(Endpoints.INTERVENTION_DEMANDE)
     Call<List<DemandeDTO>> getListDemandeDEploiement(@Header("Authorization")String token,
-                                                     @Path("id") int id );
+                                                     @Path("id") Long id );
     /** Ajout d'une demande de deploiement*/
     @POST(Endpoints.INTERVENTION_DEMANDE)
     Call<DeploiementDTO> addDemandeDeploiement(@Header("Authorization")String token,
-                                               @Path("id") int id,
+                                               @Path("id") Long id,
                                                @Body DemandeDTO demandeDTO);
 
     /** Récupération de tous les déploiements d'une intervention*/
     @GET(Endpoints.INTERVENTION_DEPLOIMENT)
     Call<List<DeploiementDTO>> getListDeploiement(@Header("Authorization") String token,
-                                                  @Path("id") int id);
+                                                  @Path("id") Long id);
     /** Récupération de la liste des sinistre*/
     @GET(Endpoints.INTERVENTION_SINISTRE)
     Call<List<SinistreDTO>> getListSinistre(@Header("Authorization")String token,
-                                            @Path("id")int id);
+                                            @Path("id")Long id);
 
     /** Récupération de tous les traits topographique d'une intervention*/
     @GET(Endpoints.INTERVENTION_TRAIT_TOPOGRAPHIQUE)
     Call<List<TraitTopoDTO>> getListTraitTopo(@Header("Authorization") String token,
-                                              @Path("id") int id);
+                                              @Path("id") Long id);
 
     /** Ajouter des traits topo a une instervention*/
     @POST(Endpoints.INTERVENTION_TRAIT_TOPOGRAPHIQUE)
     Call<InterventionDTO> addTraitTopoToIntervention(@Header("Authorization") String token,
-                                                     @Path("id") int id,
+                                                     @Path("id") Long id,
                                                      @Body TraitTopoDTO traitTopoDTO);
 
 

@@ -87,7 +87,7 @@ public class InterventionMapFragment extends Fragment {
                         .getString("token", "null");
                 GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
                 List<DeploiementDTO> deploys = getMeActivity().getService()
-                        .getDeploy(token,2);
+                        .getDeploy(token,getMeActivity().getIdIntervention());
                 for(DeploiementDTO deploy : deploys) {
                     getMeActivity().drawVehicule(googleMap,deploy);
                 }

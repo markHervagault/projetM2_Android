@@ -43,7 +43,7 @@ public class MapService implements IMapService {
     }
 
     @Override
-    public List<SinistreDTO> getSinistre(final String token, int id) {
+    public List<SinistreDTO> getSinistre(final String token, Long id) {
 
         // Nos traits
         List<SinistreDTO> sinistre = new ArrayList<>();
@@ -68,7 +68,7 @@ public class MapService implements IMapService {
     }
 
     @Override
-    public List<TraitTopoDTO> getTraitTopo(String token, int id) {
+    public List<TraitTopoDTO> getTraitTopo(String token, Long id) {
         List<TraitTopoDTO> traits = new ArrayList<>();
 
         // Construction de notre appel REST
@@ -78,8 +78,6 @@ public class MapService implements IMapService {
         Response<List<TraitTopoDTO>> response = null;
         try {
 
-
-            //TODO VDS idInterv
             response = consumer.getListTraitTopo(token,id).execute();
 
             if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
@@ -93,7 +91,7 @@ public class MapService implements IMapService {
     }
 
     @Override
-    public List<TraitTopographiqueBouchonDTO> getTraitTopoFromBouchon(final String token, int id, final double longitude, final double latitude, final double rayon) {
+    public List<TraitTopographiqueBouchonDTO> getTraitTopoFromBouchon(final String token, Long id, final double longitude, final double latitude, final double rayon) {
         // Nos traits
         List<TraitTopographiqueBouchonDTO> traits = null;
         // Construction de notre appel REST
@@ -143,7 +141,7 @@ public class MapService implements IMapService {
     }
 
     @Override
-    public List<DeploiementDTO> getDeploy(String token, int id) {
+    public List<DeploiementDTO> getDeploy(String token, Long id) {
         // Nos traits
         List<DeploiementDTO> deploy = new ArrayList<>();
 

@@ -15,11 +15,11 @@ import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
  */
 
 public interface IMapService {
-    List<SinistreDTO> getSinistre(final String token,int id);
-    List<TraitTopoDTO> getTraitTopo(final String token, int id);
-    List<TraitTopographiqueBouchonDTO> getTraitTopoFromBouchon(final String token,int id, final double longitude, final double latitude, final double rayon);
+    List<SinistreDTO> getSinistre(final String token,Long id);
+    List<TraitTopoDTO> getTraitTopo(final String token, Long id);
+    List<TraitTopographiqueBouchonDTO> getTraitTopoFromBouchon(final String token,Long id, final double longitude, final double latitude, final double rayon);
     List<DroneDTO> getDrone(final String token);
-    List<DeploiementDTO> getDeploy(final String token, int id);
+    List<DeploiementDTO> getDeploy(final String token, Long id);
     InterventionDTO addIntervention(final String token, CreateInterventionDTO creatInterventionDTO);
     List<InterventionDTO> getInterventions(final String token);
     SinistreDTO addSinistre(final String token, SinistreDTO sinistre);
