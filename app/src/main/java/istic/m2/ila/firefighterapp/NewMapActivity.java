@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
@@ -43,16 +44,15 @@ import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragment;
-import istic.m2.ila.firefighterapp.fragment.map.InterventionListViewFragment;
 import istic.m2.ila.firefighterapp.fragment.map.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
 
-public class NewMapActivity extends AppCompatActivity {
+public class NewMapActivity extends AppCompatActivity implements InterventionDetailsMoyensFragments.ActivityMoyens {
 
     private Boolean interventionView = true;
 
-    private InterventionListViewFragment intervListFrag;
+    private InterventionDetailsMoyensFragments intervListFrag;
     private InterventionMapFragment intervMapFrag;
 
     private DroneListViewFragment droneListFrag;
@@ -158,7 +158,7 @@ public class NewMapActivity extends AppCompatActivity {
             {
                 serviceRabbitMQ = ((ServiceRabbitMQ.LocalBinder)service).getService();
 
-                intervListFrag = new InterventionListViewFragment();
+                intervListFrag = new InterventionDetailsMoyensFragments();
                 intervMapFrag = new InterventionMapFragment();
                 droneListFrag = new DroneListViewFragment();
                 droneMapFrag = new DroneMapFragment();
