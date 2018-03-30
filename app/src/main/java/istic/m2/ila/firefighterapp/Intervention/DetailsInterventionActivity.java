@@ -41,7 +41,6 @@ public class DetailsInterventionActivity extends AppCompatActivity implements In
     private static String TAG = "DetailIntervention";
 
     private InterventionDTOParcelable interventionDTOParcelable;
-    private Map<String, List<DeploiementDTO>> mapSortDeploiment;
 
     @Override
     public InterventionDTO getIntervention() {
