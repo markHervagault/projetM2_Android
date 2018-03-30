@@ -19,11 +19,6 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
-import java.util.Map;
-
-import istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity;
-import istic.m2.ila.firefighterapp.Intervention.InterventionDTOParcelable;
-import istic.m2.ila.firefighterapp.MapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;

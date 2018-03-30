@@ -40,16 +40,16 @@ public class DetailsInterventionActivity extends AppCompatActivity implements In
 
     private static String TAG = "DetailIntervention";
 
-    private InterventionDTOParcelable interventionDTOParcelable;
+    private InterventionDTO interventionDTO;
 
     @Override
     public InterventionDTO getIntervention() {
-        return interventionDTOParcelable.getInterventionDTO();
+        return interventionDTO;
     }
 
     @Override
     public Long getIdIntervention() {
-        return interventionDTOParcelable.getInterventionDTO().getId();
+        return interventionDTO.getId();
     }
 
     @Override
@@ -61,10 +61,9 @@ public class DetailsInterventionActivity extends AppCompatActivity implements In
         StrictMode.setThreadPolicy(policy);
 
         Intent intent = getIntent();
-        Bundle extra = intent.getExtras();
-        if (extra != null) {
-            interventionDTOParcelable = extra.getParcelable("interventionDTO");
-            Log.i("Fragment ", "Get Parcelable : " + interventionDTOParcelable.toString());
+        interventionDTO = (InterventionDTO) intent.getSerializableExtra("interventionDTO");
+        if (interventionDTO != null) {
+            Log.i("Fragment ", "Get Parcelable : " + interventionDTO.toString());
         } else {
             Log.i("Fragment ", "Parcelable is empty");
         }

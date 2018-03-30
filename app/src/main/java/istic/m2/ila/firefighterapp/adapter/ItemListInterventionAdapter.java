@@ -2,26 +2,21 @@ package istic.m2.ila.firefighterapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
 import istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity;
-import istic.m2.ila.firefighterapp.Intervention.InterventionDTOParcelable;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.AdresseDTO;
 import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
@@ -83,13 +78,13 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
     public void onBindViewHolder(ViewHolder holder, final int position) {
         // - on récupère un élément dy dataset à cette position
         // - on remplace le contenu de la vue avec cet élément
-        InterventionDTO intervention = mDataset.get(position);
+        final InterventionDTO intervention = mDataset.get(position);
 
         // ID de l'intervention
         holder.idIntervention.setText(intervention.getId().toString());
 
         // Date de l'intervention
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
         Date dateHeureCreation = new Date();
         System.out.println(); //16/11/2016 12:08:43
         holder.dateIntervention.setText(dateFormat.format(dateHeureCreation));
@@ -120,16 +115,7 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
                 Log.i(TAG, "Un clic a été effectué sur l'item " + position);
 
                 Intent intent = new Intent(context, DetailsInterventionActivity.class);
-                Bundle bundle = intent.getExtras();
-                if (bundle == null) {
-                    bundle = new Bundle();
-                }
-
-                InterventionDTOParcelable interventionDTOParcelable = new InterventionDTOParcelable(mDataset.get(position));
-
-                bundle.putParcelable("interventionDTO", interventionDTOParcelable);
-                bundle.putString("adresseString", adresseString);
-                intent.putExtras(bundle);
+                intent.putExtra("interventionDTO", intervention);
                 context.startActivity(intent);
             }
         });
