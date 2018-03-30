@@ -13,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
@@ -211,7 +213,7 @@ public class NewMapActivity extends AppCompatActivity {
                         .getString("token", "null");
                 GeoPositionDTO geo = getGeoPositionIntervention();
                 List<TraitTopographiqueBouchonDTO> traits = getService()
-                        .getTraitTopoFromBouchon(token, geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
+                        .getTraitTopoFromBouchon(token, getIdIntervention(), geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
                 for(TraitTopographiqueBouchonDTO trait : traits) {
                     drawTraitTopoBouchons(googleMap,trait);
                 }
@@ -226,7 +228,7 @@ public class NewMapActivity extends AppCompatActivity {
                         .getString("token", "null");
                 GeoPositionDTO geo = getGeoPositionIntervention();
                 List<TraitTopoDTO> traits = getService()
-                        .getTraitTopo(token);
+                        .getTraitTopo(token, getIdIntervention());
                 for(TraitTopoDTO trait : traits) {
                     drawTraitTopo(googleMap,trait);
                 }
@@ -241,7 +243,7 @@ public class NewMapActivity extends AppCompatActivity {
                         .getString("token", "null");
                 GeoPositionDTO geo = getGeoPositionIntervention();
                 List<SinistreDTO> sinistres = getService()
-                        .getTraitFromBouchon(token);
+                        .getSinistre(token, getIdIntervention());
                 for(SinistreDTO sinistre : sinistres) {
                     drawSinistre(googleMap, sinistre);
                 }
