@@ -146,11 +146,6 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
             }
         });
 
-        // Envoie du nouveau drone sur le bus
-        NewDroneMessage message = new NewDroneMessage(drone.getId());
-        Log.d(TAG, "================================================================ Envoi d'une donnee sur le bus : "+drone.getNom());
-        EventBus.getDefault().post(message);
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
