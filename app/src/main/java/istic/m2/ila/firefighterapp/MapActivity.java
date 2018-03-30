@@ -35,13 +35,17 @@ import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
 import istic.m2.ila.firefighterapp.adapter.ItemListDroneAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
 import istic.m2.ila.firefighterapp.adapter.ItemListCrmAdapter;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DroneInfoUpdateMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.UpdateInfosDroneMessage;
 import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.EDroneStatut;
+import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
+import istic.m2.ila.firefighterapp.dto.ESinistre;
+import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
@@ -71,7 +75,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import istic.m2.ila.firefighterapp.dto.SinistreDTO;
+import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.services.IMapService;
+import istic.m2.ila.firefighterapp.services.impl.MapService;
 import retrofit2.Response;
 
 
@@ -84,6 +92,8 @@ public class MapActivity extends FragmentActivity implements
      * Tag qui identifie la classe pour les LOGs
      */
     private static String TAG = "MapActivity => ";
+
+    private IMapService mapService = MapService.getInstance();
 
     /**
      * TRUE si l'activité est en mode drone, FALSE si elle est en mode intervention
@@ -116,14 +126,41 @@ public class MapActivity extends FragmentActivity implements
      * Permet d'avoir le statut du service rabbitMQ
      */
     private static final double RAYON_RECHERCHE_TRAIT_TOPO = 5000;
-    private static final Map<ETypeTraitTopographiqueBouchon,Integer> referentiel = createReferentiel ();
-    private static Map<ETypeTraitTopographiqueBouchon,Integer> createReferentiel(){
+    private static final Map<ETypeTraitTopographiqueBouchon,Integer> referentielTraitTopoBouchon = createReferentielTraitTopoBouchon ();
+    private static Map<ETypeTraitTopographiqueBouchon,Integer> createReferentielTraitTopoBouchon(){
         Map<ETypeTraitTopographiqueBouchon,Integer> map = new HashMap<>();
         map.put(ETypeTraitTopographiqueBouchon.DANGER, R.drawable.danger_24dp);
         map.put(ETypeTraitTopographiqueBouchon.SENSIBLE, R.drawable.sensible_24dp);
         map.put(ETypeTraitTopographiqueBouchon.PDR, R.drawable.pdr_24dp);
         map.put(ETypeTraitTopographiqueBouchon.PENP, R.drawable.penp_24dp);
         map.put(ETypeTraitTopographiqueBouchon.PEP, R.drawable.pep_24dp);
+        return map;
+    }
+
+    private static final Map<ETypeTraitTopo,Integer> referentielTraitTopo = createReferentielTraitTopo ();
+    private static Map<ETypeTraitTopo,Integer> createReferentielTraitTopo(){
+        Map<ETypeTraitTopo,Integer> map = new HashMap<>();
+        map.put(ETypeTraitTopo.DANGER, R.drawable.danger_24dp);
+        map.put(ETypeTraitTopo.SENSIBLE, R.drawable.sensible_24dp);
+        return map;
+    }
+
+    private static final Map<EEtatDeploiement,Integer> referentielMoyen = createReferentielMoyen ();
+    private static Map<EEtatDeploiement,Integer> createReferentielMoyen(){
+        Map<EEtatDeploiement,Integer> map = new HashMap<>();
+        map.put(EEtatDeploiement.DEMANDE, R.drawable.moyen_prevu);
+        map.put(EEtatDeploiement.VALIDE, R.drawable.moyen_prevu);
+        map.put(EEtatDeploiement.ENGAGE, R.drawable.moyen_prevu);
+        map.put(EEtatDeploiement.EN_ACTION, R.drawable.moyen);
+        return map;
+    }
+
+    private static final Map<ESinistre,Integer> referentielSinistre = createReferentielSinistre ();
+    private static Map<ESinistre,Integer> createReferentielSinistre(){
+        Map<ESinistre,Integer> map = new HashMap<>();
+        map.put(ESinistre.CENTRE, R.drawable.centre_sinistre);
+        map.put(ESinistre.POINT, R.drawable.ic_star_black_24dp);
+        map.put(ESinistre.ZONE, R.drawable.boom70x70);
         return map;
     }
 
@@ -247,30 +284,9 @@ public class MapActivity extends FragmentActivity implements
     private void getDronesFromBDD(){
         AsyncTask.execute(new Runnable() {
             public void run() {
-
-                // On peuple notre RecyclerView
-                List<DroneDTO> droneList = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                DroneConsumer droneConsumer = restTemplate.builConsumer(DroneConsumer.class);
-
-                Response<List<DroneDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    // On récupère toutes les interventions du Serveur
-                    response = droneConsumer.getListDrone(token).execute();
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        droneList = response.body();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                drones.addAll(droneList);
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                drones.addAll(mapService.getDrone(token));
 
             }
         });
@@ -770,12 +786,137 @@ public class MapActivity extends FragmentActivity implements
 
         mMap.setMaxZoomPreference(20.0f);
 
-        // Centre l'écran sur le Drône sur RENNES
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.1119800, -1.6742900), 18.0f));
+        // Centre l'écran sur le Drône sur RENNES ISTIC
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.115150, -1.638374), 18.0f));
 
 //        drawPolygon();
 
-        drawTraitTopographiques();
+        drawTraitTopographiquesBouchon();
+        drawTraitTopo();
+        drawSinistre();
+        drawMoyens();
+    }
+
+    /**
+     * Dessine les Véhicule de l'interv
+     */
+    public void drawMoyens() {
+
+        // Récupérer les traits depuis le bouchon
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                // Récupération du token
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+
+                final List<DeploiementDTO> finalDeploy = mapService.getDeploy(token);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (DeploiementDTO deploy: finalDeploy) {
+
+                            if(deploy.getGeoPosition() != null) {
+                                // Récupération des icônes en fonction du type (change ou change pas)
+                                int rIcone = referentielMoyen.get(deploy.getState());
+
+                                String rgbNoA = deploy.getComposante().getCouleur().substring(0, 7);
+                                Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
+                                String label = "";
+                                if (deploy.getState() != EEtatDeploiement.DEMANDE) {
+                                    label = deploy.getVehicule().getLabel();
+                                }
+
+                                // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
+                                LatLng pos = new LatLng(deploy.getGeoPosition().getLatitude(), deploy.getGeoPosition().getLongitude());
+                                mMap.addMarker(new MarkerOptions()
+                                        .position(pos)
+                                        .title(label)
+                                        .snippet(label + " - " + deploy.getComposante().getDescription())
+                                        .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                                        .draggable(false));
+                            }
+                        };
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Dessine les Sinitres de l'interv
+     */
+    public void drawSinistre() {
+
+        // Récupérer les traits depuis le bouchon
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+
+                final List<SinistreDTO> finalSinistres = mapService.getTraitFromBouchon(token);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (SinistreDTO sinistre: finalSinistres) {
+
+                            // Récupération des icônes en fonction du type (change ou change pas)
+                            int rIcone = referentielSinistre.get(sinistre.getType());
+
+                            String rgbNoA = sinistre.getComposante().getCouleur().substring(0,7);
+                            Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
+
+                            // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
+                            LatLng pos = new LatLng(sinistre.getGeoPosition().getLatitude(), sinistre.getGeoPosition().getLongitude());
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(pos)
+                                    .title(sinistre.getComposante().getLabel())
+                                    .snippet(sinistre.getType().name() + " - " + sinistre.getComposante().getDescription())
+                                    .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                                    .draggable(false)
+                            );
+                        };
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Dessine les traits topographiques de l'interv
+     */
+    public void drawTraitTopo() {
+
+        // Récupérer les traits depuis le bouchon
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                final List<TraitTopoDTO> finalTraits = mapService.getTraitTopo(token);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (TraitTopoDTO trait: finalTraits) {
+
+                            // Récupération des icônes en fonction du type (change ou change pas)
+                            int rIcone = referentielTraitTopo.get(trait.getType());
+
+                            String rgbNoA = trait.getComposante().getCouleur().substring(0,7);
+                            Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
+
+                            // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
+                            LatLng pos = new LatLng(trait.getPosition().getLatitude(), trait.getPosition().getLongitude());
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(pos)
+                                    .title(trait.getComposante().getLabel())
+                                    .snippet(trait.getType().name() + " - " + trait.getComposante().getDescription())
+//                                    .icon(BitmapDescriptorFactory.fromResource(rIcone))
+                                    .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                                    .draggable(false));
+                        };
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -783,49 +924,30 @@ public class MapActivity extends FragmentActivity implements
      * - Ceux qui ne changent pas (PEP, PENP, PDR)
      * - Ceux qui changent ("danger", "sensibles")
      */
-    public void drawTraitTopographiques() {
+
+
+    private void drawTraitTopographiquesBouchon() {
+
 
         // TODO - Renseigner ces valeurs avec les coordonnées du centre de la carte actuelle
         LatLng mapCenter = mMap.getCameraPosition().target;
         final double latitude = mapCenter.latitude;
         final double longitude = mapCenter.longitude;
 
+
         // Récupérer les traits depuis le bouchon
         AsyncTask.execute(new Runnable() {
             public void run() {
-
-                // Nos traits
-                List<TraitTopographiqueBouchonDTO> traits = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                BouchonConsumer bouchonConsumer = restTemplate.builConsumer(BouchonConsumer.class);
-
-                Response<List<TraitTopographiqueBouchonDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    response = bouchonConsumer.getTraitTopoByLocalisation(
-                            token, latitude, longitude, RAYON_RECHERCHE_TRAIT_TOPO).execute();
-
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        traits = response.body();
-                        Log.i("MapActivity",  "Traits topo récupérés=" + traits.size());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final List<TraitTopographiqueBouchonDTO> finalTraits = traits;
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                final List<TraitTopographiqueBouchonDTO> finalTraits = mapService.getTraitTopoFromBouchon(token, longitude, latitude, RAYON_RECHERCHE_TRAIT_TOPO);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         for (TraitTopographiqueBouchonDTO trait: finalTraits) {
 
                             // Récupération des icônes en fonction du type (change ou change pas)
-                            int rIcone = referentiel.get(trait.getType());
+                            int rIcone = referentielTraitTopoBouchon.get(trait.getType());
 
                             // Différenciation de la couleur en fonction pour les types qui changent
                             Drawable drawableIcon= ContextCompat.getDrawable(getApplicationContext(), rIcone);

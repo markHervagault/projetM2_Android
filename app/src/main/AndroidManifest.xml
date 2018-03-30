@@ -32,11 +32,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".AddInterventionActivity"
-            android:label="Nouvelle Intervention"
-            android:screenOrientation="landscape"></activity>
+        </activity>        <activity
+        android:name=".AddInterventionActivity"
+        android:label="Nouvelle Intervention"
+        android:screenOrientation="landscape">
+    </activity>
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map"
@@ -48,13 +48,12 @@
         <activity
             android:name=".Intervention.DetailsInterventionActivity"
             android:screenOrientation="landscape"
-            android:value="@string/title_intervention_details"></activity>
-
-        <service
-            android:name=".clientRabbitMQ.ServiceRabbitMQ"
-            android:label="Service RabbitMQ"></service>
-
-        <activity android:name=".NewMapActivity"></activity>
+            android:value="@string/title_intervention_details">
+        </activity>        <service
+        android:name=".clientRabbitMQ.ServiceRabbitMQ"
+        android:label="Service RabbitMQ" >
+    </service>
+        Zone de message
     </application>
 
 </manifest>
