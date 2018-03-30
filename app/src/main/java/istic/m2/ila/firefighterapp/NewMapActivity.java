@@ -35,6 +35,7 @@ import istic.m2.ila.firefighterapp.dto.ESinistre;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
+import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
@@ -67,6 +68,17 @@ public class NewMapActivity extends AppCompatActivity {
         geo.setLongitude(-1.638374);
         geo.setLatitude(48.115150);
         return geo;
+    }
+    private InterventionDTO intervention;
+
+    private Long idIntervention;
+
+    public Long getIdIntervention() {
+        return idIntervention;
+    }
+
+    public void setIdIntervention(Long idIntervention) {
+        this.idIntervention = idIntervention;
     }
 
     private static final Map<ETypeTraitTopographiqueBouchon,Integer> referentielTraitTopoBouchon = createReferentielTraitTopoBouchon ();
@@ -133,6 +145,7 @@ public class NewMapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        idIntervention = ((InterventionDTO)getIntent().getSerializableExtra("intervention")).getId();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_map);
 
