@@ -107,32 +107,4 @@ public interface InterventionConsumer {
                                                      @Body TraitTopoDTO traitTopoDTO);
 
 
-
-//
-//    /**Création d'une intervention */
-//    @POST(Endpoints.INTERVENTION)
-//    Call<InterventionDTO> createIntervention(@Header("Authorization") String token
-//                 , @Body CreateInterventionDTO interventionDto);
-//
-//    /**Récuperation de toutes les interventions */
-//    @GET(Endpoints.INTERVENTION)
-//    Call<List<InterventionDTO>> getIntervention(@Header("Authorization") String token);
-//
-//    /** Récuperation d'une intervention par id*/
-//    @GET(Endpoints.INTERVENTION_ID)
-//    Call<InterventionDTO> getInterventionById(@Header("Authorization") String token,
-//                                              @Path("id")String id);
-//
-//    /** Fermer l'intervention en cours */
-//    @DELETE(Endpoints.INTERVENTION_ID)
-//    Call<InterventionDTO> closeIntervention(@Header("Authorization") String token
-//                                            , @Path("id") String id);
-
-    /**
-     * Récuperation de tout les codes sinistres
-     */
-    @GET(Endpoints.CODE_SINISTRE)
-    Call<List<CodeSinistreDTO>> getAllCodeSinistre(@Header("Authorization") String token);
-
-
 }
