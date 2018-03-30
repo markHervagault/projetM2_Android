@@ -570,6 +570,7 @@ public class DroneMapFragment extends Fragment
     {
         if(selectedDrone == null) //Vérification de la première selection
             selectedDrone = message.Drone;
+
         else if(selectedDrone.getId().equals(message.Drone.getId())) //Si c'est le même drone, on ne fait rien
                 return;
 
@@ -585,7 +586,7 @@ public class DroneMapFragment extends Fragment
             {
                 if(drone != null)
                     CameraUpdateFactory.newLatLngZoom(drone.getPosition(), 18.0f);
-                
+
                 UpdateCurrentMission();
             }
         });

@@ -1,5 +1,9 @@
 package istic.m2.ila.firefighterapp;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.ESinistre;
@@ -85,16 +91,64 @@ public class NewMapActivity extends AppCompatActivity {
         return map;
     }
 
+    //-------------------------------------------------- ON CREATEE
+    private ServiceConnection serviceConnection;
+    ServiceRabbitMQ serviceRabbitMQ;
+
+
+    private boolean isServiceBound = false;
+
+    private void BindService()
+    {
+        bindService(new Intent(this, ServiceRabbitMQ.class), serviceConnection, Context.BIND_AUTO_CREATE );
+        isServiceBound = true;
+    }
+
+    private void UnBindService()
+    {
+        if(!isServiceBound)
+            return;
+
+        unbindService(serviceConnection);
+        isServiceBound = false;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_map);
-        intervListFrag = new InterventionListViewFragment();
-        intervMapFrag = new InterventionMapFragment();
-        droneListFrag = new DroneListViewFragment();
-        droneMapFrag = new DroneMapFragment();
-        toggleView();
+
+        serviceConnection = new ServiceConnection()
+        {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service)
+            {
+                serviceRabbitMQ = ((ServiceRabbitMQ.LocalBinder)service).getService();
+
+                intervListFrag = new InterventionListViewFragment();
+                intervMapFrag = new InterventionMapFragment();
+                droneListFrag = new DroneListViewFragment();
+                droneMapFrag = new DroneMapFragment();
+
+                toggleView();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name)
+            {
+
+            }
+        };
+
+        BindService();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        UnBindService();
     }
 
     public void toggleView() {
