@@ -687,6 +687,8 @@ public class DroneMapFragment extends Fragment
             public void run()
             {
                 Marker droneMarker = droneMarkersById.get(message.getDroneId());
+                if (droneMarker == null)
+                    return;
                 droneMarker.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
                 droneMarker.setRotation((float)Math.toDegrees(message.getYawOrientation()) - googleMap.getCameraPosition().bearing);
             }
