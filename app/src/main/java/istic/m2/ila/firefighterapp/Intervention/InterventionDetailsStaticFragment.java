@@ -2,26 +2,20 @@ package istic.m2.ila.firefighterapp.Intervention;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import istic.m2.ila.firefighterapp.MapActivity;
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
-import istic.m2.ila.firefighterapp.dto.InterventionFullDTO;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,7 +58,10 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
 
     @Override
     public void onClick(View v){
-        startActivity(new Intent(getActivity(), NewMapActivity.class));
+        Intent redirectIntent = new Intent(getActivity(), NewMapActivity.class);
+
+        redirectIntent.putExtra("intervention", interventionDTO);
+        startActivity(redirectIntent);
     }
 
     @Override

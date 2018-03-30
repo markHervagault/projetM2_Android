@@ -3,7 +3,6 @@ package istic.m2.ila.firefighterapp.fragment.map;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,57 +75,9 @@ public class InterventionMapFragment extends Fragment {
         return view;
     }
 
-    private void initMap(){
+    private void initMap() {
         getMeActivity().initMap(googleMap);
-        getTraitTopoBouchons();
-        getTraitTopo();
-        getSinistre();
         getVehicule();
-    }
-
-    private void getTraitTopoBouchons() {
-        AsyncTask.execute(new Runnable() {
-            public void run() {
-                String token = getActivity().getSharedPreferences("user", getMeActivity().getApplicationContext().MODE_PRIVATE)
-                        .getString("token", "null");
-                GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
-                List<TraitTopographiqueBouchonDTO> traits = getMeActivity().getService()
-                        .getTraitTopoFromBouchon(token, geo.getLongitude(), geo.getLatitude(), getMeActivity().RAYON_RECHERCHE_TRAIT_TOPO);
-                for(TraitTopographiqueBouchonDTO trait : traits) {
-                    getMeActivity().drawTraitTopoBouchons(googleMap,trait);
-                }
-            }
-        });
-    }
-
-    private void getTraitTopo() {
-        AsyncTask.execute(new Runnable() {
-            public void run() {
-                String token = getActivity().getSharedPreferences("user", getContext().MODE_PRIVATE)
-                        .getString("token", "null");
-                GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
-                List<TraitTopoDTO> traits = getMeActivity().getService()
-                        .getTraitTopo(token);
-                for(TraitTopoDTO trait : traits) {
-                    getMeActivity().drawTraitTopo(googleMap,trait);
-                }
-            }
-        });
-    }
-
-    private void getSinistre() {
-        AsyncTask.execute(new Runnable() {
-            public void run() {
-                String token = getActivity().getSharedPreferences("user", getContext().MODE_PRIVATE)
-                        .getString("token", "null");
-                GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
-                List<SinistreDTO> sinistres = getMeActivity().getService()
-                        .getTraitFromBouchon(token);
-                for(SinistreDTO sinistre : sinistres) {
-                    getMeActivity().drawSinistre(googleMap, sinistre);
-                }
-            }
-        });
     }
 
     private void getVehicule() {
@@ -136,7 +87,7 @@ public class InterventionMapFragment extends Fragment {
                         .getString("token", "null");
                 GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
                 List<DeploiementDTO> deploys = getMeActivity().getService()
-                        .getDeploy(token);
+                        .getDeploy(token,getMeActivity().getIdIntervention());
                 for(DeploiementDTO deploy : deploys) {
                     getMeActivity().drawVehicule(googleMap,deploy);
                 }

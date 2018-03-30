@@ -13,12 +13,12 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import android.os.IBinder;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,6 +37,7 @@ import istic.m2.ila.firefighterapp.dto.ESinistre;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
+import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
@@ -69,6 +70,17 @@ public class NewMapActivity extends AppCompatActivity {
         geo.setLongitude(-1.638374);
         geo.setLatitude(48.115150);
         return geo;
+    }
+    private InterventionDTO intervention;
+
+    private Long idIntervention;
+
+    public Long getIdIntervention() {
+        return idIntervention;
+    }
+
+    public void setIdIntervention(Long idIntervention) {
+        this.idIntervention = idIntervention;
     }
 
     private static final Map<ETypeTraitTopographiqueBouchon,Integer> referentielTraitTopoBouchon = createReferentielTraitTopoBouchon ();
@@ -135,6 +147,7 @@ public class NewMapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        idIntervention = ((InterventionDTO)getIntent().getSerializableExtra("intervention")).getId();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_map);
 
@@ -188,6 +201,54 @@ public class NewMapActivity extends AppCompatActivity {
         // Centre l'écran sur le Drône sur RENNES ISTIC
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getGeoPositionIntervention().getLatitude(), getGeoPositionIntervention().getLongitude()), 18.0f));
         googleMap.setBuildingsEnabled(false); //2D pour améliorer les performances
+        getTraitTopoBouchons(googleMap);
+        getTraitTopo(googleMap);
+        getSinistre(googleMap);
+    }
+
+    public void getTraitTopoBouchons(final GoogleMap googleMap) {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getGeoPositionIntervention();
+                List<TraitTopographiqueBouchonDTO> traits = getService()
+                        .getTraitTopoFromBouchon(token, getIdIntervention(), geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
+                for(TraitTopographiqueBouchonDTO trait : traits) {
+                    drawTraitTopoBouchons(googleMap,trait);
+                }
+            }
+        });
+    }
+
+    public void getTraitTopo(final GoogleMap googleMap) {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getGeoPositionIntervention();
+                List<TraitTopoDTO> traits = getService()
+                        .getTraitTopo(token, getIdIntervention());
+                for(TraitTopoDTO trait : traits) {
+                    drawTraitTopo(googleMap,trait);
+                }
+            }
+        });
+    }
+
+    public void getSinistre(final GoogleMap googleMap) {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getGeoPositionIntervention();
+                List<SinistreDTO> sinistres = getService()
+                        .getSinistre(token, getIdIntervention());
+                for(SinistreDTO sinistre : sinistres) {
+                    drawSinistre(googleMap, sinistre);
+                }
+            }
+        });
     }
 
     public void drawTraitTopoBouchons(final GoogleMap googleMap, final TraitTopographiqueBouchonDTO traitTopo) {

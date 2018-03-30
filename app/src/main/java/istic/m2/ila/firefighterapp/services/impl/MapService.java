@@ -11,8 +11,12 @@ import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
 import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.consumer.SinistreConsumer;
+import istic.m2.ila.firefighterapp.consumer.TraitTopoConsumer;
+import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
+import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
@@ -39,7 +43,7 @@ public class MapService implements IMapService {
     }
 
     @Override
-    public List<SinistreDTO> getTraitFromBouchon(final String token) {
+    public List<SinistreDTO> getSinistre(final String token, Long id) {
 
         // Nos traits
         List<SinistreDTO> sinistre = new ArrayList<>();
@@ -51,7 +55,7 @@ public class MapService implements IMapService {
         Response<List<SinistreDTO>> response = null;
         try {
             //TODO VDS idInterv
-            response = consumer.getListSinistre(token,2).execute();
+            response = consumer.getListSinistre(token, id).execute();
 
             if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
                 sinistre = response.body();
@@ -64,7 +68,7 @@ public class MapService implements IMapService {
     }
 
     @Override
-    public List<TraitTopoDTO> getTraitTopo(String token) {
+    public List<TraitTopoDTO> getTraitTopo(String token, Long id) {
         List<TraitTopoDTO> traits = new ArrayList<>();
 
         // Construction de notre appel REST
@@ -74,9 +78,7 @@ public class MapService implements IMapService {
         Response<List<TraitTopoDTO>> response = null;
         try {
 
-
-            //TODO VDS idInterv
-            response = consumer.getListTraitTopo(token,2).execute();
+            response = consumer.getListTraitTopo(token,id).execute();
 
             if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
                 traits = response.body();
@@ -89,7 +91,7 @@ public class MapService implements IMapService {
     }
 
     @Override
-    public List<TraitTopographiqueBouchonDTO> getTraitTopoFromBouchon(final String token, final double longitude, final double latitude, final double rayon) {
+    public List<TraitTopographiqueBouchonDTO> getTraitTopoFromBouchon(final String token, Long id, final double longitude, final double latitude, final double rayon) {
         // Nos traits
         List<TraitTopographiqueBouchonDTO> traits = null;
         // Construction de notre appel REST
@@ -139,7 +141,7 @@ public class MapService implements IMapService {
     }
 
     @Override
-    public List<DeploiementDTO> getDeploy(String token) {
+    public List<DeploiementDTO> getDeploy(String token, Long id) {
         // Nos traits
         List<DeploiementDTO> deploy = new ArrayList<>();
 
@@ -152,7 +154,7 @@ public class MapService implements IMapService {
 
 
             //TODO VDS idInterv
-            response = consumer.getListDeploiement(token,2).execute();
+            response = consumer.getListDeploiement(token, id).execute();
 
             if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
                 deploy = response.body();
@@ -164,4 +166,104 @@ public class MapService implements IMapService {
         return deploy;
     }
 
-}
+    @Override
+    public InterventionDTO addIntervention(final String token, CreateInterventionDTO createInterventionDTO) {
+
+        // Nos intervention
+        InterventionDTO intervention = new InterventionDTO();
+
+        // Construction de notre appel REST
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        InterventionConsumer consumer = restTemplate.builConsumer(InterventionConsumer.class);
+
+        Response<InterventionDTO> response = null;
+        try {
+            response = consumer.createIntervention(token,createInterventionDTO).execute();
+
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                intervention = response.body();
+                Log.i(TAG,  "intervention crée" + intervention.getNom());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return intervention;
+    }
+
+    @Override
+    public List<InterventionDTO> getInterventions(final String token) {
+
+        // Nos intervention
+        List<InterventionDTO> interventions = new ArrayList<>();
+
+        // Construction de notre appel REST
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        InterventionConsumer consumer = restTemplate.builConsumer(InterventionConsumer.class);
+
+        Response<List<InterventionDTO>> response = null;
+        try {
+            response = consumer.getListInterventionEnCours(token).execute();
+
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                interventions = response.body();
+                Log.i(TAG,  "Intervention récupéré : " + interventions.size());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return interventions;
+
+    }
+
+    @Override
+    public TraitTopoDTO addTraitTopo(final String token, TraitTopoDTO traitTopoDTO) {
+
+        // Nos traits topo
+        TraitTopoDTO resultTraitTopo = new TraitTopoDTO();
+
+        // Construction de notre appel REST
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        TraitTopoConsumer consumer = restTemplate.builConsumer(TraitTopoConsumer.class);
+
+        Response<TraitTopoDTO> response = null;
+        try {
+            response = consumer.createTraitTopo(token,traitTopoDTO).execute();
+
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                resultTraitTopo = response.body();
+                Log.i(TAG,  "intervention crée" + resultTraitTopo.getInterventionId());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return resultTraitTopo;
+    }
+
+    @Override
+    public SinistreDTO addSinistre(final String token, SinistreDTO sinistre) {
+
+        // Nos traits topo
+        SinistreDTO sinistreDTO = new SinistreDTO();
+
+        // Construction de notre appel REST
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        SinistreConsumer consumer = restTemplate.builConsumer(SinistreConsumer.class);
+
+        Response<SinistreDTO> response = null;
+        try {
+            response = consumer.createSinistre(token,sinistre).execute();
+
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                sinistreDTO = response.body();
+                Log.i(TAG,  "intervention crée" + sinistreDTO.getId());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sinistreDTO;
+    }
+
+
+
+
+    }
