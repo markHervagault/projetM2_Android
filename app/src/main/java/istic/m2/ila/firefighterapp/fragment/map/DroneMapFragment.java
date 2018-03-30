@@ -309,9 +309,9 @@ public class DroneMapFragment extends Fragment
     //Path Markers
     private List<Marker> markers;
     private Map<String, Integer> markersIndexByName;
+    private List<LatLng> markersPositions;
 
     //Path Line
-    private List<LatLng> markersPositions;
     private Polyline polyline;
 
     /**
@@ -454,33 +454,34 @@ public class DroneMapFragment extends Fragment
      */
     public void DeleteMarker(Marker marker)
     {
-        if (marker != null) {
-            // on récupère l'index du marqueur
-            String markerTitle = marker.getTitle();
-            Integer matchMarker = markersIndexByName.get(markerTitle);
+        if (marker == null)
+            return;
 
-            if (matchMarker != null) {
-                int index = matchMarker;
+        // on récupère l'index du marqueur
+        String markerTitle = marker.getTitle();
+        Integer matchMarker = markersIndexByName.get(markerTitle);
 
-                // on retire le markers[index] de la map
-                marker.remove();
+        if (matchMarker != null) {
+            int index = matchMarker;
 
-                // Supprime le marker[index] de la liste des marqueurs sur la Google Map
-                markers.remove(index);
-                markersPositions.remove(index);
-                markersIndexByName.remove(markerTitle);
+            // on retire le markers[index] de la map
+            marker.remove();
 
-                //Réindexation nécéssaire
+            // Supprime le marker[index] de la liste des marqueurs sur la Google Map
+            markers.remove(marker);
+            markersIndexByName.remove(markerTitle);
+            markersPositions.remove(index);
 
-                //drawPolygon();
-                RefreshDronePath();
-            }
+            //Réindexation nécéssaire
 
-            // l'ancien marqueur n'est plus sélectionné
-            selectedMarker = null;
-
-            RefreshOpenClosePathButtonStatus();
+            //drawPolygon();
+            RefreshDronePath();
         }
+
+        // l'ancien marqueur n'est plus sélectionné
+        selectedMarker = null;
+
+        RefreshOpenClosePathButtonStatus();
     }
 
     // =================================================================== //MAP
@@ -581,6 +582,10 @@ public class DroneMapFragment extends Fragment
     {
         for(Marker marker : markers)
             DeleteMarker(marker);
+
+        markers.clear();
+        markersIndexByName.clear();
+        selectedMarker = null;
     }
 
     private void SetActualMission(MissionDTO mission)
@@ -605,12 +610,11 @@ public class DroneMapFragment extends Fragment
                     Marker marker = googleMap.addMarker(new MarkerOptions()
                             .position(new LatLng(point.getLatitude(), point.getLongitude()))
                             .title("Point de passage : " + (index))
-                            .draggable(false));
+                            .draggable(true));
                     marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trim));
 
-                    markersIndexByName.put(marker.getTitle(), markers.size());
+                    markersIndexByName.put(marker.getTitle(), index);
                     markers.add(marker);
-                    markersPositions.add(new LatLng(point.getLatitude(), point.getLongitude()));
                 }
 
                 RefreshOpenClosePathButtonStatus();
