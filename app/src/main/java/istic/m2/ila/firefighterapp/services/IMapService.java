@@ -6,6 +6,7 @@ import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
+import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
@@ -24,4 +25,5 @@ public interface IMapService {
     List<InterventionDTO> getInterventions(final String token);
     SinistreDTO addSinistre(final String token, SinistreDTO sinistre);
     TraitTopoDTO addTraitTopo(final String token, TraitTopoDTO traitTopoDTO);
+    MissionDTO getCurrentDroneMission(final String token, long id);
 }

@@ -34,6 +34,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +46,7 @@ import java.util.Set;
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DroneInfoUpdateMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
@@ -52,6 +56,7 @@ import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
+import istic.m2.ila.firefighterapp.services.impl.MapService;
 import okhttp3.Response;
 
 public class DroneMapFragment extends Fragment
@@ -463,6 +468,7 @@ public class DroneMapFragment extends Fragment
                 // Supprime le marker[index] de la liste des marqueurs sur la Google Map
                 markers.remove(index);
                 markersPositions.remove(index);
+                markersIndexByName.remove(markerTitle);
 
                 //Réindexation nécéssaire
 
@@ -556,8 +562,61 @@ public class DroneMapFragment extends Fragment
 
     private void UpdateCurrentMission()
     {
-        //TODO récupérer mission en cours depuis le serveur et mettre a jour map et markers
-        //ATTENTION, GROSSE FONCTION INCOMMING
+        String token = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
+        if(token.equals("null"))
+        {
+            return;
+        }
+
+        MissionDTO dto = MapService.getInstance().getCurrentDroneMission(token, selectedDrone.getId());
+        ClearActualMission();
+        if(dto.getId() == null)//Pas de mission en cours, DTO vide
+            return;
+
+        //DTO contient une mission, on la met a jour
+        SetActualMission(dto);
+    }
+
+    private void ClearActualMission()
+    {
+        for(Marker marker : markers)
+            DeleteMarker(marker);
+    }
+
+    private void SetActualMission(MissionDTO mission)
+    {
+        final List<PointMissionDTO> points = new ArrayList<>(mission.getDronePositions());
+        Collections.sort(points, new Comparator<PointMissionDTO>()
+        {
+            public int compare(PointMissionDTO item1, PointMissionDTO item2)
+            {
+                return item1.getIndex().compareTo(item2.getIndex());
+            }
+        });
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                //Creation des markers pour chacun des points
+                int index = 0;
+                for (PointMissionDTO point : points)
+                {
+                    Marker marker = googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(point.getLatitude(), point.getLongitude()))
+                            .title("Point de passage : " + (index))
+                            .draggable(false));
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trim));
+
+                    markersIndexByName.put(marker.getTitle(), markers.size());
+                    markers.add(marker);
+                    markersPositions.add(new LatLng(point.getLatitude(), point.getLongitude()));
+                }
+
+                RefreshOpenClosePathButtonStatus();
+                RefreshDronePath();
+            }
+        });
     }
 
     // =================================================================== //MISSION

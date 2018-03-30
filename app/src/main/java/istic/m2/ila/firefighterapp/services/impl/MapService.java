@@ -9,6 +9,7 @@ import java.util.List;
 
 import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
+import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
 import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.consumer.SinistreConsumer;
@@ -17,6 +18,7 @@ import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
+import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
@@ -263,7 +265,27 @@ public class MapService implements IMapService {
         return sinistreDTO;
     }
 
+    @Override
+    public MissionDTO getCurrentDroneMission(final String token, long droneId)
+    {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        DroneMissionConsumer consumer = restTemplate.builConsumer(DroneMissionConsumer.class);
 
+        MissionDTO currentMission = new MissionDTO();
+        Response<MissionDTO> response = null;
+        try{
+            response = consumer.getMission(token, droneId).execute();
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK)
+            {
+                currentMission = response.body();
+                Log.i(TAG,  "Mission récupérée pour le drone : " + droneId);
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
-
+        return currentMission;
     }
+}
