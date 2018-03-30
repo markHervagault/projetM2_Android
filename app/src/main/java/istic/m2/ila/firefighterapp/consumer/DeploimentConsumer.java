@@ -1,7 +1,6 @@
 package istic.m2.ila.firefighterapp.consumer;
 
 import java.util.List;
-
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import istic.m2.ila.firefighterapp.dto.DemandeDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
@@ -43,29 +42,21 @@ public interface DeploimentConsumer {
     @PUT(Endpoints.DEPLOIEMENT_ID_REFUSE)
     Call<DeploiementDTO> setDeploiementToRefuse(@Header("Authorization")String token,
                                                 @Path("id") double id);
+    /** Récupération des demandes de déploiment de l'intervention */
+    @GET(Endpoints.INTERVENTION_DEMANDE)
+    Call<Void> getDeploimentRequest(@Header("Authorization") String token
+            , @Path("id") String id
+            , @Body DemandeDTO demandeDto);
 
+    /** Création d'une demande de déploiment*/
+    @POST(Endpoints.INTERVENTION_DEMANDE)
+    Call<DemandeDTO> createDeploiment(@Header("Authorization") String token
+            , @Path("id") String id
+            , @Body DemandeDTO demandeDto);
 
+    /** Récuperation de la liste des déploiments de l'intervention*/
+    @GET(Endpoints.INTERVENTION_DEPLOIMENT)
+    Call<List<DeploiementDTO>> getListDeploimentById(@Header("Authorization") String token,
+                                               @Path("id") String id );
 
-
-   //
-//    /** Récupération des demandes de déploiment de l'intervention */
-//    @GET(Endpoints.INTERVENTION_DEMANDE)
-//    Call<Void> getDeploimentRequest(@Header("Authorization") String token
-//            , @Path("id") String id
-//            , @Body DemandeDTO demandeDto);
-//
-//    /** Création d'une demande de déploiment*/
-//    @POST(Endpoints.INTERVENTION_DEMANDE)
-//    Call<DemandeDTO> createDeploiment(@Header("Authorization") String token
-//            , @Path("id") String id
-//            , @Body DemandeDTO demandeDto);
-//
-//    /** Récuperation de la liste des déploiments de l'intervention*/
-//    @GET(Endpoints.INTERVENTION_DEPLOIMENT)
-//    Call<List<DeploiementDTO>> getListDeploimentById(@Header("Authorization") String token,
-//                                                     @Path("id") String id );
-
-   // @PUT(Endpoints.DEPLOIEMENT_ID_DESENGAGE)
-    //Call<>
 }
-

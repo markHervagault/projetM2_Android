@@ -80,6 +80,8 @@ import java.util.Set;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.services.IMapService;
+import istic.m2.ila.firefighterapp.services.impl.MapService;
 import retrofit2.Response;
 
 
@@ -92,6 +94,8 @@ public class MapActivity extends FragmentActivity implements
      * Tag qui identifie la classe pour les LOGs
      */
     private static String TAG = "MapActivity => ";
+
+    private IMapService mapService = MapService.getInstance();
 
     /**
      * TRUE si l'activité est en mode drone, FALSE si elle est en mode intervention
@@ -132,6 +136,11 @@ public class MapActivity extends FragmentActivity implements
      * Liste des drones
      */
     private List<DroneDTO> drones = new ArrayList<DroneDTO>();
+
+    /**
+     * Drone sélectionné dans la liste, null si aucun drone est sélectionné
+     */
+    private DroneDTO droneSelected;
 
     // Contrôles d'interfaces
     private boolean isEnabledButtonAddPointToVisit;
@@ -197,6 +206,15 @@ public class MapActivity extends FragmentActivity implements
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mServiceRabbitMQ = ((ServiceRabbitMQ.LocalBinder)service).getService();
+            if(isOnModeDrone){
+                // initialise le layout list drone
+                initDroneListFragment();
+                // On récupère la liste des drones
+                getDronesFromBDD();
+            }else{
+                // initialise le layout CRM
+                initCRMFragment();
+            }
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -210,6 +228,7 @@ public class MapActivity extends FragmentActivity implements
     void doBindService() {
         bindService(new Intent(this, ServiceRabbitMQ.class), mConnection, Context.BIND_AUTO_CREATE);
         serviceRabbitMQIsBound = true;
+
     }
 
     /**
@@ -235,15 +254,6 @@ public class MapActivity extends FragmentActivity implements
         // On s'enregistre pour écouter sur le bus
         EventBus.getDefault().register(this);
         setContentView(R.layout.activity_map);
-        if(isOnModeDrone){
-            // initialise le layout list drone
-            listDroneOrCRM = initDroneListFragment();
-            // On récupère la liste des drones
-            getDronesFromBDD();
-        }else{
-            // initialise le layout CRM
-            listDroneOrCRM = initCRMFragment();
-        }
 
         // Obtenir le SupportMapFragment et être notifié quand la map est prête à être utilisée.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -274,17 +284,36 @@ public class MapActivity extends FragmentActivity implements
         // init referentiel icône
         final Map<ETypeTraitTopographiqueBouchon,Integer> referentiel = new HashMap<>();
 
+        DroneDTO droneAdd = new DroneDTO();
+        droneAdd.setId((long)51515);
+        droneAdd.setStatut(EDroneStatut.DECONNECTE);
+        droneAdd.setNom("Le drone du turfu");
+        drones.add(droneAdd);
+
     }
 
     @Subscribe
-    public void onEvent(final UpdateInfosDroneMessage message){
+    public void onEvent(final UpdateInfosDroneMessage message)
+    {
+        if(droneSelected==null || droneSelected.getId()!=message.getDroneId()){
+            return;
+        }
         Log.d(TAG, "======================================================================== j'ai recu les infos du drone n° : " + message.getDroneId());
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
-                mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
-                mDrone.setRotation((float)Math.toDegrees((float)message.getYawOrientation()));
+                if(mDrone==null){
+                    mDrone = mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(message.getLatitude(), message.getLongitude()))
+                            .rotation((float)Math.toDegrees((float)message.getYawOrientation()))
+                            .title(droneSelected.getNom())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+                            .anchor(0.5f,0.5f)
+                            .draggable(false));
+                }else{
+                    mDrone.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
+                    mDrone.setRotation((float)Math.toDegrees((float)message.getYawOrientation()));
+                }
             }
         });
     }
@@ -295,166 +324,55 @@ public class MapActivity extends FragmentActivity implements
     private void getDronesFromBDD(){
         AsyncTask.execute(new Runnable() {
             public void run() {
-
-                // On peuple notre RecyclerView
-                List<DroneDTO> droneList = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                DroneConsumer droneConsumer = restTemplate.builConsumer(DroneConsumer.class);
-
-                Response<List<DroneDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    // On récupère toutes les interventions du Serveur
-                    response = droneConsumer.getListDrone(token).execute();
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        droneList = response.body();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                drones = droneList;
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                drones.addAll(mapService.getDrone(token));
 
             }
         });
     }
 
-    private List<DroneDTO> simulateGetListDrone(){
-        List<DroneDTO> drones = new ArrayList<DroneDTO>();
-        DroneDTO drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)1);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)2);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)3);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)4);
-        drone1.setStatut(EDroneStatut.DECONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)5);
-        drone1.setStatut(EDroneStatut.DECONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)6);
-        drone1.setStatut(EDroneStatut.DECONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)7);
-        drone1.setStatut(EDroneStatut.EN_MISSION);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)8);
-        drone1.setStatut(EDroneStatut.EN_MISSION);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)9);
-        drone1.setStatut(EDroneStatut.EN_MISSION);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)10);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)11);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)12);
-        drone1.setStatut(EDroneStatut.CONNECTE);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)13);
-        drone1.setStatut(EDroneStatut.EN_MISSION);
-        drones.add(drone1);
-
-        drone1 = new DroneDTO();
-        drone1.setAdresseMac("000000000");
-        drone1.setNom("drone1");
-        drone1.setId((long)14);
-        drone1.setStatut(EDroneStatut.EN_MISSION);
-        drones.add(drone1);
-
-
-        return drones;
+    public void onClickOnDrone(DroneDTO drone){
+        // Afficher le marqueur du Drone sur la map
+        /*if(drone.getId()==droneSelected.getId()){
+            droneSelected = null;
+        }*/
+        droneSelected = drone;
+        if(null!=mDrone){
+            mDrone.remove();
+            mDrone = null;
+        }
+        if(drone.getStatut()!=EDroneStatut.DECONNECTE){
+            Toast.makeText(getApplicationContext(), "Recherche la position de "+ drone.getNom(), Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getApplicationContext(), drone.getNom()+ " est déconnecté, position inconnue", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private RecyclerView initCRMFragment(){
+    protected void initCRMFragment(){
 
-        RecyclerView mRecyclerView = findViewById(R.id.recycler_list_map);
+        listDroneOrCRM = findViewById(R.id.recycler_list_map);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        listDroneOrCRM.setLayoutManager(mLayoutManager);
+        listDroneOrCRM.setItemAnimator(new DefaultItemAnimator());
 
         // On peuple notre RecyclerView
         List<Map<String, String>> myDataset = getSampleDataToTest();
         RecyclerView.Adapter mAdapter = new ItemListCrmAdapter(myDataset);
-        mRecyclerView.setAdapter(mAdapter);
-
-        return mRecyclerView;
+        listDroneOrCRM.setAdapter(mAdapter);
     }
 
-    private RecyclerView initDroneListFragment(){
+    protected void initDroneListFragment(){
 
-        RecyclerView mRecyclerView = findViewById(R.id.recycler_list_map);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
+        listDroneOrCRM = findViewById(R.id.recycler_list_map);
         // On peuple notre RecyclerView
-        RecyclerView.Adapter mAdapter = new ItemListDroneAdapter(drones);
-        mRecyclerView.setAdapter(mAdapter);
+        RecyclerView.Adapter mAdapter = new ItemListDroneAdapter(this.drones);
 
-        return mRecyclerView;
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        listDroneOrCRM.setLayoutManager(mLayoutManager);
+        listDroneOrCRM.setItemAnimator(new DefaultItemAnimator());
+        listDroneOrCRM.setAdapter(mAdapter);
+
     }
 
     private List<Map<String, String>> getSampleDataToTest() {
@@ -864,32 +782,11 @@ public class MapActivity extends FragmentActivity implements
         // Récupérer les traits depuis le bouchon
         AsyncTask.execute(new Runnable() {
             public void run() {
+                // Récupération du token
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
 
-                // Nos traits
-                List<DeploiementDTO> deploy = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                InterventionConsumer consumer = restTemplate.builConsumer(InterventionConsumer.class);
-
-                Response<List<DeploiementDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    //TODO VDS idInterv
-                    response = consumer.getListDeploiement(token,2).execute();
-
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        deploy = response.body();
-                        Log.i("MapActivity",  "Traits topo récupérés=" + deploy.size());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final List<DeploiementDTO> finalDeploy = deploy;
+                final List<DeploiementDTO> finalDeploy = mapService.getDeploy(token);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -930,32 +827,10 @@ public class MapActivity extends FragmentActivity implements
         // Récupérer les traits depuis le bouchon
         AsyncTask.execute(new Runnable() {
             public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
 
-                // Nos traits
-                List<SinistreDTO> sinistre = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                InterventionConsumer consumer = restTemplate.builConsumer(InterventionConsumer.class);
-
-                Response<List<SinistreDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    //TODO VDS idInterv
-                    response = consumer.getListSinistre(token,2).execute();
-
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        sinistre = response.body();
-                        Log.i("MapActivity",  "Traits topo récupérés=" + sinistre.size());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final List<SinistreDTO> finalSinistres = sinistre;
+                final List<SinistreDTO> finalSinistres = mapService.getTraitFromBouchon(token);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -991,32 +866,9 @@ public class MapActivity extends FragmentActivity implements
         // Récupérer les traits depuis le bouchon
         AsyncTask.execute(new Runnable() {
             public void run() {
-
-                // Nos traits
-                List<TraitTopoDTO> traits = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                InterventionConsumer consumer = restTemplate.builConsumer(InterventionConsumer.class);
-
-                Response<List<TraitTopoDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    //TODO VDS idInterv
-                    response = consumer.getListTraitTopo(token,2).execute();
-
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        traits = response.body();
-                        Log.i("MapActivity",  "Traits topo récupérés=" + traits.size());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final List<TraitTopoDTO> finalTraits = traits;
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                final List<TraitTopoDTO> finalTraits = mapService.getTraitTopo(token);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1049,42 +901,23 @@ public class MapActivity extends FragmentActivity implements
      * - Ceux qui ne changent pas (PEP, PENP, PDR)
      * - Ceux qui changent ("danger", "sensibles")
      */
-    public void drawTraitTopographiquesBouchon() {
+
+
+    private void drawTraitTopographiquesBouchon() {
+
 
         // TODO - Renseigner ces valeurs avec les coordonnées du centre de la carte actuelle
         LatLng mapCenter = mMap.getCameraPosition().target;
         final double latitude = mapCenter.latitude;
         final double longitude = mapCenter.longitude;
 
+
         // Récupérer les traits depuis le bouchon
         AsyncTask.execute(new Runnable() {
             public void run() {
-
-                // Nos traits
-                List<TraitTopographiqueBouchonDTO> traits = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                BouchonConsumer bouchonConsumer = restTemplate.builConsumer(BouchonConsumer.class);
-
-                Response<List<TraitTopographiqueBouchonDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-
-                    response = bouchonConsumer.getTraitTopoByLocalisation(
-                            token, latitude, longitude, RAYON_RECHERCHE_TRAIT_TOPO).execute();
-
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        traits = response.body();
-                        Log.i("MapActivity",  "Traits topo récupérés=" + traits.size());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final List<TraitTopographiqueBouchonDTO> finalTraits = traits;
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                final List<TraitTopographiqueBouchonDTO> finalTraits = mapService.getTraitTopoFromBouchon(token, longitude, latitude, RAYON_RECHERCHE_TRAIT_TOPO);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1195,15 +1028,6 @@ public class MapActivity extends FragmentActivity implements
 //                    .anchor(0.5f, 0.5f)
                     .draggable(m.isDraggable()));
         }
-
-        // Afficher le marqueur du Drone sur la map
-        mDrone = mMap.addMarker(new MarkerOptions()
-                .position(mDrone.getPosition())
-                .title(mDrone.getTitle())
-                .snippet(mDrone.getSnippet())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
-                .anchor(0.5f,0.5f)
-                .draggable(mDrone.isDraggable()));
     }
 
     /**
@@ -1362,6 +1186,7 @@ public class MapActivity extends FragmentActivity implements
 
         if (marker != null && marker != mDrone) {
 
+            mDrone.setRotation(1.5f);
             // on récupère l'index du marqueur
             String markerTitle = marker.getTitle();
             LatLng markerPosition = marker.getPosition();

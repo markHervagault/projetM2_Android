@@ -24,6 +24,7 @@
     </string>
 
     <!--String related to intervention details-->
+    <string name="intervention_detail_fragment_static_status">Status :</string>
     <string name="intervention_detail_fragment_static_adresse">Adresse :</string>
     <string name="intervention_detail_fragment_static_ville">Ville :</string>
     <string name="intervention_detail_fragment_static_code_sinistre">Code Sinistre :</string>
@@ -31,6 +32,10 @@
     <string name="intervention_detail_fragment_static_heure_fin">Heure de fin :</string>
     <string name="intervention_detail_fragment_static_createur">Crée par :</string>
     <string name="intervention_detail_fragment_static_button_map">Ouvrir la carte</string>
+    <string name="intervention_detail_fragment_static_status_encours">En cours</string>
+    <string name="intervention_detail_fragment_static_button_fini">Fini</string>
+    <string name="intervention_detail_fragment_moyens_status_demande">demandé</string>
+
 
     <!--String a trier-->
     <string name="img_item_intervention">carte de l\'intervention</string>
