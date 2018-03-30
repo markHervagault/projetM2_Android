@@ -42,6 +42,10 @@
             android:label="@string/title_activity_map"
             android:screenOrientation="landscape"></activity>
         <activity
+            android:name=".NewMapActivity"
+            android:label="@string/title_activity_map"
+            android:screenOrientation="landscape"></activity>
+        <activity
             android:name=".ListInterventionActivity"
             android:label="@string/title_activity_list_intervention"
             android:screenOrientation="landscape"></activity>

@@ -1,12 +1,8 @@
 package istic.m2.ila.firefighterapp.fragment.map;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,23 +13,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
+import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
+import istic.m2.ila.firefighterapp.dto.SinistreDTO;
+import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import retrofit2.Response;
 
 public class InterventionMapFragment extends Fragment {
 
@@ -43,6 +32,10 @@ public class InterventionMapFragment extends Fragment {
 
     MapView mMapView;
     private GoogleMap googleMap;
+
+    public NewMapActivity getMeActivity(){
+        return (NewMapActivity)getActivity();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +50,7 @@ public class InterventionMapFragment extends Fragment {
         final Button button = view.findViewById(R.id.toggleView);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((NewMapActivity)getActivity()).toggleView();
+                getMeActivity().toggleView();
             }
         });
 
@@ -84,21 +77,73 @@ public class InterventionMapFragment extends Fragment {
     }
 
     private void initMap(){
-        ((NewMapActivity)getActivity()).initMap(googleMap);
-        drawTraitTopographiques();
+        getMeActivity().initMap(googleMap);
+        getTraitTopoBouchons();
+        getTraitTopo();
+        getSinistre();
+        getVehicule();
     }
 
-    public void drawTraitTopographiques() {
-        Bitmap icon = BitmapFactory.decodeResource(
-                getContext().getResources(), R.drawable.danger_24dp);
-
-        Marker posMarker = googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(48.1119800, -1.6742900))
-                .title("test")
-                .snippet("test")
-                .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                .draggable(false));
+    private void getTraitTopoBouchons() {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getActivity().getSharedPreferences("user", getMeActivity().getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
+                List<TraitTopographiqueBouchonDTO> traits = getMeActivity().getService()
+                        .getTraitTopoFromBouchon(token, geo.getLongitude(), geo.getLatitude(), getMeActivity().RAYON_RECHERCHE_TRAIT_TOPO);
+                for(TraitTopographiqueBouchonDTO trait : traits) {
+                    getMeActivity().drawTraitTopoBouchons(googleMap,trait);
+                }
+            }
+        });
     }
+
+    private void getTraitTopo() {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getActivity().getSharedPreferences("user", getContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
+                List<TraitTopoDTO> traits = getMeActivity().getService()
+                        .getTraitTopo(token);
+                for(TraitTopoDTO trait : traits) {
+                    getMeActivity().drawTraitTopo(googleMap,trait);
+                }
+            }
+        });
+    }
+
+    private void getSinistre() {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getActivity().getSharedPreferences("user", getContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
+                List<SinistreDTO> sinistres = getMeActivity().getService()
+                        .getTraitFromBouchon(token);
+                for(SinistreDTO sinistre : sinistres) {
+                    getMeActivity().drawSinistre(googleMap, sinistre);
+                }
+            }
+        });
+    }
+
+    private void getVehicule() {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getActivity().getSharedPreferences("user", getContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getMeActivity().getGeoPositionIntervention();
+                List<DeploiementDTO> deploys = getMeActivity().getService()
+                        .getDeploy(token);
+                for(DeploiementDTO deploy : deploys) {
+                    getMeActivity().drawVehicule(googleMap,deploy);
+                }
+            }
+        });
+    }
+
 
     @Override
     public void onResume() {
