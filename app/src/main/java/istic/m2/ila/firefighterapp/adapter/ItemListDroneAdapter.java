@@ -2,6 +2,8 @@ package istic.m2.ila.firefighterapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +26,7 @@ import istic.m2.ila.firefighterapp.Intervention.InterventionDTOParcelable;
 import istic.m2.ila.firefighterapp.MapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.constantes.IHMLabels;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 
@@ -38,6 +41,8 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
 
     private List<DroneDTO> drones;
 
+    public int indexSelected = -1;
+
     // On fournit un constructeur adéquat (dépendant de notre jeu de données)
     public ItemListDroneAdapter(List<DroneDTO> drones) {
         this.drones = drones;
@@ -51,6 +56,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         public TextView drone_name_listDrone;
         public TextView statut_listDrone;
         public ImageView image_statut_listDrone;
+        public ImageView image_battery_listDrone;
         public LinearLayout layoutItemDroneList;
 
         public ViewHolder(View v) {
@@ -58,6 +64,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
             drone_name_listDrone = v.findViewById(R.id.drone_name_listDrone);
             statut_listDrone = v.findViewById(R.id.statut_listDrone);
             image_statut_listDrone = v.findViewById(R.id.image_statut_listDrone);
+            image_battery_listDrone = v.findViewById(R.id.image_battery_listDrone);
             layoutItemDroneList = v.findViewById(R.id.item_Drone_List_layout);
         }
     }
@@ -76,7 +83,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - on récupère un élément dy dataset à cette position
         // - on remplace le contenu de la vue avec cet élément
         final DroneDTO drone = drones.get(position);
@@ -85,30 +92,62 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         switch (drone.getStatut()){
             case CONNECTE:
                 status = IHMLabels.DRONE_STATUT_CONNECTE;
-                holder.image_statut_listDrone.setImageResource(R.drawable.rond_vert);
+                holder.image_statut_listDrone.setImageResource(R.drawable.connected);
+                holder.image_battery_listDrone.setVisibility(View.VISIBLE);
                 break;
             case DECONNECTE:
                 status = IHMLabels.DRONE_STATUT_DECONNECTE;
-                holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris);
+                holder.image_statut_listDrone.setImageResource(R.drawable.disconnected);
+                holder.image_battery_listDrone.setVisibility(View.GONE);
                 break;
             case EN_MISSION:
                 status = IHMLabels.DRONE_STATUT_EN_MISSION;
-                holder.image_statut_listDrone.setImageResource(R.drawable.rond_rouge);
+                holder.image_statut_listDrone.setImageResource(R.drawable.droneenmission);
+                holder.image_battery_listDrone.setVisibility(View.VISIBLE);
                 break;
             default:
                 Log.d(TAG, "Statut du drone inconnu");
                 holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
+                holder.image_battery_listDrone.setVisibility(View.GONE);
                 status = IHMLabels.DRONE_STATUT_INCONNU;
-
         }
+
+        int battery = drone.getBattery();
+
+        if(battery>70)
+        {
+            holder.image_battery_listDrone.setImageResource(R.drawable.fullbattery);
+        }
+        else if (battery > 45 )
+        {
+            holder.image_battery_listDrone.setImageResource(R.drawable.midbattery);
+        }
+        else if (battery > 20)
+        {
+            holder.image_battery_listDrone.setImageResource(R.drawable.criticalbattery);
+        }
+        else {
+            holder.image_battery_listDrone.setImageResource(R.drawable.emptybattery);
+        }
+
         holder.statut_listDrone.setText(status);
+
+
+        if(indexSelected==position){
+            holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_selected));
+        }else{
+            holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_unselected));
+        }
 
         // Gestion du clic
         holder.layoutItemDroneList.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
-                ((MapActivity)context).onClickOnDrone(drone);
+                EventBus.getDefault().post(new SelectedDroneChangedMessage(drone));
+                if(indexSelected != position){
+                    indexSelected = position;
+                    notifyDataSetChanged();
+                }
             }
         });
 

@@ -1,6 +1,10 @@
 package istic.m2.ila.firefighterapp.fragment.map;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -8,8 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -24,10 +31,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
@@ -35,9 +46,13 @@ import istic.m2.ila.firefighterapp.adapter.CustomInfoWindowAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DroneInfoUpdateMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
+import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
+import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
+import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
+import okhttp3.Response;
 
 public class DroneMapFragment extends Fragment
 {
@@ -237,7 +252,7 @@ public class DroneMapFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                //SendMission
+                SendMission();
             }
         });
 
@@ -468,6 +483,78 @@ public class DroneMapFragment extends Fragment
 
     // =================================================================== MISSION
 
+    private void SendMission()
+    {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+        alertBuilder.setTitle("Attention");
+        alertBuilder.setMessage("Voulez-vous vraiment envoyer les données de cette mission au drône ?");
+        alertBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                Toast.makeText(getContext(), "Tmp : Le message a été envoyé", Toast.LENGTH_SHORT);
+                getActivity().runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        currentMission = new MissionDTO();
+                        currentMission.setInterventionId(1l);
+                        currentMission.setNbIteration(0);
+                        currentMission.setDroneId(1l);
+                        currentMission.setBoucleFermee(isPathClosed);
+                        Set<PointMissionDTO> points = new HashSet<>();
+
+                        long index = 0;
+                        for (Marker marker : markers) {
+                            PointMissionDTO point = new PointMissionDTO();
+                            point.setIndex(index);
+                            point.setAction(false);
+                            point.setLatitude(marker.getPosition().latitude);
+                            point.setLongitude(marker.getPosition().longitude);
+                            points.add(point);
+                            index++;
+                        }
+                        currentMission.setDronePositions(points);
+
+                        //Lancement de la mission via Rest
+                        AsyncTask.execute(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                RestTemplate restTemplate = RestTemplate.getInstance();
+                                DroneMissionConsumer dmc = restTemplate.builConsumer(DroneMissionConsumer.class);
+                                String token = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", null);
+                                try
+                                {
+                                    retrofit2.Response<MissionDTO> response = dmc.createMission(token, currentMission).execute();
+                                    if(response.code() != HttpURLConnection.HTTP_OK)
+                                    {
+                                        Log.i("Mission", Integer.toString(response.code()));
+                                    }
+                                }
+                                catch (IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        alertBuilder.create().show();
+    }
+
     private void UpdateCurrentMission()
     {
         //TODO récupérer mission en cours depuis le serveur et mettre a jour map et markers
@@ -481,13 +568,28 @@ public class DroneMapFragment extends Fragment
     @Subscribe
     public void OnSelectedDroneChangedEvent(final SelectedDroneChangedMessage message)
     {
-        //Si pas de changement, on ne fair rien
-        if(selectedDrone.getId().equals(message.Drone.getId()))
-            return;
+        if(selectedDrone == null) //Vérification de la première selection
+            selectedDrone = message.Drone;
+
+        else if(selectedDrone.getId().equals(message.Drone.getId())) //Si c'est le même drone, on ne fait rien
+                return;
 
         //Sinon, mise a jour du drone Selectionné et récupération de la mission en cours
         selectedDrone = message.Drone;
-        UpdateCurrentMission();
+
+        final Marker drone = droneMarkersById.get(message.Drone.getId());
+
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if(drone != null)
+                    CameraUpdateFactory.newLatLngZoom(drone.getPosition(), 18.0f);
+
+                UpdateCurrentMission();
+            }
+        });
     }
 
     @Subscribe
