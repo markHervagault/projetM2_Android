@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -566,13 +568,27 @@ public class DroneMapFragment extends Fragment
     @Subscribe
     public void OnSelectedDroneChangedEvent(final SelectedDroneChangedMessage message)
     {
-        //Si pas de changement, on ne fair rien
-        if(selectedDrone.getId().equals(message.Drone.getId()))
-            return;
+        if(selectedDrone == null) //Vérification de la première selection
+            selectedDrone = message.Drone;
+        else if(selectedDrone.getId().equals(message.Drone.getId())) //Si c'est le même drone, on ne fait rien
+                return;
 
         //Sinon, mise a jour du drone Selectionné et récupération de la mission en cours
         selectedDrone = message.Drone;
-        UpdateCurrentMission();
+
+        final Marker drone = droneMarkersById.get(message.Drone.getId());
+
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if(drone != null)
+                    CameraUpdateFactory.newLatLngZoom(drone.getPosition(), 18.0f);
+                
+                UpdateCurrentMission();
+            }
+        });
     }
 
     @Subscribe
