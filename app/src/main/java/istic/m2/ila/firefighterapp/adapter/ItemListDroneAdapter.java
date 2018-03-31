@@ -18,12 +18,12 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.constantes.IHMLabels;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
@@ -39,6 +39,8 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
 
     private List<DroneDTO> drones;
 
+    //private List<DroneDTO> lastListDrones;
+
     /**
      * position dans la liste des drones => dernier niveau de batterie connu
      */
@@ -49,6 +51,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
     // On fournit un constructeur adéquat (dépendant de notre jeu de données)
     public ItemListDroneAdapter(List<DroneDTO> drones) {
         this.drones = drones;
+        //lastListDrones = new ArrayList<DroneDTO>(drones);
     }
 
     // Fournit une reference aux vues pour chaque item
@@ -88,6 +91,26 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final DroneDTO drone = drones.get(position);
+        holder.drone_name_listDrone.setText(drone.getNom());
+        if(indexSelected==position){
+            holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_selected));
+        }else{
+            holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_unselected));
+        }
+
+
+        // Gestion du clic
+        holder.layoutItemDroneList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventBus.getDefault().post(new SelectedDroneChangedMessage(drone));
+                if(indexSelected != position){
+                    indexSelected = position;
+                    notifyDataSetChanged();
+                }
+            }
+        });
+
         String status;
         switch (drone.getStatut()){
             case CONNECTE:
@@ -112,7 +135,6 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
                 status = IHMLabels.DRONE_STATUT_INCONNU;
         }
 
-        holder.drone_name_listDrone.setText(drone.getNom());
 
         int battery = drone.getBattery();
 
@@ -133,26 +155,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         }
 
         holder.statut_listDrone.setText(status);
-
-
-        if(indexSelected==position){
-            holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_selected));
-        }else{
-            holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_unselected));
-        }
-
-        // Gestion du clic
-        holder.layoutItemDroneList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EventBus.getDefault().post(new SelectedDroneChangedMessage(drone));
-                if(indexSelected != position){
-                    indexSelected = position;
-                    notifyItemChanged(position);
-                }
-            }
-        });
-
+        //lastListDrones = new ArrayList<DroneDTO>(drones);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

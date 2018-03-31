@@ -81,7 +81,13 @@ public class InterventionMapFragment extends Fragment {
     }
 
     private void getVehicule() {
-        AsyncTask.execute(new Runnable() {
+        /*AsyncTask.execute(new Runnable() {
+            public void run() {
+
+            }
+        });*/
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 String token = getActivity().getSharedPreferences("user", getContext().MODE_PRIVATE)
                         .getString("token", "null");

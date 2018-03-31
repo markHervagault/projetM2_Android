@@ -61,7 +61,7 @@ import okhttp3.Response;
 
 public class DroneMapFragment extends Fragment
 {
-    // =================================================================== INIT
+    //region ============================= INIT ===============================
 
     //Global Members
     private final String TAG = "DroneMap Fragment";
@@ -146,9 +146,9 @@ public class DroneMapFragment extends Fragment
         mMapView.onLowMemory();
     }
 
-    // =================================================================== //INIT
+    //endregion =================================================================== //INIT
 
-    // =================================================================== INTERFACE
+    //region =========================== INTERFACE ============================
 
     // Interface Members
     private boolean isPathClosed;
@@ -286,9 +286,9 @@ public class DroneMapFragment extends Fragment
         }
     }
 
-    // =================================================================== //INTERFACE
+    //endregion =================================================================== //INTERFACE
 
-    // =================================================================== MAP
+    //region ============================== MAP ===============================
 
     //Style
     private final int STROKE_WIDTH = 3;
@@ -297,7 +297,8 @@ public class DroneMapFragment extends Fragment
     private DroneDTO selectedDrone;
 
     //Drone List
-    private List<DroneInfoUpdateMessage> drones;
+    //private List<DroneInfoUpdateMessage> drones;
+    private List<DroneInfosDTO> drones;
     private Map<Long, Marker> droneMarkersById;
 
     //Mission
@@ -484,10 +485,9 @@ public class DroneMapFragment extends Fragment
         RefreshOpenClosePathButtonStatus();
     }
 
-    // =================================================================== //MAP
+    //endregion =================================================================== //MAP
 
-
-    // =================================================================== MISSION
+    //region ============================ MISSION =============================
 
     private void SendMission()
     {
@@ -623,93 +623,91 @@ public class DroneMapFragment extends Fragment
         });
     }
 
-    // =================================================================== //MISSION
+    //endregion =================================================================== //MISSION
 
-    // =================================================================== EVENT
+    //region ============================= EVENT ==============================
 
     @Subscribe
     public void OnSelectedDroneChangedEvent(final SelectedDroneChangedMessage message)
     {
-        if(selectedDrone == null) //Vérification de la première selection
-            selectedDrone = message.Drone;
-
-        else if(selectedDrone.getId().equals(message.Drone.getId())) //Si c'est le même drone, on ne fait rien
-                return;
-
-        //Sinon, mise a jour du drone Selectionné et récupération de la mission en cours
-        selectedDrone = message.Drone;
-
         getActivity().runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
-                Marker drone = droneMarkersById.get(message.Drone.getId());
-                if(drone != null)
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(drone.getPosition(), 18.0f));
+                //Si c'est le même drone, on ne fait rien
+                if(selectedDrone != null && selectedDrone.getId().equals(message.Drone.getId()) ) //Vérification de la première selection
+                    return;
 
-                UpdateCurrentMission();
+                //Sinon, mise a jour du drone Selectionné et récupération de la mission en cours
+                selectedDrone = message.Drone;
+
+                Marker drone = droneMarkersById.get(message.Drone.getId());
+                if(drone != null){
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(drone.getPosition(), 18.0f));
+                    UpdateCurrentMission();
+                }
+
             }
         });
     }
 
     @Subscribe
-    public void OnDroneInfoUpdateEvent(final DroneInfoUpdateMessage message)
+    public void OnDroneInfoUpdateEvent(final DroneInfosDTO drone)
     {
-        //Si le drone n'existe pas, on l'ajoute
-        if(!DroneAlreadyExist(message.getDroneId()))
-        {
-            drones.add(message);
-            AddNewDroneOnMap(message);
-        }
-        else //Sinon, mise a jour du drone
-            UpdateDroneOnMap(message);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //Si le drone n'existe pas, on l'ajoute
+                if (!DroneAlreadyExist(drone.id_drone)) {
+                    drones.add(drone);
+                    AddNewDroneOnMap(drone);
+                }
+                //Sinon, mise a jour du drone
+                else {
+                    UpdateDroneOnMap(drone);
+                }
+            }
+        });
     }
 
     private boolean DroneAlreadyExist(long droneId)
     {
-        if(selectedDrone != null && selectedDrone.getId().equals(droneId))
-            return true;
+        // Cette ligne pose problème lorsqu'on sélectionne le premier drone de la liste
+        // puis qu'on revient sur le mode intervention puis on revient sur le mode drone :
+        // la variable selectedDrone a toujours l'ancien drone sélectionné mais la liste des drones
+        // n'est pas complète
+        // cette fonction renvoie donc true et le UpdateDroneOnMap fail car le drone n'est pas dans la liste.
+        // On doit revoir le rechargement des fragments, certaines choses sont sauvegardées et d'autres pas
+        /*if(selectedDrone != null && selectedDrone.getId().equals(droneId))
+            return true;*/
 
-        for(DroneInfoUpdateMessage droneInfo : drones)
+        for(DroneInfosDTO droneInfo : drones)
         {
-            if(droneInfo.getDroneId() == droneId)
+            if(droneInfo.id_drone == droneId)
                 return true;
         }
         return false;
     }
 
-    private void UpdateDroneOnMap(final DroneInfoUpdateMessage message)
+    private void UpdateDroneOnMap(final DroneInfosDTO drone)
     {
-        getActivity().runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Marker droneMarker = droneMarkersById.get(message.getDroneId());
-                droneMarker.setPosition(new LatLng(message.getLatitude(), message.getLongitude()));
-                droneMarker.setRotation((float)Math.toDegrees(message.getYawOrientation()) - googleMap.getCameraPosition().bearing);
-            }
-        });
+        Marker droneMarker = droneMarkersById.get(drone.id_drone);
+        droneMarker.setPosition(new LatLng(drone.position.latitude, drone.position.longitude));
+        droneMarker.setRotation((float)Math.toDegrees(drone.orientation.yaw) - googleMap.getCameraPosition().bearing);
     }
 
-    private void AddNewDroneOnMap(final DroneInfoUpdateMessage message)
+    private void AddNewDroneOnMap(final DroneInfosDTO drone)
     {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run()
-            {
-                Marker droneMarker = googleMap.addMarker(new MarkerOptions().
-                        position(new LatLng(message.getLatitude(), message.getLongitude()))
-                        .rotation((float)Math.toDegrees((float)message.getYawOrientation()))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
-                        .anchor(0.5f,0.5f)
-                        .draggable(false));
+        Marker droneMarker = googleMap.addMarker(new MarkerOptions().
+                position(new LatLng(drone.position.latitude, drone.position.longitude))
+                .rotation((float)Math.toDegrees((float)drone.orientation.yaw))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+                .anchor(0.5f,0.5f)
+                .draggable(false));
 
-                droneMarkersById.put(message.getDroneId(), droneMarker);
-            }
-        });
+        droneMarkersById.put(drone.id_drone, droneMarker);
     }
 
-    // =================================================================== //EVENT
+    //endregion =================================================================== EVENT
 }

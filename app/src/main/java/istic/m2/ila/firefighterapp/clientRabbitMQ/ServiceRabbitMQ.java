@@ -102,13 +102,11 @@ public class ServiceRabbitMQ extends Service {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 incomingMessageHandler = new String(body, "UTF-8");
-                Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
+                //Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
-                DroneInfosDTO droneInfosDTO = gson.fromJson(incomingMessageHandler, DroneInfosDTO.class);
-                EventBus.getDefault().post(
-                        new DroneInfoUpdateMessage(droneInfosDTO.id_drone, droneInfosDTO.position.longitude,
-                                droneInfosDTO.position.latitude, droneInfosDTO.battery_level, droneInfosDTO.orientation.yaw));
+                DroneInfosDTO droneInfos = gson.fromJson(incomingMessageHandler, DroneInfosDTO.class);
+                EventBus.getDefault().post(droneInfos);
             }
         };
         channel.basicConsume(queueName, true, consumer);

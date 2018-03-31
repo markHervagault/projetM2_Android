@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,6 +118,7 @@ public class DroneListViewFragment extends Fragment {
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
         listDroneRecycler.setItemAnimator(new DefaultItemAnimator());
+        ((SimpleItemAnimator)listDroneRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
         listDroneRecycler.setAdapter(mAdapter);
         listDroneRecycler.setLayoutManager(mLayoutManager);
 
@@ -159,11 +161,11 @@ public class DroneListViewFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onUpdateDrone(DroneInfoUpdateMessage message) {
-        if(dronedIdPosition.get(message.getDroneId())!=null){
-            final int positionInList = dronedIdPosition.get(message.getDroneId());
+    public void onUpdateDrone(DroneInfosDTO droneInfos) {
+        if(dronedIdPosition.get(droneInfos.id_drone)!=null){
+            final int positionInList = dronedIdPosition.get(droneInfos.id_drone);
             DroneDTO drone = drones.get(positionInList);
-            drone.setBattery(message.getBattery());
+            drone.setBattery(droneInfos.battery_level);
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
