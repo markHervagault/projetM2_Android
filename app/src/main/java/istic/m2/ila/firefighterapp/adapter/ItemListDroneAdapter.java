@@ -18,7 +18,10 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
@@ -35,6 +38,11 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
     private String TAG = "ItemListDroneAdapter => ";
 
     private List<DroneDTO> drones;
+
+    /**
+     * position dans la liste des drones => dernier niveau de batterie connu
+     */
+    private Map<Integer, Integer> positionBattery = new HashMap<Integer, Integer>();
 
     public int indexSelected = -1;
 
@@ -79,10 +87,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        // - on récupère un élément dy dataset à cette position
-        // - on remplace le contenu de la vue avec cet élément
         final DroneDTO drone = drones.get(position);
-        holder.drone_name_listDrone.setText(drone.getNom());
         String status;
         switch (drone.getStatut()){
             case CONNECTE:
@@ -106,6 +111,8 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
                 holder.image_battery_listDrone.setVisibility(View.GONE);
                 status = IHMLabels.DRONE_STATUT_INCONNU;
         }
+
+        holder.drone_name_listDrone.setText(drone.getNom());
 
         int battery = drone.getBattery();
 
@@ -141,7 +148,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
                 EventBus.getDefault().post(new SelectedDroneChangedMessage(drone));
                 if(indexSelected != position){
                     indexSelected = position;
-                    notifyDataSetChanged();
+                    notifyItemChanged(position);
                 }
             }
         });

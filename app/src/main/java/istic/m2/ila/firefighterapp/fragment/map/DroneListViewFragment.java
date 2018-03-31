@@ -159,19 +159,20 @@ public class DroneListViewFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onUpdateDrone(final DroneInfoUpdateMessage message) {
-        /*getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(dronedIdPosition.get(message.getDroneId())!=null){
-                    int positionInList = dronedIdPosition.get(message.getDroneId());
-                    DroneDTO drone = drones.get(positionInList);
-                    drone.setBattery(message.getBattery());
+    public void onUpdateDrone(DroneInfoUpdateMessage message) {
+        if(dronedIdPosition.get(message.getDroneId())!=null){
+            final int positionInList = dronedIdPosition.get(message.getDroneId());
+            DroneDTO drone = drones.get(positionInList);
+            drone.setBattery(message.getBattery());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
                     mAdapter.notifyItemChanged(positionInList);
                 }
+            });
+        }
 
-            }
-        });*/
+
     }
 
     @Override

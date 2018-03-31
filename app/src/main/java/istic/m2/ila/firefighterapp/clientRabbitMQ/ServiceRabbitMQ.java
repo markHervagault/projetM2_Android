@@ -102,7 +102,7 @@ public class ServiceRabbitMQ extends Service {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 incomingMessageHandler = new String(body, "UTF-8");
-                //Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
+                Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
                 DroneInfosDTO droneInfosDTO = gson.fromJson(incomingMessageHandler, DroneInfosDTO.class);
