@@ -62,7 +62,7 @@ import okhttp3.Response;
 
 public class DroneMapFragment extends Fragment
 {
-    // =================================================================== INIT
+    //region ============================= INIT ===============================
 
     //Global Members
     private final String TAG = "DroneMap Fragment";
@@ -147,9 +147,9 @@ public class DroneMapFragment extends Fragment
         mMapView.onLowMemory();
     }
 
-    // =================================================================== //INIT
+    //endregion =================================================================== //INIT
 
-    // =================================================================== INTERFACE
+    //region =========================== INTERFACE ============================
 
     // Interface Members
     private boolean isPathClosed;
@@ -288,9 +288,9 @@ public class DroneMapFragment extends Fragment
         }
     }
 
-    // =================================================================== //INTERFACE
+    //endregion =================================================================== //INTERFACE
 
-    // =================================================================== MAP
+    //region ============================== MAP ===============================
 
     /**
      * Initialise la Carte avec les listeners d'évènements
@@ -312,7 +312,7 @@ public class DroneMapFragment extends Fragment
     }
 
     @Subscribe
-    public void OnDroneInfoUpdateEvent(final DroneInfoUpdateMessage message)
+    public void OnDroneInfoUpdateEvent(final DroneInfosDTO drone)
     {
 
     }

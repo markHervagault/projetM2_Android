@@ -105,10 +105,8 @@ public class ServiceRabbitMQ extends Service {
                 //Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
-                DroneInfosDTO droneInfosDTO = gson.fromJson(incomingMessageHandler, DroneInfosDTO.class);
-                EventBus.getDefault().post(
-                        new DroneInfoUpdateMessage(droneInfosDTO.id_drone, droneInfosDTO.position.longitude,
-                                droneInfosDTO.position.latitude, droneInfosDTO.battery_level, droneInfosDTO.orientation.yaw));
+                DroneInfosDTO droneInfos = gson.fromJson(incomingMessageHandler, DroneInfosDTO.class);
+                EventBus.getDefault().post(droneInfos);
             }
         };
         channel.basicConsume(queueName, true, consumer);
