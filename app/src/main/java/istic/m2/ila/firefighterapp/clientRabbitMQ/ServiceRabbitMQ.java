@@ -3,7 +3,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -23,8 +22,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DroneInfoUpdateMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 
@@ -85,7 +83,7 @@ public class ServiceRabbitMQ extends Service {
 
     //SUBSCRIBING
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onEvent(final NewDroneMessage event) throws Exception
+    public void onEvent(final DeclareDroneMessage event) throws Exception
     {
         if (_connection == null)
             return;
@@ -94,7 +92,7 @@ public class ServiceRabbitMQ extends Service {
         channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, "topic");
 
         String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.info." + event.getDroneId());
+        channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.info." + event.getDroneDTO().getId());
 
         Consumer consumer = new DefaultConsumer(channel) {
             private String incomingMessageHandler = "";

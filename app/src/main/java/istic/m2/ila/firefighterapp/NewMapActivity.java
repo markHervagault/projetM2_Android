@@ -160,8 +160,9 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
                 intervListFrag = new InterventionDetailsMoyensFragments();
                 intervMapFrag = new InterventionMapFragment();
+
+                droneMapFrag = new DroneMapFragment(); //Map avant drone list
                 droneListFrag = new DroneListViewFragment();
-                droneMapFrag = new DroneMapFragment();
 
                 toggleView();
             }

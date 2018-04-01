@@ -49,7 +49,8 @@ public class DroneDrawing extends MapItem
                 .title(_drone.getNom())
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
                 .anchor(0.5f,0.5f) //Center on point
-                .draggable(false));
+                .draggable(false)
+                .zIndex(50f)); //TODO placer les z_Index dans un fichier de conf, pour être sur des superpositions dans la map
             }
         });
     }

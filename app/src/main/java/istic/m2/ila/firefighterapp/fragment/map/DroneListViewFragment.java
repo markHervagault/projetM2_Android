@@ -1,7 +1,6 @@
 package istic.m2.ila.firefighterapp.fragment.map;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,12 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,11 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.adapter.ItemListDroneAdapter;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DroneInfoUpdateMessage;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.NewDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
 import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
@@ -193,8 +184,8 @@ public class DroneListViewFragment extends Fragment {
             dronedIdPosition.put(drone.getId(), drones.size());
             drones.add(drone);
 
-            // Envoie du nouveau drone sur le bus
-            NewDroneMessage message = new NewDroneMessage(drone.getId());
+            // Envoie du nouveau drone sur le bus pour mettre a jour la Map
+            DeclareDroneMessage message = new DeclareDroneMessage(drone);
             Log.d(TAG, "================================================================ Envoi d'une donnee sur le bus : "+drone.getNom());
             EventBus.getDefault().post(message);
         }

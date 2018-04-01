@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.util.SparseArray;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -16,17 +15,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
@@ -42,6 +41,8 @@ public class DroneMissionDrawing extends MapItem
     private Polyline _pathDrawing;
     private Marker _selectedMarker;
 
+    private PropertyChangeSupport _propertyChangeSupport;
+
     //endregion
 
     //region Properties
@@ -54,7 +55,11 @@ public class DroneMissionDrawing extends MapItem
     //Path Closed
     private boolean _pathClosed;
     public boolean isPathClosed() { return _pathClosed; }
-    public void setPathClosed(boolean pathClosed) { _pathClosed = pathClosed; }
+    public void setPathClosed(boolean pathClosed)
+    {
+        _pathClosed = pathClosed;
+        RefreshPath();
+    }
 
     //Markers count
     public int getMarkersCount() { return _pathPositions.size(); }
@@ -82,6 +87,7 @@ public class DroneMissionDrawing extends MapItem
         _markersByTag = new HashMap<>();
         _pathDrawing = _googleMap.addPolyline(new PolylineOptions()); // Permet d'éviter la vérification constante dans RefreshPath
         _editMode = false;
+        _propertyChangeSupport = new PropertyChangeSupport(this);
 
         //Setting Map Listeners
         _googleMap.setOnMapClickListener(onMapClickListener);
@@ -112,7 +118,7 @@ public class DroneMissionDrawing extends MapItem
                     .title("Point de passage")
                     .draggable(true)
                     .zIndex(10f)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trim)));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
 
             //Tag pour pouvoir retrouver le point
             Integer tag = _pathPositions.size();
@@ -121,6 +127,9 @@ public class DroneMissionDrawing extends MapItem
             //Ajout du marker à la collection
             _pathPositions.add(marker);
             _markersByTag.put(tag, marker);
+
+            //Signalement d'un ajout de marker, pour mettre a jour l'UI
+            _propertyChangeSupport.firePropertyChange("markersCount", getMarkersCount() - 1, getMarkersCount());
 
             //Refresh du path
             RefreshPath();
@@ -257,7 +266,7 @@ public class DroneMissionDrawing extends MapItem
                         currentMission.setNbIteration(0);
                         currentMission.setDroneId(1l);
                         currentMission.setBoucleFermee(_pathClosed);
-                        Set<PointMissionDTO> ponts = new HashSet<>();
+                        Set<PointMissionDTO> points = new HashSet<>();
 
                         //Génération des points de mission
                         long index = 0;
@@ -269,10 +278,10 @@ public class DroneMissionDrawing extends MapItem
                             pointMissionDTO.setLatitude(marker.getPosition().latitude);
                             pointMissionDTO.setLongitude(marker.getPosition().longitude);
 
-                            ponts.add(pointMissionDTO);
+                            points.add(pointMissionDTO);
                             index++;
                         }
-                        currentMission.setDronePositions(ponts);
+                        currentMission.setDronePositions(points);
 
                         //Envoi de la mission
                         AsyncTask.execute(new Runnable() {
@@ -329,7 +338,7 @@ public class DroneMissionDrawing extends MapItem
                             .title("Point de passage")
                             .draggable(false) //Mission en cours donc pas de modification des points
                             .zIndex(10f)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trim)));
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
 
                     //Tag pour pouvoir retrouver le point
                     Integer tag = _pathPositions.size();
@@ -341,6 +350,20 @@ public class DroneMissionDrawing extends MapItem
                 }
             }
         });
+    }
+
+    //endregion
+
+    //region PropertyChanged
+
+    public void
+    addPropertyChangeListener(PropertyChangeListener listener) {
+        _propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void
+    removePropertyChangeListener(PropertyChangeListener listener) {
+        _propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
     //endregion
