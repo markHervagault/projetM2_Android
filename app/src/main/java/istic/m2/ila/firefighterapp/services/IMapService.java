@@ -25,5 +25,6 @@ public interface IMapService {
     List<InterventionDTO> getInterventions(final String token);
     SinistreDTO addSinistre(final String token, SinistreDTO sinistre);
     TraitTopoDTO addTraitTopo(final String token, TraitTopoDTO traitTopoDTO);
+    void sendDroneMission(final String token, MissionDTO missionDTO);
     MissionDTO getCurrentDroneMission(final String token, long id);
 }

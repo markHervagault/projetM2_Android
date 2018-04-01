@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp.services.impl;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
@@ -266,6 +267,25 @@ public class MapService implements IMapService {
     }
 
     @Override
+    public void sendDroneMission(final String token, MissionDTO missionDTO)
+    {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        DroneMissionConsumer dmc = restTemplate.builConsumer(DroneMissionConsumer.class);
+        try
+        {
+            retrofit2.Response<MissionDTO> response = dmc.createMission(token, missionDTO).execute();
+            if(response.code() != HttpURLConnection.HTTP_OK)
+            {
+                Log.i("Mission", Integer.toString(response.code()));
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public MissionDTO getCurrentDroneMission(final String token, long droneId)
     {
         RestTemplate restTemplate = RestTemplate.getInstance();
@@ -288,4 +308,6 @@ public class MapService implements IMapService {
 
         return currentMission;
     }
+
+
 }

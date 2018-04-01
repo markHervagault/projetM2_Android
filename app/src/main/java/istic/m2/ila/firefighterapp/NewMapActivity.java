@@ -50,7 +50,7 @@ import istic.m2.ila.firefighterapp.services.impl.MapService;
 
 public class NewMapActivity extends AppCompatActivity implements InterventionDetailsMoyensFragments.ActivityMoyens {
 
-    private Boolean interventionView = true;
+    private Boolean interventionView = false;
 
     private InterventionDetailsMoyensFragments intervListFrag;
     private InterventionMapFragment intervMapFrag;
@@ -122,7 +122,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         return map;
     }
 
-    //-------------------------------------------------- ON CREATEE
+    //region ON CREATE/DESTROY
     private ServiceConnection serviceConnection;
     ServiceRabbitMQ serviceRabbitMQ;
 
@@ -195,6 +195,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         transaction.commit();
         interventionView = !interventionView;
     }
+
+    //endregion
 
     public void initMap(final GoogleMap googleMap){
         googleMap.setMaxZoomPreference(20.0f);
