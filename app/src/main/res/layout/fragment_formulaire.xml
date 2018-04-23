@@ -215,7 +215,7 @@
                     android:ems="10"
                     android:hint="Latitude"
                     android:imeOptions="flagNoExtractUi"
-                    android:inputType="numberDecimal"
+                    android:inputType="numberSigned"
                     android:maxLines="1" />
 
                 <View
@@ -231,7 +231,7 @@
                     android:ems="10"
                     android:hint="Longitude"
                     android:imeOptions="flagNoExtractUi"
-                    android:inputType="numberDecimal"
+                    android:inputType="numberSigned"
                     android:maxLines="1" />
 
             </LinearLayout>
