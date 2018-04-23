@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map;
+package istic.m2.ila.firefighterapp.fragment.map.intervention;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
