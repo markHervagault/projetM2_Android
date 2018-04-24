@@ -18,11 +18,10 @@
                 android:text="Type :"
                 />
 
-            <TextView
-                android:id="@+id/typeValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+            <Spinner
+                android:id="@+id/typeDropDown"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
