@@ -16,6 +16,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -233,10 +234,10 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
     //region Detail/Creation fragment
-
+    private Fragment fragmentToHide;
     private FragmentHolder fragmentHolder;
 
-    private void showFragment() {
+    public void showFragment() {
         if (!fragmentHolder.isVisible()) {
             Log.i("Visibility", "SHOW");
             FragmentManager fm = getSupportFragmentManager();
@@ -247,12 +248,12 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         }
     }
 
-    private void hideFragment() {
+    public void hideFragment() {
         if (fragmentHolder.isVisible()) {
             Log.i("Visibility", "HIDE");
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_out, android.R.anim.fade_in)
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .hide(fragmentHolder)
                     .commit();
         }

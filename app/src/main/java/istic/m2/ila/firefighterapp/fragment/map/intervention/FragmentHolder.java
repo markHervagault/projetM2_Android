@@ -6,7 +6,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
+import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
@@ -17,7 +19,7 @@ import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailTra
 public class FragmentHolder extends Fragment {
 
     private Fragment fragmentToDisplay;
-
+    private ImageButton dropdownButton;
     public FragmentHolder() {
         // Required empty public constructor
     }
@@ -43,6 +45,7 @@ public class FragmentHolder extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
         }
     }
@@ -51,14 +54,30 @@ public class FragmentHolder extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fragment_holder, container, false);
+        View view = inflater.inflate(R.layout.fragment_fragment_holder, container, false);
+        this.dropdownButton = view.findViewById(R.id.dropdownButton);
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.dropdownButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                hideSelf();
+            }
+        });
+    }
+
+    public void hideSelf(){
+        ((NewMapActivity)this.getActivity()).hideFragment();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
     }
-
     //endregion lifeCycle
     public Fragment getFragmentToDisplay() {
         return this.getFragmentToDisplay();
