@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationTraitTopo"
-    android:background="#FFFFFF">
+    tools:context="istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailSinistreFragment">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
