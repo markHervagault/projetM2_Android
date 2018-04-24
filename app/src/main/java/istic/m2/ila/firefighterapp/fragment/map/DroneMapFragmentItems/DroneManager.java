@@ -1,6 +1,7 @@
 package istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -20,6 +21,8 @@ public class DroneManager extends MapItem
 
     private Map<Long, DroneDrawing> _dronesById;
 
+    private static final String TAG = "DRONE MANAGER";
+
     //endregion
 
     //region Constructor
@@ -29,6 +32,7 @@ public class DroneManager extends MapItem
         super(map,contextActivity);
 
         _dronesById = new HashMap<>();
+        Log.i(TAG, "Subscribed to the bus");
         EventBus.getDefault().register(this);
     }
 
@@ -39,6 +43,7 @@ public class DroneManager extends MapItem
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onDeclareDroneMessageEvent(DeclareDroneMessage message)
     {
+        Log.i(TAG, "Recu : déclaredronemessage");
         //Ajout du drone seulement si il n'existe pas déjà
         if(!_dronesById.containsKey(message.getDroneDTO().getId()))
             _dronesById.put(message.getDroneDTO().getId(), new DroneDrawing(message.getDroneDTO(), _googleMap, _contextActivity));

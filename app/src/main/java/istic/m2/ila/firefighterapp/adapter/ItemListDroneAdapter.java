@@ -27,6 +27,7 @@ import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.constantes.IHMLabels;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
+import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 
 /**
  * Created by markh on 28/03/2018.
@@ -111,28 +112,36 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
             }
         });
 
-        String status;
-        switch (drone.getStatut()){
-            case CONNECTE:
-                status = IHMLabels.DRONE_STATUT_CONNECTE;
-                holder.image_statut_listDrone.setImageResource(R.drawable.connected);
-                holder.image_battery_listDrone.setVisibility(View.VISIBLE);
-                break;
-            case DECONNECTE:
-                status = IHMLabels.DRONE_STATUT_DECONNECTE;
-                holder.image_statut_listDrone.setImageResource(R.drawable.disconnected);
-                holder.image_battery_listDrone.setVisibility(View.GONE);
-                break;
-            case EN_MISSION:
-                status = IHMLabels.DRONE_STATUT_EN_MISSION;
-                holder.image_statut_listDrone.setImageResource(R.drawable.droneenmission);
-                holder.image_battery_listDrone.setVisibility(View.VISIBLE);
-                break;
-            default:
-                Log.d(TAG, "Statut du drone inconnu");
-                holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
-                holder.image_battery_listDrone.setVisibility(View.GONE);
-                status = IHMLabels.DRONE_STATUT_INCONNU;
+        String status = "statusIconnu";
+
+        if(drone.getStatut()!=null){
+            switch (drone.getStatut()){
+                case CONNECTE:
+                    status = IHMLabels.DRONE_STATUT_CONNECTE;
+                    holder.image_statut_listDrone.setImageResource(R.drawable.connected);
+                    holder.image_battery_listDrone.setVisibility(View.VISIBLE);
+                    break;
+                case DECONNECTE:
+                    status = IHMLabels.DRONE_STATUT_DECONNECTE;
+                    holder.image_statut_listDrone.setImageResource(R.drawable.disconnected);
+                    holder.image_battery_listDrone.setVisibility(View.GONE);
+                    break;
+                case EN_MISSION:
+                    status = IHMLabels.DRONE_STATUT_EN_MISSION;
+                    holder.image_statut_listDrone.setImageResource(R.drawable.droneenmission);
+                    holder.image_battery_listDrone.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    Log.d(TAG, "Statut du drone inconnu");
+                    holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
+                    holder.image_battery_listDrone.setVisibility(View.GONE);
+                    status = IHMLabels.DRONE_STATUT_INCONNU;
+            }
+        }else{
+            Log.d(TAG, "Statut du drone null");
+            holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
+            holder.image_battery_listDrone.setVisibility(View.GONE);
+            status = IHMLabels.DRONE_STATUT_INCONNU;
         }
 
 

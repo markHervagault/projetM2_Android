@@ -64,7 +64,7 @@ public class DroneDrawing extends MapItem
             @Override
             public void run()
             {
-                _droneMarker.setPosition(new LatLng(latitude, longitude));
+                UpdatePosition(latitude, longitude);
                 _droneMarker.setRotation((float)Math.toDegrees(rotation) - _googleMap.getCameraPosition().bearing);
             }
         });

@@ -55,7 +55,9 @@ public class DroneMapFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        Log.i(TAG, "OnCreateView");
         // Inflate the layout for this fragment
         _view = inflater.inflate(R.layout.fragment_drone_map, container, false);
         final Button button = _view.findViewById(R.id.toggleView);
@@ -260,9 +262,10 @@ public class DroneMapFragment extends Fragment {
     /**
      * Initialise la Carte avec les listeners d'évènements
      */
-    private void InitMap() {
-        _missionDrawing = new DroneMissionDrawing(_googleMap, getActivity());
+    private void InitMap()
+    {
         _droneManager = new DroneManager(_googleMap, getActivity());
+        _missionDrawing = new DroneMissionDrawing(_googleMap, getActivity());
         RefreshOpenClosePathButtonStatus();
     }
 
