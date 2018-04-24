@@ -1,12 +1,13 @@
 package istic.m2.ila.firefighterapp.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Created by hakima on 3/22/18.
  */
 
-public class TraitTopoDTO {
+public class TraitTopoDTO implements Serializable{
     private Long id;
 
     private ETypeTraitTopo type;

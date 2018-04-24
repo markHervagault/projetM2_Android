@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 
 /**
 
@@ -20,16 +21,7 @@ public class CreationTraitTopo extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CreationTraitTopo.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CreationTraitTopo newInstance(String param1, String param2) {
+    public static CreationTraitTopo newInstance(TraitTopoDTO dto) {
         CreationTraitTopo fragment = new CreationTraitTopo();
         return fragment;
     }
