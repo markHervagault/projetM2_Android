@@ -145,7 +145,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
                     break;
             }
         }else{
-            Log.d(TAG, "Statut du drone null");
+            //Log.d(TAG, "Statut du drone null");
             holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
             holder.image_battery_listDrone.setVisibility(View.GONE);
             status = IHMLabels.DRONE_STATUT_INCONNU;

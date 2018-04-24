@@ -15,6 +15,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -26,6 +29,8 @@ import java.util.List;
 import java.util.Set;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
+import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
@@ -40,6 +45,7 @@ public class DroneMissionDrawing extends MapItem
     private HashMap<Integer,Marker> _markersByTag;
     private Polyline _pathDrawing;
     private Marker _selectedMarker;
+    private DroneDTO _selectedDrone;
 
     private PropertyChangeSupport _propertyChangeSupport;
 
@@ -50,7 +56,12 @@ public class DroneMissionDrawing extends MapItem
     //Edit Mode
     private boolean _editMode;
     public boolean isEditMode() { return _editMode; }
-    public void setEditMode(boolean editMode) { _editMode = editMode; }
+    public void setEditMode(boolean editMode)
+    {
+        _editMode = editMode;
+        //Signalement d'un ajout de marker, pour mettre a jour l'UI
+        _propertyChangeSupport.firePropertyChange("editMode", !editMode, editMode);
+    }
 
     //Path Closed
     private boolean _pathClosed;
@@ -227,6 +238,9 @@ public class DroneMissionDrawing extends MapItem
         _selectedMarker.remove(); //Supression du marker de la map
         _pathPositions.remove(_selectedMarker); //Supression du marker de la mission
         ReIndexMarkers(); //Reindexation des markers restants
+
+        //Signalement d'une suppression de marker, pour mettre a jour l'UI
+        _propertyChangeSupport.firePropertyChange("markersCount", getMarkersCount() + 1, getMarkersCount());
     }
 
     private void ReIndexMarkers()
@@ -262,9 +276,9 @@ public class DroneMissionDrawing extends MapItem
                     {
                         //Génération de la mission
                         final MissionDTO currentMission = new MissionDTO();
-                        currentMission.setInterventionId(1l);
+                        currentMission.setInterventionId(1l); //TODO SelectedDroneMission
                         currentMission.setNbIteration(0);
-                        currentMission.setDroneId(1l);
+                        currentMission.setDroneId(1l);//TODO SelectedDrone
                         currentMission.setBoucleFermee(_pathClosed);
                         Set<PointMissionDTO> points = new HashSet<>();
 
@@ -350,6 +364,17 @@ public class DroneMissionDrawing extends MapItem
                 }
             }
         });
+    }
+
+    //endregion;:::::::::::;
+
+    //region Bus Events
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void OnSelectedDroneChanged(SelectedDroneChangedMessage message)
+    {
+        _selectedDrone = message.Drone;
+
     }
 
     //endregion

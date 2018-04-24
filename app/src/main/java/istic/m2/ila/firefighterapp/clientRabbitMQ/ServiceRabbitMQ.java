@@ -3,6 +3,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -103,7 +104,7 @@ public class ServiceRabbitMQ extends Service {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 incomingMessageHandler = new String(body, "UTF-8");
-                //Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
+                Log.i(TAG, "Received DroneInfoDTO'");
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
                 DroneInfosDTO droneInfos = gson.fromJson(incomingMessageHandler, DroneInfosDTO.class);

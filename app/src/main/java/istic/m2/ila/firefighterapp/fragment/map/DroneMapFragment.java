@@ -59,7 +59,6 @@ public class DroneMapFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -105,7 +104,6 @@ public class DroneMapFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         _MapView.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
