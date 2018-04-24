@@ -1,6 +1,5 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,20 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
-import istic.m2.ila.firefighterapp.dto.SinistreDTO;
-import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
-import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
 
 public class InterventionMapFragment extends Fragment {
 
@@ -30,7 +28,9 @@ public class InterventionMapFragment extends Fragment {
     }
 
     MapView mMapView;
+    View mView;
     private GoogleMap googleMap;
+
 
     public NewMapActivity getMeActivity(){
         return (NewMapActivity)getActivity();
@@ -45,15 +45,15 @@ public class InterventionMapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_intervention_map, container, false);
-        final Button button = view.findViewById(R.id.toggleView);
+        mView = inflater.inflate(R.layout.fragment_intervention_map, container, false);
+        final Button button = mView.findViewById(R.id.toggleView);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getMeActivity().toggleView();
             }
         });
 
-        mMapView = (MapView) view.findViewById(R.id.mapView);
+        mMapView = (MapView) mView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
         mMapView.onResume(); // needed to get the map to display immediately
@@ -69,16 +69,125 @@ public class InterventionMapFragment extends Fragment {
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
                 initMap();
+                initMenu();
             }
         });
 
-        return view;
+        return mView;
     }
 
     private void initMap() {
         getMeActivity().initMap(googleMap);
         getVehicule();
     }
+
+    // region MenuFlottant
+    private List<FloatingActionButton> floatingActionButtonList;
+    private boolean isTraitTopoSelected;
+    private boolean isSinistreSelected;
+    private boolean isDeploiementSelected;
+
+    /**
+     * Initialisation et définition des actions, du comportement visuel pour les
+     * Boutons du menu flottant
+     */
+    private void initMenu() {
+        isTraitTopoSelected = false;
+        isDeploiementSelected = false;
+        isSinistreSelected = false;
+
+        final FloatingActionButton fabTraitTopographique = mView.findViewById(R.id.fabMenu_trait);
+        final FloatingActionButton fabSinistre = mView.findViewById(R.id.fabMenu_sinistre);
+        final FloatingActionButton fabDeploiement = mView.findViewById(R.id.fabMenu_deploiement);
+
+        //Remove Button Listener
+        fabTraitTopographique.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isTraitTopoSelected = toggleColorFloatingButton(fabTraitTopographique, isTraitTopoSelected);
+                // TODO - Logique applicative pour le positionnement de traits topographiques
+                // TODO - Les traits doivent être draggable
+            }
+        });
+
+        //Add Button Listener
+        fabDeploiement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isDeploiementSelected = toggleColorFloatingButton(fabDeploiement, isDeploiementSelected);
+                // TODO - Logique applicative pour le positionnement de Déploiements
+                // TODO - Les déploiements doivent être draggable
+            }
+        });
+
+        fabSinistre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isSinistreSelected = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
+                // TODO - Logique applicative pour le positionnement de sinistres
+                // TODO - Les sinistres doivent être draggable
+            }
+        });
+
+        //Ajout des boutons à la liste pour la désactivation
+        floatingActionButtonList = new ArrayList<>();
+
+        floatingActionButtonList.add(fabTraitTopographique);
+        floatingActionButtonList.add(fabDeploiement);
+        floatingActionButtonList.add(fabSinistre);
+    }
+
+    /**
+     * Fonction pour changer la couleur d'un bouton flottant suivant une condition.
+     * @param fab floating action button ciblé
+     * @param condition condition d'aiguillage pour le toggle
+     * @return la nouvelle valeur courante (après le toggle)
+     */
+    private boolean toggleColorFloatingButton(FloatingActionButton fab, boolean condition) {
+        if (!condition) // Activation du mode
+        {
+            //Desactivation des boutons
+            ChangeMenuButtonsStatus(false);
+
+            //Activation du bouton d'ajout ?? Utile??
+            fab.setEnabled(true);
+
+            // Couleurs du focus
+            fab.setColorNormal(getResources().
+                    getColor(R.color.colorMenuFabSelectedNormal));
+            fab.setColorPressed(getResources().
+                    getColor(R.color.colorMenuFabSelectedPressed));
+            fab.setColorRipple(getResources().
+                    getColor(R.color.colorMenuFabSelectedRipple));
+
+            condition = true;
+        } else //Desactivation du mode
+        {
+            //Reactivation des boutons
+            ChangeMenuButtonsStatus(true);
+
+            // Couleurs de l'unfocus
+            fab.setColorNormal(getResources().
+                    getColor(R.color.colorMenuFabDefaultNormal));
+            fab.setColorPressed(getResources().
+                    getColor(R.color.colorMenuFabDefaultPressed));
+            fab.setColorRipple(getResources().
+                    getColor(R.color.colorMenuFabDefaultRipple));
+
+            condition = false;
+        }
+        return condition;
+    }
+
+    /**
+     * Change l'état des boutons suivant la valeur passée en paramètres
+     * @param enabled true pour activer, false sinon
+     */
+    private void ChangeMenuButtonsStatus(Boolean enabled) {
+        for (FloatingActionButton button : floatingActionButtonList)
+            button.setEnabled(enabled);
+    }
+    // endregion
 
     private void getVehicule() {
         /*AsyncTask.execute(new Runnable() {
