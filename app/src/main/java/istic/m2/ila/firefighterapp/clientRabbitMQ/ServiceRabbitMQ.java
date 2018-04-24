@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 
@@ -89,7 +92,7 @@ public class ServiceRabbitMQ extends Service {
             return;
 
         Channel channel = _connection.createChannel();
-        channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, "topic");
+        channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
 
         String queueName = channel.queueDeclare().getQueue();
         channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.info." + event.getDroneDTO().getId());
@@ -108,6 +111,74 @@ public class ServiceRabbitMQ extends Service {
             }
         };
         channel.basicConsume(queueName, true, consumer);
+    }
+
+    ///////////////////////// fonctions d'envoi de commandes au drone ///////////////////////////
+
+    /**
+     * Envoie une commande STOP au drone dont l'id est indiqué dans StopMissionMessage
+     * @param event
+     *      Le message bus contenant  l'id du drone
+     * @throws Exception
+     */
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onEvent(StopMissionMessage event) throws Exception
+    {
+
+        if (_connection == null)
+            return;
+
+        Channel channel = _connection.createChannel();
+
+        channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
+
+        String message = "stop";
+        channel.basicPublish(Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.command."+event.getDroneId(), null, message.getBytes());
+        System.out.println(" [x] Sent '" + "drone.command."+event.getDroneId() + "':'" + message + "'");
+    }
+
+    /**
+     * Envoie une commande PLAY au drone dont l'id est indiqué dans PlayMissionMessage
+     * @param event
+     *      Le message bus contenant  l'id du drone
+     * @throws Exception
+     */
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onEvent(PlayMissionMessage event) throws Exception
+    {
+
+        if (_connection == null)
+            return;
+
+        Channel channel = _connection.createChannel();
+
+        channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
+
+        String message = "play";
+        channel.basicPublish(Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.command."+event.getDroneId(), null, message.getBytes());
+        System.out.println(" [x] Sent '" + "drone.command."+event.getDroneId() + "':'" + message + "'");
+    }
+
+    /**
+     * Envoie une commande PAUSE au drone dont l'id est indiqué dans PauseMissionMessage
+     * @param event
+     *      Le message bus contenant  l'id du drone
+     * @throws Exception
+     */
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onEvent(PauseMissionMessage event) throws Exception
+    {
+
+        if (_connection == null)
+            return;
+
+        Channel channel = _connection.createChannel();
+
+        channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
+
+        String message = "pause";
+        channel.basicPublish(Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.command."+event.getDroneId(), null, message.getBytes());
+        System.out.println(" [x] Sent '" + "drone.command."+event.getDroneId() + "':'" + message + "'");
     }
 
     void start()
