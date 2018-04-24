@@ -37,9 +37,9 @@ public class DetailSinistreFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail_sinistre, container, false);
-        ((TextView)this.getActivity().findViewById(R.id.typeValueSinistre)).setText(sinistre.getType().toString());
-        ((TextView)this.getActivity().findViewById(R.id.composanteValue)).setText(sinistre.getComposante().getDescription());
-        this.getActivity().findViewById(R.id.supprimer).setOnClickListener( new View.OnClickListener() {
+        ((TextView)view.findViewById(R.id.typeValueSinistre)).setText(sinistre.getType().toString());
+        ((TextView)view.findViewById(R.id.composanteValue)).setText(sinistre.getComposante().getDescription());
+        view.findViewById(R.id.supprimer).setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteSinistre();
