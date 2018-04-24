@@ -1,13 +1,10 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import istic.m2.ila.firefighterapp.R;
@@ -41,9 +38,11 @@ public class DetailTraitTopoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail_trait_topo, container, false);
-        ((TextView)this.getActivity().findViewById(R.id.typeValue)).setText(traitTopo.getType().toString());
-        ((TextView)this.getActivity().findViewById(R.id.composanteValue)).setText(traitTopo.getComposante().getDescription());
-        this.getActivity().findViewById(R.id.supprimer).setOnClickListener( new View.OnClickListener() {
+        TextView textViewType = view.findViewById(R.id.typeValue);
+        textViewType.setText(traitTopo.getType().toString());
+
+        ((TextView)view.findViewById(R.id.composanteValue)).setText(traitTopo.getComposante().getDescription());
+        view.findViewById(R.id.supprimer).setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteTraitTopo();

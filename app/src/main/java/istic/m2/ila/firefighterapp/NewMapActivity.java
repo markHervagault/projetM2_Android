@@ -21,7 +21,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -55,7 +54,7 @@ import istic.m2.ila.firefighterapp.services.impl.MapService;
 
 public class NewMapActivity extends AppCompatActivity implements InterventionDetailsMoyensFragments.ActivityMoyens {
 
-    private Boolean interventionView = false;
+    private Boolean interventionView = true;
 
     private InterventionDetailsMoyensFragments intervListFrag;
     private InterventionMapFragment intervMapFrag;
@@ -218,17 +217,13 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Toast.makeText(NewMapActivity.this, marker.getTitle(), Toast.LENGTH_LONG).show();
                 Object obj = marker.getTag();
                 if (obj instanceof TraitTopoDTO) {
                     detailTrait((TraitTopoDTO) obj);
-                    Log.i("Log", "Trait topo");
                 } else if (obj instanceof SinistreDTO) {
                     detailSinistre((SinistreDTO) obj);
-                    Log.i("Log", "Trait sinistre");
                 } else if (obj instanceof DeploiementDTO) {
                     detailMoyen((DeploiementDTO) obj);
-                    Log.i("Log", "Trait deploiement");
                 }
                 return true;
             }
@@ -240,21 +235,21 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     //region Detail/Creation fragment
 
     private FragmentHolder fragmentHolder;
-    private Boolean viewableFragmentIsShow = false;
 
     private void showFragment() {
-        if (!viewableFragmentIsShow) {
+        if (!fragmentHolder.isVisible()) {
+            Log.i("Visibility", "SHOW");
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .show(fragmentHolder)
                     .commit();
         }
-
     }
 
     private void hideFragment() {
-        if (viewableFragmentIsShow) {
+        if (fragmentHolder.isVisible()) {
+            Log.i("Visibility", "HIDE");
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_out, android.R.anim.fade_in)

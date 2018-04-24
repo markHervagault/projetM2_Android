@@ -1,7 +1,5 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,7 +9,6 @@ import android.widget.TextView;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
-import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 
 public class DetailSinistreFragment extends Fragment {
     private static final String ARG = "data";
@@ -40,7 +37,7 @@ public class DetailSinistreFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail_sinistre, container, false);
-        ((TextView)this.getActivity().findViewById(R.id.typeValue)).setText(sinistre.getType().toString());
+        ((TextView)this.getActivity().findViewById(R.id.typeValueSinistre)).setText(sinistre.getType().toString());
         ((TextView)this.getActivity().findViewById(R.id.composanteValue)).setText(sinistre.getComposante().getDescription());
         this.getActivity().findViewById(R.id.supprimer).setOnClickListener( new View.OnClickListener() {
             @Override

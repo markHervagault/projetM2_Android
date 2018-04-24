@@ -11,8 +11,8 @@ import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
-import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationSinistre;
-import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationTraitTopo;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailSinistreFragment;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailTraitTopoFragment;
 
 public class FragmentHolder extends Fragment {
 
@@ -85,17 +85,17 @@ public class FragmentHolder extends Fragment {
 
     public void replace(TraitTopoDTO traitTopoDTO) {
         if (traitTopoDTO.getId() != null) {
-            this.setFragmentToDisplay(new CreationTraitTopo());
+            this.setFragmentToDisplay(DetailTraitTopoFragment.newInstance(traitTopoDTO));
         } else {
-            this.setFragmentToDisplay(new CreationTraitTopo());
+            //sthis.setFragmentToDisplay(CreationTraitTopo.newInstance());
         }
     }
 
     public void replace(SinistreDTO sinistreDTO) {
         if (sinistreDTO.getId() != null) {
-            this.setFragmentToDisplay(new CreationSinistre());
+            this.setFragmentToDisplay(DetailSinistreFragment.newInstance(sinistreDTO));
         } else {
-            this.setFragmentToDisplay(new CreationSinistre());
+            //this.setFragmentToDisplay(CreationTraitTopo.newInstance());
         }
     }
 }
