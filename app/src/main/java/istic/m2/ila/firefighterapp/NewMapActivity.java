@@ -50,7 +50,7 @@ import istic.m2.ila.firefighterapp.services.impl.MapService;
 
 public class NewMapActivity extends AppCompatActivity implements InterventionDetailsMoyensFragments.ActivityMoyens {
 
-    private Boolean interventionView = false;
+    private Boolean interventionView = true;
 
     private InterventionDetailsMoyensFragments intervListFrag;
     private InterventionMapFragment intervMapFrag;
@@ -379,4 +379,6 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         canvas.drawBitmap(icon, 0, 0, paint);
         return icon;
     }
+
+
 }
