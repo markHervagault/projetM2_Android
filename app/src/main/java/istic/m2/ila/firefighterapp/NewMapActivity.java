@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,10 +46,9 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.dto.VehiculeDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragment;
-import istic.m2.ila.firefighterapp.fragment.map.intervention.CreationTraitTopo;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
@@ -66,6 +66,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     public final Integer RAYON_RECHERCHE_TRAIT_TOPO = 5000;
 
     private IMapService service = MapService.getInstance();
+
     public IMapService getService() {
         return service;
     }
@@ -76,6 +77,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         geo.setLatitude(48.115150);
         return geo;
     }
+
     private InterventionDTO intervention;
 
     private Long idIntervention;
@@ -89,9 +91,10 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
     // region referentiel bitmap
-    private static final Map<ETypeTraitTopographiqueBouchon,Integer> referentielTraitTopoBouchon = createReferentielTraitTopoBouchon ();
-    private static Map<ETypeTraitTopographiqueBouchon,Integer> createReferentielTraitTopoBouchon(){
-        Map<ETypeTraitTopographiqueBouchon,Integer> map = new HashMap<>();
+    private static final Map<ETypeTraitTopographiqueBouchon, Integer> referentielTraitTopoBouchon = createReferentielTraitTopoBouchon();
+
+    private static Map<ETypeTraitTopographiqueBouchon, Integer> createReferentielTraitTopoBouchon() {
+        Map<ETypeTraitTopographiqueBouchon, Integer> map = new HashMap<>();
         map.put(ETypeTraitTopographiqueBouchon.DANGER, R.drawable.danger_24dp);
         map.put(ETypeTraitTopographiqueBouchon.SENSIBLE, R.drawable.sensible_24dp);
         map.put(ETypeTraitTopographiqueBouchon.PDR, R.drawable.pdr_24dp);
@@ -101,17 +104,19 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
 
-    private static final Map<ETypeTraitTopo,Integer> referentielTraitTopo = createReferentielTraitTopo ();
-    private static Map<ETypeTraitTopo,Integer> createReferentielTraitTopo(){
-        Map<ETypeTraitTopo,Integer> map = new HashMap<>();
+    private static final Map<ETypeTraitTopo, Integer> referentielTraitTopo = createReferentielTraitTopo();
+
+    private static Map<ETypeTraitTopo, Integer> createReferentielTraitTopo() {
+        Map<ETypeTraitTopo, Integer> map = new HashMap<>();
         map.put(ETypeTraitTopo.DANGER, R.drawable.danger_24dp);
         map.put(ETypeTraitTopo.SENSIBLE, R.drawable.sensible_24dp);
         return map;
     }
 
-    private static final Map<EEtatDeploiement,Integer> referentielMoyen = createReferentielMoyen ();
-    private static Map<EEtatDeploiement,Integer> createReferentielMoyen(){
-        Map<EEtatDeploiement,Integer> map = new HashMap<>();
+    private static final Map<EEtatDeploiement, Integer> referentielMoyen = createReferentielMoyen();
+
+    private static Map<EEtatDeploiement, Integer> createReferentielMoyen() {
+        Map<EEtatDeploiement, Integer> map = new HashMap<>();
         map.put(EEtatDeploiement.DEMANDE, R.drawable.moyen_prevu);
         map.put(EEtatDeploiement.VALIDE, R.drawable.moyen_prevu);
         map.put(EEtatDeploiement.ENGAGE, R.drawable.moyen_prevu);
@@ -119,9 +124,10 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         return map;
     }
 
-    private static final Map<ESinistre,Integer> referentielSinistre = createReferentielSinistre ();
-    private static Map<ESinistre,Integer> createReferentielSinistre(){
-        Map<ESinistre,Integer> map = new HashMap<>();
+    private static final Map<ESinistre, Integer> referentielSinistre = createReferentielSinistre();
+
+    private static Map<ESinistre, Integer> createReferentielSinistre() {
+        Map<ESinistre, Integer> map = new HashMap<>();
         map.put(ESinistre.CENTRE, R.drawable.centre_sinistre);
         map.put(ESinistre.POINT, R.drawable.ic_star_black_24dp);
         map.put(ESinistre.ZONE, R.drawable.boom70x70);
@@ -137,15 +143,13 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
     private boolean isServiceBound = false;
 
-    private void BindService()
-    {
-        bindService(new Intent(this, ServiceRabbitMQ.class), serviceConnection, Context.BIND_AUTO_CREATE );
+    private void BindService() {
+        bindService(new Intent(this, ServiceRabbitMQ.class), serviceConnection, Context.BIND_AUTO_CREATE);
         isServiceBound = true;
     }
 
-    private void UnBindService()
-    {
-        if(!isServiceBound)
+    private void UnBindService() {
+        if (!isServiceBound)
             return;
 
         unbindService(serviceConnection);
@@ -153,18 +157,15 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        idIntervention = ((InterventionDTO)getIntent().getSerializableExtra("intervention")).getId();
+    protected void onCreate(Bundle savedInstanceState) {
+        idIntervention = ((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_map);
-
-        serviceConnection = new ServiceConnection()
-        {
+        this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
+        serviceConnection = new ServiceConnection() {
             @Override
-            public void onServiceConnected(ComponentName name, IBinder service)
-            {
-                serviceRabbitMQ = ((ServiceRabbitMQ.LocalBinder)service).getService();
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                serviceRabbitMQ = ((ServiceRabbitMQ.LocalBinder) service).getService();
 
                 intervListFrag = new InterventionDetailsMoyensFragments();
                 intervMapFrag = new InterventionMapFragment();
@@ -176,8 +177,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             }
 
             @Override
-            public void onServiceDisconnected(ComponentName name)
-            {
+            public void onServiceDisconnected(ComponentName name) {
 
             }
         };
@@ -186,15 +186,14 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
         UnBindService();
     }
 
     public void toggleView() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(interventionView){
+        if (interventionView) {
             transaction.replace(R.id.mapFragment, intervMapFrag);
             transaction.replace(R.id.listViewFragment, intervListFrag);
         } else {
@@ -207,7 +206,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
     //endregion
 
-    public void initMap(final GoogleMap googleMap){
+    public void initMap(final GoogleMap googleMap) {
         googleMap.setMaxZoomPreference(20.0f);
         // Centre l'écran sur le Drône sur RENNES ISTIC
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getGeoPositionIntervention().getLatitude(), getGeoPositionIntervention().getLongitude()), 18.0f));
@@ -215,18 +214,21 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         getTraitTopoBouchons(googleMap);
         getTraitTopo(googleMap);
         getSinistre(googleMap);
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
-        {
+
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker){
-                Toast.makeText(NewMapActivity.this, marker.getTitle(),Toast.LENGTH_LONG).show();
+            public boolean onMarkerClick(Marker marker) {
+                Toast.makeText(NewMapActivity.this, marker.getTitle(), Toast.LENGTH_LONG).show();
                 Object obj = marker.getTag();
-                if( obj instanceof TraitTopoDTO ){
-                    detailTrait((TraitTopoDTO)obj);
-                } else if( obj instanceof SinistreDTO) {
-                    detailSinistre((SinistreDTO)obj);
-                } else if( obj instanceof DeploiementDTO) {
+                if (obj instanceof TraitTopoDTO) {
+                    detailTrait((TraitTopoDTO) obj);
+                    Log.i("Log", "Trait topo");
+                } else if (obj instanceof SinistreDTO) {
+                    detailSinistre((SinistreDTO) obj);
+                    Log.i("Log", "Trait sinistre");
+                } else if (obj instanceof DeploiementDTO) {
                     detailMoyen((DeploiementDTO) obj);
+                    Log.i("Log", "Trait deploiement");
                 }
                 return true;
             }
@@ -237,64 +239,64 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
     //region Detail/Creation fragment
 
-    private CreationTraitTopo viewableFragment = new CreationTraitTopo();
+    private FragmentHolder fragmentHolder;
     private Boolean viewableFragmentIsShow = false;
 
-    private void showFragment(){
-        if(!viewableFragmentIsShow){
+    private void showFragment() {
+        if (!viewableFragmentIsShow) {
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .show(viewableFragment)
+                    .show(fragmentHolder)
                     .commit();
         }
 
     }
 
-    private void hideFragment(){
-        if(viewableFragmentIsShow) {
+    private void hideFragment() {
+        if (viewableFragmentIsShow) {
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_out, android.R.anim.fade_in)
-                    .show(viewableFragment)
+                    .hide(fragmentHolder)
                     .commit();
         }
     }
 
-    private void createMoyen(){
-        showFragment();
-        viewableFragment.replace(new DeploiementDTO());
+    private void createMoyen() {
         hideFragment();
+        fragmentHolder.replace(new DeploiementDTO());
+        showFragment();
     }
 
-    private void detailMoyen(DeploiementDTO dto){
-        showFragment();
-        viewableFragment.replace(dto);
+    private void detailMoyen(DeploiementDTO dto) {
         hideFragment();
+        fragmentHolder.replace(dto);
+        showFragment();
     }
 
-    private void createTrait(){
-        showFragment();
-        viewableFragment.replace(new TraitTopoDTO());
+    private void createTrait() {
         hideFragment();
+        fragmentHolder.replace(new TraitTopoDTO());
+        showFragment();
     }
 
-    private void detailTrait(TraitTopoDTO dto){
-        showFragment();
-        viewableFragment.replace(dto);
+    private void detailTrait(TraitTopoDTO dto) {
         hideFragment();
+        fragmentHolder.replace(dto);
+        showFragment();
     }
 
-    private void createSinistre(){
-        showFragment();
-        viewableFragment.replace(new SinistreDTO());
+    private void createSinistre() {
         hideFragment();
+        fragmentHolder.replace(new SinistreDTO());
+        showFragment();
     }
 
-    private void detailSinistre(SinistreDTO dto){
-        showFragment();
-        viewableFragment.replace(dto);
+    private void detailSinistre(SinistreDTO dto) {
         hideFragment();
+        fragmentHolder.replace(dto);
+        showFragment();
     }
 
     //endregion
@@ -324,8 +326,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                 GeoPositionDTO geo = getGeoPositionIntervention();
                 List<TraitTopoDTO> traits = getService()
                         .getTraitTopo(token, getIdIntervention());
-                for(TraitTopoDTO trait : traits) {
-                    drawTraitTopo(googleMap,trait);
+                for (TraitTopoDTO trait : traits) {
+                    drawTraitTopo(googleMap, trait);
                 }
             }
         });
@@ -339,7 +341,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                 GeoPositionDTO geo = getGeoPositionIntervention();
                 List<SinistreDTO> sinistres = getService()
                         .getSinistre(token, getIdIntervention());
-                for(SinistreDTO sinistre : sinistres) {
+                for (SinistreDTO sinistre : sinistres) {
                     drawSinistre(googleMap, sinistre);
                 }
             }
@@ -389,7 +391,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                         .snippet(traitTopo.getType().getDescription() + " - " + traitTopo.getComposante().getDescription())
                         .icon(BitmapDescriptorFactory.fromBitmap(icon))
                         .draggable(false));
-            }});
+            }
+        });
     }
 
     public void drawTraitTopo(final GoogleMap googleMap, final TraitTopoDTO traitTopo) {
@@ -399,7 +402,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             public void run() {
                 int rIcone = referentielTraitTopo.get(traitTopo.getType());
 
-                String rgbNoA = traitTopo.getComposante().getCouleur().substring(0,7);
+                String rgbNoA = traitTopo.getComposante().getCouleur().substring(0, 7);
                 Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
 
                 // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
@@ -432,7 +435,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                         .icon(BitmapDescriptorFactory.fromBitmap(icon))
                         .draggable(false)
                 ).setTag(sinistre);
-            }});
+            }
+        });
     }
 
     public void drawVehicule(final GoogleMap googleMap, final DeploiementDTO deploy) {
@@ -459,7 +463,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                             .icon(BitmapDescriptorFactory.fromBitmap(icon))
                             .draggable(false)).setTag(deploy);
                 }
-            }});
+            }
+        });
     }
 
     private Bitmap getNewBitmapRenderedWithColor(int resDrawableId, String colorRequested) {
