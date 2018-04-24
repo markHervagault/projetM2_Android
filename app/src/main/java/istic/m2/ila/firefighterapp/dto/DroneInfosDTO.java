@@ -8,6 +8,7 @@ public class DroneInfosDTO {
 
     public double timestamp;
     public long id_drone;
+    public String status;
     public int id_mission;
     public int battery_level;
     public LocalisationDroneDTO position;

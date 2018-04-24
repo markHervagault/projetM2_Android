@@ -164,7 +164,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         }
 
         holder.statut_listDrone.setText(status);
-        //lastListDrones = new ArrayList<DroneDTO>(drones);
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

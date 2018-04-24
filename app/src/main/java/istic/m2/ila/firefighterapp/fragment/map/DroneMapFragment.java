@@ -25,10 +25,16 @@ import java.util.List;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DroneInfoUpdateMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
+import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.DroneManager;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.DroneMissionDrawing;
+import istic.m2.ila.firefighterapp.fragment.map.droneMapModeFragment.DroneCommandFragment;
 
 public class DroneMapFragment extends Fragment {
     //region  INIT
@@ -43,6 +49,8 @@ public class DroneMapFragment extends Fragment {
 
     private DroneMissionDrawing _missionDrawing;
     private DroneManager _droneManager;
+
+    private DroneCommandFragment _droneCommandFrag;
 
     public DroneMapFragment() {
         // Required empty public constructor
@@ -272,12 +280,41 @@ public class DroneMapFragment extends Fragment {
     //endregion
 
     //region Events
-
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onSelectedDroneChangedMessageEvent(SelectedDroneChangedMessage message)
+    public void onSelectedDroneChangedMessageEvent(final SelectedDroneChangedMessage message)
     {
+        _droneManager.setSelectedDrone(message.Drone);
+        _droneCommandFrag = new DroneCommandFragment();
 
+        Runnable playRunnable = new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new PlayMissionMessage(message.Drone.getId()));
+            }
+        };
+        Runnable pauseRunnable = new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new PauseMissionMessage(message.Drone.getId()));
+            }
+        };
+        _droneCommandFrag.setActionForPlayPauseButton(playRunnable, pauseRunnable);
+
+        Runnable stopRunnable = new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new StopMissionMessage(message.Drone.getId()));
+            }
+        };
+        _droneCommandFrag.setActionForStopButton(stopRunnable);
     }
 
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onDroneChangedMessageEvent(final DroneInfosDTO droneInfosDTO)
+    {
+        if(_droneManager.getSelectedDrone().getId() == droneInfosDTO.id_drone){
+            _droneCommandFrag.changeDroneStatut(EDroneStatut.valueOf(droneInfosDTO.status));
+        }
+    }
     //endregion
 }
