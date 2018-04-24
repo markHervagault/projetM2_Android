@@ -61,7 +61,7 @@ public class DroneCommandFragment extends Fragment {
         this.context = view.getContext();
 
         buttonPlayPause = view.findViewById(R.id.ButtonPlayPause);
-        buttonPlayPause.setTag(isPlay);
+        buttonPlayPause.setTag(isPause);
         buttonStop = view.findViewById(R.id.ButtonStop);
 
         return view;
@@ -100,18 +100,27 @@ public class DroneCommandFragment extends Fragment {
         switch (statut) {
             case EN_MISSION:
                 buttonPlayPause.setBackgroundDrawable(getResources().getDrawable(R.drawable.pause));
+                buttonStop.setVisibility(View.VISIBLE);
+                buttonPlayPause.setVisibility(View.VISIBLE);
+                buttonPlayPause.setTag(isPause);
                 break;
-            /*case EN_PAUSE:
+            case EN_PAUSE:
                 buttonPlayPause.setBackgroundDrawable(getResources().getDrawable(R.drawable.play));
+                buttonStop.setVisibility(View.VISIBLE);
+                buttonPlayPause.setVisibility(View.VISIBLE);
+                buttonPlayPause.setTag(isPlay);
                 break;
-            case DISPONIBLE:
             case RETOUR_BASE:
                 buttonPlayPause.setBackgroundDrawable(getResources().getDrawable(R.drawable.pause));
+                buttonPlayPause.setVisibility(View.VISIBLE);
                 buttonStop.setVisibility(View.GONE);
-                break;*/
-            case CONNECTE:
+                buttonPlayPause.setTag(isPause);
+                break;
+            case DISPONIBLE:
             case DECONNECTE:
             default:
+                buttonStop.setVisibility(View.GONE);
+                buttonPlayPause.setVisibility(View.GONE);
                 break;
         }
     }
