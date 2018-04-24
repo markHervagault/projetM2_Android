@@ -210,7 +210,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
     public void getTraitTopoBouchons(final GoogleMap googleMap) {
-        AsyncTask.execute(new Runnable() {
+        /*AsyncTask.execute(new Runnable() {
             public void run() {
                 String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
                         .getString("token", "null");
@@ -221,7 +221,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                     drawTraitTopoBouchons(googleMap,trait);
                 }
             }
-        });
+        });*/
     }
 
     public void getTraitTopo(final GoogleMap googleMap) {
