@@ -105,8 +105,7 @@ public class InterventionMapFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 isTraitTopoSelected = toggleColorFloatingButton(fabTraitTopographique, isTraitTopoSelected);
-                // TODO - Logique applicative pour le positionnement de traits topographiques
-                // TODO - Les traits doivent être draggable
+                getMeActivity().createTrait();
             }
         });
 
@@ -115,8 +114,7 @@ public class InterventionMapFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 isDeploiementSelected = toggleColorFloatingButton(fabDeploiement, isDeploiementSelected);
-                // TODO - Logique applicative pour le positionnement de Déploiements
-                // TODO - Les déploiements doivent être draggable
+                getMeActivity().createMoyen();
             }
         });
 
@@ -124,8 +122,7 @@ public class InterventionMapFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 isSinistreSelected = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
-                // TODO - Logique applicative pour le positionnement de sinistres
-                // TODO - Les sinistres doivent être draggable
+                getMeActivity().createSinistre();
             }
         });
 
