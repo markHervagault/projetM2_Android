@@ -138,11 +138,18 @@ public class DroneMissionDrawing extends MapItem
         for (Marker marker : _pathPositions) {
             marker.remove();
         }
-        _pathDrawing.remove();
+
+        if(_pathDrawing!=null)
+            _pathDrawing.remove();
 
         _selectedMarker = null;
-        _pathPositions.clear();
-        _markersByTag.clear();
+
+        if(_pathPositions!=null)
+            _pathPositions.clear();
+
+        if(_markersByTag!=null)
+            _markersByTag.clear();
+
         _addMode = false;
 
     }
