@@ -259,7 +259,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         }
     }
 
-    private void createMoyen() {
+    public void createMoyen() {
         hideFragment();
         fragmentHolder.replace(new DeploiementDTO());
         showFragment();
@@ -271,7 +271,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         showFragment();
     }
 
-    private void createTrait() {
+    public void createTrait() {
         hideFragment();
         fragmentHolder.replace(new TraitTopoDTO());
         showFragment();
@@ -283,7 +283,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         showFragment();
     }
 
-    private void createSinistre() {
+    public void createSinistre() {
         hideFragment();
         fragmentHolder.replace(new SinistreDTO());
         showFragment();

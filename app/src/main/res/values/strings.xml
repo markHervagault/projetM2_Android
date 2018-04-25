@@ -55,4 +55,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="google_place_api_key">AIzaSyAHBaS8v5L4ANEv9vztfqXSivkNws8TZjw</string>
+    <string name="new_map_activity_fab_menu_deploiement_label">Déploiement</string>
+    <string name="new_map_activity_fab_menu_sinistre_label">Sinistre</string>
+    <string name="new_map_activity_fab_menu_trait_topo_label">Trait topographique</string>
 </resources>
