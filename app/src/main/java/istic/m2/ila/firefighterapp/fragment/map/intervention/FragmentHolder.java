@@ -14,14 +14,14 @@ import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationTraitTopo;
-import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailSinistreFragment;
-import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailTraitTopoFragment;
+import istic.m2.ila.firefighterapp.dto.iDTO;
 
 public class FragmentHolder extends Fragment {
 
     private Fragment fragmentToDisplay;
+    private Object objectHeld;
     private ImageButton dropdownButton;
+
     public FragmentHolder() {
         // Required empty public constructor
     }
@@ -57,6 +57,7 @@ public class FragmentHolder extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fragment_holder, container, false);
+        view.setVisibility(View.GONE);
         this.dropdownButton = view.findViewById(R.id.dropdownButton);
         return view;
     }
@@ -72,17 +73,26 @@ public class FragmentHolder extends Fragment {
         });
     }
 
-    public void hideSelf(){
-        ((NewMapActivity)this.getActivity()).hideFragment();
+    public void hideSelf() {
+        ((NewMapActivity) this.getActivity()).hideFragment();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
     }
+
     //endregion lifeCycle
     public Fragment getFragmentToDisplay() {
         return this.getFragmentToDisplay();
+    }
+
+    public Object getObjectHeld() {
+        return objectHeld;
+    }
+
+    public void setObjectHeld(Object objectHeld) {
+        this.objectHeld = objectHeld;
     }
 
     public void setFragmentToDisplay(Fragment fragment) {
@@ -96,31 +106,21 @@ public class FragmentHolder extends Fragment {
         ft.commit();
     }
 
-    public void replace(DeploiementDTO deploiementDTO) {
-        if (deploiementDTO.getId() != null) {
-            //set(new FragmentDeploiementDétail)
-        } else {
-            //set(new FragmentDeploiementCreation)
-        }
+    public void replace(iDTO dto) {
+        this.setObjectHeld(dto);
+        this.setFragmentToDisplay(getFragment(dto));
     }
 
-    public void replace(TraitTopoDTO traitTopoDTO) {
-        if (traitTopoDTO.getId() != null) {
-            this.setFragmentToDisplay(DetailTraitTopoFragment.newInstance(traitTopoDTO));
-        } else {
-            this.setFragmentToDisplay(CreationTraitTopo.newInstance());
+    public Fragment getFragment(iDTO dto) {
+        if (dto instanceof TraitTopoDTO) {
+            return FragmentFactory.getFragment((TraitTopoDTO) dto);
+        } else if (dto instanceof SinistreDTO) {
+            return FragmentFactory.getFragment((SinistreDTO) dto);
+        } else if (dto instanceof DeploiementDTO) {
+            //FragmentFactory.getFragment((DeploiementDTO) dto);
+        } else if (dto instanceof TraitTopographiqueBouchonDTO) {
+            return FragmentFactory.getFragment((TraitTopographiqueBouchonDTO) dto);
         }
-    }
-
-    public void replace(TraitTopographiqueBouchonDTO traitTopoDTO) {
-        this.setFragmentToDisplay(DetailTraitTopoFragment.newInstance(traitTopoDTO));
-    }
-
-    public void replace(SinistreDTO sinistreDTO) {
-        if (sinistreDTO.getId() != null) {
-            this.setFragmentToDisplay(DetailSinistreFragment.newInstance(sinistreDTO));
-        } else {
-            //this.setFragmentToDisplay(CreationTraitTopo.newInstance());
-        }
+        return null;
     }
 }
