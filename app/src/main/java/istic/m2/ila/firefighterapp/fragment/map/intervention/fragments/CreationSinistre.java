@@ -18,7 +18,10 @@ import java.util.List;
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.ESinistre;
+import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
+import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
+import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
 
@@ -73,7 +76,15 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
 
     @Override
     public void create() {
-
+        SinistreDTO sinistreCreated = new SinistreDTO();
+        sinistreCreated.setType((ESinistre)typeSpinner.getSelectedItem());
+        sinistreCreated.setComposante((TypeComposanteDTO) composanteSpinner.getSelectedItem());
+        GeoPositionDTO geoposition = new GeoPositionDTO();
+        geoposition.setLatitude(Double.parseDouble(latitudeEditText.getText().toString()));
+        geoposition.setLongitude(Double.parseDouble(longitudeEditText.getText().toString()));
+        sinistreCreated.setGeoPosition(geoposition);
+        sinistreCreated.setInterventionId(((NewMapActivity)getMeActivity()).getIdIntervention());
+        ((NewMapActivity)getMeActivity()).getService().addSinistre(((NewMapActivity)getMeActivity()).getToken(),sinistreCreated);
     }
 
     @Override

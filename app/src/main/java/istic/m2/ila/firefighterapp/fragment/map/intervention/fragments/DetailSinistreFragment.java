@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
@@ -67,7 +68,7 @@ public class DetailSinistreFragment extends Fragment implements IManipulableFrag
 
     @Override
     public void delete() {
-
+        ((NewMapActivity)getMeActivity()).getService().removeSinistre(((NewMapActivity)getMeActivity()).getToken(),sinistre.getId());
     }
 
     @Override

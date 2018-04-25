@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.ITraitTopo;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
@@ -71,7 +72,7 @@ public class DetailTraitTopoFragment extends Fragment implements IManipulableFra
 
     @Override
     public void delete() {
-
+        ((NewMapActivity)getMeActivity()).getService().removeTraitTopo(((NewMapActivity)getMeActivity()).getToken(),traitTopo.getId());
     }
 
     @Override
