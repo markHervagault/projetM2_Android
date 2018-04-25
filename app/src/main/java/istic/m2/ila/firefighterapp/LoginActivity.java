@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,6 @@ import istic.m2.ila.firefighterapp.dto.UserDTO;
 import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
-import static android.content.ContentValues.TAG;
 
 /**
  * A login screen that offers login via email/password.
@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = new UserLoginTask();
+    private String TAG = this.getClass().getName();
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -69,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private boolean isRunning = false;
+    private String errorAuthMessage;
 
     /**
      * Connexion en tant que Codis (true) ou Intervenant (false)
@@ -358,6 +360,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             isRunning = true;
+            Boolean succes;
             RestTemplate template = RestTemplate.getInstance();
             LoginConsumer consumer = template.builConsumer(LoginConsumer.class);
             LoginDTO dto = new LoginDTO(mEmail, mPassword);
@@ -371,20 +374,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     editor.putBoolean("isCodis", isCodis);
                     editor.commit();
                     //editor.putString("token", );
-                    Log.i("tag","token: "+response.body().getId_token());
-                    Log.i("tag", "storedToken: "+ sharedPreferences.getString("token", response.body().getId_token()));
-
-                    return true;
+                    Log.i(TAG,"token: "+response.body().getId_token());
+                    Log.i(TAG, "storedToken: "+ sharedPreferences.getString("token", response.body().getId_token()));
+                    succes = true;
                 } else {
-                    Log.i("tag", "response code : " + response.code());
-                    return false;
+                    errorAuthMessage = "Le login ou le mot de passe est incorrect.";
+                    Log.i(TAG, "response code : " + response.code());
+                    succes = false;
+                    return succes;
                 }
+            } catch (ConnectException e) {
+                succes = false;
+                errorAuthMessage = "Impossible de se connecter. Le serveur est indisponible pour l'instant.";
+                e.printStackTrace();
             } catch (IOException e) {
+                succes = false;
+                errorAuthMessage = "Impossible de se connecter. Une erreur s'est produite.";
                 e.printStackTrace();
             }
 
             // TODO: register the new account here.
-            return true;
+            // En cas de succès
+            return succes;
         }
 
         @Override
@@ -395,8 +406,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
                 startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
             } else {
-                Log.i("tag", "you shall not pass");
-                Toast.makeText(mEmailView.getContext(), "You shall not pass", Toast.LENGTH_LONG);
+                Log.e(TAG, "you shall not pass");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e(TAG, errorAuthMessage);
+                        Toast.makeText(getApplicationContext(), errorAuthMessage, Toast.LENGTH_LONG)
+                            .show();
+                    }
+                });
             }
         }
 
