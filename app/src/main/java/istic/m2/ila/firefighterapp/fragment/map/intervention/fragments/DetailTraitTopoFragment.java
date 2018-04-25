@@ -5,19 +5,23 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.dto.ITraitTopo;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
 
 public class DetailTraitTopoFragment extends Fragment {
 
     private static final String ARG = "data";
-    private TraitTopoDTO traitTopo;
+    private ITraitTopo traitTopo;
 
     public DetailTraitTopoFragment() {}
 
-    public static DetailTraitTopoFragment newInstance(TraitTopoDTO dto) {
+    public static DetailTraitTopoFragment newInstance(ITraitTopo dto) {
         DetailTraitTopoFragment fragment = new DetailTraitTopoFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG, dto);
@@ -29,7 +33,7 @@ public class DetailTraitTopoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            traitTopo = (TraitTopoDTO) getArguments().getSerializable(ARG);
+            traitTopo = (ITraitTopo) getArguments().getSerializable(ARG);
         }
     }
 
@@ -41,15 +45,11 @@ public class DetailTraitTopoFragment extends Fragment {
         TextView textViewType = view.findViewById(R.id.typeValue);
         textViewType.setText(traitTopo.getType().toString());
 
-        ((TextView)view.findViewById(R.id.composanteValue)).setText(traitTopo.getComposante().getDescription());
-        view.findViewById(R.id.supprimer).setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteTraitTopo();
-            }
-        });
+        LinearLayout buttonLayout = view.findViewById(R.id.buttonLayout);
+        for(Button btn : ButtonFactory.getButton(this.getActivity(),traitTopo)){
+            buttonLayout.addView(btn);
+        }
         return view;
-
     }
 
     private void deleteTraitTopo() {

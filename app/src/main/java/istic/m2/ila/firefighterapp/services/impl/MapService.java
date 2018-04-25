@@ -15,6 +15,7 @@ import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.consumer.SinistreConsumer;
 import istic.m2.ila.firefighterapp.consumer.TraitTopoConsumer;
+import istic.m2.ila.firefighterapp.consumer.TypeComposanteConsumer;
 import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
@@ -23,6 +24,7 @@ import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import retrofit2.Response;
 
@@ -307,6 +309,29 @@ public class MapService implements IMapService {
         }
 
         return currentMission;
+    }
+
+    @Override
+    public List<TypeComposanteDTO> getTypeComposante(final String token)
+    {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        TypeComposanteConsumer consumer = restTemplate.builConsumer(TypeComposanteConsumer.class);
+
+        List<TypeComposanteDTO> composantes = new ArrayList<>();
+        Response<List<TypeComposanteDTO>> response = null;
+        try{
+            response = consumer.getListTypeTraitTopo(token).execute();
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK)
+            {
+                composantes = response.body();
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return composantes;
     }
 
 

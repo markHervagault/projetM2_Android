@@ -71,6 +71,11 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         return service;
     }
 
+    public String getToken(){
+        return getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                .getString("token", "null");
+    }
+
     public GeoPositionDTO getGeoPositionIntervention() {
         GeoPositionDTO geo = new GeoPositionDTO();
         geo.setLongitude(-1.638374);
@@ -225,6 +230,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                     detailSinistre((SinistreDTO) obj);
                 } else if (obj instanceof DeploiementDTO) {
                     detailMoyen((DeploiementDTO) obj);
+                } else if (obj instanceof TraitTopographiqueBouchonDTO) {
+                    detailTrait((TraitTopographiqueBouchonDTO) obj);
                 }
                 return true;
             }
@@ -283,6 +290,12 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         showFragment();
     }
 
+    private void detailTrait(TraitTopographiqueBouchonDTO dto) {
+        hideFragment();
+        fragmentHolder.replace(dto);
+        showFragment();
+    }
+
     public void createSinistre() {
         hideFragment();
         fragmentHolder.replace(new SinistreDTO());
@@ -300,28 +313,24 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     //region récupération de data
 
     public void getTraitTopoBouchons(final GoogleMap googleMap) {
-        /*AsyncTask.execute(new Runnable() {
+        AsyncTask.execute(new Runnable() {
             public void run() {
-                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                        .getString("token", "null");
                 GeoPositionDTO geo = getGeoPositionIntervention();
                 List<TraitTopographiqueBouchonDTO> traits = getService()
-                        .getTraitTopoFromBouchon(token, getIdIntervention(), geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
+                        .getTraitTopoFromBouchon(getToken(), getIdIntervention(), geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
                 for(TraitTopographiqueBouchonDTO trait : traits) {
                     drawTraitTopoBouchons(googleMap,trait);
                 }
             }
-        });*/
+        });
     }
 
     public void getTraitTopo(final GoogleMap googleMap) {
         AsyncTask.execute(new Runnable() {
             public void run() {
-                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                        .getString("token", "null");
                 GeoPositionDTO geo = getGeoPositionIntervention();
                 List<TraitTopoDTO> traits = getService()
-                        .getTraitTopo(token, getIdIntervention());
+                        .getTraitTopo(getToken(), getIdIntervention());
                 for (TraitTopoDTO trait : traits) {
                     drawTraitTopo(googleMap, trait);
                 }
@@ -332,11 +341,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     public void getSinistre(final GoogleMap googleMap) {
         AsyncTask.execute(new Runnable() {
             public void run() {
-                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                        .getString("token", "null");
-                GeoPositionDTO geo = getGeoPositionIntervention();
                 List<SinistreDTO> sinistres = getService()
-                        .getSinistre(token, getIdIntervention());
+                        .getSinistre(getToken(), getIdIntervention());
                 for (SinistreDTO sinistre : sinistres) {
                     drawSinistre(googleMap, sinistre);
                 }
@@ -386,7 +392,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                         .title(traitTopo.getLabel())
                         .snippet(traitTopo.getType().getDescription() + " - " + traitTopo.getComposante().getDescription())
                         .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                        .draggable(false));
+                        .draggable(false)).setTag(traitTopo);
             }
         });
     }

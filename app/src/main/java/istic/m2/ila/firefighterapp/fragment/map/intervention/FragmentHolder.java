@@ -13,6 +13,8 @@ import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
+import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationTraitTopo;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailSinistreFragment;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailTraitTopoFragment;
 
@@ -106,8 +108,12 @@ public class FragmentHolder extends Fragment {
         if (traitTopoDTO.getId() != null) {
             this.setFragmentToDisplay(DetailTraitTopoFragment.newInstance(traitTopoDTO));
         } else {
-            //sthis.setFragmentToDisplay(CreationTraitTopo.newInstance());
+            this.setFragmentToDisplay(CreationTraitTopo.newInstance());
         }
+    }
+
+    public void replace(TraitTopographiqueBouchonDTO traitTopoDTO) {
+        this.setFragmentToDisplay(DetailTraitTopoFragment.newInstance(traitTopoDTO));
     }
 
     public void replace(SinistreDTO sinistreDTO) {
