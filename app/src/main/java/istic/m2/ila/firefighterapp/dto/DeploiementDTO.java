@@ -1,14 +1,13 @@
 package istic.m2.ila.firefighterapp.dto;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 /**
  * Created by hakima on 3/23/18.
  */
 
-public class DeploiementDTO implements Serializable {
+public class DeploiementDTO implements Serializable, iDTO {
     private Long id;
 
     private Date dateHeureDemande;

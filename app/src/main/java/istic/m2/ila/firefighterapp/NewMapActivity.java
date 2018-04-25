@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,6 +47,7 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.dto.iDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragment;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder;
@@ -71,7 +73,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         return service;
     }
 
-    public String getToken(){
+    public String getToken() {
         return getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
                 .getString("token", "null");
     }
@@ -224,14 +226,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Object obj = marker.getTag();
-                if (obj instanceof TraitTopoDTO) {
-                    detailTrait((TraitTopoDTO) obj);
-                } else if (obj instanceof SinistreDTO) {
-                    detailSinistre((SinistreDTO) obj);
-                } else if (obj instanceof DeploiementDTO) {
-                    detailMoyen((DeploiementDTO) obj);
-                } else if (obj instanceof TraitTopographiqueBouchonDTO) {
-                    detailTrait((TraitTopographiqueBouchonDTO) obj);
+                if (obj instanceof iDTO) {
+                    displayFragmentHolder((iDTO) obj);
                 }
                 return true;
             }
@@ -245,24 +241,26 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     private FragmentHolder fragmentHolder;
 
     public void showFragment() {
+        Log.i("Visibility", "SHOW");
         if (!fragmentHolder.isVisible()) {
-            Log.i("Visibility", "SHOW");
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .show(fragmentHolder)
                     .commit();
+            fragmentHolder.getView().setVisibility(View.VISIBLE);
         }
     }
 
     public void hideFragment() {
+        Log.i("Visibility", "HIDE");
         if (fragmentHolder.isVisible()) {
-            Log.i("Visibility", "HIDE");
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .hide(fragmentHolder)
                     .commit();
+            fragmentHolder.getView().setVisibility(View.GONE);
         }
     }
 
@@ -272,10 +270,21 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         showFragment();
     }
 
-    private void detailMoyen(DeploiementDTO dto) {
-        hideFragment();
-        fragmentHolder.replace(dto);
-        showFragment();
+
+    private void displayFragmentHolder(iDTO dto) {
+        if (fragmentHolder.getObjectHeld() == dto) {
+            hideFragment();
+            fragmentHolder.setObjectHeld(null);
+        }
+        else if(fragmentHolder.getObjectHeld() == null){
+            fragmentHolder.replace(dto);
+            showFragment();
+        }
+        else {
+            hideFragment();
+            fragmentHolder.replace(dto);
+            showFragment();
+        }
     }
 
     public void createTrait() {
@@ -284,27 +293,10 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         showFragment();
     }
 
-    private void detailTrait(TraitTopoDTO dto) {
-        hideFragment();
-        fragmentHolder.replace(dto);
-        showFragment();
-    }
-
-    private void detailTrait(TraitTopographiqueBouchonDTO dto) {
-        hideFragment();
-        fragmentHolder.replace(dto);
-        showFragment();
-    }
 
     public void createSinistre() {
         hideFragment();
         fragmentHolder.replace(new SinistreDTO());
-        showFragment();
-    }
-
-    private void detailSinistre(SinistreDTO dto) {
-        hideFragment();
-        fragmentHolder.replace(dto);
         showFragment();
     }
 
@@ -318,8 +310,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                 GeoPositionDTO geo = getGeoPositionIntervention();
                 List<TraitTopographiqueBouchonDTO> traits = getService()
                         .getTraitTopoFromBouchon(getToken(), getIdIntervention(), geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
-                for(TraitTopographiqueBouchonDTO trait : traits) {
-                    drawTraitTopoBouchons(googleMap,trait);
+                for (TraitTopographiqueBouchonDTO trait : traits) {
+                    drawTraitTopoBouchons(googleMap, trait);
                 }
             }
         });

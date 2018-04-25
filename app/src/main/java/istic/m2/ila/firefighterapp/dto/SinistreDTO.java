@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by hakima on 3/26/18.
  */
 
-public class SinistreDTO implements Serializable {
+public class SinistreDTO implements Serializable, iDTO {
     private Long id;
 
     private ESinistre type;
