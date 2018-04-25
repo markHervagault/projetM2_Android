@@ -45,6 +45,10 @@ import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragment;
 import istic.m2.ila.firefighterapp.fragment.map.InterventionMapFragment;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.DeploiementManager;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.OldSinistreDrawing;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
 
@@ -199,11 +203,18 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
     //endregion
 
+    private TraitTopoManager _traitTopoManager;
+    private SinistreManager _sinistreManager;
+
     public void initMap(final GoogleMap googleMap){
         googleMap.setMaxZoomPreference(20.0f);
         // Centre l'écran sur le Drône sur RENNES ISTIC
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getGeoPositionIntervention().getLatitude(), getGeoPositionIntervention().getLongitude()), 18.0f));
         googleMap.setBuildingsEnabled(false); //2D pour améliorer les performances
+
+        _sinistreManager = new SinistreManager(googleMap, this);
+        _traitTopoManager = new TraitTopoManager(googleMap, this);
+
         getTraitTopoBouchons(googleMap);
         getTraitTopo(googleMap);
         getSinistre(googleMap);
@@ -233,7 +244,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                 List<TraitTopoDTO> traits = getService()
                         .getTraitTopo(token, getIdIntervention());
                 for(TraitTopoDTO trait : traits) {
-                    drawTraitTopo(googleMap,trait);
+                    _traitTopoManager.onCreateTraitTopoDTOMessageEvent(trait);
                 }
             }
         });
@@ -248,11 +259,12 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                 List<SinistreDTO> sinistres = getService()
                         .getSinistre(token, getIdIntervention());
                 for(SinistreDTO sinistre : sinistres) {
-                    drawSinistre(googleMap, sinistre);
+                    _sinistreManager.onCreateSinistreDTOMessageEvent(sinistre);
                 }
             }
         });
     }
+
 
     public void drawTraitTopoBouchons(final GoogleMap googleMap, final TraitTopographiqueBouchonDTO traitTopo) {
         runOnUiThread(new Runnable() {
@@ -296,6 +308,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             }});
     }
 
+    /*
+    // region DessinsMap
     public void drawTraitTopo(final GoogleMap googleMap, final TraitTopoDTO traitTopo) {
 
         runOnUiThread(new Runnable() {
@@ -313,7 +327,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                         .title(traitTopo.getComposante().getLabel())
                         .snippet(traitTopo.getType().name() + " - " + traitTopo.getComposante().getDescription())
                         .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                        .draggable(false));
+                        // Les traits topographiques qu'on ajoute manuellement sont déplaçables
+                        .draggable(true));
             }
         });
     }
@@ -334,7 +349,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                         .title(sinistre.getComposante().getLabel())
                         .snippet(sinistre.getType().name() + " - " + sinistre.getComposante().getDescription())
                         .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                        .draggable(false)
+                        // Les sinistres qu'on ajoute manuellement sont déplaçables
+                        .draggable(true)
                 );
             }});
     }
@@ -361,11 +377,19 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                             .title(label)
                             .snippet(label + " - " + deploy.getComposante().getDescription())
                             .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                            .draggable(false));
+                            // Les véhicules qu'on ajoute manuellement sont déplaçables
+                            .draggable(true));
                 }
             }});
     }
+    */
 
+    /**
+     * Fonction pour changer la couleur d'une image
+     * @param resDrawableId id de la ressource, notre image, à changer
+     * @param colorRequested couleur qu'on attend
+     * @return la nouvelle image avec la couleur
+     */
     private Bitmap getNewBitmapRenderedWithColor(int resDrawableId, String colorRequested) {
         Bitmap icon;// Copier le bitmap et le passer en Canvas sinon on aura une exception
         icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), resDrawableId)
@@ -380,5 +404,5 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         return icon;
     }
 
-
+    // endregion
 }

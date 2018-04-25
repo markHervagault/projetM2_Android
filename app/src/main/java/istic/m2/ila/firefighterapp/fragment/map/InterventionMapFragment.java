@@ -20,6 +20,11 @@ import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.DeploiementManager;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.OldSinistreDrawing;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreDrawing;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
 
 public class InterventionMapFragment extends Fragment {
 
@@ -76,10 +81,22 @@ public class InterventionMapFragment extends Fragment {
         return mView;
     }
 
+    // region MapInitialisation
+
+    private TraitTopoManager _traitTopoManager;
+    private DeploiementManager _deploiementManager;
+    private SinistreManager _sinistreManager;
+    private OldSinistreDrawing _oldSinistreDrawing;
+
     private void initMap() {
         getMeActivity().initMap(googleMap);
+        _oldSinistreDrawing = new OldSinistreDrawing(googleMap, getActivity());
+        _sinistreManager = new SinistreManager(googleMap, getActivity());
+        _traitTopoManager = new TraitTopoManager(googleMap, getActivity());
+        _deploiementManager = new DeploiementManager(googleMap, getActivity());
         getVehicule();
     }
+    // endregion
 
     // region MenuFlottant
     private List<FloatingActionButton> floatingActionButtonList;
@@ -123,9 +140,9 @@ public class InterventionMapFragment extends Fragment {
         fabSinistre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isSinistreSelected = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
-                // TODO - Logique applicative pour le positionnement de sinistres
-                // TODO - Les sinistres doivent être draggable
+                boolean toggledValue = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
+                isSinistreSelected = toggledValue;
+                _oldSinistreDrawing.setEditMode(toggledValue);
             }
         });
 
@@ -204,7 +221,7 @@ public class InterventionMapFragment extends Fragment {
                 List<DeploiementDTO> deploys = getMeActivity().getService()
                         .getDeploy(token,getMeActivity().getIdIntervention());
                 for(DeploiementDTO deploy : deploys) {
-                    getMeActivity().drawVehicule(googleMap,deploy);
+                    _deploiementManager.onCreateDeploiementDTOMessageEvent(deploy);
                 }
             }
         });
