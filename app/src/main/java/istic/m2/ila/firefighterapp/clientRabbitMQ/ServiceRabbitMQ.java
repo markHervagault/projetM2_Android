@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -67,6 +68,8 @@ public class ServiceRabbitMQ extends Service {
         }
     }
 
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
@@ -81,8 +84,17 @@ public class ServiceRabbitMQ extends Service {
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent)
+    {
+        Log.i(TAG, "RabbitMQ - On Bind");
         return mBinder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent)
+    {
+        Log.i(TAG, "RabbitMQ - On UnBind");
+        return super.onUnbind(intent);
     }
 
     //SUBSCRIBING
@@ -98,19 +110,29 @@ public class ServiceRabbitMQ extends Service {
         String queueName = channel.queueDeclare().getQueue();
         channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.info." + event.getDroneDTO().getId());
 
-        Consumer consumer = new DefaultConsumer(channel) {
+        Consumer consumer = new DefaultConsumer(channel)
+        {
             private String incomingMessageHandler = "";
 
             @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException
+            {
                 incomingMessageHandler = new String(body, "UTF-8");
                 Log.i(TAG, "Received DroneInfoDTO'");
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
-                DroneInfosDTO droneInfos = gson.fromJson(incomingMessageHandler, DroneInfosDTO.class);
-                EventBus.getDefault().post(droneInfos);
+                try
+                {
+                    DroneInfosDTO droneInfos = gson.fromJson(incomingMessageHandler, DroneInfosDTO.class);
+                    EventBus.getDefault().post(droneInfos);
+                }
+                catch (JsonParseException e)
+                {
+                    Log.e(TAG, e.getMessage());
+                }
             }
         };
+
         channel.basicConsume(queueName, true, consumer);
     }
 
