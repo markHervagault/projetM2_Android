@@ -25,7 +25,6 @@ import java.util.List;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DroneInfoUpdateMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
@@ -177,7 +176,7 @@ public class DroneMapFragment extends Fragment {
                             getColor(R.color.colorMenuFabSelectedRipple));
 
                     isAddButtonEnabled = true;
-                    _missionDrawing.setEditMode(true);
+                    _missionDrawing.setAddMode(true);
                 } else //Desactivation du mode
                 {
                     //Reactivation des boutons
@@ -192,7 +191,7 @@ public class DroneMapFragment extends Fragment {
                             getColor(R.color.colorMenuFabDefaultRipple));
 
                     isAddButtonEnabled = false;
-                    _missionDrawing.setEditMode(false);
+                    _missionDrawing.setAddMode(false);
                 }
             }
         });

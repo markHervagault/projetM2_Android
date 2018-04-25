@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -31,6 +33,7 @@ import java.util.Set;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
+import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
@@ -38,9 +41,17 @@ import istic.m2.ila.firefighterapp.services.impl.MapService;
 
 public class DroneMissionDrawing extends MapItem
 {
+    public enum MissionMode
+    {
+        FOLLOW,
+        EDIT,
+        NONE
+    }
+
     //region Members
 
     private static final int STROKE_WIDTH = 3;
+    private static final String TAG = "MissionDrawing";
 
     private List<Marker> _pathPositions;
     private HashMap<Integer,Marker> _markersByTag;
@@ -54,12 +65,21 @@ public class DroneMissionDrawing extends MapItem
 
     //region Properties
 
-    //Edit Mode
-    private boolean _editMode;
-    public boolean isEditMode() { return _editMode; }
-    public void setEditMode(boolean editMode)
+    private MissionMode _missionMode;
+    public MissionMode getMissionMode() { return _missionMode; }
+    private void setMissionMode(MissionMode mode)
     {
-        _editMode = editMode;
+        MissionMode lastMode = _missionMode;
+        _missionMode = mode;
+        _propertyChangeSupport.firePropertyChange("MissionMode", lastMode, mode);
+    }
+
+    //Edit Mode
+    private boolean _addMode;
+    public boolean isAddMode() { return _addMode; }
+    public void setAddMode(boolean editMode)
+    {
+        _addMode = editMode;
         //Signalement d'un ajout de marker, pour mettre a jour l'UI
         _propertyChangeSupport.firePropertyChange("editMode", !editMode, editMode);
     }
@@ -98,13 +118,33 @@ public class DroneMissionDrawing extends MapItem
         _pathPositions = new ArrayList<>();
         _markersByTag = new HashMap<>();
         _pathDrawing = _googleMap.addPolyline(new PolylineOptions()); // Permet d'éviter la vérification constante dans RefreshPath
-        _editMode = false;
+        _addMode = false;
+        _missionMode = MissionMode.NONE;
         _propertyChangeSupport = new PropertyChangeSupport(this);
 
         //Setting Map Listeners
-        _googleMap.setOnMapClickListener(onMapClickListener);
-        _googleMap.setOnMarkerClickListener(onMarkerClickListener);
-        _googleMap.setOnMarkerDragListener(onMarkerDragListener);
+        _googleMap.setOnMapClickListener(null);
+        _googleMap.setOnMarkerClickListener(onMarkerClickListener); // On garde toujours la séléction de markers
+        _googleMap.setOnMarkerDragListener(null);
+
+        //Inscription aux évènements
+        EventBus.getDefault().register(this);;
+    }
+    
+    private void ResetMission()
+    {
+
+        //Supression des éléments de la mission
+        for (Marker marker : _pathPositions) {
+            marker.remove();
+        }
+        _pathDrawing.remove();
+
+        _selectedMarker = null;
+        _pathPositions.clear();
+        _markersByTag.clear();
+        _addMode = false;
+
     }
 
     //endregion
@@ -121,7 +161,7 @@ public class DroneMissionDrawing extends MapItem
             _selectedMarker = null;
 
             //Seulement en mode édition
-            if(!_editMode)
+            if(!_addMode)
                 return;
 
             //Ajout d'un nouveau marker sur la map
@@ -318,16 +358,8 @@ public class DroneMissionDrawing extends MapItem
 
     public void SetCurrentMission(MissionDTO dto)
     {
-        //Netoyage de la map
-        _selectedMarker = null;
-        _pathDrawing.remove();
-
-        for(Marker marker : _pathPositions)
-            marker.remove();
-
-        //Nettoyage des collections
-        _pathPositions.clear();
-        _markersByTag.clear();
+        //Nettoyage de la Map
+        ResetMission();
 
         //Tri des points du drone par index
         final List<PointMissionDTO> points = new ArrayList<>(dto.getDronePositions());
@@ -345,7 +377,6 @@ public class DroneMissionDrawing extends MapItem
             @Override
             public void run()
             {
-                int index = 0;
                 for(PointMissionDTO point : points)
                 {
                     Marker marker = _googleMap.addMarker(new MarkerOptions()
@@ -362,6 +393,9 @@ public class DroneMissionDrawing extends MapItem
                     //Ajout du marker à la collection
                     _pathPositions.add(marker);
                     _markersByTag.put(tag, marker);
+
+                    //On rafraichit le path
+                    RefreshPath();
                 }
             }
         });
@@ -371,13 +405,56 @@ public class DroneMissionDrawing extends MapItem
 
     //region Bus Events
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnSelectedDroneChanged(SelectedDroneChangedMessage message)
     {
+        Log.i(TAG, "SelectedDroneCHanged : " + message.Drone.getStatut());
+
         _selectedDrone = message.Drone;
+        ResetMission();
+
+        switch (message.Drone.getStatut())
+        {
+            case EN_MISSION:
+            case EN_PAUSE:
+            case RETOUR_BASE:
+                setMissionMode(MissionMode.FOLLOW);
+                //Recupération de la mission
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        //vérification du token
+                        String token = _contextActivity.getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
+                        if(!token.equals("null")) {
+                            MissionDTO currentMission = MapService.getInstance().getCurrentDroneMission(token, _selectedDrone.getId());
+                            if(currentMission != null)
+                                SetCurrentMission(currentMission);
+                        }
+                    }
+                });
+                break;
+
+            case DISPONIBLE:
+                setMissionMode(MissionMode.EDIT);
+                _googleMap.setOnMapClickListener(onMapClickListener);
+                _googleMap.setOnMarkerDragListener(onMarkerDragListener);
+                break;
+
+            case DECONNECTE:
+                setMissionMode(MissionMode.NONE);
+                break;
+        }
+
+        //On enlève les listeners
+        if(getMissionMode()  != MissionMode.EDIT)
+        {
+            _googleMap.setOnMapClickListener(null);
+            _googleMap.setOnMarkerDragListener(null);
+        }
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnSelectedDroneStatusChanged(SelectedDroneStatusChangedMessage message)
     {
 

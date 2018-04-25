@@ -118,7 +118,7 @@ public class ServiceRabbitMQ extends Service {
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException
             {
                 incomingMessageHandler = new String(body, "UTF-8");
-                Log.i(TAG, "Received DroneInfoDTO'");
+                //Log.i(TAG, "Received DroneInfoDTO'");
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
                 try
