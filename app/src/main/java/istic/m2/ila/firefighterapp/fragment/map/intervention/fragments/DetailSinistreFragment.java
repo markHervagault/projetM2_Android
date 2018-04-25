@@ -1,16 +1,20 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
 
-public class DetailSinistreFragment extends Fragment {
+public class DetailSinistreFragment extends Fragment implements IManipulableFragment {
     private static final String ARG = "data";
     private SinistreDTO sinistre;
 
@@ -39,14 +43,35 @@ public class DetailSinistreFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detail_sinistre, container, false);
         ((TextView)view.findViewById(R.id.typeValueSinistre)).setText(sinistre.getType().toString());
         ((TextView)view.findViewById(R.id.composanteValue)).setText(sinistre.getComposante().getDescription());
-        view.findViewById(R.id.supprimer).setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteSinistre();
-            }
-        });
+        LinearLayout buttonLayout = view.findViewById(R.id.buttonLayout);
+        for(Button btn : ButtonFactory.getButton(this,sinistre)){
+            buttonLayout.addView(btn);
+        }
         return view;
     }
 
-    private void deleteSinistre(){};
+    @Override
+    public void create() {
+
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void move() {
+
+    }
+
+    @Override
+    public void delete() {
+
+    }
+
+    @Override
+    public Activity getMeActivity() {
+        return this.getActivity();
+    }
 }

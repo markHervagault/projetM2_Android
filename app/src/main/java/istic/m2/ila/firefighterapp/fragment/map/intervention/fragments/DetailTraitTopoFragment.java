@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,7 +15,7 @@ import istic.m2.ila.firefighterapp.dto.ITraitTopo;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
 
-public class DetailTraitTopoFragment extends Fragment {
+public class DetailTraitTopoFragment extends Fragment implements IManipulableFragment {
 
     private static final String ARG = "data";
     private ITraitTopo traitTopo;
@@ -46,15 +47,35 @@ public class DetailTraitTopoFragment extends Fragment {
         textViewType.setText(traitTopo.getType().toString());
 
         LinearLayout buttonLayout = view.findViewById(R.id.buttonLayout);
-        for(Button btn : ButtonFactory.getButton(this.getActivity(),traitTopo)){
+        for(Button btn : ButtonFactory.getButton(this,traitTopo)){
             buttonLayout.addView(btn);
         }
         return view;
     }
 
-    private void deleteTraitTopo() {
+
+    @Override
+    public void create() {
 
     }
 
+    @Override
+    public void update() {
 
+    }
+
+    @Override
+    public void move() {
+
+    }
+
+    @Override
+    public void delete() {
+
+    }
+
+    @Override
+    public Activity getMeActivity() {
+        return this.getActivity();
+    }
 }

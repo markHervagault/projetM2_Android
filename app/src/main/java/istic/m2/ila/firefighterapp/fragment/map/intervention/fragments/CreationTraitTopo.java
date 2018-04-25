@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention.fragments;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,7 +32,7 @@ import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
  * Use the {@link CreationTraitTopo#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreationTraitTopo extends Fragment {
+public class CreationTraitTopo extends Fragment implements IManipulableFragment {
 
     private TraitTopoDTO traitTopo;
 
@@ -64,7 +65,7 @@ public class CreationTraitTopo extends Fragment {
         longitudeEditText = view.findViewById(R.id.longitude);
         latitudeEditText = view.findViewById(R.id.latitude);
         LinearLayout layoutButton = view.findViewById(R.id.layoutButton);
-        for(Button btn : ButtonFactory.getButton(this.getActivity(),traitTopo)){
+        for(Button btn : ButtonFactory.getButton(this,traitTopo)){
             layoutButton.addView(btn);
         }
         initSpinner();
@@ -78,7 +79,8 @@ public class CreationTraitTopo extends Fragment {
         composanteSpinner.setAdapter(new ArrayAdapter<TypeComposanteDTO>(getActivity(), android.R.layout.simple_list_item_1, composantes));
     }
 
-    public void createTraitTopo() {
+    @Override
+    public void create() {
         TraitTopoDTO traitCreated = new TraitTopoDTO();
 
         traitCreated.setType((ETypeTraitTopo)typeSpinner.getSelectedItem());
@@ -89,4 +91,23 @@ public class CreationTraitTopo extends Fragment {
         traitCreated.setPosition(geoposition);
     }
 
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void move() {
+
+    }
+
+    @Override
+    public void delete() {
+
+    }
+
+    @Override
+    public Activity getMeActivity() {
+        return this.getActivity();
+    }
 }

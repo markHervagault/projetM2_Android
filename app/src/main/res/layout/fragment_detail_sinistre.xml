@@ -42,14 +42,11 @@
                 />
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/buttonLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/supprimer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Supprimer"
-                android:layout_gravity="right"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="right">
         </LinearLayout>
     </LinearLayout>
 
