@@ -12,12 +12,10 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,10 +30,6 @@ import java.util.Map;
 
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
-import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
-import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
-import istic.m2.ila.firefighterapp.dto.ESinistre;
-import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
@@ -45,8 +39,6 @@ import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragment;
 import istic.m2.ila.firefighterapp.fragment.map.InterventionMapFragment;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.DeploiementManager;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.OldSinistreDrawing;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
 import istic.m2.ila.firefighterapp.services.IMapService;
@@ -87,49 +79,9 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         this.idIntervention = idIntervention;
     }
 
-    private static final Map<ETypeTraitTopographiqueBouchon,Integer> referentielTraitTopoBouchon = createReferentielTraitTopoBouchon ();
-    private static Map<ETypeTraitTopographiqueBouchon,Integer> createReferentielTraitTopoBouchon(){
-        Map<ETypeTraitTopographiqueBouchon,Integer> map = new HashMap<>();
-        map.put(ETypeTraitTopographiqueBouchon.DANGER, R.drawable.danger_24dp);
-        map.put(ETypeTraitTopographiqueBouchon.SENSIBLE, R.drawable.sensible_24dp);
-        map.put(ETypeTraitTopographiqueBouchon.PDR, R.drawable.pdr_24dp);
-        map.put(ETypeTraitTopographiqueBouchon.PENP, R.drawable.penp_24dp);
-        map.put(ETypeTraitTopographiqueBouchon.PEP, R.drawable.pep_24dp);
-        return map;
-    }
-
-
-    private static final Map<ETypeTraitTopo,Integer> referentielTraitTopo = createReferentielTraitTopo ();
-    private static Map<ETypeTraitTopo,Integer> createReferentielTraitTopo(){
-        Map<ETypeTraitTopo,Integer> map = new HashMap<>();
-        map.put(ETypeTraitTopo.DANGER, R.drawable.danger_24dp);
-        map.put(ETypeTraitTopo.SENSIBLE, R.drawable.sensible_24dp);
-        return map;
-    }
-
-    private static final Map<EEtatDeploiement,Integer> referentielMoyen = createReferentielMoyen ();
-    private static Map<EEtatDeploiement,Integer> createReferentielMoyen(){
-        Map<EEtatDeploiement,Integer> map = new HashMap<>();
-        map.put(EEtatDeploiement.DEMANDE, R.drawable.moyen_prevu);
-        map.put(EEtatDeploiement.VALIDE, R.drawable.moyen_prevu);
-        map.put(EEtatDeploiement.ENGAGE, R.drawable.moyen_prevu);
-        map.put(EEtatDeploiement.EN_ACTION, R.drawable.moyen);
-        return map;
-    }
-
-    private static final Map<ESinistre,Integer> referentielSinistre = createReferentielSinistre ();
-    private static Map<ESinistre,Integer> createReferentielSinistre(){
-        Map<ESinistre,Integer> map = new HashMap<>();
-        map.put(ESinistre.CENTRE, R.drawable.centre_sinistre);
-        map.put(ESinistre.POINT, R.drawable.ic_star_black_24dp);
-        map.put(ESinistre.ZONE, R.drawable.boom70x70);
-        return map;
-    }
-
     //region ON CREATE/DESTROY
     private ServiceConnection serviceConnection;
     ServiceRabbitMQ serviceRabbitMQ;
-
 
     private boolean isServiceBound = false;
 
@@ -200,9 +152,9 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         transaction.commit();
         interventionView = !interventionView;
     }
-
     //endregion
 
+    // region DessinsMap
     private TraitTopoManager _traitTopoManager;
     private SinistreManager _sinistreManager;
 
@@ -220,21 +172,8 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         getSinistre(googleMap);
     }
 
-    public void getTraitTopoBouchons(final GoogleMap googleMap) {
-        AsyncTask.execute(new Runnable() {
-            public void run() {
-                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                        .getString("token", "null");
-                GeoPositionDTO geo = getGeoPositionIntervention();
-                List<TraitTopographiqueBouchonDTO> traits = getService()
-                        .getTraitTopoFromBouchon(token, getIdIntervention(), geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
-                for(TraitTopographiqueBouchonDTO trait : traits) {
-                    drawTraitTopoBouchons(googleMap,trait);
-                }
-            }
-        });
-    }
 
+    // region DataForDrawing
     public void getTraitTopo(final GoogleMap googleMap) {
         AsyncTask.execute(new Runnable() {
             public void run() {
@@ -265,6 +204,34 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         });
     }
 
+    public void getTraitTopoBouchons(final GoogleMap googleMap) {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                GeoPositionDTO geo = getGeoPositionIntervention();
+                List<TraitTopographiqueBouchonDTO> traits = getService()
+                        .getTraitTopoFromBouchon(token, getIdIntervention(), geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
+                for(TraitTopographiqueBouchonDTO trait : traits) {
+                    drawTraitTopoBouchons(googleMap,trait);
+                }
+            }
+        });
+    }
+
+    // endregion
+
+    // region drawTraitTopoBouchon
+    private static final Map<ETypeTraitTopographiqueBouchon,Integer> referentielTraitTopoBouchon = createReferentielTraitTopoBouchon ();
+    private static Map<ETypeTraitTopographiqueBouchon,Integer> createReferentielTraitTopoBouchon(){
+        Map<ETypeTraitTopographiqueBouchon,Integer> map = new HashMap<>();
+        map.put(ETypeTraitTopographiqueBouchon.DANGER, R.drawable.danger_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.SENSIBLE, R.drawable.sensible_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PDR, R.drawable.pdr_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PENP, R.drawable.penp_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PEP, R.drawable.pep_24dp);
+        return map;
+    }
 
     public void drawTraitTopoBouchons(final GoogleMap googleMap, final TraitTopographiqueBouchonDTO traitTopo) {
         runOnUiThread(new Runnable() {
@@ -272,9 +239,6 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             public void run() {
                 // Récupération des icônes en fonction du type (change ou change pas)
                 int rIcone = referentielTraitTopoBouchon.get(traitTopo.getType());
-
-                // Différenciation de la couleur en fonction pour les types qui changent
-                Drawable drawableIcon = ContextCompat.getDrawable(getApplicationContext(), rIcone);
 
                 // Par défaut, on récupère notre ressource sous forme de Bitmap
                 Bitmap icon = BitmapFactory.decodeResource(
@@ -308,82 +272,6 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             }});
     }
 
-    /*
-    // region DessinsMap
-    public void drawTraitTopo(final GoogleMap googleMap, final TraitTopoDTO traitTopo) {
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                int rIcone = referentielTraitTopo.get(traitTopo.getType());
-
-                String rgbNoA = traitTopo.getComposante().getCouleur().substring(0,7);
-                Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
-
-                // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
-                LatLng pos = new LatLng(traitTopo.getPosition().getLatitude(), traitTopo.getPosition().getLongitude());
-                googleMap.addMarker(new MarkerOptions()
-                        .position(pos)
-                        .title(traitTopo.getComposante().getLabel())
-                        .snippet(traitTopo.getType().name() + " - " + traitTopo.getComposante().getDescription())
-                        .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                        // Les traits topographiques qu'on ajoute manuellement sont déplaçables
-                        .draggable(true));
-            }
-        });
-    }
-
-    public void drawSinistre(final GoogleMap googleMap, final SinistreDTO sinistre) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                int rIcone = referentielSinistre.get(sinistre.getType());
-
-                String rgbNoA = sinistre.getComposante().getCouleur().substring(0, 7);
-                Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
-
-                // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
-                LatLng pos = new LatLng(sinistre.getGeoPosition().getLatitude(), sinistre.getGeoPosition().getLongitude());
-                googleMap.addMarker(new MarkerOptions()
-                        .position(pos)
-                        .title(sinistre.getComposante().getLabel())
-                        .snippet(sinistre.getType().name() + " - " + sinistre.getComposante().getDescription())
-                        .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                        // Les sinistres qu'on ajoute manuellement sont déplaçables
-                        .draggable(true)
-                );
-            }});
-    }
-
-    public void drawVehicule(final GoogleMap googleMap, final DeploiementDTO deploy) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (deploy.getGeoPosition() != null) {
-                    // Récupération des icônes en fonction du type (change ou change pas)
-                    int rIcone = referentielMoyen.get(deploy.getState());
-
-                    String rgbNoA = deploy.getComposante().getCouleur().substring(0, 7);
-                    Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
-                    String label = "";
-                    if (deploy.getState() != EEtatDeploiement.DEMANDE) {
-                        label = deploy.getVehicule().getLabel();
-                    }
-
-                    // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
-                    LatLng pos = new LatLng(deploy.getGeoPosition().getLatitude(), deploy.getGeoPosition().getLongitude());
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(pos)
-                            .title(label)
-                            .snippet(label + " - " + deploy.getComposante().getDescription())
-                            .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                            // Les véhicules qu'on ajoute manuellement sont déplaçables
-                            .draggable(true));
-                }
-            }});
-    }
-    */
-
     /**
      * Fonction pour changer la couleur d'une image
      * @param resDrawableId id de la ressource, notre image, à changer
@@ -403,6 +291,6 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         canvas.drawBitmap(icon, 0, 0, paint);
         return icon;
     }
-
+    // endregion
     // endregion
 }

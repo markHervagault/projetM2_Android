@@ -22,7 +22,6 @@ import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.DeploiementManager;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.OldSinistreDrawing;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreDrawing;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
 

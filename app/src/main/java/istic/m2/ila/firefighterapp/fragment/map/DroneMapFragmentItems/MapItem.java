@@ -9,9 +9,7 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
 
 public abstract class MapItem
 {

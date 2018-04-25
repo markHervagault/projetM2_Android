@@ -22,7 +22,7 @@ public class TraitTopoManager extends MapItem
 {
     //region Members
 
-    private Map<Long, TraitTopoDrawing> _sinistresById;
+    private Map<Long, TraitTopoDrawing> _traitTopoById;
 
     //endregion
 
@@ -32,7 +32,7 @@ public class TraitTopoManager extends MapItem
     {
         super(map,contextActivity);
 
-        _sinistresById = new HashMap<>();
+        _traitTopoById = new HashMap<>();
         EventBus.getDefault().register(this);
     }
 
@@ -43,8 +43,8 @@ public class TraitTopoManager extends MapItem
     public synchronized void onUpdateTraitTopoDTOMessageEvent(TraitTopoDTO message)
     {
         //Mise a jour du sinistre sur la map seulement si le drawing existe deja en BDD
-        if(_sinistresById.containsKey(message.getId())) {
-            _sinistresById.get(message.getId()).update(message);
+        if(_traitTopoById.containsKey(message.getId())) {
+            _traitTopoById.get(message.getId()).update(message);
         }
     }
 
@@ -52,17 +52,17 @@ public class TraitTopoManager extends MapItem
     public synchronized void onCreateTraitTopoDTOMessageEvent(TraitTopoDTO message)
     {
         // Création du sinistre
-        if(!_sinistresById.containsKey(message.getId())) {
-            _sinistresById.put(message.getId(), new TraitTopoDrawing(message, _googleMap, _contextActivity));
+        if(!_traitTopoById.containsKey(message.getId())) {
+            _traitTopoById.put(message.getId(), new TraitTopoDrawing(message, _googleMap, _contextActivity));
         }
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onDeleteTraitTopoDTOMessageEvent(TraitTopoDTO message)
     {
-        if(_sinistresById.containsKey(message.getId())) {
-            _sinistresById.get(message.getId()).delete();
-            _sinistresById.remove(message.getId());
+        if(_traitTopoById.containsKey(message.getId())) {
+            _traitTopoById.get(message.getId()).delete();
+            _traitTopoById.remove(message.getId());
         }
     }
 
