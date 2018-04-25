@@ -27,10 +27,13 @@ import java.util.Map;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.adapter.ItemListDroneAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
+import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 import retrofit2.Response;
 
 public class DroneListViewFragment extends Fragment {
@@ -210,23 +213,48 @@ public class DroneListViewFragment extends Fragment {
         _dronesList.add(drone);
 
         // Envoie du nouveau drone sur le bus pour mettre a jour la Map
-        DeclareDroneMessage message = new DeclareDroneMessage(drone);
-        Log.d(TAG, "================================================================ Envoi d'une donnee sur le bus : "+drone.getNom());
-        EventBus.getDefault().post(message);
+        EventBus.getDefault().post(new DeclareDroneMessage(drone));
 
     }
 
     //region Bus Events
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onSelectedDroneChange(SelectedDroneChangedMessage message)
+    {
+        if(_selectedDrone == null)
+            _selectedDrone = message.Drone;
+        else if(_selectedDrone.equals(message.Drone))
+            _selectedDrone = message.Drone;
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onUpdateDrone(DroneInfosDTO droneInfos)
     {
+        //Recherche du drone existant
         if(_dronesIndexById.get(droneInfos.id_drone)==null)
             return;
 
+        //Récupération du drone depuis la liste
         final int index = _dronesIndexById.get(droneInfos.id_drone);
         DroneDTO drone = _dronesList.get(index);
-        drone.setBattery(droneInfos.battery_level);
+
+        //Vérification du changement de status
+        if(_selectedDrone != null && droneInfos.id_drone == _selectedDrone.getId())
+        {
+            try {
+                EDroneStatut newStatus = EDroneStatut.valueOf(droneInfos.status);
+                if (newStatus != _selectedDrone.getStatut())
+                    EventBus.getDefault().post(new SelectedDroneStatusChangedMessage(newStatus));
+            }
+            catch (IllegalArgumentException e) {
+                Log.e(TAG, e.getMessage());
+            }
+        }
+
+        //Mise a jour du drone
+        drone.Update(droneInfos);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

@@ -30,6 +30,7 @@ import java.util.Set;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
@@ -366,7 +367,7 @@ public class DroneMissionDrawing extends MapItem
         });
     }
 
-    //endregion;:::::::::::;
+    //endregion
 
     //region Bus Events
 
@@ -374,6 +375,11 @@ public class DroneMissionDrawing extends MapItem
     public void OnSelectedDroneChanged(SelectedDroneChangedMessage message)
     {
         _selectedDrone = message.Drone;
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void OnSelectedDroneStatusChanged(SelectedDroneStatusChangedMessage message)
+    {
 
     }
 
