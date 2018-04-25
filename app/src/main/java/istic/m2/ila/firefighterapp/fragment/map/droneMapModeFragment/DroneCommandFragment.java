@@ -13,7 +13,10 @@ import android.widget.ImageButton;
 import org.greenrobot.eventbus.EventBus;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
 import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 
 /**
@@ -45,12 +48,17 @@ public class DroneCommandFragment extends Fragment {
     private String isPlay = "play";
     private String isPause = "pause";
 
+    private Long selectedDroneId;
+
     View view;
+
+    public DroneCommandFragment ()
+    {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -62,31 +70,29 @@ public class DroneCommandFragment extends Fragment {
 
         buttonPlayPause = view.findViewById(R.id.ButtonPlayPause);
         buttonPlayPause.setTag(isPause);
-        buttonStop = view.findViewById(R.id.ButtonStop);
-
-        return view;
-    }
-
-    public void setActionForStopButton(final Runnable runnable) {
-        buttonStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                runnable.run();
-            }
-        });
-    }
-
-    public void setActionForPlayPauseButton(final Runnable runnablePlay, final Runnable runnablePause){
         buttonPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (buttonPlayPause.getTag().equals(isPlay)){
-                    runnablePlay.run();
+                    EventBus.getDefault().post(new PlayMissionMessage(selectedDroneId));
+                    Log.d(TAG, "Envoie d'une commande play au drone d'id "+selectedDroneId);
                 }else{
-                    runnablePause.run();
+                    EventBus.getDefault().post(new PauseMissionMessage(selectedDroneId));
+                    Log.d(TAG, "Envoie d'une commande pause au drone d'id "+selectedDroneId);
                 }
             }
         });
+
+        buttonStop = view.findViewById(R.id.ButtonStop);
+        buttonStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventBus.getDefault().post(new StopMissionMessage(selectedDroneId));
+                Log.d(TAG, "Envoie d'une commande stop au drone d'id "+selectedDroneId);
+            }
+        });
+
+        return view;
     }
 
     public void changeDroneStatut(EDroneStatut statut){
@@ -125,4 +131,11 @@ public class DroneCommandFragment extends Fragment {
         }
     }
 
+    public Long getSelectedDroneId() {
+        return selectedDroneId;
+    }
+
+    public void setSelectedDroneId(Long selectedDroneId) {
+        this.selectedDroneId = selectedDroneId;
+    }
 }

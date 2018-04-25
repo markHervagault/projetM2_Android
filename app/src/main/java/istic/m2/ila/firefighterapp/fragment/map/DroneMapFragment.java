@@ -2,6 +2,7 @@ package istic.m2.ila.firefighterapp.fragment.map;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
+import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.DroneManager;
@@ -51,8 +53,9 @@ public class DroneMapFragment extends Fragment {
 
     private DroneCommandFragment _droneCommandFrag;
 
+    private FragmentManager supportFragmentManager;
+
     public DroneMapFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -64,6 +67,7 @@ public class DroneMapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Log.i(TAG, "OnCreateView");
+        EventBus.getDefault().register(this);
         // Inflate the layout for this fragment
         _view = inflater.inflate(R.layout.fragment_drone_map, container, false);
         final Button button = _view.findViewById(R.id.toggleView);
@@ -102,6 +106,7 @@ public class DroneMapFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         _MapView.onDestroy();
     }
 
@@ -280,36 +285,35 @@ public class DroneMapFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onSelectedDroneChangedMessageEvent(final SelectedDroneChangedMessage message)
     {
-        _droneManager.setSelectedDrone(message.Drone);
-        _droneCommandFrag = new DroneCommandFragment();
+        DroneDTO droneSelected = message.Drone;
 
-        Runnable playRunnable = new Runnable() {
-            @Override
-            public void run() {
-                EventBus.getDefault().post(new PlayMissionMessage(message.Drone.getId()));
-            }
-        };
-        Runnable pauseRunnable = new Runnable() {
-            @Override
-            public void run() {
-                EventBus.getDefault().post(new PauseMissionMessage(message.Drone.getId()));
-            }
-        };
-        _droneCommandFrag.setActionForPlayPauseButton(playRunnable, pauseRunnable);
+        _droneManager.setSelectedDrone(droneSelected);
 
-        Runnable stopRunnable = new Runnable() {
-            @Override
-            public void run() {
-                EventBus.getDefault().post(new StopMissionMessage(message.Drone.getId()));
-            }
-        };
-        _droneCommandFrag.setActionForStopButton(stopRunnable);
+        // si le drone est en mission, on passe en mode commande
+        if( droneSelected.getStatut()!=null
+                && droneSelected.getStatut()!=EDroneStatut.DECONNECTE
+                && droneSelected.getStatut()!=EDroneStatut.DISPONIBLE )
+        {
+            _droneCommandFrag = new DroneCommandFragment();
+            _droneCommandFrag.setSelectedDroneId(message.Drone.getId());
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentCalqueDrone, _droneCommandFrag)
+                    .commit();
+        }
+        // sinon on passe en mode édition d'une mission
+        else
+        {
+            // TODO : fragment mission edit
+        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onDroneChangedMessageEvent(final DroneInfosDTO droneInfosDTO)
     {
-        if(_droneManager.getSelectedDrone().getId() == droneInfosDTO.id_drone){
+        if(_droneManager.getSelectedDrone()!=null &&
+                _droneManager.getSelectedDrone().getId() == droneInfosDTO.id_drone){
             _droneCommandFrag.changeDroneStatut(EDroneStatut.valueOf(droneInfosDTO.status));
         }
     }

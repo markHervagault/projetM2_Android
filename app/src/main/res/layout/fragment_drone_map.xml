@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     tools:context="istic.m2.ila.firefighterapp.fragment.map.DroneMapFragment">
 
+
+
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
@@ -132,5 +134,10 @@
         fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
         fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
         android:src="@drawable/ic_send_black_24dp"/>
+
+    <FrameLayout
+        android:id="@+id/fragmentCalqueDrone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
