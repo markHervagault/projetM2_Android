@@ -21,7 +21,6 @@ import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.DeploiementManager;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.OldSinistreDrawing;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
 
@@ -85,11 +84,9 @@ public class InterventionMapFragment extends Fragment {
     private TraitTopoManager _traitTopoManager;
     private DeploiementManager _deploiementManager;
     private SinistreManager _sinistreManager;
-    private OldSinistreDrawing _oldSinistreDrawing;
 
     private void initMap() {
         getMeActivity().initMap(googleMap);
-        _oldSinistreDrawing = new OldSinistreDrawing(googleMap, getActivity());
         _sinistreManager = new SinistreManager(googleMap, getActivity());
         _traitTopoManager = new TraitTopoManager(googleMap, getActivity());
         _deploiementManager = new DeploiementManager(googleMap, getActivity());
@@ -140,8 +137,8 @@ public class InterventionMapFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 boolean toggledValue = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
-                isSinistreSelected = toggledValue;
-                _oldSinistreDrawing.setEditMode(toggledValue);
+                // TODO - Logique applicative pour le positionnement de Sinistres
+                // TODO - Les déploiements doivent être draggable
             }
         });
 
