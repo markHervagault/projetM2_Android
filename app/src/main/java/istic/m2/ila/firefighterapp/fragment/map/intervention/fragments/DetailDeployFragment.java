@@ -1,7 +1,5 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,17 +9,16 @@ import android.widget.TextView;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
-import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 
 
-public class detailDeployFragment extends Fragment {
+public class DetailDeployFragment extends Fragment {
     private static final String ARG = "data";
     private DeploiementDTO deploy;
 
-    public detailDeployFragment() {}
+    public DetailDeployFragment() {}
 
-    public static detailDeployFragment newInstance(DeploiementDTO dto) {
-        detailDeployFragment fragment = new detailDeployFragment();
+    public static DetailDeployFragment newInstance(DeploiementDTO dto) {
+        DetailDeployFragment fragment = new DetailDeployFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG, dto);
         fragment.setArguments(args);

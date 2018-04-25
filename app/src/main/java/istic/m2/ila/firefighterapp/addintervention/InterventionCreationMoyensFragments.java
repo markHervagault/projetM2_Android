@@ -166,12 +166,12 @@ public class InterventionCreationMoyensFragments extends Fragment {
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                expandableLayout = itemView.findViewById(R.id.expandable_layout);
+               /* expandableLayout = itemView.findViewById(R.id.expandable_layout);
                 expandableLayout.setInterpolator(new OvershootInterpolator());
                 expandableLayout.setOnExpansionUpdateListener(this);
                 expandButton = itemView.findViewById(R.id.expand_button);
                 expandButton.setOnClickListener(this);
-                expandedLinearLayout = itemView.findViewById(R.id.list_layout_moyen);
+                expandedLinearLayout = itemView.findViewById(R.id.list_layout_moyen);*/
             }
 
             public void bind() {

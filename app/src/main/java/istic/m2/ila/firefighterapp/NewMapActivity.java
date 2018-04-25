@@ -23,6 +23,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -200,6 +202,10 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
     public void toggleView() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
+        frameMoyen.setVisibility(View.VISIBLE);
+
         if (interventionView) {
             transaction.replace(R.id.mapFragment, intervMapFrag);
             transaction.replace(R.id.listViewFragment, intervListFrag);
@@ -271,7 +277,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
 
-    private void displayFragmentHolder(iDTO dto) {
+    public void displayFragmentHolder(iDTO dto) {
         if (fragmentHolder.getObjectHeld() == dto) {
             hideFragment();
             fragmentHolder.setObjectHeld(null);
@@ -475,4 +481,20 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         return icon;
     }
     //endregion
+    public void showHideMoy() {
+
+        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
+        Button btnMoy = findViewById(R.id.toggleViewTabMoy);
+
+        if(frameMoyen.getVisibility()!= View.GONE){
+            frameMoyen.setVisibility(View.GONE);
+            btnMoy.setText("Moyens >");
+
+        } else {
+            frameMoyen.setVisibility(View.VISIBLE);
+            btnMoy.setText("< Moyens");
+
+        }
+    }
+
 }

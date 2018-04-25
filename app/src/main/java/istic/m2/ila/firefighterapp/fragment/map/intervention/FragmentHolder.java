@@ -15,6 +15,9 @@ import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
 import istic.m2.ila.firefighterapp.dto.iDTO;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailDeployFragment;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailSinistreFragment;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailTraitTopoFragment;
 
 public class FragmentHolder extends Fragment {
 
@@ -117,7 +120,7 @@ public class FragmentHolder extends Fragment {
         } else if (dto instanceof SinistreDTO) {
             return FragmentFactory.getFragment((SinistreDTO) dto);
         } else if (dto instanceof DeploiementDTO) {
-            //FragmentFactory.getFragment((DeploiementDTO) dto);
+            //return FragmentFactory.getFragment((DeploiementDTO) dto);
         } else if (dto instanceof TraitTopographiqueBouchonDTO) {
             return FragmentFactory.getFragment((TraitTopographiqueBouchonDTO) dto);
         }

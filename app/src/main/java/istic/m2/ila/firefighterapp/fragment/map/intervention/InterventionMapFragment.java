@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,9 +48,18 @@ public class InterventionMapFragment extends Fragment {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_intervention_map, container, false);
         final Button button = mView.findViewById(R.id.toggleView);
+
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getMeActivity().toggleView();
+            }
+        });
+
+        final Button buttonMoy = mView.findViewById(R.id.toggleViewTabMoy);
+
+        buttonMoy.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                getMeActivity().showHideMoy();
             }
         });
 
@@ -231,5 +241,7 @@ public class InterventionMapFragment extends Fragment {
         super.onLowMemory();
         mMapView.onLowMemory();
     }
+
+
 
 }
