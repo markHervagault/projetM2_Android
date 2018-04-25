@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
+import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 
 public class DroneManager extends MapItem
@@ -22,6 +23,16 @@ public class DroneManager extends MapItem
     private Map<Long, DroneDrawing> _dronesById;
 
     private static final String TAG = "DRONE MANAGER";
+
+    private DroneDTO selectedDrone;
+
+    public DroneDTO getSelectedDrone() {
+        return selectedDrone;
+    }
+
+    public void setSelectedDrone(DroneDTO selectedDrone) {
+        this.selectedDrone = selectedDrone;
+    }
 
     //endregion
 
