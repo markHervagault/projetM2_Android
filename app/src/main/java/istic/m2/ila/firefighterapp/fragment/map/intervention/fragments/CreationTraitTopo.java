@@ -82,13 +82,14 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
     @Override
     public void create() {
         TraitTopoDTO traitCreated = new TraitTopoDTO();
-
         traitCreated.setType((ETypeTraitTopo)typeSpinner.getSelectedItem());
         traitCreated.setComposante((TypeComposanteDTO) composanteSpinner.getSelectedItem());
         GeoPositionDTO geoposition = new GeoPositionDTO();
         geoposition.setLatitude(Double.parseDouble(latitudeEditText.getText().toString()));
         geoposition.setLongitude(Double.parseDouble(longitudeEditText.getText().toString()));
         traitCreated.setPosition(geoposition);
+        traitCreated.setInterventionId(((NewMapActivity)getMeActivity()).getIdIntervention());
+        ((NewMapActivity)getMeActivity()).getService().addTraitTopo(((NewMapActivity)getMeActivity()).getToken(),traitCreated);
     }
 
     @Override

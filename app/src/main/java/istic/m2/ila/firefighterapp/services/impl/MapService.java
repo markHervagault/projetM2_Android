@@ -245,6 +245,40 @@ public class MapService implements IMapService {
     }
 
     @Override
+    public void removeTraitTopo(String token,  Long id) {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        TraitTopoConsumer consumer = restTemplate.builConsumer(TraitTopoConsumer.class);
+
+        Response<Void> response = null;
+        try {
+            response = consumer.deleteTraitTopo(token,id).execute();
+
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                Log.i(TAG,  "trait topo delete" + id);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void removeSinistre(String token,  Long id) {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        SinistreConsumer consumer = restTemplate.builConsumer(SinistreConsumer.class);
+
+        Response<Void> response = null;
+        try {
+            response = consumer.deleteSinistre(token,id).execute();
+
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                Log.i(TAG,  "sinistre delete" + id);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public SinistreDTO addSinistre(final String token, SinistreDTO sinistre) {
 
         // Nos traits topo
