@@ -8,8 +8,8 @@ public class Endpoints {
 
 //    public static final String BASE = "http://10.0.2.2:8080/api/"; // Local
 //    public static final String BASE = "http://148.60.11.57:6002/api/"; // Old Serveur
-    public static final String BASE = "http://51.15.251.202/api/"; // OldServeur
-    public static final String RABBITMQ = "amqp://guest:guest@148.60.11.57:6005/";
+    public static final String BASE = "http://51.15.251.202:6002/api/"; // OldServeur
+    public static final String RABBITMQ = "amqp://guest:guest@51.15.251.202:6005/";
 
     //RABBITMQ CREDENTIALS
     public static final String RABBITMQ_USERNAME = "guest";
