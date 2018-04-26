@@ -117,7 +117,7 @@ public class FragmentHolder extends Fragment {
         } else if (dto instanceof SinistreDTO) {
             return FragmentFactory.getFragment((SinistreDTO) dto);
         } else if (dto instanceof DeploiementDTO) {
-            //return FragmentFactory.getFragment((DeploiementDTO) dto);
+            return FragmentFactory.getFragment((DeploiementDTO) dto);
         } else if (dto instanceof TraitTopographiqueBouchonDTO) {
             return FragmentFactory.getFragment((TraitTopographiqueBouchonDTO) dto);
         }

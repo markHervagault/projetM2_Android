@@ -182,7 +182,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
                 tvHeureLiberation = itemView.findViewById(R.id.tvHeureLiberation);
             }
 
-            public void bind(ViewHolder holder, int position) {
+            public void bind(ViewHolder holder, final int position) {
 
                 boolean isSelected = position == selectedItem;
 
@@ -232,15 +232,12 @@ public class InterventionDetailsMoyensFragments extends Fragment {
                     holder.tvHeureLiberation.setText(formater.format(listDeploiment.get(position).getDateHeureDesengagement()));
                 }
 
-
-                positionList = position;
-                    TextView tmpText1 = new TextView(itemView.getContext());
-                    tmpText1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ((NewMapActivity)getActivity()).displayFragmentHolder(listDeploiment.get(positionList));
-                        }
-                    });
+                holder.tvTypeMoyen.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((NewMapActivity)getActivity()).displayFragmentHolder(listDeploiment.get(position));
+                    }
+                });
             }
            }
     }

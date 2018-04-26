@@ -45,6 +45,7 @@
         <activity
             android:name=".NewMapActivity"
             android:label="@string/title_activity_map"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:screenOrientation="landscape"></activity>
         <activity
             android:name=".ListInterventionActivity"
