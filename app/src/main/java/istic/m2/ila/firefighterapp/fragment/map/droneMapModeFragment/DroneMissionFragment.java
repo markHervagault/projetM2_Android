@@ -16,18 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.DroneMissionDrawing;
 
 /**
  * Created by markh on 25/04/2018.
  */
 
-public class DroneEditMissionFragment extends Fragment {
+public class DroneMissionFragment extends Fragment {
 
     /**
      * Identifiant de la classe pour les logs
      */
-    private String TAG = "DroneEditMissionFragment => ";
+    private String TAG = "DroneMissionFragment => ";
 
     /**
      * Contexte
@@ -37,11 +36,11 @@ public class DroneEditMissionFragment extends Fragment {
     private boolean isPathClosed;
     private boolean isAddButtonEnabled;
 
-    private DroneMissionDrawing _missionDrawing;
+    //private DroneMissionDrawing _missionDrawing;
 
     View _view;
 
-    public DroneEditMissionFragment(){}
+    public DroneMissionFragment(){}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +54,7 @@ public class DroneEditMissionFragment extends Fragment {
         this._view = view;
         this.context = view.getContext();
 
-        InitMenu();
+        //InitMenu();
 
         return view;
     }
@@ -63,7 +62,7 @@ public class DroneEditMissionFragment extends Fragment {
     /**
      * Initialise le menu de controles déroulants avec des listeners
      */
-    private void InitMenu() {
+    /*private void InitMenu() {
         isPathClosed = false;
         isAddButtonEnabled = false;
 
@@ -195,5 +194,5 @@ public class DroneEditMissionFragment extends Fragment {
 
     public void setMissionDrawing(DroneMissionDrawing _missionDrawing) {
         this._missionDrawing = _missionDrawing;
-    }
+    }*/
 }

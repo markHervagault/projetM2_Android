@@ -220,16 +220,6 @@ public class DroneListViewFragment extends Fragment {
     //region Bus Events
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onSelectedDroneChange(SelectedDroneChangedMessage message)
-    {
-        if(_selectedDrone == null)
-            _selectedDrone = message.Drone;
-        else if(_selectedDrone.equals(message.Drone))
-            _selectedDrone = message.Drone;
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onUpdateDrone(DroneInfosDTO droneInfos)
     {
         //Recherche du drone existant
@@ -239,19 +229,6 @@ public class DroneListViewFragment extends Fragment {
         //Récupération du drone depuis la liste
         final int index = _dronesIndexById.get(droneInfos.id_drone);
         DroneDTO drone = _dronesList.get(index);
-
-        //Vérification du changement de status
-        if(_selectedDrone != null && droneInfos.id_drone == _selectedDrone.getId())
-        {
-            try {
-                EDroneStatut newStatus = EDroneStatut.valueOf(droneInfos.status);
-                if (newStatus != _selectedDrone.getStatut())
-                    EventBus.getDefault().post(new SelectedDroneStatusChangedMessage(newStatus));
-            }
-            catch (IllegalArgumentException e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
 
         //Mise a jour du drone
         drone.Update(droneInfos);

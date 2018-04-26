@@ -18,8 +18,15 @@
         android:text="toIntervention" />
 
     <FrameLayout
-        android:id="@+id/fragmentCalqueDrone"
+        android:id="@+id/droneMissionFragmentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/droneCommandFragmentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
 
 </FrameLayout>

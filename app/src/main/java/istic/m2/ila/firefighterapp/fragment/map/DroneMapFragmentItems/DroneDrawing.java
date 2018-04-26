@@ -1,6 +1,7 @@
 package istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -8,12 +9,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.greenrobot.eventbus.EventBus;
+
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
+import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
+import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 
 public class DroneDrawing extends MapItem
 {
     //region Members
+    private static final String TAG = "DroneDrawing";
     private static final double BASE_LATITUDE = -80.618424; // Quelque part en Antarctique ...
     private static final double BASE_LONGITUDE = 40.930148; // ... se promène un drone anti-incendie
 
@@ -25,6 +32,12 @@ public class DroneDrawing extends MapItem
     //region Properties
 
     public long getId() { return _drone.getId(); }
+    public EDroneStatut getStatus() { return _drone.getStatut(); }
+
+    private boolean _isSelected;
+    public boolean  isSelected() { return _isSelected; }
+    public  void Select() { _isSelected = true; }
+    public  void UnSelect() {_isSelected = false; }
 
     //endregion
 
@@ -39,6 +52,8 @@ public class DroneDrawing extends MapItem
 
     private void InitDrone()
     {
+        _isSelected = false;
+
         _contextActivity.runOnUiThread(new Runnable() {
             @Override
             public void run()
@@ -58,27 +73,34 @@ public class DroneDrawing extends MapItem
 
     //region Update Methods
 
-    public void UpdatePosition(final double latitude, final double longitude, final double rotation)
+    public void Update(final DroneInfosDTO dto)
     {
-        _contextActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run()
-            {
-                UpdatePosition(latitude, longitude);
-                _droneMarker.setRotation((float)Math.toDegrees(rotation) - _googleMap.getCameraPosition().bearing);
-            }
-        });
+        _drone.Update(dto);
+        UpdatePosition(dto.position.latitude, dto.position.longitude, dto.orientation.yaw);
+
+        //Seulement si le drone est séléctionné
+        if(!_isSelected)
+            return;
+
+        try {
+            EDroneStatut newStatus = EDroneStatut.valueOf(dto.status);
+            if (newStatus != getStatus())
+                EventBus.getDefault().post(new SelectedDroneStatusChangedMessage(newStatus, dto.id_drone));
+        }
+        catch (IllegalArgumentException e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
-    public void UpdatePosition(final double latitude, final double longitude)
+    private void UpdatePosition(final double latitude, final double longitude, final double rotation)
     {
-        _contextActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run()
-            {
-                _droneMarker.setPosition(new LatLng(latitude, longitude));
-            }
-        });
+        UpdatePosition(latitude, longitude);
+        _droneMarker.setRotation((float)Math.toDegrees(rotation) - _googleMap.getCameraPosition().bearing);
+    }
+
+    private void UpdatePosition(final double latitude, final double longitude)
+    {
+        _droneMarker.setPosition(new LatLng(latitude, longitude));
     }
 
     //endregion

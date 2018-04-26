@@ -1,6 +1,7 @@
 package istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -13,8 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
+import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 
 public class DroneManager extends MapItem
 {
@@ -24,14 +30,13 @@ public class DroneManager extends MapItem
 
     private static final String TAG = "DRONE MANAGER";
 
-    private DroneDTO selectedDrone;
+    //endregion
 
-    public DroneDTO getSelectedDrone() {
-        return selectedDrone;
-    }
+    //region Properties
 
-    public void setSelectedDrone(DroneDTO selectedDrone) {
-        this.selectedDrone = selectedDrone;
+    private DroneDrawing _selectedDrone;
+    public DroneDrawing getSelectedDrone() {
+        return _selectedDrone;
     }
 
     //endregion
@@ -49,6 +54,37 @@ public class DroneManager extends MapItem
 
     //endRegion
 
+    //region DroneCommandes
+
+    public void SendPlayCommand()
+    {
+        if (_selectedDrone.getStatus() != EDroneStatut.EN_PAUSE)
+            return;
+
+        EventBus.getDefault().post(new PlayMissionMessage(_selectedDrone.getId()));
+        Log.d(TAG, "Play command sent to : " + _selectedDrone.getId());
+    }
+
+    public void SendPauseCommand()
+    {
+        if (!(_selectedDrone.getStatus() == EDroneStatut.EN_MISSION || _selectedDrone.getStatus() == EDroneStatut.RETOUR_BASE))
+            return;
+
+        EventBus.getDefault().post(new PauseMissionMessage(_selectedDrone.getId()));
+        Log.d(TAG, "Pause command sent to : " + _selectedDrone.getId());
+    }
+
+    public void SendStopCommand()
+    {
+        if(_selectedDrone.getStatus() == EDroneStatut.RETOUR_BASE)
+            return;
+
+        EventBus.getDefault().post(new PauseMissionMessage(_selectedDrone.getId()));
+        Log.d(TAG, "Stop command sent to : " + _selectedDrone.getId());
+    }
+
+    //endregion
+
     //region EventSubscribing
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
@@ -61,11 +97,27 @@ public class DroneManager extends MapItem
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
+    public synchronized void onSelectedDroneChanged(SelectedDroneChangedMessage message)
+    {
+        if(!_dronesById.containsKey(message.Drone.getId()))
+            return;
+
+        if(_selectedDrone != null)
+            _selectedDrone.UnSelect();
+
+        _selectedDrone = _dronesById.get(message.Drone.getId());
+        _selectedDrone.Select();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public synchronized void onDroneInfoDTOMessageEvent(DroneInfosDTO message)
     {
         //Mise a jour du drone sur la map seulement si le drone existe deja en BDD
         if(_dronesById.containsKey(message.id_drone))
-            _dronesById.get(message.id_drone).UpdatePosition(message.position.latitude, message.position.longitude, message.orientation.yaw);
+        {
+            DroneDrawing drone = _dronesById.get(message.id_drone);
+            drone.Update(message);
+        }
     }
 
     //endregion

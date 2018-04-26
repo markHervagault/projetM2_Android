@@ -2,45 +2,32 @@ package istic.m2.ila.firefighterapp.fragment.map;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
-import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
-import istic.m2.ila.firefighterapp.dto.DroneDTO;
-import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
-import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.DroneManager;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.DroneMissionDrawing;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MissionManager;
 import istic.m2.ila.firefighterapp.fragment.map.droneMapModeFragment.DroneCommandFragment;
-import istic.m2.ila.firefighterapp.fragment.map.droneMapModeFragment.DroneEditMissionFragment;
+import istic.m2.ila.firefighterapp.fragment.map.droneMapModeFragment.DroneMissionFragment;
 
 public class DroneMapFragment extends Fragment {
-    //region  INIT
-
     //Global Members
     private final String TAG = "DroneMap Fragment";
 
@@ -49,27 +36,31 @@ public class DroneMapFragment extends Fragment {
     private GoogleMap _googleMap;
     private View _view;
 
-    private DroneMissionDrawing _missionDrawing;
+    private MissionManager _missionManager;
     private DroneManager _droneManager;
 
     private DroneCommandFragment _droneCommandFrag;
-    private DroneEditMissionFragment _droneEditMissionFrag;
+    private DroneMissionFragment _droneMissionFrag;
 
     public DroneMapFragment() {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
+        InitUI();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Log.i(TAG, "OnCreateView");
-        EventBus.getDefault().register(this);
         // Inflate the layout for this fragment
         _view = inflater.inflate(R.layout.fragment_drone_map, container, false);
+
+        InitUI();
+
         final Button button = _view.findViewById(R.id.toggleView);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -129,20 +120,117 @@ public class DroneMapFragment extends Fragment {
 
     //endregion
 
-    //region MAP
+    //region Init
 
     /**
      * Initialise la Carte avec les listeners d'évènements
      */
     private void InitMap()
     {
+        //Instanciation des managers
         _droneManager = new DroneManager(_googleMap, getActivity());
-        _missionDrawing = new DroneMissionDrawing(_googleMap, getActivity());
+        _missionManager = new MissionManager(_googleMap, getActivity());
+
+        _missionManager.addPropertyChangeListener(_missionListener);
+    }
+
+    private void InitUI()
+    {
+        //Fragments UI
+        _droneCommandFrag = new DroneCommandFragment();
+        _droneMissionFrag = new DroneMissionFragment();
+
+        //Inflating UI
+        getFragmentManager().beginTransaction().replace(R.id.droneCommandFragmentLayout, _droneCommandFrag).commit();
+        getFragmentManager().beginTransaction().replace(R.id.droneMissionFragmentLayout, _droneMissionFrag).commit();
+
+        //No View At start
+        getFragmentManager().beginTransaction().hide(_droneMissionFrag).commit();
+        getFragmentManager().beginTransaction().hide(_droneCommandFrag).commit();
+    }
+
+    private PropertyChangeListener _missionListener = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent propertyChangeEvent)
+        {
+            switch (propertyChangeEvent.getPropertyName())
+            {
+                case MissionManager.MISSIONMODE_CHANGED_EVENT_NAME: //Changement de mode de mission
+                    UpdateMissionMode();
+                    break;
+                case MissionManager.EDITMODE_CHANGED_EVENT_NAME: //Prévenir l'UI changement de bouton
+                case MissionManager.POINTCOUNT_CHANGED_EVENT_NAME: //Prévenir l'UI, chanement de bouton
+                case MissionManager.SENDMISSION_CHANGED_EVENT_NAME: //Prévenir l'UI, changement de bouton
+                default:
+                    break;
+            }
+        }
+    };
+
+    //endregion
+
+    //region UI Listeners
+
+    private View.OnClickListener _onButtonPlayPauseListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+            if(view.getTag().equals(DroneCommandFragment.PLAY_TAG))
+                _droneManager.SendPlayCommand();
+            else
+                _droneManager.SendPauseCommand();
+        }
+    };
+
+    private View.OnClickListener _onButtonStopListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            _droneManager.SendStopCommand();
+        }
+    };
+
+    //endregion
+
+    //region Methods
+
+    private void UpdateMissionMode()
+    {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        switch (_missionManager.getMissionMode())
+        {
+            case FOLLOW:
+                _droneCommandFrag.Reset(_droneManager.getSelectedDrone().getStatus());
+                transaction.show(_droneCommandFrag);
+                if(!_droneMissionFrag.isHidden())
+                    transaction.hide(_droneMissionFrag);
+                break;
+
+            case EDIT:
+                //_droneMissionFrag.Reset(); //TODO : implémenter
+                transaction.show(_droneMissionFrag);
+                if(!_droneCommandFrag.isHidden())
+                    transaction.hide(_droneCommandFrag);
+                break;
+
+            case NONE:
+                if(!_droneCommandFrag.isHidden())
+                    transaction.hide(_droneCommandFrag);
+                if(!_droneMissionFrag.isHidden())
+                    transaction.hide((_droneMissionFrag));
+                break;
+        }
+
+        transaction.commit();
     }
 
     //endregion
 
-    //region Events
+    //region Events Bus
+
+    /*
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onSelectedDroneChangedMessageEvent(final SelectedDroneChangedMessage message)
     {
@@ -165,16 +253,16 @@ public class DroneMapFragment extends Fragment {
         // sinon on passe en mode édition d'une mission
         else
         {
-            _droneEditMissionFrag = new DroneEditMissionFragment();
-            _droneEditMissionFrag.setMissionDrawing(_missionDrawing);
+            _droneMissionFrag = new DroneMissionFragment();
+            _droneMissionFrag.setMissionDrawing(_missionDrawing);
 
             getFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentCalqueDrone, _droneEditMissionFrag)
+                    .replace(R.id.fragmentCalqueDrone, _droneMissionFrag)
                     .commit();
         }
 
-    }
-
+    }*/
+/*
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onDroneChangedMessageEvent(final DroneInfosDTO droneInfosDTO)
     {
@@ -182,6 +270,6 @@ public class DroneMapFragment extends Fragment {
                 _droneManager.getSelectedDrone().getId() == droneInfosDTO.id_drone){
             _droneCommandFrag.changeDroneStatut(EDroneStatut.valueOf(droneInfosDTO.status));
         }
-    }
+    }*/
     //endregion
 }
