@@ -46,6 +46,7 @@ public class Endpoints {
 
     public static final String MISSION = "mission";
     public static final String MISSION_ID = "mission/{id}";
+    public static final String CURRENT_MISSION_ID = "/drone/{id}/mission-active";
 
     public static final String SINISTRE = "sinistre";
     public static final String SINISTRE_ID = "sinistre/{id}";

@@ -300,6 +300,9 @@ public class MapService implements IMapService {
                 currentMission = response.body();
                 Log.i(TAG,  "Mission récupérée pour le drone : " + droneId);
             }
+            else if(response.code() == HttpURLConnection.HTTP_NOT_FOUND)
+                Log.i(TAG,  "Aucune mission en cours pour le drone : " + droneId);
+
         }
         catch (IOException e)
         {

@@ -169,6 +169,8 @@ public class DroneMapFragment extends Fragment {
 
     //region UI Listeners
 
+    //region DroneCommand Listeners
+
     private View.OnClickListener _onButtonPlayPauseListener = new View.OnClickListener()
     {
         @Override
@@ -188,6 +190,71 @@ public class DroneMapFragment extends Fragment {
             _droneManager.SendStopCommand();
         }
     };
+
+    //endregion
+
+    //region DroneMissionListener
+
+    //TODO : Abonnement sur selectedMarker, et modification du bouton (enabled ou pas)
+
+    private View.OnClickListener _onRemoveButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            _missionManager.RemoveSelectedMarker();
+        }
+    };
+
+    private View.OnClickListener _onOpenCLoseButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            if(_missionManager.isPathCLosed())
+            {
+                _missionManager.OpenPath();
+                _droneMissionFrag.OpenPath();
+            }
+            else {
+                _missionManager.ClosePath();
+                _droneMissionFrag.ClosePath();
+            }
+        }
+    };
+
+    private View.OnClickListener _onAddModeButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            if(_missionManager.isEditMode())
+            {
+                _missionManager.setEditMode(false);
+                _droneMissionFrag.UnSetAddMode();
+            }
+            else
+            {
+                _missionManager.setEditMode(true);
+                _droneMissionFrag.SetAddMode();
+            }
+        }
+    };
+
+    private View.OnClickListener _onZoneButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            //TODO : Implémenter zone? maybe?
+        }
+    };
+
+    private View.OnClickListener _onSendMissionButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            _missionManager.SendMission();
+        }
+    };
+
+    //endregion
 
     //endregion
 
@@ -215,6 +282,13 @@ public class DroneMapFragment extends Fragment {
                 transaction.show(_droneMissionFrag);
                 if(!_droneCommandFrag.isHidden())
                     transaction.hide(_droneCommandFrag);
+
+                _droneMissionFrag._removeSelectedMarkerButton.setOnClickListener(_onRemoveButtonListener);
+                _droneMissionFrag._openCloseClosePathButton.setOnClickListener(_onOpenCLoseButtonListener);
+                _droneMissionFrag._addModeButton.setOnClickListener(_onAddModeButtonListener);
+                _droneMissionFrag._zoneButton.setOnClickListener(_onZoneButtonListener);
+                _droneMissionFrag._sendMissionButton.setOnClickListener(_onSendMissionButtonListener);
+
                 break;
 
             case NONE:
@@ -228,50 +302,5 @@ public class DroneMapFragment extends Fragment {
         transaction.commit();
     }
 
-    //endregion
-
-    //region Events Bus
-
-    /*
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onSelectedDroneChangedMessageEvent(final SelectedDroneChangedMessage message)
-    {
-        DroneDTO droneSelected = message.Drone;
-
-        _droneManager.setSelectedDrone(droneSelected);
-
-        // si le drone est en mission, on passe en mode commande
-        if( droneSelected.getStatut()!=null
-                && droneSelected.getStatut()!=EDroneStatut.DECONNECTE
-                && droneSelected.getStatut()!=EDroneStatut.DISPONIBLE )
-        {
-            _droneCommandFrag = new DroneCommandFragment();
-            _droneCommandFrag.setSelectedDroneId(message.Drone.getId());
-
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentCalqueDrone, _droneCommandFrag)
-                    .commit();
-        }
-        // sinon on passe en mode édition d'une mission
-        else
-        {
-            _droneMissionFrag = new DroneMissionFragment();
-            _droneMissionFrag.setMissionDrawing(_missionDrawing);
-
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentCalqueDrone, _droneMissionFrag)
-                    .commit();
-        }
-
-    }*/
-/*
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onDroneChangedMessageEvent(final DroneInfosDTO droneInfosDTO)
-    {
-        if(_droneManager.getSelectedDrone()!=null &&
-                _droneManager.getSelectedDrone().getId() == droneInfosDTO.id_drone){
-            _droneCommandFrag.changeDroneStatut(EDroneStatut.valueOf(droneInfosDTO.status));
-        }
-    }*/
     //endregion
 }

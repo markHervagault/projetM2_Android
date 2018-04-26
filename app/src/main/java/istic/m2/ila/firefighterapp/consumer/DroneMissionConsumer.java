@@ -27,7 +27,7 @@ public interface DroneMissionConsumer {
                                         @Body MissionDTO droneMissionDTO);
 
     /** Récuperation de la mission avec la liste des point  */
-    @GET(Endpoints.MISSION_ID)
+    @GET(Endpoints.CURRENT_MISSION_ID)
     Call<MissionDTO> getMission(@Header("Authorization")String token,
                                      @Path("id")long  id);
 

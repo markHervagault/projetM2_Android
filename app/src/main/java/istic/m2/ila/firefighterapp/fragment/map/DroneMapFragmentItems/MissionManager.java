@@ -252,6 +252,21 @@ public class MissionManager extends MapItem
         _propertyChangeSupport.firePropertyChange(POINTCOUNT_CHANGED_EVENT_NAME, getPointsCount() + 1, getPointsCount());
     }
 
+    public void OpenPath()
+    {
+        _pathDrawing.OpenPath();
+    }
+
+    public void ClosePath()
+    {
+        _pathDrawing.ClosePath();
+    }
+
+    public boolean isPathCLosed()
+    {
+        return _pathDrawing.isPathClosed();
+    }
+
     private void ReindexPoints()
     {
         _pathPointsByTag.clear();
@@ -329,6 +344,7 @@ public class MissionManager extends MapItem
 
     private void SetCurrentMission(MissionDTO dto)
     {
+        Log.i(TAG, "Setting current mission");
         //Tri des points du drone par index
         final List<PointMissionDTO> points = new ArrayList<>(dto.getDronePositions());
         Collections.sort(points, new Comparator<PointMissionDTO>()

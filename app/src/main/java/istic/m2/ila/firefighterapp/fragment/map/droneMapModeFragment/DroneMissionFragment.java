@@ -16,29 +16,102 @@ import java.util.ArrayList;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 
 /**
  * Created by markh on 25/04/2018.
  */
 
-public class DroneMissionFragment extends Fragment {
+public class DroneMissionFragment extends Fragment
+{
+    //region Members
 
-    /**
-     * Identifiant de la classe pour les logs
-     */
-    private String TAG = "DroneMissionFragment => ";
-
-    /**
-     * Contexte
-     */
+    private String TAG = "DroneMissionFragment";
+    private View _view;
     public Context context;
 
-    private boolean isPathClosed;
-    private boolean isAddButtonEnabled;
+    private List<FloatingActionButton> floatingActionButtonList;
 
-    //private DroneMissionDrawing _missionDrawing;
+    //endregion
 
-    View _view;
+    //region Properties
+
+    //Buttons
+    public FloatingActionButton _removeSelectedMarkerButton;
+    public FloatingActionButton _openCloseClosePathButton;
+    public FloatingActionButton _addModeButton;
+    public FloatingActionButton _zoneButton;
+    public FloatingActionButton _sendMissionButton;
+
+    //Path Closed
+    private boolean _isPathClosed;
+    public boolean isPathClosed() { return _isPathClosed; }
+    public void RefreshOpenPathButton(int markerCounts)
+    {
+        if (markerCounts < 3)
+            _openCloseClosePathButton.setEnabled(false);
+        else
+            _openCloseClosePathButton.setEnabled(true);
+    }
+    public void ClosePath()
+    {
+        _isPathClosed = true;
+        _openCloseClosePathButton.setColorNormal(getResources().getColor(R.color.colorMenuFabSelectedNormal));
+        _openCloseClosePathButton.setColorPressed(getResources().getColor(R.color.colorMenuFabSelectedPressed));
+        _openCloseClosePathButton.setColorRipple(getResources().getColor(R.color.colorMenuFabSelectedRipple));
+        _openCloseClosePathButton.setImageResource(R.drawable.closedloop);
+    }
+    public void OpenPath()
+    {
+        _isPathClosed = false;
+
+        _openCloseClosePathButton.setColorNormal(getResources().getColor(R.color.colorMenuFabDefaultNormal));
+        _openCloseClosePathButton.setColorPressed(getResources().getColor(R.color.colorMenuFabDefaultPressed));
+        _openCloseClosePathButton.setColorRipple(getResources().getColor(R.color.colorMenuFabDefaultRipple));
+        _openCloseClosePathButton.setImageResource(R.drawable.openloop);
+    }
+
+    //Add Mode
+    private boolean _addMode;
+    public boolean isAddMode() { return _addMode; }
+    public void SetAddMode()
+    {
+        _addMode = true;
+        for (FloatingActionButton button : floatingActionButtonList)
+            button.setEnabled(false);
+
+        _addModeButton.setColorNormal(getResources().getColor(R.color.colorMenuFabSelectedNormal));
+        _addModeButton.setColorPressed(getResources().getColor(R.color.colorMenuFabSelectedPressed));
+        _addModeButton.setColorRipple(getResources().getColor(R.color.colorMenuFabSelectedRipple));
+    }
+    public void UnSetAddMode()
+    {
+        _addMode = false;
+        for (FloatingActionButton button : floatingActionButtonList)
+            button.setEnabled(true);
+
+        _addModeButton.setColorNormal(getResources().getColor(R.color.colorMenuFabSelectedNormal));
+        _addModeButton.setColorPressed(getResources().getColor(R.color.colorMenuFabSelectedPressed));
+        _addModeButton.setColorRipple(getResources().getColor(R.color.colorMenuFabSelectedRipple));
+    }
+
+    //Send Mission
+    private boolean _canSendMission;
+    public boolean canSendMission() {return _canSendMission; }
+    public void setCanSendMission()
+    {
+        _canSendMission = true;
+        _sendMissionButton.setEnabled(true);
+    }
+    public void unSetCanSendButton()
+    {
+        _canSendMission = false;
+        _sendMissionButton.setEnabled(false);
+    }
+
+    //endregion
+
+    //region Constructor
 
     public DroneMissionFragment(){}
 
@@ -54,145 +127,39 @@ public class DroneMissionFragment extends Fragment {
         this._view = view;
         this.context = view.getContext();
 
-        //InitMenu();
+        InitMenu();
 
         return view;
     }
 
-    /**
-     * Initialise le menu de controles déroulants avec des listeners
-     */
-    /*private void InitMenu() {
-        isPathClosed = false;
-        isAddButtonEnabled = false;
+    private void InitMenu()
+    {
+        _isPathClosed = false;
+        _addMode = false;
 
-        FloatingActionButton fabRemoveSelectedMarker = _view.findViewById(R.id.fabMenu_removeSelectedMarker);
-        final FloatingActionButton fabOpenClose = _view.findViewById(R.id.fabMenu_openClosePath);
-        final FloatingActionButton fabAddMarker = _view.findViewById(R.id.fabMenu_addMarker);
-        FloatingActionButton fabZone = _view.findViewById(R.id.fabMenu_zone);
-        FloatingActionButton fabSendMission = _view.findViewById(R.id.fab_menu2_send);
-
-        //Remove Button Listener
-        fabRemoveSelectedMarker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "RemoveButton Cliked");
-                // Gestion de l'événement click pour le bouton flottant
-                _missionDrawing.DeleteSelectedMarker();
-                RefreshOpenClosePathButtonStatus();
-            }
-        });
-
-        //Add Button Listener
-        fabAddMarker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isAddButtonEnabled) // Activation du mode
-                {
-                    //Desactivation des boutons
-                    ChangeMenuButtonsStatus(false);
-
-                    //Activation du bouton d'ajout ?? Utile??
-                    fabAddMarker.setEnabled(true);
-
-                    // Couleurs du focus
-                    fabAddMarker.setColorNormal(getResources().
-                            getColor(R.color.colorMenuFabSelectedNormal));
-                    fabAddMarker.setColorPressed(getResources().
-                            getColor(R.color.colorMenuFabSelectedPressed));
-                    fabAddMarker.setColorRipple(getResources().
-                            getColor(R.color.colorMenuFabSelectedRipple));
-
-                    isAddButtonEnabled = true;
-                    _missionDrawing.setAddMode(true);
-                } else //Desactivation du mode
-                {
-                    //Reactivation des boutons
-                    ChangeMenuButtonsStatus(true);
-
-                    // Couleurs de l'unfocus
-                    fabAddMarker.setColorNormal(getResources().
-                            getColor(R.color.colorMenuFabDefaultNormal));
-                    fabAddMarker.setColorPressed(getResources().
-                            getColor(R.color.colorMenuFabDefaultPressed));
-                    fabAddMarker.setColorRipple(getResources().
-                            getColor(R.color.colorMenuFabDefaultRipple));
-
-                    isAddButtonEnabled = false;
-                    _missionDrawing.setAddMode(false);
-                }
-            }
-        });
-
-        fabOpenClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Si le trajet est fermé
-                if (_missionDrawing.isPathClosed()) {
-                    //Changement de style du bouton
-                    fabOpenClose.setColorNormal(getResources().getColor(R.color.colorMenuFabDefaultNormal));
-                    fabOpenClose.setColorPressed(getResources().getColor(R.color.colorMenuFabDefaultPressed));
-                    fabOpenClose.setColorRipple(getResources().getColor(R.color.colorMenuFabDefaultRipple));
-                    fabOpenClose.setImageResource(R.drawable.openloop);
-
-                    _missionDrawing.setPathClosed(false);
-                } else {
-                    fabOpenClose.setColorNormal(getResources().getColor(R.color.colorMenuFabSelectedNormal));
-                    fabOpenClose.setColorPressed(getResources().getColor(R.color.colorMenuFabSelectedPressed));
-                    fabOpenClose.setColorRipple(getResources().getColor(R.color.colorMenuFabSelectedRipple));
-                    fabOpenClose.setImageResource(R.drawable.closedloop);
-
-                    _missionDrawing.setPathClosed(true);
-                }
-            }
-        });
-
-        fabSendMission.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _missionDrawing.SendMission(1l, 1l, 0);
-            }
-        });
+        _removeSelectedMarkerButton = _view.findViewById(R.id.fabMenu_removeSelectedMarker);
+        _openCloseClosePathButton = _view.findViewById(R.id.fabMenu_openClosePath);
+        _addModeButton = _view.findViewById(R.id.fabMenu_addMarker);
+        _zoneButton = _view.findViewById(R.id.fabMenu_zone);
+        _sendMissionButton = _view.findViewById(R.id.fab_menu2_send);
 
         //Ajout des boutons à la liste pour la désactivation
         floatingActionButtonList = new ArrayList<>();
 
-        floatingActionButtonList.add(fabRemoveSelectedMarker);
-        floatingActionButtonList.add(fabAddMarker);
-        floatingActionButtonList.add(fabZone);
-
-        //Abonnement aux changements de markers
-        _missionDrawing.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt)
-            {
-                if(evt.getPropertyName().equals("markersCount"))
-                    RefreshOpenClosePathButtonStatus();
-            }
-        });
+        floatingActionButtonList.add(_removeSelectedMarkerButton);
+        floatingActionButtonList.add(_zoneButton);
     }
 
-    private List<FloatingActionButton> floatingActionButtonList;
+    //endregion
 
-    private void ChangeMenuButtonsStatus(Boolean enabled) {
-        for (FloatingActionButton button : floatingActionButtonList)
-            button.setEnabled(enabled);
+    //region Methods
+
+    public void Reset()
+    {
+        RefreshOpenPathButton(0);
+        UnSetAddMode();
+        OpenPath();
     }
 
-    private void RefreshOpenClosePathButtonStatus() {
-        FloatingActionButton openCloseButton = _view.findViewById(R.id.fabMenu_openClosePath);
-        if (_missionDrawing.getMarkersCount() < 3) {
-            openCloseButton.setEnabled(false);
-        } else {
-            openCloseButton.setEnabled(true);
-        }
-    }
-
-    public DroneMissionDrawing getMissionDrawing() {
-        return _missionDrawing;
-    }
-
-    public void setMissionDrawing(DroneMissionDrawing _missionDrawing) {
-        this._missionDrawing = _missionDrawing;
-    }*/
+    //endregion
 }
