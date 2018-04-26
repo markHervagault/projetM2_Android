@@ -1,9 +1,22 @@
-<android.support.v7.widget.RecyclerView
+<!-- <android.support.v7.widget.RecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments"
+    tools:conteistic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTVTVents"
     android:id="@+id/interventionDetailsMoyenRecycler"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="45dp"/>
+    android:layout_marginTop="45dp"/> -->
 
+
+<com.evrencoskun.tableview.TableView android:id="@+id/moyenTableView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+
+    app:column_header_height="@dimen/table_view_cell_height"
+    app:row_header_width="@dimen/table_view_row_header_width"
+    app:selected_color="@color/selected_background_color"
+    app:shadow_color="@color/shadow_background_color"
+    app:unselected_color="@color/unselected_background_color"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />

@@ -5,6 +5,10 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 
+    <dimen name="table_view_cell_height">28dp</dimen>
+    <dimen name="table_view_row_header_width">28dp</dimen>
+    <dimen name="table_view_default_text_size">16dp</dimen>
+
     <!--Fragment text size-->
     <dimen name="fragment_holder_title_size">20dp</dimen>
     <dimen name="fragment_holder_text_size">20dp</dimen>
