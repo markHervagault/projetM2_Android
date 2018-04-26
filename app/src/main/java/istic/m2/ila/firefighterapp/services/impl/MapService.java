@@ -98,7 +98,7 @@ public class MapService implements IMapService {
     @Override
     public List<TraitTopographiqueBouchonDTO> getTraitTopoFromBouchon(final String token, Long id, final double longitude, final double latitude, final double rayon) {
         // Nos traits
-        List<TraitTopographiqueBouchonDTO> traits = null;
+        List<TraitTopographiqueBouchonDTO> traits = new ArrayList<>();
         // Construction de notre appel REST
         RestTemplate restTemplate = RestTemplate.getInstance();
         BouchonConsumer bouchonConsumer = restTemplate.builConsumer(BouchonConsumer.class);
@@ -245,6 +245,40 @@ public class MapService implements IMapService {
     }
 
     @Override
+    public void majTraitTopo(String token, TraitTopoDTO traitTopoDTO) {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        TraitTopoConsumer consumer = restTemplate.builConsumer(TraitTopoConsumer.class);
+
+        Response<TraitTopoDTO> response = null;
+        try {
+            response = consumer.updateTraitTopo(token,traitTopoDTO).execute();
+
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                Log.i(TAG,  "trait topo delete" + traitTopoDTO.getId());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void majSinistre(String token, SinistreDTO sinistreDTO) {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        SinistreConsumer consumer = restTemplate.builConsumer(SinistreConsumer.class);
+
+        Response<SinistreDTO> response = null;
+        try {
+            response = consumer.updateSinistre(token,sinistreDTO).execute();
+
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                Log.i(TAG,  "sinistre maj" + sinistreDTO.getId());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void removeTraitTopo(String token,  Long id) {
         RestTemplate restTemplate = RestTemplate.getInstance();
         TraitTopoConsumer consumer = restTemplate.builConsumer(TraitTopoConsumer.class);
@@ -254,7 +288,7 @@ public class MapService implements IMapService {
             response = consumer.deleteTraitTopo(token,id).execute();
 
             if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                Log.i(TAG,  "trait topo delete" + id);
+                Log.i(TAG,  "trait topo maj" + id);
             }
         } catch (IOException e) {
             e.printStackTrace();

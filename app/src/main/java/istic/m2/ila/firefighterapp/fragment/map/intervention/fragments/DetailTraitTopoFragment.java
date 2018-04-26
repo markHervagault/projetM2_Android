@@ -10,8 +10,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.ITraitTopo;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
@@ -20,6 +25,10 @@ public class DetailTraitTopoFragment extends Fragment implements IManipulableFra
 
     private static final String ARG = "data";
     private ITraitTopo traitTopo;
+
+    private Marker marker;
+
+    private GeoPositionDTO newGeoposition = new GeoPositionDTO();
 
     public DetailTraitTopoFragment() {}
 
@@ -47,10 +56,8 @@ public class DetailTraitTopoFragment extends Fragment implements IManipulableFra
         TextView textViewType = view.findViewById(R.id.typeValue);
         textViewType.setText(traitTopo.getType().toString());
 
-        LinearLayout buttonLayout = view.findViewById(R.id.buttonLayout);
-        for(Button btn : ButtonFactory.getButton(this,traitTopo)){
-            buttonLayout.addView(btn);
-        }
+        ButtonFactory.populate(this,traitTopo,(LinearLayout)view.findViewById(R.id.buttonLayout));
+
         return view;
     }
 
@@ -62,12 +69,41 @@ public class DetailTraitTopoFragment extends Fragment implements IManipulableFra
 
     @Override
     public void update() {
+        traitTopo.setPosition(newGeoposition);
+
+        ((NewMapActivity)getMeActivity()).getService().majTraitTopo(((NewMapActivity)getMeActivity()).getToken(),(TraitTopoDTO)traitTopo);
+
+        marker.remove();
 
     }
 
     @Override
     public void move() {
+        GoogleMap map = ((NewMapActivity)getActivity()).getMap();
 
+        marker = map.addMarker(new MarkerOptions()
+                .position(map.getCameraPosition().target)
+                .draggable(true));
+
+        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                                        @Override
+                                        public void onMarkerDragStart(Marker marker) {
+
+                                        }
+
+                                        @Override
+                                        public void onMarkerDrag(Marker marker) {
+
+                                        }
+
+                                        @Override
+                                        public void onMarkerDragEnd(Marker marker) {
+                                            newGeoposition.setLongitude(marker.getPosition().longitude);
+                                            newGeoposition.setLatitude(marker.getPosition().latitude);
+                                        }
+                                    }
+
+        );
     }
 
     @Override

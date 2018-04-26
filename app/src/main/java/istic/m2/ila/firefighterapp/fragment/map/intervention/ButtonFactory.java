@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import istic.m2.ila.firefighterapp.dto.IDTO;
 import istic.m2.ila.firefighterapp.dto.ITraitTopo;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
@@ -25,34 +27,65 @@ public class ButtonFactory {
     private static final String CreateTitle = "Creer";
     private static final String UpdateTitle = "Mettre a jour";
 
-    public static List<Button> getButton(final IManipulableFragment fragment, ITraitTopo traitTopo){
+    public static List<Button> getButton(final IManipulableFragment fragment, IDTO dto){
         List<Button> buttons = new ArrayList<>();
-        if(traitTopo instanceof TraitTopoDTO){
-            if(traitTopo.getId() != null){
+        if(dto instanceof TraitTopographiqueBouchonDTO){
+
+        } else {
+            if(dto.getId() != null){
                 //Object existant (BDD) button de Supression et de déplacement
-                buttons.add(createDeleteButton(fragment));
                 buttons.add(createMoveButton(fragment));
+                buttons.add(createDeleteButton(fragment));
             } else {
                 //Button de creation
                 buttons.add(createCreateButton(fragment));
             }
-        } else if (traitTopo instanceof TraitTopographiqueBouchonDTO){
-
         }
         return buttons;
+    }
+
+    public static void populate(final IManipulableFragment fragment, final IDTO dto, final LinearLayout buttonLayout) {
+        if(dto instanceof TraitTopographiqueBouchonDTO){
+
+        } else {
+            if(dto.getId() != null) {
+                //Object existant (BDD) button de Supression et de déplacement
+                Button updateBtn = createUpdateButton(fragment);
+                updateBtn.setVisibility(View.GONE);
+                buttonLayout.addView(updateBtn);
+                buttonLayout.addView(createMoveButton(fragment,updateBtn));
+                buttonLayout.addView(createDeleteButton(fragment));
+            } else {
+                //Button de creation
+                buttonLayout.addView(createCreateButton(fragment));
+            }
+        }
     }
 
     public static List<Button> getButton(final IManipulableFragment fragment, final SinistreDTO sinistre){
         List<Button> buttons = new ArrayList<>();
         if(sinistre.getId() != null) {
             //Object existant (BDD) button de Supression et de déplacement
-            buttons.add(createDeleteButton(fragment));
             buttons.add(createMoveButton(fragment));
+            buttons.add(createDeleteButton(fragment));
         } else {
             //Button de creation
             buttons.add(createCreateButton(fragment));
         }
         return buttons;
+    }
+
+    private static Button createMoveButton(final IManipulableFragment fragment, final Button updateBtn){
+        final Button btn = createSimplebutton(fragment.getMeActivity(),MoveTitle);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btn.setVisibility(View.GONE);
+                fragment.move();
+                updateBtn.setVisibility(View.VISIBLE);
+            }
+        });
+        return btn;
     }
 
     private static Button createDeleteButton(final IManipulableFragment fragment) {

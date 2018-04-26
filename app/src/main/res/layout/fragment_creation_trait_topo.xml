@@ -49,19 +49,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <EditText
-                android:id="@+id/latitude"
+            <Button
+                android:id="@+id/createMarker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="numberSigned|numberDecimal"
-                />
-
-            <EditText
-                android:id="@+id/longitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberSigned|numberDecimal"
-                />
+                android:text="Creation d'un marqueur"/>
         </LinearLayout>
 
         <LinearLayout

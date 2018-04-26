@@ -8,12 +8,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
@@ -21,7 +24,6 @@ import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
-import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
@@ -36,10 +38,12 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
 
     private TraitTopoDTO traitTopo;
 
+    private Marker marker;
+
+    private GeoPositionDTO newGeoposition = new GeoPositionDTO();
+
     private Spinner typeSpinner;
     private Spinner composanteSpinner;
-    private EditText longitudeEditText;
-    private EditText latitudeEditText;
 
     public CreationTraitTopo() {
         traitTopo = new TraitTopoDTO();
@@ -62,12 +66,15 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
         View view = inflater.inflate(R.layout.fragment_creation_trait_topo, container, false);
         typeSpinner = view.findViewById(R.id.typeDropDown);
         composanteSpinner = view.findViewById(R.id.composanteDropDown);
-        longitudeEditText = view.findViewById(R.id.longitude);
-        latitudeEditText = view.findViewById(R.id.latitude);
-        LinearLayout layoutButton = view.findViewById(R.id.layoutButton);
-        for(Button btn : ButtonFactory.getButton(this,traitTopo)){
-            layoutButton.addView(btn);
-        }
+        view.findViewById(R.id.createMarker).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createMarker();
+            }
+        });
+
+        ButtonFactory.populate(this,traitTopo,(LinearLayout)view.findViewById(R.id.layoutButton));
+
         initSpinner();
         return view;
     }
@@ -84,17 +91,15 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
         TraitTopoDTO traitCreated = new TraitTopoDTO();
         traitCreated.setType((ETypeTraitTopo)typeSpinner.getSelectedItem());
         traitCreated.setComposante((TypeComposanteDTO) composanteSpinner.getSelectedItem());
-        GeoPositionDTO geoposition = new GeoPositionDTO();
-        geoposition.setLatitude(Double.parseDouble(latitudeEditText.getText().toString()));
-        geoposition.setLongitude(Double.parseDouble(longitudeEditText.getText().toString()));
-        traitCreated.setPosition(geoposition);
+        traitCreated.setPosition(newGeoposition);
         traitCreated.setInterventionId(((NewMapActivity)getMeActivity()).getIdIntervention());
         ((NewMapActivity)getMeActivity()).getService().addTraitTopo(((NewMapActivity)getMeActivity()).getToken(),traitCreated);
+
+        marker.remove();
     }
 
     @Override
     public void update() {
-
     }
 
     @Override
@@ -110,5 +115,33 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
     @Override
     public Activity getMeActivity() {
         return this.getActivity();
+    }
+
+    private void createMarker() {
+        GoogleMap map = ((NewMapActivity)getActivity()).getMap();
+
+        marker = map.addMarker(new MarkerOptions()
+                .position(map.getCameraPosition().target)
+                .draggable(true));
+
+        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                @Override
+                public void onMarkerDragStart(Marker marker) {
+
+                }
+
+                @Override
+                public void onMarkerDrag(Marker marker) {
+
+                }
+
+                @Override
+                public void onMarkerDragEnd(Marker marker) {
+                    newGeoposition.setLongitude(marker.getPosition().longitude);
+                    newGeoposition.setLatitude(marker.getPosition().latitude);
+                }
+            }
+
+        );
     }
 }

@@ -9,19 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.ESinistre;
-import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
-import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
 
@@ -30,10 +31,12 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
 
     private SinistreDTO sinistre;
 
+    private Marker marker;
+
+    private GeoPositionDTO newGeoposition = new GeoPositionDTO();
+
     private Spinner typeSpinner;
     private Spinner composanteSpinner;
-    private EditText longitudeEditText;
-    private EditText latitudeEditText;
 
     public CreationSinistre() {
         sinistre = new SinistreDTO();
@@ -57,12 +60,16 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
         View view = inflater.inflate(R.layout.fragment_creation_trait_topo, container, false);
         typeSpinner = view.findViewById(R.id.typeDropDown);
         composanteSpinner = view.findViewById(R.id.composanteDropDown);
-        longitudeEditText = view.findViewById(R.id.longitude);
-        latitudeEditText = view.findViewById(R.id.latitude);
-        LinearLayout layoutButton = view.findViewById(R.id.layoutButton);
-        for(Button btn : ButtonFactory.getButton(this,sinistre)){
-            layoutButton.addView(btn);
-        }
+
+        view.findViewById(R.id.createMarker).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createMarker();
+            }
+        });
+
+        ButtonFactory.populate(this,sinistre,(LinearLayout)view.findViewById(R.id.layoutButton));
+
         initSpinner();
         return view;
     }
@@ -79,17 +86,19 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
         SinistreDTO sinistreCreated = new SinistreDTO();
         sinistreCreated.setType((ESinistre)typeSpinner.getSelectedItem());
         sinistreCreated.setComposante((TypeComposanteDTO) composanteSpinner.getSelectedItem());
-        GeoPositionDTO geoposition = new GeoPositionDTO();
-        geoposition.setLatitude(Double.parseDouble(latitudeEditText.getText().toString()));
-        geoposition.setLongitude(Double.parseDouble(longitudeEditText.getText().toString()));
-        sinistreCreated.setGeoPosition(geoposition);
+        sinistreCreated.setGeoPosition(newGeoposition);
         sinistreCreated.setInterventionId(((NewMapActivity)getMeActivity()).getIdIntervention());
         ((NewMapActivity)getMeActivity()).getService().addSinistre(((NewMapActivity)getMeActivity()).getToken(),sinistreCreated);
     }
 
     @Override
     public void update() {
+        sinistre.getGeoPosition().setLatitude(marker.getPosition().latitude);
+        sinistre.getGeoPosition().setLongitude(marker.getPosition().longitude);
 
+        ((NewMapActivity)getMeActivity()).getService().majSinistre(((NewMapActivity)getMeActivity()).getToken(),sinistre);
+
+        marker.remove();
     }
 
     @Override
@@ -105,5 +114,33 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
     @Override
     public Activity getMeActivity() {
         return this.getActivity();
+    }
+
+    private void createMarker() {
+        GoogleMap map = ((NewMapActivity)getActivity()).getMap();
+
+        marker = map.addMarker(new MarkerOptions()
+                .position(map.getCameraPosition().target)
+                .draggable(true));
+
+        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                                        @Override
+                                        public void onMarkerDragStart(Marker marker) {
+
+                                        }
+
+                                        @Override
+                                        public void onMarkerDrag(Marker marker) {
+
+                                        }
+
+                                        @Override
+                                        public void onMarkerDragEnd(Marker marker) {
+                                            newGeoposition.setLongitude(marker.getPosition().longitude);
+                                            newGeoposition.setLatitude(marker.getPosition().latitude);
+                                        }
+                                    }
+
+        );
     }
 }
