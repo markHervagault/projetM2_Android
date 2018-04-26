@@ -25,6 +25,7 @@ public class DroneDrawing extends MapItem
     private static final double BASE_LONGITUDE = 40.930148; // ... se promène un drone anti-incendie
 
     private DroneDTO _drone;
+    private EDroneStatut _oldStatus;
     private Marker _droneMarker;
 
     //endregion
@@ -36,9 +37,9 @@ public class DroneDrawing extends MapItem
     public DroneDTO getDrone() { return _drone; }
 
     private boolean _isSelected;
-    public boolean  isSelected() { return _isSelected; }
-    public  void Select() { _isSelected = true; }
-    public  void UnSelect() {_isSelected = false; }
+    public boolean isSelected() { return _isSelected; }
+    public void Select() { _isSelected = true; }
+    public void UnSelect() {_isSelected = false; }
 
     //endregion
 
@@ -80,19 +81,22 @@ public class DroneDrawing extends MapItem
         UpdatePosition(dto.position.latitude, dto.position.longitude, dto.orientation.yaw);
 
         //Seulement si le drone est séléctionné
-        if(!_isSelected)
-            return;
-
-        try {
-            EDroneStatut newStatus = EDroneStatut.valueOf(dto.status);
-            if (newStatus != getStatus()) {
-                Log.i(TAG, "SelectedDrone Status Changed");
-                EventBus.getDefault().post(new SelectedDroneStatusChangedMessage(newStatus, dto.id_drone));
+        if(_isSelected)
+        {
+            try {
+                if (getStatus() != _oldStatus) {
+                    Log.i(TAG, "SelectedDrone Status Changed");
+                    EventBus.getDefault().post(new SelectedDroneStatusChangedMessage(getStatus(), dto.id_drone));
+                }
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, e.getMessage());
+            }
+            finally {
+                _oldStatus = _drone.getStatut();
             }
         }
-        catch (IllegalArgumentException e) {
-            Log.e(TAG, e.getMessage());
-        }
+        else
+            _oldStatus = _drone.getStatut();
     }
 
     private void UpdatePosition(final double latitude, final double longitude, final double rotation)

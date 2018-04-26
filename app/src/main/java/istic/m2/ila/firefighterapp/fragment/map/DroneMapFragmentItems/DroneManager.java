@@ -91,7 +91,7 @@ public class DroneManager extends MapItem
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onDeclareDroneMessageEvent(DeclareDroneMessage message)
     {
-        Log.i(TAG, "Recu : déclaredronemessage");
+        Log.i(TAG, "DeclareDroneMessage");
         //Ajout du drone seulement si il n'existe pas déjà
         if(!_dronesById.containsKey(message.getDroneDTO().getId()))
             _dronesById.put(message.getDroneDTO().getId(), new DroneDrawing(message.getDroneDTO(), _googleMap, _contextActivity));
