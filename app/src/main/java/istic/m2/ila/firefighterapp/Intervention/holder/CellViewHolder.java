@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp.Intervention.holder;
 
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
@@ -27,6 +28,12 @@ public class CellViewHolder extends AbstractViewHolder {
     }
 
     public void setCellModel(CellModel p_jModel, int pColumnPosition) {
+
+        // Adapter le background de la cellule à la composante
+        String backgroundColor = p_jModel.getBackgroundColor();
+        if (backgroundColor != null) {
+            cell_textview.setBackgroundColor(Color.parseColor(backgroundColor));
+        }
 
         // Change textView align by column
         cell_textview.setGravity(ColumnHeaderViewHolder.COLUMN_TEXT_ALIGNS[pColumnPosition] |
