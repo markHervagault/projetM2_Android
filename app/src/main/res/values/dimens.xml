@@ -4,4 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+
+    <!--Fragment text size-->
+    <dimen name="fragment_holder_title_size">20dp</dimen>
+    <dimen name="fragment_holder_text_size">20dp</dimen>
+
 </resources>

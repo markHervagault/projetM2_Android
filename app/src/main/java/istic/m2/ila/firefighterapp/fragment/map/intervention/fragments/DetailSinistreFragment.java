@@ -83,6 +83,9 @@ public class DetailSinistreFragment extends Fragment implements IManipulableFrag
                 .position(map.getCameraPosition().target)
                 .draggable(true));
 
+        newGeoposition.setLongitude(marker.getPosition().longitude);
+        newGeoposition.setLatitude(marker.getPosition().latitude);
+
         map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
                                         @Override
                                         public void onMarkerDragStart(Marker marker) {
