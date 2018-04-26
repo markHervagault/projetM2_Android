@@ -55,6 +55,7 @@ public class DetailTraitTopoFragment extends Fragment implements IManipulableFra
         View view = inflater.inflate(R.layout.fragment_detail_trait_topo, container, false);
         TextView textViewType = view.findViewById(R.id.typeValue);
         textViewType.setText(traitTopo.getType().toString());
+        ((TextView)view.findViewById(R.id.composanteValue)).setText(traitTopo.getComposante().getDescription());
 
         ButtonFactory.populate(this,traitTopo,(LinearLayout)view.findViewById(R.id.buttonLayout));
 
