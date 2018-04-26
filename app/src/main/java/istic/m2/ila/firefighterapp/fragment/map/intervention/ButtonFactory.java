@@ -9,11 +9,14 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
+import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.IDTO;
 import istic.m2.ila.firefighterapp.dto.ITraitTopo;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.IManipulableDeployFragment;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.IManipulableFragment;
 
 /**
@@ -26,23 +29,11 @@ public class ButtonFactory {
     private static final String MoveTitle = "Deplacer";
     private static final String CreateTitle = "Creer";
     private static final String UpdateTitle = "Mettre a jour";
-
-    public static List<Button> getButton(final IManipulableFragment fragment, IDTO dto){
-        List<Button> buttons = new ArrayList<>();
-        if(dto instanceof TraitTopographiqueBouchonDTO){
-
-        } else {
-            if(dto.getId() != null){
-                //Object existant (BDD) button de Supression et de déplacement
-                buttons.add(createMoveButton(fragment));
-                buttons.add(createDeleteButton(fragment));
-            } else {
-                //Button de creation
-                buttons.add(createCreateButton(fragment));
-            }
-        }
-        return buttons;
-    }
+    private static final String CRMTitle = "CRM";
+    private static final String PlacerTitle = "Placer";
+    private static final String ModifierTitle = "Modifier";
+    private static final String DesengegerTitle = "Desengager";
+    private static final String ArriveTitle = "Est Arrivé";
 
     public static void populate(final IManipulableFragment fragment, final IDTO dto, final LinearLayout buttonLayout) {
         if(dto instanceof TraitTopographiqueBouchonDTO){
@@ -62,17 +53,104 @@ public class ButtonFactory {
         }
     }
 
-    public static List<Button> getButton(final IManipulableFragment fragment, final SinistreDTO sinistre){
-        List<Button> buttons = new ArrayList<>();
-        if(sinistre.getId() != null) {
-            //Object existant (BDD) button de Supression et de déplacement
-            buttons.add(createMoveButton(fragment));
-            buttons.add(createDeleteButton(fragment));
+    public static void populate(final IManipulableDeployFragment fragment, final DeploiementDTO deploiement, final  LinearLayout buttonLayout){
+        if(deploiement.getId() == null){
+            //not use for moment
         } else {
-            //Button de creation
-            buttons.add(createCreateButton(fragment));
+            if(deploiement.getState() == EEtatDeploiement.DEMANDE){
+
+                Button updateBtn = createUpdateButton(fragment);
+                updateBtn.setVisibility(View.GONE);
+
+                buttonLayout.addView(createMoveButton(fragment, updateBtn));
+                buttonLayout.addView(updateBtn);
+
+            } else if(deploiement.getState() == EEtatDeploiement.VALIDE
+                    && deploiement.getState() == EEtatDeploiement.ENGAGE) {
+
+                Button updateBtn = createUpdateButton(fragment);
+                updateBtn.setVisibility(View.GONE);
+
+                buttonLayout.addView(createArriveButton(fragment));
+                buttonLayout.addView(createCRMButton(fragment));
+                buttonLayout.addView(createMoveButton(fragment,updateBtn));
+                buttonLayout.addView(createModifierButton(fragment, updateBtn));
+                buttonLayout.addView(updateBtn);
+
+            } else if(deploiement.getState() == EEtatDeploiement.EN_ACTION) {
+
+                Button updateBtn = createUpdateButton(fragment);
+                updateBtn.setVisibility(View.GONE);
+
+                buttonLayout.addView(createDesengegerButton(fragment));
+                buttonLayout.addView(createCRMButton(fragment));
+                buttonLayout.addView(createMoveButton(fragment,updateBtn));
+                buttonLayout.addView(createModifierButton(fragment, updateBtn));
+                buttonLayout.addView(updateBtn);
+
+            } else {
+                //no Button
+            }
         }
-        return buttons;
+    }
+
+    private static Button createPlacerButton(final IManipulableDeployFragment fragment, final Button updateBtn){
+        final Button btn = createSimplebutton(fragment.getMeActivity(), PlacerTitle);
+        btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                btn.setVisibility(View.GONE);
+                fragment.place();
+                updateBtn.setVisibility(View.VISIBLE);
+            }
+        });
+        return btn;
+    }
+
+    private static Button createCRMButton(final IManipulableDeployFragment fragment){
+        final Button btn = createSimplebutton(fragment.getMeActivity(), CRMTitle);
+        btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                fragment.toCrm();
+            }
+        });
+        return btn;
+    }
+
+    private static Button createArriveButton(final IManipulableDeployFragment fragment){
+        final Button btn = createSimplebutton(fragment.getMeActivity(), ArriveTitle);
+        btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                fragment.arrival();
+            }
+        });
+        return btn;
+    }
+
+    private static Button createModifierButton(final IManipulableDeployFragment fragment, final Button updateBtn){
+        final Button btn = createSimplebutton(fragment.getMeActivity(), ModifierTitle);
+        btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                btn.setVisibility(View.GONE);
+                fragment.modif();
+                updateBtn.setVisibility(View.VISIBLE);
+            }
+        });
+        return btn;
+    }
+
+    private static Button createDesengegerButton(final IManipulableDeployFragment fragment){
+        final Button btn = createSimplebutton(fragment.getMeActivity(), DesengegerTitle);
+        btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                fragment.desengage();
+            }
+        });
+        return btn;
     }
 
     private static Button createMoveButton(final IManipulableFragment fragment, final Button updateBtn){
