@@ -9,10 +9,12 @@ import com.evrencoskun.tableview.sort.ISortableModel;
 public class CellModel implements ISortableModel {
     private String mId;
     private Object mData;
+    private String backgroundColor;
 
     public CellModel(String pId, Object mData) {
         this.mId = pId;
         this.mData = mData;
+        this.backgroundColor = null;
     }
 
     public Object getData() {
@@ -29,4 +31,11 @@ public class CellModel implements ISortableModel {
         return mData;
     }
 
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
 }

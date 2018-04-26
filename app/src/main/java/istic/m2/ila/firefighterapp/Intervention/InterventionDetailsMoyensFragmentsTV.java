@@ -24,6 +24,7 @@ import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
+import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import retrofit2.Response;
 
 /**
@@ -135,7 +136,6 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
         List<ColumnHeaderModel> list = new ArrayList<>();
 
         // Create Column Headers
-        list.add(new ColumnHeaderModel("Id"));
         list.add(new ColumnHeaderModel("Type"));
         list.add(new ColumnHeaderModel("Nom"));
         list.add(new ColumnHeaderModel("Etat"));
@@ -163,49 +163,50 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
 
         for (int i = 0; i < depDto.size(); i++) {
             DeploiementDTO depInfo = depDto.get(i);
+            TypeComposanteDTO composante = depInfo.getComposante();
 
             List<CellModel> list = new ArrayList<>();
 
             // The order should be same with column header list;
-            list.add(new CellModel("1-" + i, depInfo.getId()));
-
-            list.add(new CellModel("2-" + i, depInfo.getTypeDemande().getLabel()));
+            CellModel cellWithComposante = new CellModel("1-" + i, depInfo.getTypeDemande().getLabel());
+            cellWithComposante.setBackgroundColor(composante.getCouleur());
+            list.add(cellWithComposante);
 
             if(depInfo.getVehicule()!=null) {
-                list.add(new CellModel("3-" + i, depInfo.getVehicule().getLabel()));
+                list.add(new CellModel("2-" + i, depInfo.getVehicule().getLabel()));
             } else {
-                list.add(new CellModel("3-" + i, "..."));
+                list.add(new CellModel("2-" + i, "..."));
             }
-            list.add(new CellModel("4-" + i, depInfo.getState()));
+            list.add(new CellModel("3-" + i, depInfo.getState()));
 
             if( depInfo.isPresenceCRM()){
-                list.add(new CellModel("5-" + i, "CRM"));
+                list.add(new CellModel("4-" + i, "CRM"));
+            } else {
+                list.add(new CellModel("4-" + i, "..."));
+            }
+
+            if(depInfo.getDateHeureDemande()!=null) {
+                list.add(new CellModel("5-" + i, formater.format(depInfo.getDateHeureDemande())));
             } else {
                 list.add(new CellModel("5-" + i, "..."));
             }
 
-            if(depInfo.getDateHeureDemande()!=null) {
-                list.add(new CellModel("6-" + i, formater.format(depInfo.getDateHeureDemande())));
+            if(depInfo.getDateHeureValidation()!=null) {
+                list.add(new CellModel("6-" + i, formater.format(depInfo.getDateHeureValidation())));
             } else {
                 list.add(new CellModel("6-" + i, "..."));
             }
 
-            if(depInfo.getDateHeureValidation()!=null) {
-                list.add(new CellModel("7-" + i, formater.format(depInfo.getDateHeureValidation())));
+            if(depInfo.getDateHeureEngagement()!=null) {
+                list.add(new CellModel("7-" + i, formater.format(depInfo.getDateHeureEngagement())));
             } else {
                 list.add(new CellModel("7-" + i, "..."));
             }
 
-            if(depInfo.getDateHeureEngagement()!=null) {
-                list.add(new CellModel("8-" + i, formater.format(depInfo.getDateHeureEngagement())));
+            if(depInfo.getDateHeureDesengagement()!=null) {
+                list.add(new CellModel("8-" + i, formater.format(depInfo.getDateHeureDesengagement())));
             } else {
                 list.add(new CellModel("8-" + i, "..."));
-            }
-
-            if(depInfo.getDateHeureDesengagement()!=null) {
-                list.add(new CellModel("9-" + i, formater.format(depInfo.getDateHeureDesengagement())));
-            } else {
-                list.add(new CellModel("9-" + i, "..."));
             }
 
             // Add
