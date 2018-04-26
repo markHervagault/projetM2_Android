@@ -105,7 +105,7 @@ public abstract class ServiceRabbitMQGeneric<T,E> extends Service {
         channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, "topic");
 
         String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, getGenericClass().getSimpleName() + "#");
+        channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, getGenericClass().getSimpleName() + ".#");
 
         Consumer consumer = new DefaultConsumer(channel) {
             private String incomingMessageHandler = "";
