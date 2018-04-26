@@ -17,7 +17,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
 
         <!-- Clé pour utiliser l'API Google Map -->
         <meta-data
@@ -44,6 +45,7 @@
         <activity
             android:name=".NewMapActivity"
             android:label="@string/title_activity_map"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ListInterventionActivity"

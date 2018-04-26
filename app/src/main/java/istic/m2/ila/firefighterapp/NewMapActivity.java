@@ -12,16 +12,25 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
@@ -30,18 +39,23 @@ import java.util.Map;
 
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
-import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo;
+import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
+import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
+import istic.m2.ila.firefighterapp.dto.ESinistre;
+import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.dto.IDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragment;
-import istic.m2.ila.firefighterapp.fragment.map.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
 
@@ -58,8 +72,14 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     public final Integer RAYON_RECHERCHE_TRAIT_TOPO = 5000;
 
     private IMapService service = MapService.getInstance();
+
     public IMapService getService() {
         return service;
+    }
+
+    public String getToken() {
+        return getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
+                .getString("token", "null");
     }
 
     public GeoPositionDTO getGeoPositionIntervention() {
@@ -68,6 +88,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         geo.setLatitude(48.115150);
         return geo;
     }
+
     private InterventionDTO intervention;
 
     private Long idIntervention;
@@ -80,51 +101,62 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         this.idIntervention = idIntervention;
     }
 
-    //region ON CREATE/DESTROY
-    private ServiceConnection serviceConnection;
-    private ServiceConnection serviceConnectionTraitTopo;
+    // region referentiel bitmap
+    private static final Map<ETypeTraitTopographiqueBouchon, Integer> referentielTraitTopoBouchon = createReferentielTraitTopoBouchon();
 
-    ServiceRabbitMQ serviceRabbitMQ;
-    ServiceRabbitMQTraitTopo serviceRabbitMQTraitTopo;
-
-    private boolean isServiceRabbitMQBind = false;
-    private boolean isServiceRabbitMQTraitTopoBind = false;
-
-    private void BindService()
-    {
-        bindService(new Intent(this, ServiceRabbitMQ.class), serviceConnection, Context.BIND_AUTO_CREATE );
-        isServiceRabbitMQBind = true;
-
-        bindService(new Intent(this, ServiceRabbitMQTraitTopo.class), serviceConnectionTraitTopo, Context.BIND_AUTO_CREATE );
-        isServiceRabbitMQTraitTopoBind = true;
+    private static Map<ETypeTraitTopographiqueBouchon, Integer> createReferentielTraitTopoBouchon() {
+        Map<ETypeTraitTopographiqueBouchon, Integer> map = new HashMap<>();
+        map.put(ETypeTraitTopographiqueBouchon.DANGER, R.drawable.danger_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.SENSIBLE, R.drawable.sensible_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PDR, R.drawable.pdr_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PENP, R.drawable.penp_24dp);
+        map.put(ETypeTraitTopographiqueBouchon.PEP, R.drawable.pep_24dp);
+        return map;
     }
 
-    private void UnBindService()
-    {
-        if(isServiceRabbitMQBind){
-            unbindService(serviceConnection);
-            isServiceRabbitMQBind = false;
-        }
+    private static final Map<EEtatDeploiement, Integer> referentielMoyen = createReferentielMoyen();
 
-        if(isServiceRabbitMQTraitTopoBind){
-            unbindService(serviceConnectionTraitTopo);
-            isServiceRabbitMQTraitTopoBind = false;
-        }
+    private static Map<EEtatDeploiement, Integer> createReferentielMoyen() {
+        Map<EEtatDeploiement, Integer> map = new HashMap<>();
+        map.put(EEtatDeploiement.DEMANDE, R.drawable.moyen_prevu);
+        map.put(EEtatDeploiement.VALIDE, R.drawable.moyen_prevu);
+        map.put(EEtatDeploiement.ENGAGE, R.drawable.moyen_prevu);
+        map.put(EEtatDeploiement.EN_ACTION, R.drawable.moyen);
+        return map;
+    }
+
+    //endregion
+
+    //region ON CREATE/DESTROY
+    private ServiceConnection serviceConnection;
+    ServiceRabbitMQ serviceRabbitMQ;
+
+
+    private boolean isServiceBound = false;
+
+    private void BindService() {
+        bindService(new Intent(this, ServiceRabbitMQ.class), serviceConnection, Context.BIND_AUTO_CREATE);
+        isServiceBound = true;
+    }
+
+    private void UnBindService() {
+        if (!isServiceBound)
+            return;
+
+        unbindService(serviceConnection);
+        isServiceBound = false;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        idIntervention = ((InterventionDTO)getIntent().getSerializableExtra("intervention")).getId();
+    protected void onCreate(Bundle savedInstanceState) {
+        idIntervention = ((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_map);
-
-        serviceConnection = new ServiceConnection()
-        {
+        this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
+        serviceConnection = new ServiceConnection() {
             @Override
-            public void onServiceConnected(ComponentName name, IBinder service)
-            {
-                serviceRabbitMQ = ((ServiceRabbitMQ.LocalBinder)service).getService();
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                serviceRabbitMQ = ((ServiceRabbitMQ.LocalBinder) service).getService();
 
                 intervListFrag = new InterventionDetailsMoyensFragments();
                 intervMapFrag = new InterventionMapFragment();
@@ -136,39 +168,27 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             }
 
             @Override
-            public void onServiceDisconnected(ComponentName name)
-            {
-
-            }
-        };
-
-        serviceConnectionTraitTopo = new ServiceConnection(){
-
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                serviceRabbitMQTraitTopo = (ServiceRabbitMQTraitTopo) ((ServiceRabbitMQTraitTopo.LocalBinder)service).getService();
-            }
-
-            @Override
             public void onServiceDisconnected(ComponentName name) {
 
             }
         };
 
-
         BindService();
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
         UnBindService();
     }
 
     public void toggleView() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(interventionView){
+
+        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
+        frameMoyen.setVisibility(View.VISIBLE);
+
+        if (interventionView) {
             transaction.replace(R.id.mapFragment, intervMapFrag);
             transaction.replace(R.id.listViewFragment, intervListFrag);
         } else {
@@ -178,13 +198,12 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         transaction.commit();
         interventionView = !interventionView;
     }
-    //endregion
 
-    // region DessinsMap
+    //endregion
     private TraitTopoManager _traitTopoManager;
     private SinistreManager _sinistreManager;
 
-    public void initMap(final GoogleMap googleMap){
+    public void initMap(final GoogleMap googleMap) {
         googleMap.setMaxZoomPreference(20.0f);
         // Centre l'écran sur le Drône sur RENNES ISTIC
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getGeoPositionIntervention().getLatitude(), getGeoPositionIntervention().getLongitude()), 18.0f));
@@ -196,19 +215,118 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         getTraitTopoBouchons(googleMap);
         getTraitTopo(googleMap);
         getSinistre(googleMap);
+
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Object obj = marker.getTag();
+                if (obj instanceof IDTO) {
+                    displayFragmentHolder((IDTO) obj);
+                    getMap().moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+                }
+                return true;
+            }
+
+        });
+
+    }
+
+    public GoogleMap getMap() {
+        if (interventionView) {
+            return intervMapFrag.getMap();
+        } else {
+            return intervMapFrag.getMap();
+        }
+    }
+
+    //region Detail/Creation fragment
+    private Fragment fragmentToHide;
+    private FragmentHolder fragmentHolder;
+
+    public void showFragment() {
+        Log.i("Visibility", "SHOW");
+        if (!fragmentHolder.isVisible()) {
+            FragmentManager fm = getSupportFragmentManager();
+            fm.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .show(fragmentHolder)
+                    .commit();
+            fragmentHolder.getView().setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void hideFragment() {
+        Log.i("Visibility", "HIDE");
+        if (fragmentHolder.isVisible()) {
+            FragmentManager fm = getSupportFragmentManager();
+            fm.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .hide(fragmentHolder)
+                    .commit();
+            fragmentHolder.getView().setVisibility(View.GONE);
+        }
+    }
+
+    public void createMoyen() {
+        hideFragment();
+        fragmentHolder.replace(new DeploiementDTO());
+        showFragment();
     }
 
 
-    // region DataForDrawing
+    public void displayFragmentHolder(IDTO dto) {
+        if (fragmentHolder.getObjectHeld() == dto) {
+            hideFragment();
+            fragmentHolder.setObjectHeld(null);
+        }
+        else if(fragmentHolder.getObjectHeld() == null){
+            fragmentHolder.replace(dto);
+            showFragment();
+        }
+        else {
+            hideFragment();
+            fragmentHolder.replace(dto);
+            showFragment();
+        }
+    }
+
+    public void createTrait() {
+        hideFragment();
+        fragmentHolder.replace(new TraitTopoDTO());
+        showFragment();
+    }
+
+
+    public void createSinistre() {
+        hideFragment();
+        fragmentHolder.replace(new SinistreDTO());
+        showFragment();
+    }
+
+    //endregion
+
+    //region récupération de data
+
+    public void getTraitTopoBouchons(final GoogleMap googleMap) {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                GeoPositionDTO geo = getGeoPositionIntervention();
+                List<TraitTopographiqueBouchonDTO> traits = getService()
+                        .getTraitTopoFromBouchon(getToken(), getIdIntervention(), geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
+                for (TraitTopographiqueBouchonDTO trait : traits) {
+                    drawTraitTopoBouchons(googleMap, trait);
+                }
+            }
+        });
+    }
+
     public void getTraitTopo(final GoogleMap googleMap) {
         AsyncTask.execute(new Runnable() {
             public void run() {
-                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                        .getString("token", "null");
                 GeoPositionDTO geo = getGeoPositionIntervention();
                 List<TraitTopoDTO> traits = getService()
-                        .getTraitTopo(token, getIdIntervention());
-                for(TraitTopoDTO trait : traits) {
+                        .getTraitTopo(getToken(), getIdIntervention());
+                for (TraitTopoDTO trait : traits) {
                     _traitTopoManager.onCreateTraitTopoDTOMessageEvent(trait);
                 }
             }
@@ -218,46 +336,18 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     public void getSinistre(final GoogleMap googleMap) {
         AsyncTask.execute(new Runnable() {
             public void run() {
-                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                        .getString("token", "null");
-                GeoPositionDTO geo = getGeoPositionIntervention();
                 List<SinistreDTO> sinistres = getService()
-                        .getSinistre(token, getIdIntervention());
-                for(SinistreDTO sinistre : sinistres) {
+                        .getSinistre(getToken(), getIdIntervention());
+                for (SinistreDTO sinistre : sinistres) {
                     _sinistreManager.onCreateSinistreDTOMessageEvent(sinistre);
                 }
             }
         });
     }
 
-    public void getTraitTopoBouchons(final GoogleMap googleMap) {
-        AsyncTask.execute(new Runnable() {
-            public void run() {
-                String token = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
-                        .getString("token", "null");
-                GeoPositionDTO geo = getGeoPositionIntervention();
-                List<TraitTopographiqueBouchonDTO> traits = getService()
-                        .getTraitTopoFromBouchon(token, getIdIntervention(), geo.getLongitude(), geo.getLatitude(), RAYON_RECHERCHE_TRAIT_TOPO);
-                for(TraitTopographiqueBouchonDTO trait : traits) {
-                    drawTraitTopoBouchons(googleMap,trait);
-                }
-            }
-        });
-    }
+    //endregion
 
-    // endregion
-
-    // region drawTraitTopoBouchon
-    private static final Map<ETypeTraitTopographiqueBouchon,Integer> referentielTraitTopoBouchon = createReferentielTraitTopoBouchon ();
-    private static Map<ETypeTraitTopographiqueBouchon,Integer> createReferentielTraitTopoBouchon(){
-        Map<ETypeTraitTopographiqueBouchon,Integer> map = new HashMap<>();
-        map.put(ETypeTraitTopographiqueBouchon.DANGER, R.drawable.danger_24dp);
-        map.put(ETypeTraitTopographiqueBouchon.SENSIBLE, R.drawable.sensible_24dp);
-        map.put(ETypeTraitTopographiqueBouchon.PDR, R.drawable.pdr_24dp);
-        map.put(ETypeTraitTopographiqueBouchon.PENP, R.drawable.penp_24dp);
-        map.put(ETypeTraitTopographiqueBouchon.PEP, R.drawable.pep_24dp);
-        return map;
-    }
+    //region drawing
 
     public void drawTraitTopoBouchons(final GoogleMap googleMap, final TraitTopographiqueBouchonDTO traitTopo) {
         runOnUiThread(new Runnable() {
@@ -265,6 +355,9 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             public void run() {
                 // Récupération des icônes en fonction du type (change ou change pas)
                 int rIcone = referentielTraitTopoBouchon.get(traitTopo.getType());
+
+                // Différenciation de la couleur en fonction pour les types qui changent
+                Drawable drawableIcon = ContextCompat.getDrawable(getApplicationContext(), rIcone);
 
                 // Par défaut, on récupère notre ressource sous forme de Bitmap
                 Bitmap icon = BitmapFactory.decodeResource(
@@ -294,16 +387,39 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                         .title(traitTopo.getLabel())
                         .snippet(traitTopo.getType().getDescription() + " - " + traitTopo.getComposante().getDescription())
                         .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                        .draggable(false));
-            }});
+                        .draggable(false)).setTag(traitTopo);
+            }
+        });
     }
 
-    /**
-     * Fonction pour changer la couleur d'une image
-     * @param resDrawableId id de la ressource, notre image, à changer
-     * @param colorRequested couleur qu'on attend
-     * @return la nouvelle image avec la couleur
-     */
+    public void drawVehicule(final GoogleMap googleMap, final DeploiementDTO deploy) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (deploy.getGeoPosition() != null) {
+                    // Récupération des icônes en fonction du type (change ou change pas)
+                    int rIcone = referentielMoyen.get(deploy.getState());
+
+                    String rgbNoA = deploy.getComposante().getCouleur().substring(0, 7);
+                    Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
+                    String label = "";
+                    if (deploy.getState() != EEtatDeploiement.DEMANDE) {
+                        label = deploy.getVehicule().getLabel();
+                    }
+
+                    // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
+                    LatLng pos = new LatLng(deploy.getGeoPosition().getLatitude(), deploy.getGeoPosition().getLongitude());
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(pos)
+                            .title(label)
+                            .snippet(label + " - " + deploy.getComposante().getDescription())
+                            .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                            .draggable(false)).setTag(deploy);
+                }
+            }
+        });
+    }
+
     private Bitmap getNewBitmapRenderedWithColor(int resDrawableId, String colorRequested) {
         Bitmap icon;// Copier le bitmap et le passer en Canvas sinon on aura une exception
         icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), resDrawableId)
@@ -317,6 +433,21 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         canvas.drawBitmap(icon, 0, 0, paint);
         return icon;
     }
-    // endregion
-    // endregion
+    //endregion
+    public void showHideMoy() {
+
+        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
+        Button btnMoy = findViewById(R.id.toggleViewTabMoy);
+
+        if(frameMoyen.getVisibility()!= View.GONE){
+            frameMoyen.setVisibility(View.GONE);
+            btnMoy.setText("Moyens >");
+
+        } else {
+            frameMoyen.setVisibility(View.VISIBLE);
+            btnMoy.setText("< Moyens");
+
+        }
+    }
+
 }

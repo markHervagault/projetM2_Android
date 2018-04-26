@@ -127,14 +127,17 @@ public class SinistreDrawing extends MapItem
 
         // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
         LatLng pos = new LatLng(_sinistreDTO.getGeoPosition().getLatitude(), _sinistreDTO.getGeoPosition().getLongitude());
-        _sinistreMarker = _googleMap.addMarker(new MarkerOptions()
+        Marker marker = _googleMap.addMarker(new MarkerOptions()
                 .position(pos)
                 .title(_sinistreDTO.getComposante().getLabel())
                 .snippet(_sinistreDTO.getType().name() + " - " + _sinistreDTO.getComposante().getDescription())
                 .icon(BitmapDescriptorFactory.fromBitmap(icon))
                 // Les sinistres qu'on ajoute manuellement sont déplaçables
-                .draggable(true)
+                .draggable(false)
         );
+        marker.setTag(_sinistreDTO);
+
+        _sinistreMarker = marker;
     }
     // endregion
 
