@@ -143,18 +143,23 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
                     holder.image_statut_listDrone.setImageResource((R.drawable.droneenmission));
                     holder.image_statut_listDrone.setImageResource(View.VISIBLE);
                     break;
+
+                default:
+                    Log.d(TAG, "Statut du drone inconnu");
+                    holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
+                    holder.image_battery_listDrone.setVisibility(View.GONE);
+                    status = IHMLabels.DRONE_STATUT_INCONNU;
             }
         }else{
-            //Log.d(TAG, "Statut du drone null");
+            Log.d(TAG, "Statut du drone null");
             holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
             holder.image_battery_listDrone.setVisibility(View.GONE);
             status = IHMLabels.DRONE_STATUT_INCONNU;
         }
 
-
         int battery = drone.getBattery();
 
-        if(battery>70)
+        if(battery > 70)
         {
             holder.image_battery_listDrone.setImageResource(R.drawable.fullbattery);
         }
@@ -171,7 +176,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         }
 
         holder.statut_listDrone.setText(status);
-
+        //lastListDrones = new ArrayList<DroneDTO>(drones);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
