@@ -6,36 +6,107 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/spaceTabMoyTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:height="1dp"
+        android:visibility="gone"/>
+<LinearLayout
+    android:id="@+id/linLayTabMoy"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+
+    <TextView
         android:id="@+id/expand_button"
-        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground"
-        android:padding="16dp" />
+        android:padding="16dp"
+        android:width="70dp"
+        android:height="70dp"
+        android:clickable="true"/>
 
-    <net.cachapa.expandablelayout.ExpandableLayout
-        android:id="@+id/expandable_layout"
+    <TextView
+        android:id="@+id/tvLabelMoyen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
-        app:el_duration="300"
-        app:el_expanded="false">
+        android:padding="16dp"
+        android:width="70dp"
+        android:height="70dp"
+        />
 
-        <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="center"-->
-        <!--android:padding="16dp"-->
-        <!--android:text="Content"-->
-        <!--android:textColor="#fff" />-->
+    <TextView
+        android:id="@+id/tvEtatMoyen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:width="120dp"
+        android:height="70dp"
+        />
 
-        <LinearLayout
-            android:id="@+id/list_layout_moyen"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:orientation="vertical" />
+    <TextView
+        android:id="@+id/tvCrmOrNot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textColor="@android:color/black"
+        android:text="CRM"
+        android:width="70dp"
+        android:height="50dp"
 
-    </net.cachapa.expandablelayout.ExpandableLayout>
+        />
 
+    <TextView
+        android:id="@+id/tvHeureDemande"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:width="120dp"
+        android:text="..."
+        android:height="70dp"
+
+        />
+
+
+    <TextView
+        android:id="@+id/tvHeureValidationRefus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:width="120dp"
+        android:height="70dp"
+
+        android:text="..."
+        />
+
+
+    <TextView
+        android:id="@+id/tvHeureEngagement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:width="120dp"
+        android:height="70dp"
+
+        android:text="..."
+        />
+
+    <TextView
+        android:id="@+id/tvHeureLiberation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:width="120dp"
+        android:height="70dp"
+
+        android:text="..."
+        />
+</LinearLayout>
+    <TextView
+        android:id="@+id/spaceTabMoyBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:height="1dp"
+       />
 </LinearLayout>

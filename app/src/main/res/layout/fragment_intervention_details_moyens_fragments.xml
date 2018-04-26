@@ -4,5 +4,6 @@
     tools:context="istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments"
     android:id="@+id/interventionDetailsMoyenRecycler"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:layout_marginTop="45dp"/>
 

@@ -10,6 +10,7 @@ import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 
 /**
  * Created by hakima on 3/29/18.
@@ -25,6 +26,11 @@ public interface IMapService {
     List<InterventionDTO> getInterventions(final String token);
     SinistreDTO addSinistre(final String token, SinistreDTO sinistre);
     TraitTopoDTO addTraitTopo(final String token, TraitTopoDTO traitTopoDTO);
+    void majTraitTopo(final String token, TraitTopoDTO traitTopoDTO);
+    void majSinistre(final String token, SinistreDTO sinistreDTO);
+    void removeTraitTopo(final String token, Long id);
+    void removeSinistre(final String token, Long id);
     void sendDroneMission(final String token, MissionDTO missionDTO);
     MissionDTO getCurrentDroneMission(final String token, long id);
+    List<TypeComposanteDTO> getTypeComposante(final String token);
 }

@@ -33,7 +33,7 @@ public interface TraitTopoConsumer {
                                        @Body TraitTopoDTO traitTopoDTO);
     @DELETE(Endpoints.TRAIT_TOPOS_ID)
     Call<Void> deleteTraitTopo(@Header("Authorization")String token,
-                               @Path("id") int id);
+                               @Path("id") Long id);
 
     @GET(Endpoints.TRAIT_TOPOS_ID)
     Call<TraitTopoDTO> getTraitTopoByID(@Header("Authorization") String token,

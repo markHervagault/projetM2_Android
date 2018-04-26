@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map;
+package istic.m2.ila.firefighterapp.fragment.map.intervention;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,6 +31,9 @@ public class InterventionMapFragment extends Fragment {
     MapView mMapView;
     View mView;
     private GoogleMap googleMap;
+    public GoogleMap getMap(){
+        return googleMap;
+    }
 
 
     public NewMapActivity getMeActivity(){
@@ -47,9 +51,18 @@ public class InterventionMapFragment extends Fragment {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_intervention_map, container, false);
         final Button button = mView.findViewById(R.id.toggleView);
+
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getMeActivity().toggleView();
+            }
+        });
+
+        final Button buttonMoy = mView.findViewById(R.id.toggleViewTabMoy);
+
+        buttonMoy.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                getMeActivity().showHideMoy();
             }
         });
 
@@ -104,9 +117,8 @@ public class InterventionMapFragment extends Fragment {
         fabTraitTopographique.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isTraitTopoSelected = toggleColorFloatingButton(fabTraitTopographique, isTraitTopoSelected);
-                // TODO - Logique applicative pour le positionnement de traits topographiques
-                // TODO - Les traits doivent être draggable
+                //isTraitTopoSelected = toggleColorFloatingButton(fabTraitTopographique, isTraitTopoSelected);
+                getMeActivity().createTrait();
             }
         });
 
@@ -114,18 +126,16 @@ public class InterventionMapFragment extends Fragment {
         fabDeploiement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isDeploiementSelected = toggleColorFloatingButton(fabDeploiement, isDeploiementSelected);
-                // TODO - Logique applicative pour le positionnement de Déploiements
-                // TODO - Les déploiements doivent être draggable
+                //isDeploiementSelected = toggleColorFloatingButton(fabDeploiement, isDeploiementSelected);
+                getMeActivity().createMoyen();
             }
         });
 
         fabSinistre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isSinistreSelected = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
-                // TODO - Logique applicative pour le positionnement de sinistres
-                // TODO - Les sinistres doivent être draggable
+                //isSinistreSelected = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
+                getMeActivity().createSinistre();
             }
         });
 
@@ -234,5 +244,7 @@ public class InterventionMapFragment extends Fragment {
         super.onLowMemory();
         mMapView.onLowMemory();
     }
+
+
 
 }
