@@ -18,30 +18,67 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.concurrent.TimeoutException;
 
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
-import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
+
+import static istic.m2.ila.firefighterapp.constantes.Endpoints.RABBITMQ_ANDROID_DELETE;
+import static istic.m2.ila.firefighterapp.constantes.Endpoints.RABBITMQ_ANDROID_UPDATE;
 
 /**
  * Provide an Abstract class for RabbitMqService
  * @param <T> Type of the DTO
- * @param <E> Type of the Message
  */
-public abstract class ServiceRabbitMQGeneric<T,E> extends Service {
+public abstract class ServiceRabbitMQGeneric<T> extends Service {
 
-    public static String TAG = "Service TEST => ";
-    Connection _connection;
+    public String TAG = "Service "+ getGenericClass().getName() +" => ";
+    private Connection _connection;
+
+    private String queueName;
 
     protected Class<T> getGenericClass()
     {
         return ((Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+    }
+
+    private void initConsumer(String routeType, final SyncAction action) throws IOException {
+        Channel channel = _connection.createChannel();
+        channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, "topic");
+
+        queueName = channel.queueDeclare().getQueue();
+
+        String updateRouteKey = routeType + getGenericClass().getSimpleName() + ".#";
+        channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, updateRouteKey);
+
+        Log.i(TAG,"Bind to queue : " + RABBITMQ_ANDROID_UPDATE + getGenericClass().getSimpleName());
+
+        Consumer consumer = new DefaultConsumer(channel) {
+            private String incomingMessageHandler = "";
+
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                incomingMessageHandler = new String(body, "UTF-8");
+                Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
+                try
+                {
+                    T typeInfoDTO = gson.fromJson(incomingMessageHandler, getGenericClass());
+
+                    MessageGeneric<T> message = new MessageGeneric<>(typeInfoDTO, action);
+                    EventBus.getDefault().post(message);
+                }
+                catch (JsonParseException e)
+                {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        };
+
+        channel.basicConsume(queueName, true, consumer);
     }
 
     // This is the object that receives interactions from clients.
@@ -59,7 +96,6 @@ public abstract class ServiceRabbitMQGeneric<T,E> extends Service {
     @Override
     public void onCreate()
     {
-        EventBus.getDefault().register(this);
         ConnectionFactory _factory = new ConnectionFactory();
 
         _factory.setHost(Endpoints.RABBITMQ_SERVERADRESS);
@@ -69,6 +105,8 @@ public abstract class ServiceRabbitMQGeneric<T,E> extends Service {
 
         try {
             _connection = _factory.newConnection();
+            initConsumer(RABBITMQ_ANDROID_UPDATE,SyncAction.UPDATE);
+            initConsumer(RABBITMQ_ANDROID_DELETE,SyncAction.DELETE);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
@@ -92,43 +130,6 @@ public abstract class ServiceRabbitMQGeneric<T,E> extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
-    }
-
-    //SUBSCRIBING
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onEvent(final E event) throws Exception
-    {
-        if (_connection == null)
-            return;
-
-        Channel channel = _connection.createChannel();
-        channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, "topic");
-
-        String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, getGenericClass().getSimpleName() + ".#");
-
-        Consumer consumer = new DefaultConsumer(channel) {
-            private String incomingMessageHandler = "";
-
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                incomingMessageHandler = new String(body, "UTF-8");
-                //Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
-                GsonBuilder builder = new GsonBuilder();
-                Gson gson = builder.create();
-                try
-                {
-                    T typeInfoDTO = gson.fromJson(incomingMessageHandler, getGenericClass());
-                    EventBus.getDefault().post(typeInfoDTO);
-                }
-                catch (JsonParseException e)
-                {
-                    Log.e(TAG, e.getMessage());
-                }
-            }
-        };
-
-        channel.basicConsume(queueName, true, consumer);
     }
 
     void start()

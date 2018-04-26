@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.MessageGeneric;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MapItem;
 
@@ -38,7 +39,7 @@ public class TraitTopoManager extends MapItem
 
     //endRegion
 
-    //region EventSubscribing
+    //region OldEventSubscribing
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onUpdateTraitTopoDTOMessageEvent(TraitTopoDTO message)
     {

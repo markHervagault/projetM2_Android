@@ -43,6 +43,7 @@ import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.ESinistre;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
@@ -129,22 +130,34 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
     //region ON CREATE/DESTROY
     private ServiceConnection serviceConnection;
+    private ServiceConnection serviceConnectionTraitTopo;
+
     ServiceRabbitMQ serviceRabbitMQ;
+    ServiceRabbitMQTraitTopo serviceRabbitMQTraitTopo;
 
+    private boolean isServiceRabbitMQBind = false;
+    private boolean isServiceRabbitMQTraitTopoBind = false;
 
-    private boolean isServiceBound = false;
+    private void BindService()
+    {
+        bindService(new Intent(this, ServiceRabbitMQ.class), serviceConnection, Context.BIND_AUTO_CREATE );
+        isServiceRabbitMQBind = true;
 
-    private void BindService() {
-        bindService(new Intent(this, ServiceRabbitMQ.class), serviceConnection, Context.BIND_AUTO_CREATE);
-        isServiceBound = true;
+        bindService(new Intent(this, ServiceRabbitMQTraitTopo.class), serviceConnectionTraitTopo, Context.BIND_AUTO_CREATE );
+        isServiceRabbitMQTraitTopoBind = true;
     }
 
-    private void UnBindService() {
-        if (!isServiceBound)
-            return;
+    private void UnBindService()
+    {
+        if(isServiceRabbitMQBind){
+            unbindService(serviceConnection);
+            isServiceRabbitMQBind = false;
+        }
 
-        unbindService(serviceConnection);
-        isServiceBound = false;
+        if(isServiceRabbitMQTraitTopoBind){
+            unbindService(serviceConnectionTraitTopo);
+            isServiceRabbitMQTraitTopoBind = false;
+        }
     }
 
     @Override
@@ -172,6 +185,20 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
             }
         };
+
+        serviceConnectionTraitTopo = new ServiceConnection(){
+
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                serviceRabbitMQTraitTopo = (ServiceRabbitMQTraitTopo) ((ServiceRabbitMQTraitTopo.LocalBinder)service).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+
 
         BindService();
     }

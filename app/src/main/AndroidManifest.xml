@@ -60,9 +60,6 @@
             android:name=".clientRabbitMQ.ServiceRabbitMQ"
             android:label="Service RabbitMQ" />
         <service
-            android:name=".clientRabbitMqGeneric.ServiceRabbitMQDrone"
-            android:label="Service RabbitMQDroneV2" />
-        <service
             android:name=".clientRabbitMqGeneric.ServiceRabbitMQTraitTopo"
             android:label="Service RabbitMQTraitTopo" />
     </application>

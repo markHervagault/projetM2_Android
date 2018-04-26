@@ -17,6 +17,8 @@ public class Endpoints {
     public static final String RABBITMQ_SERVERADRESS= "51.15.251.202";
     public static final int RABBITMQ_SERVERPORT = 6005;
     public static final String RABBITMQ_EXCHANGE_NAME = "hub";
+    public static final String RABBITMQ_ANDROID_UPDATE = "android.update.";
+    public static final String RABBITMQ_ANDROID_DELETE = "android.update.";
 
     //RABBITMQ EXCHANGENAME
 
@@ -29,7 +31,7 @@ public class Endpoints {
     public static final String CODE_SINISTRE = "code-sinistre";
     public static final String CODE_SINISTRE_BY_ID = "code-sinistre/{id}";
 
-    public static final String DEPLOIEMENT_ID_ACTION = "api/deploiement/{id}/etat/action";
+    public static final String DEPLOIEMENT_ID_ACTION = "api/deploiement/{id}/etat/SyncAction";
     public static final String DEPLOIEMENT_ID_DESENGAGE = "put /api/deploiement/{id}/etat/desengage";
     public static final String DEPLOIEMENT_ID_ENGAGE = "api/deploiement/{id}/etat/engage";
     public static final String DEPLOIEMENT_ID_VALIDE = "api/deploiement/{id}/etat/valide";
