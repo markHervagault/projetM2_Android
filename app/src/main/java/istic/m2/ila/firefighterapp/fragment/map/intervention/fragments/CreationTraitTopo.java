@@ -1,16 +1,12 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention.fragments;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -80,10 +76,11 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
     }
 
     private void initSpinner(){
+        typeSpinner.setAdapter(new ComposanteAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
         typeSpinner.setAdapter(new ArrayAdapter<ETypeTraitTopo>(this.getActivity(), android.R.layout.simple_spinner_item, ETypeTraitTopo.values()));
         List<TypeComposanteDTO> composantes = ((NewMapActivity)getActivity()).getService()
                 .getTypeComposante(((NewMapActivity)getActivity()).getToken());
-        composanteSpinner.setAdapter(new ArrayAdapter<TypeComposanteDTO>(getActivity(), android.R.layout.simple_list_item_1, composantes));
+        composanteSpinner.setAdapter(new ComposanteAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
     }
 
     @Override

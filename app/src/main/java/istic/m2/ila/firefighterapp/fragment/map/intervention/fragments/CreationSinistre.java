@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -78,7 +77,7 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
         typeSpinner.setAdapter(new ArrayAdapter<ESinistre>(this.getActivity(), android.R.layout.simple_spinner_item, ESinistre.values()));
         List<TypeComposanteDTO> composantes = ((NewMapActivity)getActivity()).getService()
                 .getTypeComposante(((NewMapActivity)getActivity()).getToken());
-        composanteSpinner.setAdapter(new ArrayAdapter<TypeComposanteDTO>(getActivity(), android.R.layout.simple_list_item_1, composantes));
+        composanteSpinner.setAdapter(new ComposanteAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
     }
 
     @Override

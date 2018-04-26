@@ -1,6 +1,5 @@
 package istic.m2.ila.firefighterapp.services.impl;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
@@ -388,7 +387,7 @@ public class MapService implements IMapService {
         List<TypeComposanteDTO> composantes = new ArrayList<>();
         Response<List<TypeComposanteDTO>> response = null;
         try{
-            response = consumer.getListTypeTraitTopo(token).execute();
+            response = consumer.getListTypeComposante(token).execute();
             if(response != null && response.code() == HttpURLConnection.HTTP_OK)
             {
                 composantes = response.body();
