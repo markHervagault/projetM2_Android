@@ -204,7 +204,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
                     }
 
                 holder.tvEtatMoyen.setText(listDeploiment.get(position).getState().toString().toUpperCase());
-                    if( listDeploiment.get(position).isPresenceCRM()){
+                    if( listDeploiment.get(position).isPresenceCRM()) {
                         holder.tvCrm.setVisibility(View.VISIBLE);
                     } else {
                         holder.tvCrm.setVisibility(View.INVISIBLE);

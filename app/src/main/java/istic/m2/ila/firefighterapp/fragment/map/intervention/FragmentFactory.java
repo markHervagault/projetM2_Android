@@ -3,9 +3,11 @@ package istic.m2.ila.firefighterapp.fragment.map.intervention;
 
 import android.support.v4.app.Fragment;
 
+import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.fragment.map.DemandeMoyenFragement;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationSinistre;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationTraitTopo;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailSinistreFragment;
@@ -30,13 +32,14 @@ public class FragmentFactory{
             return CreationSinistre.newInstance();
         }
     }
-    /*public static Fragment getFragment(DeploiementDTO dto){
+    public static Fragment getFragment(DeploiementDTO dto){
         if (dto.getId() != null) {
-            return DetailSinistreFragment.newInstance((DeploiementDTO)dto);
+            //return DetailSinistreFragment.newInstance((DeploiementDTO)dto);
+            return null;
         } else {
-            return Crea.newInstance();
+            return new DemandeMoyenFragement();
         }
-    }*/
+    }
     public static Fragment getFragment(TraitTopographiqueBouchonDTO dto){
         if (dto.getId() != null) {
             return DetailTraitTopoFragment.newInstance((TraitTopographiqueBouchonDTO)dto);
