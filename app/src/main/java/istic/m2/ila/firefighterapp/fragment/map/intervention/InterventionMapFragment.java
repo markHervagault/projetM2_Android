@@ -107,7 +107,7 @@ public class InterventionMapFragment extends Fragment {
         fabTraitTopographique.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isTraitTopoSelected = toggleColorFloatingButton(fabTraitTopographique, isTraitTopoSelected);
+                //isTraitTopoSelected = toggleColorFloatingButton(fabTraitTopographique, isTraitTopoSelected);
                 getMeActivity().createTrait();
             }
         });
@@ -116,7 +116,7 @@ public class InterventionMapFragment extends Fragment {
         fabDeploiement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isDeploiementSelected = toggleColorFloatingButton(fabDeploiement, isDeploiementSelected);
+                //isDeploiementSelected = toggleColorFloatingButton(fabDeploiement, isDeploiementSelected);
                 getMeActivity().createMoyen();
             }
         });
@@ -124,7 +124,7 @@ public class InterventionMapFragment extends Fragment {
         fabSinistre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isSinistreSelected = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
+                //isSinistreSelected = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
                 getMeActivity().createSinistre();
             }
         });
