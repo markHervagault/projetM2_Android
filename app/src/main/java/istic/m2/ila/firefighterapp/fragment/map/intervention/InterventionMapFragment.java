@@ -30,6 +30,9 @@ public class InterventionMapFragment extends Fragment {
     MapView mMapView;
     View mView;
     private GoogleMap googleMap;
+    public GoogleMap getMap(){
+        return googleMap;
+    }
 
 
     public NewMapActivity getMeActivity(){

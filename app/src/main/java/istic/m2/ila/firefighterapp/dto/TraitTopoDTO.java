@@ -4,7 +4,7 @@ package istic.m2.ila.firefighterapp.dto;
  * Created by hakima on 3/22/18.
  */
 
-public class TraitTopoDTO implements ITraitTopo, iDTO{
+public class TraitTopoDTO implements ITraitTopo {
     private Long id;
 
     private ETypeTraitTopo type;

@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by hakima on 3/23/18.
  */
 
-public class DeploiementDTO implements Serializable, iDTO {
+public class DeploiementDTO implements Serializable, IDTO {
     private Long id;
 
     private Date dateHeureDemande;

@@ -7,7 +7,7 @@ package istic.m2.ila.firefighterapp.constantes;
 public class Endpoints {
 
 //    public static final String BASE = "http://10.0.2.2:8080/api/"; // Local
-    public static final String BASE = "http://148.60.11.57:6002/api/"; // Serveur
+    public static final String BASE = "http://51.15.251.202:6002/api/"; // Serveur
 
     public static final String RABBITMQ = "amqp://guest:guest@148.60.11.57:6005/";
 

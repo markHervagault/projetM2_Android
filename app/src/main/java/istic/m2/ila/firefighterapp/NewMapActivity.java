@@ -47,7 +47,7 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.dto.iDTO;
+import istic.m2.ila.firefighterapp.dto.IDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragment;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder;
@@ -226,14 +226,23 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Object obj = marker.getTag();
-                if (obj instanceof iDTO) {
-                    displayFragmentHolder((iDTO) obj);
+                if (obj instanceof IDTO) {
+                    displayFragmentHolder((IDTO) obj);
+                    getMap().moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                 }
                 return true;
             }
 
         });
 
+    }
+
+    public GoogleMap getMap() {
+        if (interventionView) {
+            return intervMapFrag.getMap();
+        } else {
+            return intervMapFrag.getMap();
+        }
     }
 
     //region Detail/Creation fragment
@@ -271,7 +280,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
 
-    private void displayFragmentHolder(iDTO dto) {
+    private void displayFragmentHolder(IDTO dto) {
         if (fragmentHolder.getObjectHeld() == dto) {
             hideFragment();
             fragmentHolder.setObjectHeld(null);
