@@ -69,4 +69,9 @@ public class DroneDTO
 
         setBattery(dto.battery_level);
     }
+
+    public boolean equals(DroneDTO drone2) {
+        return this.adresseMac.equals(drone2.adresseMac);
+    }
+
 }

@@ -49,7 +49,6 @@ public class DroneMapFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        InitUI();
     }
 
     @Override
@@ -70,7 +69,6 @@ public class DroneMapFragment extends Fragment {
 
         _MapView = (MapView) _view.findViewById(R.id.mapView);
         _MapView.onCreate(savedInstanceState);
-
         _MapView.onResume(); // needed to get the map to display immediately
 
         try {
@@ -206,6 +204,10 @@ public class DroneMapFragment extends Fragment {
                 transaction.show(_droneCommandFrag);
                 if(!_droneMissionFrag.isHidden())
                     transaction.hide(_droneMissionFrag);
+
+                _droneCommandFrag.buttonPlayPause.setOnClickListener(_onButtonPlayPauseListener);
+                _droneCommandFrag.buttonStop.setOnClickListener(_onButtonStopListener);
+
                 break;
 
             case EDIT:

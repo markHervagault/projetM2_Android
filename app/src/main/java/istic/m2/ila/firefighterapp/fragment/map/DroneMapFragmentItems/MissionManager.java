@@ -413,7 +413,7 @@ public class MissionManager extends MapItem
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnSelectedDroneStatusChanged(final SelectedDroneStatusChangedMessage message)
     {
-        Log.i(TAG, "SelectedDroneChanged : " + message.getDroneStatut());
+        Log.i(TAG, "SelectedDroneStatusChanged : " + message.getDroneStatut());
 
         ResetMission();
 

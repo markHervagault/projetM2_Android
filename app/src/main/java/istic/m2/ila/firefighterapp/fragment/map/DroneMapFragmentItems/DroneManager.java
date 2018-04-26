@@ -18,6 +18,7 @@ import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.dto.EDroneStatut;
@@ -79,7 +80,7 @@ public class DroneManager extends MapItem
         if(_selectedDrone.getStatus() == EDroneStatut.RETOUR_BASE)
             return;
 
-        EventBus.getDefault().post(new PauseMissionMessage(_selectedDrone.getId()));
+        EventBus.getDefault().post(new StopMissionMessage(_selectedDrone.getId()));
         Log.d(TAG, "Stop command sent to : " + _selectedDrone.getId());
     }
 
@@ -99,14 +100,18 @@ public class DroneManager extends MapItem
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onSelectedDroneChanged(SelectedDroneChangedMessage message)
     {
+        Log.d(TAG, "SelectedDroneChangedMessage");
         if(!_dronesById.containsKey(message.Drone.getId()))
             return;
 
-        if(_selectedDrone != null)
+        if(_selectedDrone != null && !_selectedDrone.getDrone().equals(message.Drone)){
             _selectedDrone.UnSelect();
+        }
+        else {
+            _selectedDrone = _dronesById.get(message.Drone.getId());
+            _selectedDrone.Select();
+        }
 
-        _selectedDrone = _dronesById.get(message.Drone.getId());
-        _selectedDrone.Select();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

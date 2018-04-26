@@ -33,6 +33,7 @@ public class DroneDrawing extends MapItem
 
     public long getId() { return _drone.getId(); }
     public EDroneStatut getStatus() { return _drone.getStatut(); }
+    public DroneDTO getDrone() { return _drone; }
 
     private boolean _isSelected;
     public boolean  isSelected() { return _isSelected; }
@@ -84,8 +85,10 @@ public class DroneDrawing extends MapItem
 
         try {
             EDroneStatut newStatus = EDroneStatut.valueOf(dto.status);
-            if (newStatus != getStatus())
+            if (newStatus != getStatus()) {
+                Log.i(TAG, "SelectedDrone Status Changed");
                 EventBus.getDefault().post(new SelectedDroneStatusChangedMessage(newStatus, dto.id_drone));
+            }
         }
         catch (IllegalArgumentException e) {
             Log.e(TAG, e.getMessage());
