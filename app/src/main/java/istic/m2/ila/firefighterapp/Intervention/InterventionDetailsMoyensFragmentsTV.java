@@ -1,48 +1,29 @@
 package istic.m2.ila.firefighterapp.Intervention;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.evrencoskun.tableview.TableView;
-
-import net.cachapa.expandablelayout.ExpandableLayout;
-
-import org.w3c.dom.Text;
 
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import istic.m2.ila.firefighterapp.Intervention.model.CellModel;
 import istic.m2.ila.firefighterapp.Intervention.model.ColumnHeaderModel;
 import istic.m2.ila.firefighterapp.Intervention.model.RowHeaderModel;
-import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
-import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
-import istic.m2.ila.firefighterapp.dto.TypeVehiculeDTO;
 import retrofit2.Response;
 
 /**
@@ -195,19 +176,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
             } else {
                 list.add(new CellModel("3-" + i, "..."));
             }
-
-<<<<<<< Updated upstream
-            public void bind(ViewHolder holder, final int position) {
-
-                boolean isSelected = position == selectedItem;
-
-                holder.tvTypeMoyen.setText(listDeploiment.get(position).getTypeDemande().getLabel());
-                holder.tvTypeMoyen.setBackgroundColor(Color.parseColor(listDeploiment.get(position).getComposante().getCouleur()));
-                holder.tvTypeMoyen.setTextColor(Color.WHITE);
-                holder.tvSpacetabMoyTop.setBackgroundColor(Color.GRAY);
-=======
             list.add(new CellModel("4-" + i, depInfo.getState()));
->>>>>>> Stashed changes
 
             if( depInfo.isPresenceCRM()){
                 list.add(new CellModel("5-" + i, "CRM"));
@@ -246,16 +215,6 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
         return lists;
     }
 
-<<<<<<< Updated upstream
-                holder.tvTypeMoyen.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ((NewMapActivity)getActivity()).displayFragmentHolder(listDeploiment.get(position));
-                    }
-                });
-            }
-           }
-=======
     /**
      * Crée les Id de ligne
      * @return la liste des indexs de ligne
@@ -273,7 +232,6 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
     public void onResume() {
         super.onResume();
         //update fields
->>>>>>> Stashed changes
     }
 
 }
