@@ -29,6 +29,7 @@ public class Endpoints {
     public static final String CODE_SINISTRE = "code-sinistre";
     public static final String CODE_SINISTRE_BY_ID = "code-sinistre/{id}";
 
+    public static final String DEPLOIEMENT_UPDATE = "api/deploiement";
     public static final String DEPLOIEMENT_ID_ACTION = "api/deploiement/{id}/etat/action";
     public static final String DEPLOIEMENT_ID_DESENGAGE = "put /api/deploiement/{id}/etat/desengage";
     public static final String DEPLOIEMENT_ID_ENGAGE = "api/deploiement/{id}/etat/engage";

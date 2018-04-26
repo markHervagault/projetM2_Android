@@ -59,4 +59,9 @@ public interface DeploimentConsumer {
     Call<List<DeploiementDTO>> getListDeploimentById(@Header("Authorization") String token,
                                                @Path("id") String id );
 
+    /** Récuperation de la liste des déploiments de l'intervention*/
+    @GET(Endpoints.DEPLOIEMENT_UPDATE)
+    Call<DeploiementDTO> updateDeploiment(@Header("Authorization") String token,
+                                                     @Body DeploiementDTO deploiementDTO);
+
 }

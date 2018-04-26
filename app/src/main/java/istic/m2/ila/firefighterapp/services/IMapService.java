@@ -28,6 +28,7 @@ public interface IMapService {
     TraitTopoDTO addTraitTopo(final String token, TraitTopoDTO traitTopoDTO);
     void majTraitTopo(final String token, TraitTopoDTO traitTopoDTO);
     void majSinistre(final String token, SinistreDTO sinistreDTO);
+    void majDeploiement(String token, DeploiementDTO deploiementDTO);
     void removeTraitTopo(final String token, Long id);
     void removeSinistre(final String token, Long id);
     void sendDroneMission(final String token, MissionDTO missionDTO);

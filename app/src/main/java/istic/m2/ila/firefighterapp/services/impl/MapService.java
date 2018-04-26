@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
+import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
 import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
 import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
@@ -254,6 +255,22 @@ public class MapService implements IMapService {
 
             if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
                 Log.i(TAG,  "trait topo delete" + traitTopoDTO.getId());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void majDeploiement(String token, DeploiementDTO deploiementDTO) {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        DeploimentConsumer consumer = restTemplate.builConsumer(DeploimentConsumer.class);
+
+        Response<DeploiementDTO> response = null;
+        try {
+            response = consumer.updateDeploiment(token,deploiementDTO).execute();
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                Log.i(TAG,  "deploiment maj" + deploiementDTO.getId());
             }
         } catch (IOException e) {
             e.printStackTrace();
