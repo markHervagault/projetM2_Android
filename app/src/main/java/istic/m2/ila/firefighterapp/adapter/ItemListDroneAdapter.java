@@ -117,7 +117,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         if(drone.getStatut()!=null){
             switch (drone.getStatut()){
                 case DISPONIBLE:
-                    status = IHMLabels.DRONE_STATUT_CONNECTE;
+                    status = IHMLabels.DRONE_STATUT_DISPONIBLE;
                     holder.image_statut_listDrone.setImageResource(R.drawable.connected);
                     holder.image_battery_listDrone.setVisibility(View.VISIBLE);
                     break;
@@ -133,14 +133,14 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
                     break;
 
                 case EN_PAUSE:
-                    status = IHMLabels.DRONE_STATUT_EN_MISSION;
+                    status = IHMLabels.DRONE_STATUT_EN_PAUSE;
                     holder.image_statut_listDrone.setImageResource(R.drawable.droneenmission);
                     holder.image_battery_listDrone.setVisibility(View.VISIBLE);
                     break;
 
                 case RETOUR_BASE:
-                    status = IHMLabels.DRONE_STATUT_EN_MISSION;
-                    holder.image_statut_listDrone.setImageResource((R.drawable.droneenmission));
+                    status = IHMLabels.DRONE_STATUT_EN_RETOUR;
+                    holder.image_statut_listDrone.setImageResource(R.drawable.droneenmission);
                     holder.image_statut_listDrone.setImageResource(View.VISIBLE);
                     break;
 

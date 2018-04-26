@@ -6,31 +6,34 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/ButtonPlayPause"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="bottom|left"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="?android:selectableItemBackground"
-            android:scaleType="fitCenter"
-            fab:srcCompat="@drawable/pause" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/ButtonStop"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="bottom|left"
+            android:layout_gravity="bottom|right"
             android:layout_margin="5dp"
-            android:layout_weight="1"
             android:background="?android:selectableItemBackground"
             android:scaleType="fitCenter"
             fab:srcCompat="@drawable/stop" />
+
+        <ImageButton
+            android:id="@+id/ButtonPlayPause"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="5dp"
+            android:background="?android:selectableItemBackground"
+            android:scaleType="fitCenter"
+            fab:srcCompat="@drawable/pause" />
     </LinearLayout>
 
 </FrameLayout>
