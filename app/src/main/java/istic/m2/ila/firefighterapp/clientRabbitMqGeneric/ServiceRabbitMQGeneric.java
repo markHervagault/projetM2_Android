@@ -3,10 +3,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -114,8 +116,15 @@ public abstract class ServiceRabbitMQGeneric<T,E> extends Service {
                 //Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
-                T typeInfoDTO = gson.fromJson(incomingMessageHandler, getGenericClass());
-                EventBus.getDefault().post(typeInfoDTO);
+                try
+                {
+                    T typeInfoDTO = gson.fromJson(incomingMessageHandler, getGenericClass());
+                    EventBus.getDefault().post(typeInfoDTO);
+                }
+                catch (JsonParseException e)
+                {
+                    Log.e(TAG, e.getMessage());
+                }
             }
         };
 
