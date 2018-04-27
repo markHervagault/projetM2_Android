@@ -1,10 +1,10 @@
 package istic.m2.ila.firefighterapp.clientRabbitMqGeneric;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,7 +21,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.concurrent.TimeoutException;
 
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
@@ -87,6 +86,7 @@ public abstract class ServiceRabbitMQGeneric<T extends IDTO> extends Service {
                 catch (JsonParseException e)
                 {
                     Log.e(TAG, e.getMessage());
+                    e.printStackTrace();
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InstantiationException e) {
@@ -143,7 +143,6 @@ public abstract class ServiceRabbitMQGeneric<T extends IDTO> extends Service {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        Toast.makeText(this, "Service Destroyed", Toast.LENGTH_LONG).show();
     }
 
     @Override
