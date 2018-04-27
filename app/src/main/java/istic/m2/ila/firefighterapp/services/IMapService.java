@@ -24,6 +24,7 @@ public interface IMapService {
     List<DeploiementDTO> getDeploy(final String token, Long id);
     InterventionDTO addIntervention(final String token, CreateInterventionDTO creatInterventionDTO);
     List<InterventionDTO> getInterventions(final String token);
+    InterventionDTO getIntervention(final String token, final Long id);
     SinistreDTO addSinistre(final String token, SinistreDTO sinistre);
     TraitTopoDTO addTraitTopo(final String token, TraitTopoDTO traitTopoDTO);
     void majTraitTopo(final String token, TraitTopoDTO traitTopoDTO);

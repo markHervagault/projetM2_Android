@@ -84,22 +84,13 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
     public GeoPositionDTO getGeoPositionIntervention() {
-        GeoPositionDTO geo = new GeoPositionDTO();
-        geo.setLongitude(-1.638374);
-        geo.setLatitude(48.115150);
-        return geo;
+        return intervention.getAdresse().getGeoPosition();
     }
 
     private InterventionDTO intervention;
 
-    private Long idIntervention;
-
     public Long getIdIntervention() {
-        return idIntervention;
-    }
-
-    public void setIdIntervention(Long idIntervention) {
-        this.idIntervention = idIntervention;
+        return intervention.getId();
     }
 
     // region referentiel bitmap
@@ -162,7 +153,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        idIntervention = ((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId();
+        intervention = getService().getIntervention(getToken(),((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_map);
         this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
