@@ -49,6 +49,21 @@
                 android:layout_marginRight="90px">
             </fragment>
 
+            <FrameLayout
+                android:id="@+id/mapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </FrameLayout>
+            <fragment
+                android:id="@+id/detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="istic.m2.ila.firefighterapp.fragment.map.intervention.CreationTraitTopo"
+                android:layout_gravity="bottom|left"
+                android:layout_marginRight="90px">
+            </fragment>
+
         </FrameLayout>
 
     </LinearLayout>

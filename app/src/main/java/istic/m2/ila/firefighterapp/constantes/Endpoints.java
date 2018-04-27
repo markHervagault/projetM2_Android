@@ -13,12 +13,12 @@ public class Endpoints {
 
     //RABBITMQ CREDENTIALS
     public static final String RABBITMQ_USERNAME = "guest";
-    public static final String RABBITMQ_USERPASSWORD = "guest";
+    public static final String RABBITMQ_USERPASSWORD = "git guest";
     public static final String RABBITMQ_SERVERADRESS= "51.15.251.202";
     public static final int RABBITMQ_SERVERPORT = 6005;
     public static final String RABBITMQ_EXCHANGE_NAME = "hub";
     public static final String RABBITMQ_ANDROID_UPDATE = "android.update.";
-    public static final String RABBITMQ_ANDROID_DELETE = "android.update.";
+    public static final String RABBITMQ_ANDROID_DELETE = "android.delete.";
 
     //RABBITMQ EXCHANGENAME
 
