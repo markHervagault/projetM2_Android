@@ -42,5 +42,5 @@ dependencies {
 
     compile 'com.android.volley:volley:1.0.0'
 
-    compile 'com.evrencoskun.library:tableview:0.8.5.1'
+    compile 'com.evrencoskun.library:tableview:0.8.5.5'
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
@@ -21,7 +22,7 @@ public class FragmentHolder extends Fragment {
     private Fragment fragmentToDisplay;
     private Object objectHeld;
     private ImageButton dropdownButton;
-
+    private TextView titleView;
     public FragmentHolder() {
         // Required empty public constructor
     }
@@ -58,6 +59,7 @@ public class FragmentHolder extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fragment_holder, container, false);
         view.setVisibility(View.GONE);
+        this.titleView = view.findViewById(R.id.holder_fragment_title);
         this.dropdownButton = view.findViewById(R.id.dropdownButton);
         return view;
     }
@@ -108,6 +110,7 @@ public class FragmentHolder extends Fragment {
 
     public void replace(IDTO dto) {
         this.setObjectHeld(dto);
+        this.changeTitle(dto.menuTitle());
         this.setFragmentToDisplay(getFragment(dto));
     }
 
@@ -122,5 +125,9 @@ public class FragmentHolder extends Fragment {
             return FragmentFactory.getFragment((TraitTopographiqueBouchonDTO) dto);
         }
         return null;
+    }
+
+    public void changeTitle(String title){
+        this.titleView.setText(title);
     }
 }

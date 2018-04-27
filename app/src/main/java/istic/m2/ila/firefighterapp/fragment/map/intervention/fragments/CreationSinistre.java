@@ -24,6 +24,7 @@ import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.adapter.ComposanteAdapter;
 
 
 public class CreationSinistre extends Fragment implements IManipulableFragment {

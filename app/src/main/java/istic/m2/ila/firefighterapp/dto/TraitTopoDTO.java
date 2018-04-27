@@ -19,6 +19,11 @@ public class TraitTopoDTO implements ITraitTopo {
         return id;
     }
 
+    @Override
+    public String menuTitle() {
+        return "";
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

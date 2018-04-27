@@ -72,6 +72,11 @@ public class DeploiementDTO implements Serializable, IDTO {
         return id;
     }
 
+    @Override
+    public String menuTitle() {
+        return "Deploiement";
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

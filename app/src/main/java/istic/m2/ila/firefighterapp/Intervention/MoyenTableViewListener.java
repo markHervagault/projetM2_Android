@@ -1,9 +1,16 @@
 package istic.m2.ila.firefighterapp.Intervention;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import com.evrencoskun.tableview.ITableView;
 import com.evrencoskun.tableview.listener.ITableViewListener;
+
+import java.util.List;
+
+import istic.m2.ila.firefighterapp.NewMapActivity;
+import istic.m2.ila.firefighterapp.dto.DeploiementCreateInterventionDTO;
+import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 
 /**
  * Created by evrencoskun on 2.12.2017.
@@ -12,16 +19,33 @@ import com.evrencoskun.tableview.listener.ITableViewListener;
 public class MoyenTableViewListener implements ITableViewListener {
 
     private ITableView mTableView;
+    private Context mContext;
+    private List<DeploiementDTO> deploiements;
 
     public MoyenTableViewListener(ITableView pTableView) {
         this.mTableView = pTableView;
+        this.mContext = null;
+    }
+
+    public MoyenTableViewListener(ITableView pTableView, Context mContext, List<DeploiementDTO> deploiements) {
+        this.mTableView = pTableView;
+        this.mContext = mContext;
+        this.deploiements = deploiements;
     }
 
     @Override
-    public void onCellClicked(@NonNull RecyclerView.ViewHolder p_jCellView, int p_nXPosition, int
+        public void onCellClicked(@NonNull RecyclerView.ViewHolder p_jCellView, int p_nXPosition, int
             p_nYPosition) {
-        onRowHeaderClicked(p_jCellView,p_nYPosition);
+        onRowHeaderClicked(p_jCellView, p_nYPosition);
+        if (mContext != null && mContext instanceof NewMapActivity) {
+            // Le fragment existe
+            ((NewMapActivity) mContext).displayFragmentHolder(deploiements.get(p_nYPosition));
+        } else {
+            // La map (et le fragment) n'existe pas
+            // On ne fait rien
+        }
     }
+
 
     @Override
     public void onColumnHeaderClicked(@NonNull RecyclerView.ViewHolder p_jColumnHeaderView, int
