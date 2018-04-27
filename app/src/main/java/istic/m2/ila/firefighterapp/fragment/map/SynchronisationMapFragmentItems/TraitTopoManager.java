@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.MessageGeneric;
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.SyncAction;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MapItem;
 
@@ -40,7 +41,7 @@ public class TraitTopoManager extends MapItem
     //endRegion
 
     //region OldEventSubscribing
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+//    @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onUpdateTraitTopoDTOMessageEvent(TraitTopoDTO message)
     {
         //Mise a jour du sinistre sur la map seulement si le drawing existe deja en BDD
@@ -48,8 +49,8 @@ public class TraitTopoManager extends MapItem
             _traitTopoById.get(message.getId()).update(message);
         }
     }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+//
+//    @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onCreateTraitTopoDTOMessageEvent(TraitTopoDTO message)
     {
         // Création du sinistre
@@ -57,8 +58,8 @@ public class TraitTopoManager extends MapItem
             _traitTopoById.put(message.getId(), new TraitTopoDrawing(message, _googleMap, _contextActivity));
         }
     }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+//
+//    @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onDeleteTraitTopoDTOMessageEvent(TraitTopoDTO message)
     {
         if(_traitTopoById.containsKey(message.getId())) {
@@ -66,6 +67,41 @@ public class TraitTopoManager extends MapItem
             _traitTopoById.remove(message.getId());
         }
     }
-
     //endregion
+
+    //region EventSuscribing
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public synchronized void onTraitTopoDTOMessageEvent(MessageGeneric<TraitTopoDTO> message){
+        if(message != null){
+            if(message.getSyncAction() == SyncAction.UPDATE){
+                updateAction(message);
+            }else if (message.getSyncAction() == SyncAction.DELETE){
+                deleteAction(message);
+            }
+        }
+    }
+
+    private synchronized void updateAction(MessageGeneric<TraitTopoDTO> message){
+        if(message.getDto()!=null){
+            if(_traitTopoById.containsKey(message.getDto().getId())) {
+                _traitTopoById.get(message.getDto().getId()).update(message.getDto());
+            }else {
+                _traitTopoById.put(message.getDto().getId(),
+                        new TraitTopoDrawing(message.getDto(),
+                                _googleMap, _contextActivity));
+            }
+        }
+    }
+
+    private synchronized void deleteAction(MessageGeneric<TraitTopoDTO> message){
+        if(message.getDto()!=null){
+            if(_traitTopoById.containsKey(message.getDto().getId())) {
+                _traitTopoById.get(message.getDto().getId()).delete();
+                _traitTopoById.remove(message.getDto().getId());
+            }
+        }
+    }
+    //endregion
+
 }

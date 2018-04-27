@@ -18,7 +18,7 @@ public class Endpoints {
     public static final int RABBITMQ_SERVERPORT = 6005;
     public static final String RABBITMQ_EXCHANGE_NAME = "hub";
     public static final String RABBITMQ_ANDROID_UPDATE = "android.update.";
-    public static final String RABBITMQ_ANDROID_DELETE = "android.update.";
+    public static final String RABBITMQ_ANDROID_DELETE = "android.delete.";
 
     //RABBITMQ EXCHANGENAME
 

@@ -53,7 +53,7 @@ public abstract class ServiceRabbitMQGeneric<T> extends Service {
         String updateRouteKey = routeType + getGenericClass().getSimpleName() + ".#";
         channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, updateRouteKey);
 
-        Log.i(TAG,"Bind to queue : " + RABBITMQ_ANDROID_UPDATE + getGenericClass().getSimpleName());
+        Log.i(TAG,"Bind to queue : " + routeType + getGenericClass().getSimpleName());
 
         Consumer consumer = new DefaultConsumer(channel) {
             private String incomingMessageHandler = "";
