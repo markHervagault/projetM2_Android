@@ -63,7 +63,7 @@ public class ButtonFactory {
                 Button updateBtn = createUpdateButton(fragment);
                 updateBtn.setVisibility(View.GONE);
 
-                if(deploiement.getGeoPosition()!=null){
+                if(deploiement.getGeoPosition()!=null || !deploiement.isPresenceCRM()){
                     buttonLayout.addView(createMoveButton(fragment, updateBtn));
                 } else {
                     buttonLayout.addView(createPlacerButton(fragment, updateBtn));
@@ -86,7 +86,7 @@ public class ButtonFactory {
                 if(deploiement.isPresenceCRM()) {
                     buttonLayout.addView(createCRMButton(fragment));
                 }
-                if(deploiement.getGeoPosition()!=null){
+                if(deploiement.getGeoPosition()!=null || !deploiement.isPresenceCRM()){
                     buttonLayout.addView(createMoveButton(fragment, updateBtn));
                 } else {
                     buttonLayout.addView(createPlacerButton(fragment, updateBtn));

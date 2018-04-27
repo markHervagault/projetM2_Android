@@ -43,7 +43,7 @@ public interface InterventionConsumer {
      */
     @GET(Endpoints.INTERVENTION_ID)
     Call<InterventionDTO> getInterventionById(@Header("Authorization") String token,
-                                              @Path("id") String id);
+                                              @Path("id") Long id);
 
     /**
      * Fermer l'intervention en cours

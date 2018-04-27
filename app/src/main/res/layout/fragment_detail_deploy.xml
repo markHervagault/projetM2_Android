@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/readComposante"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -37,6 +38,24 @@
                 android:id="@+id/composante"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/modifComposante"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Compsante : "/>
+            <Spinner
+                android:id="@+id/composanteSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/fragment_holder_text_size"
+                android:background="#99FFFFFF"
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

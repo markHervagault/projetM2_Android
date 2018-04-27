@@ -62,6 +62,12 @@
         <service
             android:name=".clientRabbitMqGeneric.ServiceRabbitMQTraitTopo"
             android:label="Service RabbitMQTraitTopo" />
+        <service
+            android:name=".clientRabbitMqGeneric.ServiceRabbitMQSinistre"
+            android:label="Service RabbitMQSinistre" />
+        <service
+            android:name=".clientRabbitMqGeneric.ServiceRabbitMQDeploiment"
+            android:label="Service RabbitMQDeploiment" />
     </application>
 
 </manifest>

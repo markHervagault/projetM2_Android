@@ -40,18 +40,18 @@ import java.util.Map;
 
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.ServiceRabbitMQ;
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.ServiceRabbitMQDeploiment;
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.ServiceRabbitMQSinistre;
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
-import istic.m2.ila.firefighterapp.dto.ESinistre;
-import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
-import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
+import istic.m2.ila.firefighterapp.dto.IDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.dto.IDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragment;
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
@@ -85,22 +85,13 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
     public GeoPositionDTO getGeoPositionIntervention() {
-        GeoPositionDTO geo = new GeoPositionDTO();
-        geo.setLongitude(-1.638374);
-        geo.setLatitude(48.115150);
-        return geo;
+        return intervention.getAdresse().getGeoPosition();
     }
 
     private InterventionDTO intervention;
 
-    private Long idIntervention;
-
     public Long getIdIntervention() {
-        return idIntervention;
-    }
-
-    public void setIdIntervention(Long idIntervention) {
-        this.idIntervention = idIntervention;
+        return intervention.getId();
     }
 
     // region referentiel bitmap
@@ -132,12 +123,18 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     //region ON CREATE/DESTROY
     private ServiceConnection serviceConnection;
     private ServiceConnection serviceConnectionTraitTopo;
+    ServiceRabbitMQSinistre serviceRabbitMQSinistre;
+    ServiceRabbitMQDeploiment serviceRabbitMQDeploiment;
 
     ServiceRabbitMQ serviceRabbitMQ;
     ServiceRabbitMQTraitTopo serviceRabbitMQTraitTopo;
+    private ServiceConnection serviceConnectionSinistre;
+    private ServiceConnection serviceConnectionDeploiment;
 
     private boolean isServiceRabbitMQBind = false;
     private boolean isServiceRabbitMQTraitTopoBind = false;
+    private boolean isServiceRabbitMQSinistreBind = false;
+    private boolean isServiceRabbitMQDeploimentBind = false;
 
     private void BindService()
     {
@@ -146,6 +143,12 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
         bindService(new Intent(this, ServiceRabbitMQTraitTopo.class), serviceConnectionTraitTopo, Context.BIND_AUTO_CREATE );
         isServiceRabbitMQTraitTopoBind = true;
+
+        bindService(new Intent(this, ServiceRabbitMQSinistre.class), serviceConnectionSinistre, Context.BIND_AUTO_CREATE);
+        isServiceRabbitMQSinistreBind = true;
+
+        bindService(new Intent(this, ServiceRabbitMQDeploiment.class), serviceConnectionDeploiment, Context.BIND_AUTO_CREATE);
+        isServiceRabbitMQDeploimentBind = true;
     }
 
     private void UnBindService()
@@ -154,19 +157,27 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             unbindService(serviceConnection);
             isServiceRabbitMQBind = false;
         }
-
         if(isServiceRabbitMQTraitTopoBind){
             unbindService(serviceConnectionTraitTopo);
             isServiceRabbitMQTraitTopoBind = false;
+        }
+        if (isServiceRabbitMQSinistreBind) {
+            unbindService(serviceConnectionSinistre);
+            isServiceRabbitMQSinistreBind = false;
+        }
+        if (isServiceRabbitMQDeploimentBind) {
+            unbindService(serviceConnectionDeploiment);
+            isServiceRabbitMQDeploimentBind = false;
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        idIntervention = ((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId();
+        intervention = getService().getIntervention(getToken(),((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_map);
         this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
+
         serviceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
@@ -186,9 +197,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
             }
         };
-
         serviceConnectionTraitTopo = new ServiceConnection(){
-
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 serviceRabbitMQTraitTopo = (ServiceRabbitMQTraitTopo) ((ServiceRabbitMQTraitTopo.LocalBinder)service).getService();
@@ -196,7 +205,26 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
+            }
+        };
+        serviceConnectionSinistre = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                serviceRabbitMQSinistre = (ServiceRabbitMQSinistre) ((ServiceRabbitMQSinistre.LocalBinder) service).getService();
+            }
 
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+            }
+        };
+        serviceConnectionDeploiment = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                serviceRabbitMQDeploiment = (ServiceRabbitMQDeploiment) ((ServiceRabbitMQDeploiment.LocalBinder) service).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
             }
         };
 
@@ -232,7 +260,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
 
     public void initMap(final GoogleMap googleMap) {
         googleMap.setMaxZoomPreference(20.0f);
-        // Centre l'écran sur le Drône sur RENNES ISTIC
+        // todo DONT : Centre l'écran sur le Drône sur RENNES ISTIC
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getGeoPositionIntervention().getLatitude(), getGeoPositionIntervention().getLongitude()), 18.0f));
         googleMap.setBuildingsEnabled(false); //2D pour améliorer les performances
 
@@ -354,7 +382,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                 List<TraitTopoDTO> traits = getService()
                         .getTraitTopo(getToken(), getIdIntervention());
                 for (TraitTopoDTO trait : traits) {
-                    _traitTopoManager.onCreateTraitTopoDTOMessageEvent(trait);
+                    _traitTopoManager.onCreateOrUpdateTraitTopoDTOMessageEvent(trait);
                 }
             }
         });

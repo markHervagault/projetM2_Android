@@ -6,4 +6,8 @@ package istic.m2.ila.firefighterapp.dto;
 
 public interface IDTO {
     public Long getId();
+
+    public void setId(Long id);
+
+    public String menuTitle();
 }

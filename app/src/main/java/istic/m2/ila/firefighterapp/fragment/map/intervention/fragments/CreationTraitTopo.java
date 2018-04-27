@@ -23,6 +23,7 @@ import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.adapter.ComposanteAdapter;
 
 /**
 
@@ -78,8 +79,6 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
     private void initSpinner(){
         typeSpinner.setAdapter(new ComposanteAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
         typeSpinner.setAdapter(new ArrayAdapter<ETypeTraitTopo>(this.getActivity(), android.R.layout.simple_spinner_item, ETypeTraitTopo.values()));
-        List<TypeComposanteDTO> composantes = ((NewMapActivity)getActivity()).getService()
-                .getTypeComposante(((NewMapActivity)getActivity()).getToken());
         composanteSpinner.setAdapter(new ComposanteAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
     }
 

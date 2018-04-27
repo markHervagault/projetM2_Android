@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map.intervention.fragments;
+package istic.m2.ila.firefighterapp.fragment.map.intervention.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

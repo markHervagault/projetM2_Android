@@ -19,6 +19,10 @@ public class TraitTopographiqueBouchonDTO implements ITraitTopo {
         return id;
     }
 
+    @Override
+    public String menuTitle() {
+        return type.name() + composante.getDescription();
+    }
     public void setId(Long id) {
         this.id = id;
     }

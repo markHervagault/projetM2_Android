@@ -221,6 +221,30 @@ public class MapService implements IMapService {
     }
 
     @Override
+    public InterventionDTO getIntervention(final String token, final Long id){
+        // Nos intervention
+        InterventionDTO intervention = null;
+
+        // Construction de notre appel REST
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        InterventionConsumer consumer = restTemplate.builConsumer(InterventionConsumer.class);
+
+        Response<InterventionDTO> response = null;
+        try {
+            response = consumer.getInterventionById(token,id).execute();
+
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                intervention = response.body();
+                Log.i(TAG,  "Intervention récupéré : " + intervention.getId());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return intervention;
+    }
+
+
+    @Override
     public TraitTopoDTO addTraitTopo(final String token, TraitTopoDTO traitTopoDTO) {
 
         // Nos traits topo
@@ -269,7 +293,7 @@ public class MapService implements IMapService {
         Response<DeploiementDTO> response = null;
         try {
             response = consumer.updateDeploiment(token,deploiementDTO).execute();
-            if(response == null && response.code() != HttpURLConnection.HTTP_OK) {
+            if(response == null || response.code() != HttpURLConnection.HTTP_OK) {
                 Log.e(TAG,  "deploiment maj" + deploiementDTO.getId());
             }
         } catch (IOException e) {

@@ -7,17 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
+import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.adapter.ComposanteAdapter;
 
 
 public class DetailDeployFragment extends Fragment implements IManipulableDeployFragment{
@@ -27,6 +32,11 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
 
     private Boolean onModif = false;
     private Boolean onMove = false;
+
+    private LinearLayout readComposante;
+    private LinearLayout modifComposante;
+
+    private Spinner composanteSpinner;
 
     private Marker marker;
 
@@ -80,6 +90,13 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
             ((TextView) view.findViewById(R.id.crm)).setText("FAUX");
         }
 
+        readComposante = view.findViewById(R.id.readComposante);
+        modifComposante = view.findViewById(R.id.modifComposante);
+
+        composanteSpinner = view.findViewById(R.id.composanteSpinner);
+        composanteSpinner.setAdapter(new ComposanteAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
+
+
         ButtonFactory.populate(this, deploiementDTO, (LinearLayout)view.findViewById(R.id.buttonLayout));
 
         return view;
@@ -90,6 +107,16 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
         //empty method
     }
 
+    private void switchView() {
+        if(onModif){
+            readComposante.setVisibility(View.GONE);
+            modifComposante.setVisibility(View.VISIBLE);
+        } else {
+            readComposante.setVisibility(View.VISIBLE);
+            modifComposante.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public void update() {
         if(onMove){
@@ -97,11 +124,13 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
             deploiementDTO.setPresenceCRM(false);
             deploiementDTO.setGeoPosition(newGeoposition);
             marker.remove();
+            ((NewMapActivity)getMeActivity()).getService().deploiementToEngage(((NewMapActivity)getMeActivity()).getToken(), deploiementDTO.getId());
         }
 
         if(onModif) {
             this.onModif = false;
-            //TODO
+            deploiementDTO.setComposante((TypeComposanteDTO) composanteSpinner.getSelectedItem());
+            switchView();
         }
         ((NewMapActivity)getMeActivity()).getService().majDeploiement(((NewMapActivity)getMeActivity()).getToken(), deploiementDTO);
     }
@@ -163,11 +192,13 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
     public void toCrm() {
         deploiementDTO.setPresenceCRM(true);
         ((NewMapActivity)getMeActivity()).getService().majDeploiement(((NewMapActivity)getMeActivity()).getToken(), deploiementDTO);
+        ((NewMapActivity)getActivity()).getService().deploiementToEngage(((NewMapActivity)getActivity()).getToken(),deploiementDTO.getId());
     }
 
     @Override
     public void modif() {
         this.onModif = true;
+        switchView();
     }
 
     @Override
