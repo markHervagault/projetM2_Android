@@ -17,6 +17,15 @@ public class Endpoints {
     public static final String RABBITMQ_EXCHANGE_NAME = "hub";
     public static final String RABBITMQ_EXCHANGE_TYPE = "topic";
 
+    //RABBITMQ ENDPOINTS
+
+    public static final String RABBITMQ_DRONE_COMMAND = "drone.command.";
+    public static final String RABBITMQ_DRONE_INFO = "drone.info.";
+    public static final String RABBITMQ_ALLDRONE_INFO = "drone.info.#";
+    public static final String RABBITMQ_MISSION_DTO = "android.update.MissionDTO.";
+    public static final String RABBITMQ_ALLMISSION_DTO = "android.update.MissionDTO.#";
+
+
     public static final String AUTHENTICATE = "authenticate";
 
     public static final String BOUCHON_TRAIT_TOPO_ID = "bouchon/trait-topographique/{id}";

@@ -99,5 +99,11 @@ public class MissionDTO {
         this.archive = archive;
     }
 
+    public String toString()
+    {
+        String s = "";
+        return s;
+    }
+
 
 }

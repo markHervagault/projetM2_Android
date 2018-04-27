@@ -291,7 +291,8 @@ public class MapService implements IMapService {
         RestTemplate restTemplate = RestTemplate.getInstance();
         DroneMissionConsumer consumer = restTemplate.builConsumer(DroneMissionConsumer.class);
 
-        MissionDTO currentMission = new MissionDTO();
+        MissionDTO currentMission = null;
+
         Response<MissionDTO> response = null;
         try{
             response = consumer.getMission(token, droneId).execute();
@@ -311,6 +312,4 @@ public class MapService implements IMapService {
 
         return currentMission;
     }
-
-
 }

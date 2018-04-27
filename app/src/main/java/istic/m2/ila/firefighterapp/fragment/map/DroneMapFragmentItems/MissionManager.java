@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
@@ -73,6 +74,7 @@ public class MissionManager extends MapItem
 
     private PathDrawing _pathDrawing;
     private DroneDTO _selectedDrone;
+    private long _interventionId;
 
     //endregion
 
@@ -120,6 +122,7 @@ public class MissionManager extends MapItem
         _pathDrawing = new PathDrawing(_googleMap, _contextActivity);
         _editMode = false;
         _propertyChangeSupport = new PropertyChangeSupport(this);
+        _interventionId = ((NewMapActivity)_contextActivity).getIdIntervention();
 
         //Listener Init
         _googleMap.setOnMapClickListener(null);
@@ -277,11 +280,16 @@ public class MissionManager extends MapItem
 
     public void SendMission()
     {
-        if(!canSendMission())
+        Log.i(TAG, "SendMission");
+        if(!canSendMission()) {
+            Log.i(TAG, "Cannot send mission");
             return;
+        }
 
-        if(_selectedDrone == null)
+        if(_selectedDrone == null) {
+            Log.i(TAG, "No Selected Drone");
             return;
+        }
 
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(_contextActivity);
         alertBuilder.setTitle("Attention");
@@ -302,9 +310,9 @@ public class MissionManager extends MapItem
                     {
                         //Génération de la mission
                         final MissionDTO currentMission = new MissionDTO();
-                        currentMission.setInterventionId(1l); //TODO SelectedDroneMission
+                        currentMission.setInterventionId(_interventionId);
                         currentMission.setNbIteration(0);
-                        currentMission.setDroneId(_selectedDrone.getId());//TODO SelectedDrone
+                        currentMission.setDroneId(_selectedDrone.getId());
                         currentMission.setBoucleFermee(_pathDrawing.isPathClosed());
                         Set<PointMissionDTO> points = new HashSet<>();
 
@@ -414,12 +422,14 @@ public class MissionManager extends MapItem
 
             case DISPONIBLE:
                 setMissionMode(MissionMode.EDIT);
+                setCanSendMission(true);
                 _googleMap.setOnMapClickListener(onMapClickListener);
                 _googleMap.setOnMarkerDragListener(onMarkerDragListener);
                 break;
 
             case DECONNECTE:
                 setMissionMode(MissionMode.NONE);
+                setCanSendMission(false);
                 _googleMap.setOnMapClickListener(onMapClickListener);
                 _googleMap.setOnMarkerDragListener(onMarkerDragListener);
                 break;
@@ -438,33 +448,31 @@ public class MissionManager extends MapItem
             case EN_PAUSE:
             case RETOUR_BASE:
                 setMissionMode(MissionMode.FOLLOW);
-                //Recupération de la mission
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        //vérification du token
-                        String token = _contextActivity.getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
-                        if (!token.equals("null")) {
-                            MissionDTO currentMission = MapService.getInstance().getCurrentDroneMission(token, message.getDroneId());
-                            if (currentMission != null)
-                                SetCurrentMission(currentMission);
-                        }
-                    }
-                });
                 break;
 
             case DISPONIBLE:
                 setMissionMode(MissionMode.EDIT);
+                setCanSendMission(true);
                 _googleMap.setOnMapClickListener(onMapClickListener);
                 _googleMap.setOnMarkerDragListener(onMarkerDragListener);
                 break;
 
             case DECONNECTE:
                 setMissionMode(MissionMode.NONE);
+                setCanSendMission(false);
                 _googleMap.setOnMapClickListener(onMapClickListener);
                 _googleMap.setOnMarkerDragListener(onMarkerDragListener);
                 break;
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void OnDroneMisisonUpodate(MissionDTO currentMission)
+    {
+        if(currentMission == null || !currentMission.getDroneId().equals(_selectedDrone.getId()))
+            return;
+
+        SetCurrentMission(currentMission);
     }
 
     //endregion

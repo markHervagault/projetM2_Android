@@ -27,9 +27,12 @@ import java.util.concurrent.TimeoutException;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
+import istic.m2.ila.firefighterapp.dto.MissionDTO;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MissionManager;
 
 
 public class ServiceRabbitMQ extends Service {
@@ -47,6 +50,9 @@ public class ServiceRabbitMQ extends Service {
             return ServiceRabbitMQ.this;
         }
     }
+
+    //region Init
+
     /** Called when the service is being created. */
     @Override
     public void onCreate()
@@ -67,8 +73,6 @@ public class ServiceRabbitMQ extends Service {
             e.printStackTrace();
         }
     }
-
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
@@ -97,18 +101,74 @@ public class ServiceRabbitMQ extends Service {
         return super.onUnbind(intent);
     }
 
-    //SUBSCRIBING
+    //endregion
+
+    //region Basic Consumers
+
+    private String _consumerTag;
+    private Channel _missionDTOChannel;
+
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onEvent(final DeclareDroneMessage event) throws Exception
+    public void UpdateMissionDTO(SelectedDroneChangedMessage message) throws Exception
     {
-        if (_connection == null)
+        if(_connection == null)
+        {
+            Log.e(TAG, "UpdateMissionDTO : Connection null");
             return;
+        }
+
+        if(_missionDTOChannel != null && _consumerTag != null)
+            _missionDTOChannel.basicCancel(_consumerTag);
+
+        _missionDTOChannel = _connection.createChannel();
+        _missionDTOChannel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
+
+        String queueName = _missionDTOChannel.queueDeclare().getQueue();
+        _missionDTOChannel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_ALLMISSION_DTO);
+
+        Consumer consumer = new DefaultConsumer(_missionDTOChannel)
+        {
+            private String incomingMessageHandler = "";
+
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException
+            {
+                incomingMessageHandler = new String(body, "UTF-8");
+                Log.i(TAG, "Received MissionDTO");
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
+                try
+                {
+                    MissionDTO missionDTO = gson.fromJson(incomingMessageHandler, MissionDTO.class);
+                    EventBus.getDefault().post(missionDTO);
+                }
+                catch (JsonParseException e)
+                {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        };
+
+        _consumerTag = _missionDTOChannel.basicConsume(queueName, true, consumer);
+    }
+
+    //endregion
+
+    //region Event Bus
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onDeclareDroneEvent(final DeclareDroneMessage event) throws Exception
+    {
+        if (_connection == null) {
+            Log.e(TAG, "DeclareDroneEvent : Connection null");
+            return;
+        }
 
         Channel channel = _connection.createChannel();
         channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
 
         String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.info." + event.getDroneDTO().getId());
+        channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_DRONE_INFO + event.getDroneDTO().getId());
 
         Consumer consumer = new DefaultConsumer(channel)
         {
@@ -136,7 +196,9 @@ public class ServiceRabbitMQ extends Service {
         channel.basicConsume(queueName, true, consumer);
     }
 
-    ///////////////////////// fonctions d'envoi de commandes au drone ///////////////////////////
+    //endregion
+
+    //region Drone Commands
 
     /**
      * Envoie une commande STOP au drone dont l'id est indiqué dans StopMissionMessage
@@ -145,9 +207,8 @@ public class ServiceRabbitMQ extends Service {
      * @throws Exception
      */
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onEvent(StopMissionMessage event) throws Exception
+    public void OnStopCommandEvent(StopMissionMessage event) throws Exception
     {
-
         if (_connection == null)
             return;
 
@@ -156,7 +217,7 @@ public class ServiceRabbitMQ extends Service {
         channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
 
         String message = "stop";
-        channel.basicPublish(Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.command."+event.getDroneId(), null, message.getBytes());
+        channel.basicPublish(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_DRONE_COMMAND + event.getDroneId(), null, message.getBytes());
         System.out.println(" [x] Sent '" + "drone.command."+event.getDroneId() + "':'" + message + "'");
     }
 
@@ -167,9 +228,8 @@ public class ServiceRabbitMQ extends Service {
      * @throws Exception
      */
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onEvent(PlayMissionMessage event) throws Exception
+    public void OnPlayCommandEvent(PlayMissionMessage event) throws Exception
     {
-
         if (_connection == null)
             return;
 
@@ -178,7 +238,7 @@ public class ServiceRabbitMQ extends Service {
         channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
 
         String message = "play";
-        channel.basicPublish(Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.command."+event.getDroneId(), null, message.getBytes());
+        channel.basicPublish(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_DRONE_COMMAND+event.getDroneId(), null, message.getBytes());
         System.out.println(" [x] Sent '" + "drone.command."+event.getDroneId() + "':'" + message + "'");
     }
 
@@ -189,9 +249,8 @@ public class ServiceRabbitMQ extends Service {
      * @throws Exception
      */
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onEvent(PauseMissionMessage event) throws Exception
+    public void OnPauseCommandEvent(PauseMissionMessage event) throws Exception
     {
-
         if (_connection == null)
             return;
 
@@ -200,12 +259,9 @@ public class ServiceRabbitMQ extends Service {
         channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
 
         String message = "pause";
-        channel.basicPublish(Endpoints.RABBITMQ_EXCHANGE_NAME, "drone.command."+event.getDroneId(), null, message.getBytes());
+        channel.basicPublish(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_DRONE_COMMAND+event.getDroneId(), null, message.getBytes());
         System.out.println(" [x] Sent '" + "drone.command."+event.getDroneId() + "':'" + message + "'");
     }
 
-    void start()
-    {
-
-    }
+    //endregion
 }
