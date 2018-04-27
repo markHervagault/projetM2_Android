@@ -393,7 +393,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                 List<SinistreDTO> sinistres = getService()
                         .getSinistre(getToken(), getIdIntervention());
                 for (SinistreDTO sinistre : sinistres) {
-                    _sinistreManager.onCreateSinistreDTOMessageEvent(sinistre);
+                    _sinistreManager.onCreateOrUpdateSinistreDTOMessageEvent(sinistre);
                 }
             }
         });

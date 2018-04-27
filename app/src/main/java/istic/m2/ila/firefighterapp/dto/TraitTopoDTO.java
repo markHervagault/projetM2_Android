@@ -21,7 +21,7 @@ public class TraitTopoDTO implements ITraitTopo {
 
     @Override
     public String menuTitle() {
-        if(type.name()==null){
+        if (type == null) {
             return "creation";
         }
         else{

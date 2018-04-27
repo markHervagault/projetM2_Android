@@ -11,6 +11,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.MessageGeneric;
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.SyncAction;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MapItem;
 
@@ -38,26 +40,17 @@ public class SinistreManager extends MapItem
 
     //endRegion
 
-    //region EventSubscribing
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onUpdateSinistreDTOMessageEvent(SinistreDTO message)
-    {
-        //Mise a jour du sinistre sur la map seulement si le drawing existe deja en BDD
-        if(_sinistresById.containsKey(message.getId())) {
-            _sinistresById.get(message.getId()).update(message);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onCreateSinistreDTOMessageEvent(SinistreDTO message)
+    //region Actions
+    public synchronized void onCreateOrUpdateSinistreDTOMessageEvent(SinistreDTO message)
     {
         // Création du sinistre
-        if(!_sinistresById.containsKey(message.getId())) {
+        if (_sinistresById.containsKey(message.getId())) {
+            _sinistresById.get(message.getId()).update(message);
+        } else {
             _sinistresById.put(message.getId(), new SinistreDrawing(message, _googleMap, _contextActivity));
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onDeleteSinistreDTOMessageEvent(SinistreDTO message)
     {
         if(_sinistresById.containsKey(message.getId())) {
@@ -65,6 +58,22 @@ public class SinistreManager extends MapItem
             _sinistresById.remove(message.getId());
         }
     }
+    //endregion
+
+
+    //region EventSuscribing
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public synchronized void onSinistreMessageEvent(MessageGeneric<SinistreDTO> message) {
+        if (message != null) {
+            if (message.getSyncAction() == SyncAction.UPDATE) {
+                onCreateOrUpdateSinistreDTOMessageEvent(message.getDto());
+            } else if (message.getSyncAction() == SyncAction.DELETE) {
+                onDeleteSinistreDTOMessageEvent(message.getDto());
+            }
+        }
+    }
 
     //endregion
+
 }
