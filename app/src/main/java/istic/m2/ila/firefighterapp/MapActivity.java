@@ -779,7 +779,7 @@ public class MapActivity extends FragmentActivity implements
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                // Sauvegarde le marquer sélectionné pour une action future, ex : suppression
+                // Sauvegarde le marquer sélectionné pour une SyncAction future, ex : suppression
                 selectedMarker = marker;
                 return false;
             }

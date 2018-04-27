@@ -43,6 +43,7 @@ import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.ESinistre;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
@@ -52,6 +53,8 @@ import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
 import istic.m2.ila.firefighterapp.dto.IDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragment;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
+import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.services.IMapService;
@@ -112,16 +115,6 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         return map;
     }
 
-
-    private static final Map<ETypeTraitTopo, Integer> referentielTraitTopo = createReferentielTraitTopo();
-
-    private static Map<ETypeTraitTopo, Integer> createReferentielTraitTopo() {
-        Map<ETypeTraitTopo, Integer> map = new HashMap<>();
-        map.put(ETypeTraitTopo.DANGER, R.drawable.danger_24dp);
-        map.put(ETypeTraitTopo.SENSIBLE, R.drawable.sensible_24dp);
-        return map;
-    }
-
     private static final Map<EEtatDeploiement, Integer> referentielMoyen = createReferentielMoyen();
 
     private static Map<EEtatDeploiement, Integer> createReferentielMoyen() {
@@ -133,36 +126,38 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         return map;
     }
 
-    private static final Map<ESinistre, Integer> referentielSinistre = createReferentielSinistre();
-
-    private static Map<ESinistre, Integer> createReferentielSinistre() {
-        Map<ESinistre, Integer> map = new HashMap<>();
-        map.put(ESinistre.CENTRE, R.drawable.centre_sinistre);
-        map.put(ESinistre.POINT, R.drawable.ic_star_black_24dp);
-        map.put(ESinistre.ZONE, R.drawable.boom70x70);
-        return map;
-    }
-
     //endregion
 
     //region ON CREATE/DESTROY
     private ServiceConnection serviceConnection;
+    private ServiceConnection serviceConnectionTraitTopo;
+
     ServiceRabbitMQ serviceRabbitMQ;
+    ServiceRabbitMQTraitTopo serviceRabbitMQTraitTopo;
 
+    private boolean isServiceRabbitMQBind = false;
+    private boolean isServiceRabbitMQTraitTopoBind = false;
 
-    private boolean isServiceBound = false;
+    private void BindService()
+    {
+        bindService(new Intent(this, ServiceRabbitMQ.class), serviceConnection, Context.BIND_AUTO_CREATE );
+        isServiceRabbitMQBind = true;
 
-    private void BindService() {
-        bindService(new Intent(this, ServiceRabbitMQ.class), serviceConnection, Context.BIND_AUTO_CREATE);
-        isServiceBound = true;
+        bindService(new Intent(this, ServiceRabbitMQTraitTopo.class), serviceConnectionTraitTopo, Context.BIND_AUTO_CREATE );
+        isServiceRabbitMQTraitTopoBind = true;
     }
 
-    private void UnBindService() {
-        if (!isServiceBound)
-            return;
+    private void UnBindService()
+    {
+        if(isServiceRabbitMQBind){
+            unbindService(serviceConnection);
+            isServiceRabbitMQBind = false;
+        }
 
-        unbindService(serviceConnection);
-        isServiceBound = false;
+        if(isServiceRabbitMQTraitTopoBind){
+            unbindService(serviceConnectionTraitTopo);
+            isServiceRabbitMQTraitTopoBind = false;
+        }
     }
 
     @Override
@@ -191,6 +186,20 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             }
         };
 
+        serviceConnectionTraitTopo = new ServiceConnection(){
+
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                serviceRabbitMQTraitTopo = (ServiceRabbitMQTraitTopo) ((ServiceRabbitMQTraitTopo.LocalBinder)service).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+
+
         BindService();
     }
 
@@ -218,12 +227,18 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     }
 
     //endregion
+    private TraitTopoManager _traitTopoManager;
+    private SinistreManager _sinistreManager;
 
     public void initMap(final GoogleMap googleMap) {
         googleMap.setMaxZoomPreference(20.0f);
         // Centre l'écran sur le Drône sur RENNES ISTIC
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getGeoPositionIntervention().getLatitude(), getGeoPositionIntervention().getLongitude()), 18.0f));
         googleMap.setBuildingsEnabled(false); //2D pour améliorer les performances
+
+        _sinistreManager = new SinistreManager(googleMap, this);
+        _traitTopoManager = new TraitTopoManager(googleMap, this);
+
         getTraitTopoBouchons(googleMap);
         getTraitTopo(googleMap);
         getSinistre(googleMap);
@@ -339,7 +354,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                 List<TraitTopoDTO> traits = getService()
                         .getTraitTopo(getToken(), getIdIntervention());
                 for (TraitTopoDTO trait : traits) {
-                    drawTraitTopo(googleMap, trait);
+                    _traitTopoManager.onCreateTraitTopoDTOMessageEvent(trait);
                 }
             }
         });
@@ -351,7 +366,7 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                 List<SinistreDTO> sinistres = getService()
                         .getSinistre(getToken(), getIdIntervention());
                 for (SinistreDTO sinistre : sinistres) {
-                    drawSinistre(googleMap, sinistre);
+                    _sinistreManager.onCreateSinistreDTOMessageEvent(sinistre);
                 }
             }
         });
@@ -400,50 +415,6 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
                         .snippet(traitTopo.getType().getDescription() + " - " + traitTopo.getComposante().getDescription())
                         .icon(BitmapDescriptorFactory.fromBitmap(icon))
                         .draggable(false)).setTag(traitTopo);
-            }
-        });
-    }
-
-    public void drawTraitTopo(final GoogleMap googleMap, final TraitTopoDTO traitTopo) {
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                int rIcone = referentielTraitTopo.get(traitTopo.getType());
-
-                String rgbNoA = traitTopo.getComposante().getCouleur().substring(0, 7);
-                Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
-
-                // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
-                LatLng pos = new LatLng(traitTopo.getPosition().getLatitude(), traitTopo.getPosition().getLongitude());
-                googleMap.addMarker(new MarkerOptions()
-                        .position(pos)
-                        .title(traitTopo.getComposante().getLabel())
-                        .snippet(traitTopo.getType().name() + " - " + traitTopo.getComposante().getDescription())
-                        .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                        .draggable(false)).setTag(traitTopo);
-            }
-        });
-    }
-
-    public void drawSinistre(final GoogleMap googleMap, final SinistreDTO sinistre) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                int rIcone = referentielSinistre.get(sinistre.getType());
-
-                String rgbNoA = sinistre.getComposante().getCouleur().substring(0, 7);
-                Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
-
-                // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
-                LatLng pos = new LatLng(sinistre.getGeoPosition().getLatitude(), sinistre.getGeoPosition().getLongitude());
-                googleMap.addMarker(new MarkerOptions()
-                        .position(pos)
-                        .title(sinistre.getComposante().getLabel())
-                        .snippet(sinistre.getType().name() + " - " + sinistre.getComposante().getDescription())
-                        .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                        .draggable(false)
-                ).setTag(sinistre);
             }
         });
     }

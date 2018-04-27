@@ -7,8 +7,8 @@ package istic.m2.ila.firefighterapp.constantes;
 public class Endpoints {
 
 //    public static final String BASE = "http://10.0.2.2:8080/api/"; // Local
-    public static final String BASE = "http://51.15.251.202:6002/api/"; // Serveur
-
+//    public static final String BASE = "http://148.60.11.57:6002/api/"; // Old Serveur
+    public static final String BASE = "http://51.15.251.202:6002/api/"; // OldServeur
     public static final String RABBITMQ = "amqp://guest:guest@51.15.251.202:6005/";
 
     //RABBITMQ CREDENTIALS
@@ -17,6 +17,8 @@ public class Endpoints {
     public static final String RABBITMQ_SERVERADRESS= "51.15.251.202";
     public static final int RABBITMQ_SERVERPORT = 6005;
     public static final String RABBITMQ_EXCHANGE_NAME = "hub";
+    public static final String RABBITMQ_ANDROID_UPDATE = "android.update.";
+    public static final String RABBITMQ_ANDROID_DELETE = "android.update.";
 
     //RABBITMQ EXCHANGENAME
 
@@ -29,6 +31,7 @@ public class Endpoints {
     public static final String CODE_SINISTRE = "code-sinistre";
     public static final String CODE_SINISTRE_BY_ID = "code-sinistre/{id}";
 
+    //public static final String DEPLOIEMENT_ID_ACTION = "api/deploiement/{id}/etat/SyncAction";
     public static final String DEPLOIEMENT_UPDATE = "api/deploiement";
     public static final String DEPLOIEMENT_ID_ACTION = "api/deploiement/{id}/etat/action";
     public static final String DEPLOIEMENT_ID_DESENGAGE = "put /api/deploiement/{id}/etat/desengage";
