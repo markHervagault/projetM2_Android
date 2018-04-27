@@ -269,7 +269,7 @@ public class MapService implements IMapService {
         Response<DeploiementDTO> response = null;
         try {
             response = consumer.updateDeploiment(token,deploiementDTO).execute();
-            if(response == null && response.code() != HttpURLConnection.HTTP_OK) {
+            if(response == null || response.code() != HttpURLConnection.HTTP_OK) {
                 Log.e(TAG,  "deploiment maj" + deploiementDTO.getId());
             }
         } catch (IOException e) {
