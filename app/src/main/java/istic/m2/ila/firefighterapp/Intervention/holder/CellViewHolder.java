@@ -9,6 +9,8 @@ import android.widget.TextView;
 import istic.m2.ila.firefighterapp.Intervention.model.*;
 import istic.m2.ila.firefighterapp.R;
 
+import com.evrencoskun.tableview.TableView;
+import com.evrencoskun.tableview.adapter.recyclerview.CellRecyclerView;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
 
 
@@ -35,6 +37,12 @@ public class CellViewHolder extends AbstractViewHolder {
             cell_textview.setBackgroundColor(Color.parseColor(backgroundColor));
         }
 
+        // Adapter le text color de la cellule à la composante
+        String textColor = p_jModel.getTextColor();
+        if (textColor != null) {
+            cell_textview.setTextColor(Color.parseColor(textColor));
+        }
+
         // Change textView align by column
         cell_textview.setGravity(ColumnHeaderViewHolder.COLUMN_TEXT_ALIGNS[pColumnPosition] |
                 Gravity.CENTER_VERTICAL);
@@ -52,11 +60,23 @@ public class CellViewHolder extends AbstractViewHolder {
         super.setSelected(p_nSelectionState);
 
         if (p_nSelectionState == SelectionState.SELECTED) {
-            cell_textview.setTextColor(ContextCompat.getColor(cell_textview.getContext(), R.color
+            if (cellRow != null) {
+                // Sélectionner la ligne
+                cellRow.setSelected(p_nSelectionState);
+//                cellRow.row_header_textview.performClick();
+
+            } else {
+                cell_textview.setTextColor(ContextCompat.getColor(cell_textview.getContext(), R.color
                     .selected_text_color));
+            }
         } else {
             cell_textview.setTextColor(ContextCompat.getColor(cell_textview.getContext(), R.color
-                    .unselected_text_color));
+                    .selected_text_color));
         }
+    }
+
+    private RowHeaderViewHolder cellRow;
+    public void setRowHeaderViewHolder(RowHeaderViewHolder r){
+        cellRow = r;
     }
 }

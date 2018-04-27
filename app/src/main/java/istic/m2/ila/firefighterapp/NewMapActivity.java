@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -487,20 +488,65 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
         canvas.drawBitmap(icon, 0, 0, paint);
         return icon;
     }
-    //endregion
+
+    public void toggleFragmentWeight() {
+
+        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
+        FrameLayout frameMap =   findViewById(R.id.mapFragmentParent);
+        Button btnMoy = findViewById(R.id.toggleViewTabMoy);
+
+        LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameMoyen.getLayoutParams();
+        LinearLayout.LayoutParams paramMap = (LinearLayout.LayoutParams) frameMap.getLayoutParams();
+
+        float weight = param.weight;
+
+        if(frameMoyen.getVisibility()== View.GONE){
+            frameMoyen.setVisibility(View.VISIBLE);
+        }
+
+        if(weight == 5.0f){
+            // On diminue
+            btnMoy.setText("Moyens >");
+            param.weight = 10.0f;
+            paramMap.weight = 5.0f;
+        } else {
+            // On agrandit
+            btnMoy.setText("< Moyens");
+            param.weight = 5.0f;
+            paramMap.weight = 10.0f;
+
+        }
+
+        frameMoyen.setLayoutParams(param);
+        frameMap.setLayoutParams(paramMap);
+
+    }
+
     public void showHideMoy() {
 
         FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
+        FrameLayout frameMap =   findViewById(R.id.mapFragmentParent);
         Button btnMoy = findViewById(R.id.toggleViewTabMoy);
 
         if(frameMoyen.getVisibility()!= View.GONE){
             frameMoyen.setVisibility(View.GONE);
-            btnMoy.setText("Moyens >");
+            btnMoy.setText("Moyens");
 
         } else {
             frameMoyen.setVisibility(View.VISIBLE);
-            btnMoy.setText("< Moyens");
+            LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameMoyen.getLayoutParams();
+            float weight = param.weight;
+
+            if(weight == 5.0f){
+                // On diminue
+                btnMoy.setText("< Moyens");
+            } else {
+                // On agrandit
+                btnMoy.setText("Moyens >");
+
+            }
         }
     }
+    //endregion
 
 }

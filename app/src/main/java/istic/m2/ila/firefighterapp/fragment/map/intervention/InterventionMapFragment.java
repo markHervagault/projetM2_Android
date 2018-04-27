@@ -62,7 +62,14 @@ public class InterventionMapFragment extends Fragment {
 
         buttonMoy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                getMeActivity().toggleFragmentWeight();
+            }
+        });
+        buttonMoy.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
                 getMeActivity().showHideMoy();
+                return true;
             }
         });
 

@@ -3,13 +3,14 @@ package istic.m2.ila.firefighterapp.Intervention;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+
 import com.evrencoskun.tableview.ITableView;
 import com.evrencoskun.tableview.listener.ITableViewListener;
 
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
-import istic.m2.ila.firefighterapp.dto.DeploiementCreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 
 /**
@@ -46,6 +47,10 @@ public class MoyenTableViewListener implements ITableViewListener {
         }
     }
 
+    @Override
+    public void onCellLongPressed(@NonNull RecyclerView.ViewHolder cellView, int column, int row) {
+
+    }
 
     @Override
     public void onColumnHeaderClicked(@NonNull RecyclerView.ViewHolder p_jColumnHeaderView, int
@@ -61,7 +66,8 @@ public class MoyenTableViewListener implements ITableViewListener {
     @Override
     public void onRowHeaderClicked(@NonNull RecyclerView.ViewHolder p_jRowHeaderView, int
             p_nYPosition) {
-
+        Log.e(getClass().getSimpleName(), "onRowHeaderClicked a été appelé");
+        p_jRowHeaderView.itemView.callOnClick();
     }
 
     @Override
