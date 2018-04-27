@@ -116,7 +116,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         fab:fab_size="normal"
-        fab:fab_label="@string/map_activity_fab_menu_removePointToVisit_label"
         fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
         fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
         fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"

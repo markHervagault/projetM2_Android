@@ -15,25 +15,33 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <ImageButton
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/ButtonStop"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_margin="5dp"
-            android:background="?android:selectableItemBackground"
-            android:scaleType="fitCenter"
-            fab:srcCompat="@drawable/stop" />
+            fab:fab_size="normal"
+            fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+            fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+            fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+            android:src="@drawable/stop_black"
+            />
 
-        <ImageButton
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/ButtonPlayPause"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_margin="5dp"
-            android:background="?android:selectableItemBackground"
-            android:scaleType="fitCenter"
-            fab:srcCompat="@drawable/pause" />
+            fab:fab_size="normal"
+            fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+            fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+            fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+            android:src="@drawable/pause_black"
+            />
+
+
     </LinearLayout>
 
 </FrameLayout>

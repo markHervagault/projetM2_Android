@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.github.clans.fab.FloatingActionButton;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -36,12 +38,12 @@ public class DroneCommandFragment extends Fragment {
     /**
      * Bouton play/pause mission
      */
-    public ImageButton buttonPlayPause;
+    public FloatingActionButton buttonPlayPause;
 
     /**
      * Bouton stop mission
      */
-    public ImageButton buttonStop;
+    public FloatingActionButton buttonStop;
 
     public static final String PLAY_TAG = "play";
     public static final String PAUSE_TAG = "pause";
@@ -100,19 +102,19 @@ public class DroneCommandFragment extends Fragment {
 
         switch (message.getDroneStatut()) {
             case EN_MISSION:
-                buttonPlayPause.setBackgroundDrawable(getResources().getDrawable(R.drawable.pause));
+                buttonPlayPause.setImageResource(R.drawable.pause_black);
                 buttonStop.setVisibility(View.VISIBLE);
                 buttonPlayPause.setVisibility(View.VISIBLE);
                 buttonPlayPause.setTag(PAUSE_TAG);
                 break;
             case EN_PAUSE:
-                buttonPlayPause.setBackgroundDrawable(getResources().getDrawable(R.drawable.play));
+                buttonPlayPause.setImageResource(R.drawable.play_black);
                 buttonStop.setVisibility(View.VISIBLE);
                 buttonPlayPause.setVisibility(View.VISIBLE);
                 buttonPlayPause.setTag(PLAY_TAG);
                 break;
             case RETOUR_BASE:
-                buttonPlayPause.setBackgroundDrawable(getResources().getDrawable(R.drawable.pause));
+                buttonPlayPause.setImageResource(R.drawable.pause_black);
                 buttonPlayPause.setVisibility(View.VISIBLE);
                 buttonStop.setVisibility(View.GONE);
                 buttonPlayPause.setTag(PAUSE_TAG);
