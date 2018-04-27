@@ -99,5 +99,15 @@ public class MissionDTO {
         this.archive = archive;
     }
 
+    public String toString()
+    {
+        StringBuilder s = new StringBuilder();
+        if(getDronePositions() != null)
+            for(PointMissionDTO dto : getDronePositions())
+                s.append(dto.getIndex()).append("\n");
+
+        return s.toString();
+    }
+
 
 }

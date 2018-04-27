@@ -291,7 +291,8 @@ public class MapService implements IMapService {
         RestTemplate restTemplate = RestTemplate.getInstance();
         DroneMissionConsumer consumer = restTemplate.builConsumer(DroneMissionConsumer.class);
 
-        MissionDTO currentMission = new MissionDTO();
+        MissionDTO currentMission = null;
+
         Response<MissionDTO> response = null;
         try{
             response = consumer.getMission(token, droneId).execute();
@@ -300,6 +301,9 @@ public class MapService implements IMapService {
                 currentMission = response.body();
                 Log.i(TAG,  "Mission récupérée pour le drone : " + droneId);
             }
+            else if(response.code() == HttpURLConnection.HTTP_NOT_FOUND)
+                Log.i(TAG,  "Aucune mission en cours pour le drone : " + droneId);
+
         }
         catch (IOException e)
         {
@@ -308,6 +312,4 @@ public class MapService implements IMapService {
 
         return currentMission;
     }
-
-
 }

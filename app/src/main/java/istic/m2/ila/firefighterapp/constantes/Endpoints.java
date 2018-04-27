@@ -7,9 +7,7 @@ package istic.m2.ila.firefighterapp.constantes;
 public class Endpoints {
 
 //    public static final String BASE = "http://10.0.2.2:8080/api/"; // Local
-//    public static final String BASE = "http://148.60.11.57:6002/api/"; // Old Serveur
-    public static final String BASE = "http://51.15.251.202:6002/api/"; // OldServeur
-    public static final String RABBITMQ = "amqp://guest:guest@51.15.251.202:6005/";
+    public static final String BASE = "http://51.15.251.202:6002/api/"; // Serveur
 
     //RABBITMQ CREDENTIALS
     public static final String RABBITMQ_USERNAME = "guest";
@@ -17,8 +15,15 @@ public class Endpoints {
     public static final String RABBITMQ_SERVERADRESS= "51.15.251.202";
     public static final int RABBITMQ_SERVERPORT = 6005;
     public static final String RABBITMQ_EXCHANGE_NAME = "hub";
+    public static final String RABBITMQ_EXCHANGE_TYPE = "topic";
 
-    //RABBITMQ EXCHANGENAME
+    //RABBITMQ ENDPOINTS
+
+    public static final String RABBITMQ_DRONE_COMMAND = "drone.command.";
+    public static final String RABBITMQ_DRONE_INFO = "drone.info.";
+    public static final String RABBITMQ_ALLDRONE_INFO = "drone.info.#";
+    public static final String RABBITMQ_MISSION_DTO = "android.update.MissionDTO.";
+    public static final String RABBITMQ_ALLMISSION_DTO = "android.update.MissionDTO.#";
 
 
     public static final String AUTHENTICATE = "authenticate";
@@ -50,6 +55,7 @@ public class Endpoints {
 
     public static final String MISSION = "mission";
     public static final String MISSION_ID = "mission/{id}";
+    public static final String CURRENT_MISSION_ID = "drone/{id}/mission-active";
 
     public static final String SINISTRE = "sinistre";
     public static final String SINISTRE_ID = "sinistre/{id}";

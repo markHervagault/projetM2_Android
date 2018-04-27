@@ -27,10 +27,13 @@ import java.util.Map;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.adapter.ItemListDroneAdapter;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
+import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 import retrofit2.Response;
 
 public class DroneListViewFragment extends Fragment {
@@ -38,39 +41,39 @@ public class DroneListViewFragment extends Fragment {
     /**
      * Identifiant de la classe pour les logs
      */
-    private String TAG = "DroneListViewFragment => ";
+    private static final String TAG = "DroneListView Fragment";
 
     /**
      * Contexte
      */
-    public Context context;
+    public Context _context;
 
     /**
-     * RecyclerView de la liste des drones
+     * RecyclerView de la liste des _drones
      */
-    RecyclerView listDroneRecycler;
+    RecyclerView _listDroneRecycler;
 
     /**
      * Adapter de la liste view
      */
-    RecyclerView.Adapter mAdapter;
-
-    /**
-     * Liste des drones
-     */
-    private List<DroneDTO> drones = new ArrayList<DroneDTO>();
+    RecyclerView.Adapter _adapter;
 
     /**
      * Map de recherche de drone dans la liste pour être plus performant
      */
-    private Map<Long, Integer> dronedIdPosition = new HashMap<Long, Integer>();
+    private Map<Long, Integer> _dronesIndexById;
+
+    /**
+     * Liste des drones à afficher
+     */
+    private List<DroneDTO> _dronesList;
 
     /**
      * Drone sélectionné dans la liste, null si aucun drone est sélectionné
      */
-    private DroneDTO droneSelected;
+    private DroneDTO _selectedDrone;
 
-    View view;
+    private View view;
 
     public DroneListViewFragment() {
         // Required empty public constructor
@@ -83,89 +86,100 @@ public class DroneListViewFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        //Initialisation des collections
+        _dronesIndexById = new HashMap<>();
+        _dronesList = new ArrayList<>();
+
+        //Récupération de la vue
         View view = inflater.inflate(R.layout.fragment_drone_list_view, container, false);
-        this.view = view;
-        this.context = view.getContext();
+        if(view != null)
+        {
+            this.view = view;
+            this._context = view.getContext();
+        }
+        else
+        {
+            Log.i(TAG, "Impossible de recuperer la vue 'R.layout.fragment_drone_list_view' -- onCreateView");
+        }
 
         // On initialise le fragment
-        initDroneListFragment();
-
-        // On bind la liste des drones avec le recyclerView
-        getDronesFromBDD();
+        InitDroneListFragment();
 
         return view;
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        // On bind la liste des _drones avec le recyclerView
+        RefreshDroneList();
     }
 
     /**
      * Initialise le recyclerView
      */
-    protected void initDroneListFragment(){
+    protected void InitDroneListFragment(){
 
-        listDroneRecycler = view.findViewById(R.id.recycler_list_map);
+        _listDroneRecycler = view.findViewById(R.id.recycler_list_map);
         // On peuple notre RecyclerView
-        mAdapter = new ItemListDroneAdapter(this.drones);
+        _adapter = new ItemListDroneAdapter(this._dronesList);
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
-        listDroneRecycler.setItemAnimator(new DefaultItemAnimator());
-        ((SimpleItemAnimator)listDroneRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
-        listDroneRecycler.setAdapter(mAdapter);
-        listDroneRecycler.setLayoutManager(mLayoutManager);
-
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        _listDroneRecycler.setItemAnimator(new DefaultItemAnimator());
+        ((SimpleItemAnimator) _listDroneRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
+        _listDroneRecycler.setAdapter(_adapter);
+        _listDroneRecycler.setLayoutManager(layoutManager);
     }
 
 
     /**
-     * Appel le REST pour récupérer tout les drones présents en BDD
+     * Appel le REST pour récupérer tout les _drones présents en BDD
      */
-    private void getDronesFromBDD(){
-        AsyncTask.execute(new Runnable() {
-            public void run() {
-
-                // On peuple notre RecyclerView
-                List<DroneDTO> droneList = new ArrayList<>();
+    private void RefreshDroneList(){
+        AsyncTask.execute(new Runnable()
+        {
+            public void run()
+            {
+                // On vide les listes actuelles
+                _dronesIndexById.clear();
+                _dronesList.clear();
 
                 // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                DroneConsumer droneConsumer = restTemplate.builConsumer(DroneConsumer.class);
+                DroneConsumer droneConsumer = RestTemplate.getInstance().builConsumer(DroneConsumer.class);
 
                 Response<List<DroneDTO>> response = null;
                 try {
                     // Récupération du token
-                    String token = context.getSharedPreferences("user", context.MODE_PRIVATE)
-                            .getString("token", "null");
+                    String token = _context.getSharedPreferences("user", _context.MODE_PRIVATE).getString("token", "null");
 
-                    // On récupère toutes les interventions du Serveur
+                    // On récupère tous les drones du serveur
                     response = droneConsumer.getListDrone(token).execute();
-                    if(response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                    final List<DroneDTO> droneList;
+                    if(response != null && response.code() == HttpURLConnection.HTTP_OK)
                         droneList = response.body();
-                    }
+                    else
+                        droneList = new ArrayList<>();
+
+                    //Mise a jour de la liste des drones
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            addDronesInList(droneList);
+                            //Mise a jour graphique de la vue
+                            _adapter.notifyDataSetChanged();
+                        }
+                    });
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                addDronesInList(droneList);
-
             }
         });
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onUpdateDrone(DroneInfosDTO droneInfos) {
-        if(dronedIdPosition.get(droneInfos.id_drone)!=null){
-            final int positionInList = dronedIdPosition.get(droneInfos.id_drone);
-            DroneDTO drone = drones.get(positionInList);
-            drone.setBattery(droneInfos.battery_level);
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.notifyItemChanged(positionInList);
-                }
-            });
-        }
-
-
     }
 
     @Override
@@ -175,30 +189,56 @@ public class DroneListViewFragment extends Fragment {
     }
 
     /**
-     * Méthode pour ajouter un drone à la liste et mettre à jour la map "dns" droneIdPosition
-     * @param drone
-     *      Drone à ajouter
-     */
-    private void addDroneInList(DroneDTO drone){
-        if ( dronedIdPosition.get(drone.getId()) == null ) {
-            dronedIdPosition.put(drone.getId(), drones.size());
-            drones.add(drone);
-
-            // Envoie du nouveau drone sur le bus pour mettre a jour la Map
-            DeclareDroneMessage message = new DeclareDroneMessage(drone);
-            Log.d(TAG, "================================================================ Envoi d'une donnee sur le bus : "+drone.getNom());
-            EventBus.getDefault().post(message);
-        }
-    }
-
-    /**
-     * Méthode pour ajouter une liste de drones à notre liste de drones
-     * @param drones
-     *      Laa liste des drones à ajouter
+     * Méthode pour ajouter une liste de _drones à notre liste de _drones
+     * @param drones La liste des _drones à ajouter
      */
     private void addDronesInList(List<DroneDTO> drones) {
         for(DroneDTO drone: drones){
             addDroneInList(drone);
         }
     }
+
+    /**
+     * Méthode pour ajouter un drone à la liste et mettre à jour la map "dns" droneIdPosition
+     * @param drone Drone à ajouter
+     */
+    private void addDroneInList(DroneDTO drone)
+    {
+        //Drone existe déjà, return
+        if (_dronesIndexById.get(drone.getId()) != null)
+            return;
+
+        //Insertion du nbouveau drone dans les listes
+        _dronesIndexById.put(drone.getId(), _dronesList.size());
+        _dronesList.add(drone);
+
+        // Envoie du nouveau drone sur le bus pour mettre a jour la Map
+        EventBus.getDefault().post(new DeclareDroneMessage(drone));
+
+    }
+
+    //region Bus Events
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onUpdateDrone(DroneInfosDTO droneInfos)
+    {
+        //Recherche du drone existant
+        if(_dronesIndexById.get(droneInfos.id_drone)==null)
+            return;
+
+        //Récupération du drone depuis la liste
+        final int index = _dronesIndexById.get(droneInfos.id_drone);
+        DroneDTO drone = _dronesList.get(index);
+
+        //Mise a jour du drone
+        drone.Update(droneInfos);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                _adapter.notifyItemChanged(index);
+            }
+        });
+    }
+
+    //endregion
 }

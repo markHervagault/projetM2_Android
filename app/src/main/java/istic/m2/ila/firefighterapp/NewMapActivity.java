@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,9 +45,11 @@ import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.
 import istic.m2.ila.firefighterapp.services.IMapService;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
 
-public class NewMapActivity extends AppCompatActivity implements InterventionDetailsMoyensFragments.ActivityMoyens {
+public class NewMapActivity extends AppCompatActivity implements InterventionDetailsMoyensFragments.ActivityMoyens
+{
+    private static final String TAG  = NewMapActivity.class.getName();
 
-    private Boolean interventionView = true;
+    private Boolean interventionView = false;
 
     private InterventionDetailsMoyensFragments intervListFrag;
     private InterventionMapFragment intervMapFrag;
@@ -138,6 +141,20 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
     {
         super.onDestroy();
         UnBindService();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "OnPause");
+        UnBindService();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "OnResume");
+        BindService();
     }
 
     public void toggleView() {

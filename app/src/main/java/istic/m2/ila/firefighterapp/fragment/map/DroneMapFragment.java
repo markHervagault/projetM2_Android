@@ -2,37 +2,32 @@ package istic.m2.ila.firefighterapp.fragment.map;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
-import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
-import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.DroneManager;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.DroneMissionDrawing;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MissionManager;
+import istic.m2.ila.firefighterapp.fragment.map.droneMapModeFragment.DroneCommandFragment;
+import istic.m2.ila.firefighterapp.fragment.map.droneMapModeFragment.DroneMissionFragment;
 
 public class DroneMapFragment extends Fragment {
-    //region  INIT
-
     //Global Members
     private final String TAG = "DroneMap Fragment";
 
@@ -41,23 +36,30 @@ public class DroneMapFragment extends Fragment {
     private GoogleMap _googleMap;
     private View _view;
 
-    private DroneMissionDrawing _missionDrawing;
+    private MissionManager _missionManager;
     private DroneManager _droneManager;
 
+    private DroneCommandFragment _droneCommandFrag;
+    private DroneMissionFragment _droneMissionFrag;
+
     public DroneMapFragment() {
-        // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        Log.i(TAG, "OnCreateView");
         // Inflate the layout for this fragment
         _view = inflater.inflate(R.layout.fragment_drone_map, container, false);
+
+        InitUI();
+
         final Button button = _view.findViewById(R.id.toggleView);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -67,7 +69,6 @@ public class DroneMapFragment extends Fragment {
 
         _MapView = (MapView) _view.findViewById(R.id.mapView);
         _MapView.onCreate(savedInstanceState);
-
         _MapView.onResume(); // needed to get the map to display immediately
 
         try {
@@ -84,7 +85,6 @@ public class DroneMapFragment extends Fragment {
 
                 //Initialise la carte et le menu
                 InitMap();
-                InitMenu();
             }
         });
 
@@ -94,8 +94,8 @@ public class DroneMapFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        _MapView.onDestroy();
         EventBus.getDefault().unregister(this);
+        _MapView.onDestroy();
     }
 
     @Override
@@ -118,162 +118,216 @@ public class DroneMapFragment extends Fragment {
 
     //endregion
 
-    //region INTERFACE
-
-    // Interface Members
-    private boolean isPathClosed;
-    private boolean isAddButtonEnabled;
-
-    /**
-     * Initialise le menu de controles déroulants avec des listeners
-     */
-    private void InitMenu() {
-        isPathClosed = false;
-        isAddButtonEnabled = false;
-
-        FloatingActionButton fabRemoveSelectedMarker = _view.findViewById(R.id.fabMenu_removeSelectedMarker);
-        final FloatingActionButton fabOpenClose = _view.findViewById(R.id.fabMenu_openClosePath);
-        final FloatingActionButton fabAddMarker = _view.findViewById(R.id.fabMenu_addMarker);
-        FloatingActionButton fabZone = _view.findViewById(R.id.fabMenu_zone);
-        FloatingActionButton fabSendMission = _view.findViewById(R.id.fab_menu2_send);
-
-        //Remove Button Listener
-        fabRemoveSelectedMarker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "RemoveButton Cliked");
-                // Gestion de l'événement click pour le bouton flottant
-                _missionDrawing.DeleteSelectedMarker();
-                RefreshOpenClosePathButtonStatus();
-            }
-        });
-
-        //Add Button Listener
-        fabAddMarker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isAddButtonEnabled) // Activation du mode
-                {
-                    //Desactivation des boutons
-                    ChangeMenuButtonsStatus(false);
-
-                    //Activation du bouton d'ajout ?? Utile??
-                    fabAddMarker.setEnabled(true);
-
-                    // Couleurs du focus
-                    fabAddMarker.setColorNormal(getResources().
-                            getColor(R.color.colorMenuFabSelectedNormal));
-                    fabAddMarker.setColorPressed(getResources().
-                            getColor(R.color.colorMenuFabSelectedPressed));
-                    fabAddMarker.setColorRipple(getResources().
-                            getColor(R.color.colorMenuFabSelectedRipple));
-
-                    isAddButtonEnabled = true;
-                    _missionDrawing.setEditMode(true);
-                } else //Desactivation du mode
-                {
-                    //Reactivation des boutons
-                    ChangeMenuButtonsStatus(true);
-
-                    // Couleurs de l'unfocus
-                    fabAddMarker.setColorNormal(getResources().
-                            getColor(R.color.colorMenuFabDefaultNormal));
-                    fabAddMarker.setColorPressed(getResources().
-                            getColor(R.color.colorMenuFabDefaultPressed));
-                    fabAddMarker.setColorRipple(getResources().
-                            getColor(R.color.colorMenuFabDefaultRipple));
-
-                    isAddButtonEnabled = false;
-                    _missionDrawing.setEditMode(false);
-                }
-            }
-        });
-
-        fabOpenClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Si le trajet est fermé
-                if (_missionDrawing.isPathClosed()) {
-                    //Changement de style du bouton
-                    fabOpenClose.setColorNormal(getResources().getColor(R.color.colorMenuFabDefaultNormal));
-                    fabOpenClose.setColorPressed(getResources().getColor(R.color.colorMenuFabDefaultPressed));
-                    fabOpenClose.setColorRipple(getResources().getColor(R.color.colorMenuFabDefaultRipple));
-                    fabOpenClose.setImageResource(R.drawable.openloop);
-
-                    _missionDrawing.setPathClosed(false);
-                } else {
-                    fabOpenClose.setColorNormal(getResources().getColor(R.color.colorMenuFabSelectedNormal));
-                    fabOpenClose.setColorPressed(getResources().getColor(R.color.colorMenuFabSelectedPressed));
-                    fabOpenClose.setColorRipple(getResources().getColor(R.color.colorMenuFabSelectedRipple));
-                    fabOpenClose.setImageResource(R.drawable.closedloop);
-
-                    _missionDrawing.setPathClosed(true);
-                }
-            }
-        });
-
-        fabSendMission.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _missionDrawing.SendMission(1l, 1l, 0);
-            }
-        });
-
-        //Ajout des boutons à la liste pour la désactivation
-        floatingActionButtonList = new ArrayList<>();
-
-        floatingActionButtonList.add(fabRemoveSelectedMarker);
-        floatingActionButtonList.add(fabAddMarker);
-        floatingActionButtonList.add(fabZone);
-
-        //Abonnement aux changements de markers
-        _missionDrawing.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt)
-            {
-                if(evt.getPropertyName().equals("markersCount"))
-                    RefreshOpenClosePathButtonStatus();
-            }
-        });
-    }
-
-    private List<FloatingActionButton> floatingActionButtonList;
-
-    private void ChangeMenuButtonsStatus(Boolean enabled) {
-        for (FloatingActionButton button : floatingActionButtonList)
-            button.setEnabled(enabled);
-    }
-
-    private void RefreshOpenClosePathButtonStatus() {
-        FloatingActionButton openCloseButton = _view.findViewById(R.id.fabMenu_openClosePath);
-        if (_missionDrawing.getMarkersCount() < 3) {
-            openCloseButton.setEnabled(false);
-        } else {
-            openCloseButton.setEnabled(true);
-        }
-    }
-
-    //endregion
-
-    //region MAP
+    //region Init
 
     /**
      * Initialise la Carte avec les listeners d'évènements
      */
-    private void InitMap() {
-        _missionDrawing = new DroneMissionDrawing(_googleMap, getActivity());
+    private void InitMap()
+    {
+        //Instanciation des managers
         _droneManager = new DroneManager(_googleMap, getActivity());
-        RefreshOpenClosePathButtonStatus();
+        _missionManager = new MissionManager(_googleMap, getActivity());
+
+        _droneManager.addPropertyChangeListener(_droneListener);
+        _missionManager.addPropertyChangeListener(_missionListener);
     }
+
+    private void InitUI()
+    {
+        //Fragments UI
+        _droneCommandFrag = new DroneCommandFragment();
+        _droneMissionFrag = new DroneMissionFragment();
+
+        //Inflating UI
+        getFragmentManager().beginTransaction().replace(R.id.droneCommandFragmentLayout, _droneCommandFrag).commit();
+        getFragmentManager().beginTransaction().replace(R.id.droneMissionFragmentLayout, _droneMissionFrag).commit();
+
+        //No View At start
+        getFragmentManager().beginTransaction().hide(_droneMissionFrag).commit();
+        getFragmentManager().beginTransaction().hide(_droneCommandFrag).commit();
+    }
+
+
+    //DroneManager
+    private PropertyChangeListener _droneListener = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent propertyChangeEvent)
+        {
+            switch (propertyChangeEvent.getPropertyName())
+            {
+                case DroneManager.SELECTED_DRONE_CHANGED_EVENT:
+                    break;
+            }
+        }
+    };
+
+    //Mission Manager Listener
+    private PropertyChangeListener _missionListener = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent propertyChangeEvent)
+        {
+            switch (propertyChangeEvent.getPropertyName())
+            {
+                case MissionManager.MISSIONMODE_CHANGED_EVENT_NAME: //Changement de mode de mission
+                    UpdateMissionMode();
+                    break;
+                case MissionManager.EDITMODE_CHANGED_EVENT_NAME: //Prévenir l'UI changement de bouton
+                    if(_missionManager.isEditMode())
+                        _droneMissionFrag.SetAddMode();
+                    else
+                        _droneMissionFrag.UnSetAddMode();
+                    break;
+                case MissionManager.POINTCOUNT_CHANGED_EVENT_NAME: //Prévenir l'UI, chanement de bouton
+                    _droneMissionFrag.RefreshOpenPathButton(_missionManager.getPointsCount());
+                    break;
+                case MissionManager.SENDMISSION_CHANGED_EVENT_NAME: //Prévenir l'UI, changement de bouton
+                    if(_missionManager.canSendMission())
+                        _droneMissionFrag.setCanSendMission();
+                    else
+                        _droneMissionFrag.unSetCanSendButton();
+
+                default:
+                    break;
+            }
+        }
+    };
 
     //endregion
 
-    //region Events
+    //region UI Listeners
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onSelectedDroneChangedMessageEvent(SelectedDroneChangedMessage message)
+    //region DroneCommand Listeners
+
+    private View.OnClickListener _onButtonPlayPauseListener = new View.OnClickListener()
     {
+        @Override
+        public void onClick(View view)
+        {
+            if(view.getTag().equals(DroneCommandFragment.PLAY_TAG))
+                _droneManager.SendPlayCommand();
+            else
+                _droneManager.SendPauseCommand();
+        }
+    };
 
+    private View.OnClickListener _onButtonStopListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            _droneManager.SendStopCommand();
+        }
+    };
+
+    //endregion
+
+    //region DroneMissionListener
+
+    //TODO : Abonnement sur selectedMarker, et modification du bouton (enabled ou pas)
+
+    private View.OnClickListener _onRemoveButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            _missionManager.RemoveSelectedMarker();
+        }
+    };
+
+    private View.OnClickListener _onOpenCLoseButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            if(_missionManager.isPathCLosed())
+            {
+                _missionManager.OpenPath();
+                _droneMissionFrag.OpenPath();
+            }
+            else {
+                _missionManager.ClosePath();
+                _droneMissionFrag.ClosePath();
+            }
+        }
+    };
+
+    private View.OnClickListener _onAddModeButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            if(_missionManager.isEditMode())
+            {
+                _missionManager.setEditMode(false);
+                _droneMissionFrag.UnSetAddMode();
+            }
+            else
+            {
+                _missionManager.setEditMode(true);
+                _droneMissionFrag.SetAddMode();
+            }
+        }
+    };
+
+    private View.OnClickListener _onZoneButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            //TODO : Implémenter zone? maybe?
+        }
+    };
+
+    private View.OnClickListener _onSendMissionButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            _missionManager.SendMission();
+        }
+    };
+
+    //endregion
+
+    //endregion
+
+    //region Methods
+
+    private void UpdateMissionMode()
+    {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        switch (_missionManager.getMissionMode())
+        {
+            case FOLLOW:
+                _droneCommandFrag.Reset(_droneManager.getSelectedDrone().getStatus());
+                transaction.show(_droneCommandFrag);
+                if(!_droneMissionFrag.isHidden())
+                    transaction.hide(_droneMissionFrag);
+
+                _droneCommandFrag.buttonPlayPause.setOnClickListener(_onButtonPlayPauseListener);
+                _droneCommandFrag.buttonStop.setOnClickListener(_onButtonStopListener);
+
+                break;
+
+            case EDIT:
+                //_droneMissionFrag.Reset(); //TODO : implémenter
+                transaction.show(_droneMissionFrag);
+                if(!_droneCommandFrag.isHidden())
+                    transaction.hide(_droneCommandFrag);
+
+                _droneMissionFrag._removeSelectedMarkerButton.setOnClickListener(_onRemoveButtonListener);
+                _droneMissionFrag._openCloseClosePathButton.setOnClickListener(_onOpenCLoseButtonListener);
+                _droneMissionFrag._addModeButton.setOnClickListener(_onAddModeButtonListener);
+                _droneMissionFrag._zoneButton.setOnClickListener(_onZoneButtonListener);
+                _droneMissionFrag._sendMissionButton.setOnClickListener(_onSendMissionButtonListener);
+
+                break;
+
+            case NONE:
+                if(!_droneCommandFrag.isHidden())
+                    transaction.hide(_droneCommandFrag);
+                if(!_droneMissionFrag.isHidden())
+                    transaction.hide((_droneMissionFrag));
+                break;
+        }
+
+        transaction.commit();
     }
 
     //endregion
