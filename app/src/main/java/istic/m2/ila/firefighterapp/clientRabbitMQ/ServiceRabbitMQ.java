@@ -105,9 +105,6 @@ public class ServiceRabbitMQ extends Service {
 
     //region Basic Consumers
 
-    private String _consumerTag;
-    private Channel _missionDTOChannel;
-
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void UpdateMissionDTO(SelectedDroneChangedMessage message) throws Exception
     {
@@ -117,16 +114,13 @@ public class ServiceRabbitMQ extends Service {
             return;
         }
 
-        if(_missionDTOChannel != null && _consumerTag != null)
-            _missionDTOChannel.basicCancel(_consumerTag);
+        Channel channel = _connection.createChannel();
+        channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
 
-        _missionDTOChannel = _connection.createChannel();
-        _missionDTOChannel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_EXCHANGE_TYPE);
+        String queueName = channel.queueDeclare().getQueue();
+        channel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_ALLMISSION_DTO);
 
-        String queueName = _missionDTOChannel.queueDeclare().getQueue();
-        _missionDTOChannel.queueBind(queueName, Endpoints.RABBITMQ_EXCHANGE_NAME, Endpoints.RABBITMQ_ALLMISSION_DTO);
-
-        Consumer consumer = new DefaultConsumer(_missionDTOChannel)
+        Consumer consumer = new DefaultConsumer(channel)
         {
             private String incomingMessageHandler = "";
 
@@ -149,7 +143,7 @@ public class ServiceRabbitMQ extends Service {
             }
         };
 
-        _consumerTag = _missionDTOChannel.basicConsume(queueName, true, consumer);
+        channel.basicConsume(queueName, true, consumer);
     }
 
     //endregion

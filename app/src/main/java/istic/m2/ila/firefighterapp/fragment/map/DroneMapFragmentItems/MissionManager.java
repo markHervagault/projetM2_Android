@@ -251,6 +251,7 @@ public class MissionManager extends MapItem
         _pathPointsByTag.remove(_selectedMarker);
 
         ReindexPoints();
+        _pathDrawing.Update(_pathPoints);
 
         _propertyChangeSupport.firePropertyChange(POINTCOUNT_CHANGED_EVENT_NAME, getPointsCount() + 1, getPointsCount());
     }
@@ -330,6 +331,7 @@ public class MissionManager extends MapItem
                             index++;
                         }
                         currentMission.setDronePositions(points);
+                        Log.i(TAG, "Sending Misison : " + currentMission.toString());
 
                         //Envoi de la mission
                         AsyncTask.execute(new Runnable() {
@@ -350,10 +352,17 @@ public class MissionManager extends MapItem
         alertBuilder.create().show();
     }
 
-    private void SetCurrentMission(MissionDTO dto)
+    private void SetCurrentMission(final MissionDTO dto)
     {
         Log.i(TAG, "Setting current mission");
         //Tri des points du drone par index
+
+        if(dto.getDronePositions() == null)
+        {
+            Log.e(TAG, "Send Mission : drone positions null");
+            return;
+        }
+
         final List<PointMissionDTO> points = new ArrayList<>(dto.getDronePositions());
         Collections.sort(points, new Comparator<PointMissionDTO>()
         {
@@ -380,6 +389,10 @@ public class MissionManager extends MapItem
                     //Ajout du marker à la collection
                     _pathPoints.add(pathPoint);
                     _pathPointsByTag.put(tag, pathPoint);
+                    if(dto.getBoucleFermee())
+                        ClosePath();
+                    else
+                        OpenPath();
 
                     //On rafraichit le path
                     _pathDrawing.Update(_pathPoints);
@@ -410,11 +423,14 @@ public class MissionManager extends MapItem
                     @Override
                     public void run() {
                         //vérification du token
+                        Log.i(TAG, "Getting current mission");
                         String token = _contextActivity.getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
                         if (!token.equals("null")) {
                             MissionDTO currentMission = MapService.getInstance().getCurrentDroneMission(token, _selectedDrone.getId());
                             if (currentMission != null)
                                 SetCurrentMission(currentMission);
+                            else
+                                Log.e(TAG, "Current mission null for drone : " + _selectedDrone.getId());
                         }
                     }
                 });
@@ -423,6 +439,7 @@ public class MissionManager extends MapItem
             case DISPONIBLE:
                 setMissionMode(MissionMode.EDIT);
                 setCanSendMission(true);
+
                 _googleMap.setOnMapClickListener(onMapClickListener);
                 _googleMap.setOnMarkerDragListener(onMarkerDragListener);
                 break;
@@ -472,6 +489,7 @@ public class MissionManager extends MapItem
         if(currentMission == null || !currentMission.getDroneId().equals(_selectedDrone.getId()))
             return;
 
+        Log.i(TAG, "OnDroneMissionUpdate : " + currentMission.toString());
         SetCurrentMission(currentMission);
     }
 

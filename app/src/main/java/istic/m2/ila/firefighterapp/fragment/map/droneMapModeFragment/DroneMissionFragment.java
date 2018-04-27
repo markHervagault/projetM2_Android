@@ -90,14 +90,14 @@ public class DroneMissionFragment extends Fragment
         for (FloatingActionButton button : floatingActionButtonList)
             button.setEnabled(true);
 
-        _addModeButton.setColorNormal(getResources().getColor(R.color.colorMenuFabSelectedNormal));
-        _addModeButton.setColorPressed(getResources().getColor(R.color.colorMenuFabSelectedPressed));
-        _addModeButton.setColorRipple(getResources().getColor(R.color.colorMenuFabSelectedRipple));
+        _addModeButton.setColorNormal(getResources().getColor(R.color.colorMenuFabDefaultNormal));
+        _addModeButton.setColorPressed(getResources().getColor(R.color.colorMenuFabDefaultPressed));
+        _addModeButton.setColorRipple(getResources().getColor(R.color.colorMenuFabDefaultRipple));
     }
 
     //Send Mission
     private boolean _canSendMission;
-    public boolean canSendMission() {return _canSendMission; }
+    public boolean canSendMission() { return _canSendMission; }
     public void setCanSendMission()
     {
         _canSendMission = true;
@@ -143,7 +143,7 @@ public class DroneMissionFragment extends Fragment
         _zoneButton = _view.findViewById(R.id.fabMenu_zone);
         _sendMissionButton = _view.findViewById(R.id.fab_menu2_send);
 
-        //Ajout des boutons à la liste pour la désactivation
+        //Ajout des boutons � la liste pour la d�sactivation
         floatingActionButtonList = new ArrayList<>();
 
         floatingActionButtonList.add(_removeSelectedMarkerButton);

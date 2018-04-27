@@ -16,6 +16,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 
@@ -85,22 +86,16 @@ public class DroneCommandFragment extends Fragment {
         onSelectedDroneStatusChanged(new SelectedDroneStatusChangedMessage(status, 0));
     }
 
-    //endregion
-
-    //region Event bus
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSelectedDroneStatusChanged(SelectedDroneStatusChangedMessage message)
+    public void RefreshUI(EDroneStatut status)
     {
         //Mise a jour de l'UI en fonction de l'état du drone
-        if(message.getDroneStatut()==null)
+        if(status == null)
         {
             Log.e(TAG, "Le nouveau statut du drone est null");
             return;
         }
 
-        Log.i(TAG, "Nouveau statut : " + message.getDroneStatut().toString());
-
-        switch (message.getDroneStatut()) {
+        switch (status) {
             case EN_MISSION:
                 buttonPlayPause.setImageResource(R.drawable.pause_black);
                 buttonStop.setVisibility(View.VISIBLE);
@@ -127,6 +122,22 @@ public class DroneCommandFragment extends Fragment {
                 break;
         }
     }
+
+    //endregion
+
+    //region Event bus
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSelectedDroneStatusChanged(SelectedDroneStatusChangedMessage message)
+    {
+        RefreshUI(message.getDroneStatut());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSelectedDroneChanged(SelectedDroneChangedMessage message)
+    {
+        RefreshUI(message.Drone.getStatut());
+    }
+
 
     //endregion
 }

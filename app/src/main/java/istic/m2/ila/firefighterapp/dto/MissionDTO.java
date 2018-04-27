@@ -101,8 +101,12 @@ public class MissionDTO {
 
     public String toString()
     {
-        String s = "";
-        return s;
+        StringBuilder s = new StringBuilder();
+        if(getDronePositions() != null)
+            for(PointMissionDTO dto : getDronePositions())
+                s.append(dto.getIndex()).append("\n");
+
+        return s.toString();
     }
 
 

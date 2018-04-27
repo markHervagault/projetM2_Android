@@ -10,6 +10,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,15 +30,22 @@ public class DroneManager extends MapItem
     //region Members
 
     private Map<Long, DroneDrawing> _dronesById;
-
     private static final String TAG = "DRONE MANAGER";
+
 
     //endregion
 
     //region Properties
 
+    public static final String SELECTED_DRONE_CHANGED_EVENT = "selectedDroneChangedEvent";
     private DroneDrawing _selectedDrone;
+    private void SetSelectedDrone(DroneDrawing drone)
+    {
+        _selectedDrone = drone;
+        _propertyChangeSupport.firePropertyChange(SELECTED_DRONE_CHANGED_EVENT, null, null);
+    }
     public DroneDrawing getSelectedDrone() {
+
         return _selectedDrone;
     }
 
@@ -47,6 +56,7 @@ public class DroneManager extends MapItem
     public DroneManager(GoogleMap map, Activity contextActivity)
     {
         super(map,contextActivity);
+        _propertyChangeSupport = new PropertyChangeSupport(this);
 
         _dronesById = new HashMap<>();
         Log.i(TAG, "Subscribed to the bus");
@@ -108,7 +118,8 @@ public class DroneManager extends MapItem
             _selectedDrone.UnSelect();
         }
 
-        _selectedDrone = _dronesById.get(message.Drone.getId());
+        //Evènement
+        SetSelectedDrone(_dronesById.get(message.Drone.getId()));
         _selectedDrone.Select();
 
     }
@@ -122,6 +133,21 @@ public class DroneManager extends MapItem
             DroneDrawing drone = _dronesById.get(message.id_drone);
             drone.Update(message);
         }
+    }
+
+    //endregion
+
+    //region PropertyChanged
+
+
+    private PropertyChangeSupport _propertyChangeSupport;
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        _propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        _propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
     //endregion

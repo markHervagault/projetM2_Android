@@ -129,6 +129,7 @@ public class DroneMapFragment extends Fragment {
         _droneManager = new DroneManager(_googleMap, getActivity());
         _missionManager = new MissionManager(_googleMap, getActivity());
 
+        _droneManager.addPropertyChangeListener(_droneListener);
         _missionManager.addPropertyChangeListener(_missionListener);
     }
 
@@ -147,6 +148,21 @@ public class DroneMapFragment extends Fragment {
         getFragmentManager().beginTransaction().hide(_droneCommandFrag).commit();
     }
 
+
+    //DroneManager
+    private PropertyChangeListener _droneListener = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent propertyChangeEvent)
+        {
+            switch (propertyChangeEvent.getPropertyName())
+            {
+                case DroneManager.SELECTED_DRONE_CHANGED_EVENT:
+                    break;
+            }
+        }
+    };
+
+    //Mission Manager Listener
     private PropertyChangeListener _missionListener = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent propertyChangeEvent)
@@ -157,8 +173,20 @@ public class DroneMapFragment extends Fragment {
                     UpdateMissionMode();
                     break;
                 case MissionManager.EDITMODE_CHANGED_EVENT_NAME: //Prévenir l'UI changement de bouton
+                    if(_missionManager.isEditMode())
+                        _droneMissionFrag.SetAddMode();
+                    else
+                        _droneMissionFrag.UnSetAddMode();
+                    break;
                 case MissionManager.POINTCOUNT_CHANGED_EVENT_NAME: //Prévenir l'UI, chanement de bouton
+                    _droneMissionFrag.RefreshOpenPathButton(_missionManager.getPointsCount());
+                    break;
                 case MissionManager.SENDMISSION_CHANGED_EVENT_NAME: //Prévenir l'UI, changement de bouton
+                    if(_missionManager.canSendMission())
+                        _droneMissionFrag.setCanSendMission();
+                    else
+                        _droneMissionFrag.unSetCanSendButton();
+
                 default:
                     break;
             }
