@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map;
+package istic.m2.ila.firefighterapp.fragment.map.intervention.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,8 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -21,13 +19,11 @@ import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
-import istic.m2.ila.firefighterapp.consumer.TypeVehiculeConsumer;
 import istic.m2.ila.firefighterapp.dto.DemandeDTO;
-import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import istic.m2.ila.firefighterapp.dto.TypeVehiculeDTO;
-import istic.m2.ila.firefighterapp.services.IMapService;
-import istic.m2.ila.firefighterapp.services.impl.MapService;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.adapter.ComposanteAdapter;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.adapter.TypeVehiculeAdapter;
 import retrofit2.Response;
 
 /**
@@ -39,12 +35,7 @@ public class DemandeMoyenFragement extends Fragment {
     private static final String TAG = "tag";
     Spinner mySpinner;
     Spinner composanteSpinner;
-    private String number;
     private TypeVehiculeDTO type = new TypeVehiculeDTO();
-    private List<String> items = new ArrayList<String>();
-    private List<TypeVehiculeDTO> listeType = new ArrayList<TypeVehiculeDTO>();
-    private List<TypeComposanteDTO> listeComposante = new ArrayList<TypeComposanteDTO>();
-    private IMapService mapServie = MapService.getInstance();
     private EditText editTextNumberDemand;
 
 
@@ -63,7 +54,6 @@ public class DemandeMoyenFragement extends Fragment {
         demande.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 List<DemandeDTO> listDemande = buildListVehicule(type);
-
                 for(int i = 0; i < listDemande.size(); i++){
                     createDeploiement(listDemande.get(i));
                 }
@@ -77,14 +67,8 @@ public class DemandeMoyenFragement extends Fragment {
     private void setSpinnerData(){
         mySpinner = (Spinner) view.findViewById(R.id.menu);
         composanteSpinner = (Spinner)view.findViewById(R.id.menuComposante);
-
-        listeType = getTypeVehicules();
-        listeComposante = mapServie.getTypeComposante(((NewMapActivity)getActivity()).getToken());
-        Log.i(TAG,"composante:" + listeComposante.get(1));
-        composanteSpinner.setAdapter(new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1,listeComposante));
-        mySpinner.setAdapter(new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1,listeType));
-
-
+        composanteSpinner.setAdapter(new ComposanteAdapter(this.getActivity(),android.R.layout.simple_list_item_1));
+        mySpinner.setAdapter(new TypeVehiculeAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
     }
 
     private  void createDeploiement(DemandeDTO deploiement){
@@ -99,22 +83,6 @@ public class DemandeMoyenFragement extends Fragment {
         }catch (IOException e){
             e.printStackTrace();
         }
-    }
-
-    private List<TypeVehiculeDTO> getTypeVehicules(){
-        RestTemplate restTemplate = RestTemplate.getInstance();
-        TypeVehiculeConsumer consumer = restTemplate.builConsumer(TypeVehiculeConsumer.class);
-        Response<List<TypeVehiculeDTO>> response = null;
-        try{
-            response = consumer.getListTypeVehicules(((NewMapActivity)getActivity()).getToken()).execute();
-            if (response != null && response.code() == HttpURLConnection.HTTP_OK){
-                Log.i(TAG, "type véhicule récupéré");
-                return response.body();
-            }
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
     }
 
     private List<DemandeDTO> buildListVehicule(TypeVehiculeDTO type){

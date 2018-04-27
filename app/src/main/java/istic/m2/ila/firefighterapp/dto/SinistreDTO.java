@@ -21,6 +21,11 @@ public class SinistreDTO implements Serializable, IDTO {
         return id;
     }
 
+    @Override
+    public String menuTitle() {
+        return "Sinistre";
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

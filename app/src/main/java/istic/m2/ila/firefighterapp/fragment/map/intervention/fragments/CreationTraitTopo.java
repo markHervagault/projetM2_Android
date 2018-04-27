@@ -23,6 +23,7 @@ import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.adapter.ComposanteAdapter;
 
 /**
 

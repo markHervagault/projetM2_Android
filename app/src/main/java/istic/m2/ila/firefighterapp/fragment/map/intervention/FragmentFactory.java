@@ -7,7 +7,7 @@ import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.fragment.map.DemandeMoyenFragement;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DemandeMoyenFragement;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationSinistre;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationTraitTopo;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailDeployFragment;
