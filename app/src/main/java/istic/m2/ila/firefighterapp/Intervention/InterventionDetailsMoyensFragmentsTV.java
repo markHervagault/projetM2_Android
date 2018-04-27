@@ -45,7 +45,6 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
     private Long idIntervention;
     private List<DeploiementDTO> listDeploiment;
     private Context context;
-    private LinearLayout linLayTabMoy;
 
     public interface ActivityMoyens {
         Long getIdIntervention();
@@ -107,8 +106,10 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
         mTableAdapter = new MoyenTableAdapter(getContext());
         mTableView.setAdapter(mTableAdapter);
 
+
         // UserInfo data will be getting from a web server.
         populatedTableView(this.listDeploiment);
+        mTableView.setTableViewListener(new MoyenTableViewListener(mTableView, getContext(), listDeploiment));
 
         return view;
     }
@@ -136,6 +137,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
         List<ColumnHeaderModel> list = new ArrayList<>();
 
         // Create Column Headers
+        list.add(new ColumnHeaderModel("Id"));
         list.add(new ColumnHeaderModel("Type"));
         list.add(new ColumnHeaderModel("Nom"));
         list.add(new ColumnHeaderModel("Etat"));
@@ -168,45 +170,47 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
             List<CellModel> list = new ArrayList<>();
 
             // The order should be same with column header list;
-            CellModel cellWithComposante = new CellModel("1-" + i, depInfo.getTypeDemande().getLabel());
+            list.add(new CellModel("1-" + i, depInfo.getId()));
+
+            CellModel cellWithComposante = new CellModel("2-" + i, depInfo.getTypeDemande().getLabel());
             cellWithComposante.setBackgroundColor(composante.getCouleur());
             list.add(cellWithComposante);
 
             if(depInfo.getVehicule()!=null) {
-                list.add(new CellModel("2-" + i, depInfo.getVehicule().getLabel()));
+                list.add(new CellModel("3-" + i, depInfo.getVehicule().getLabel()));
             } else {
-                list.add(new CellModel("2-" + i, "..."));
+                list.add(new CellModel("3-" + i, "..."));
             }
-            list.add(new CellModel("3-" + i, depInfo.getState()));
+            list.add(new CellModel("4-" + i, depInfo.getState()));
 
             if( depInfo.isPresenceCRM()){
-                list.add(new CellModel("4-" + i, "CRM"));
-            } else {
-                list.add(new CellModel("4-" + i, "..."));
-            }
-
-            if(depInfo.getDateHeureDemande()!=null) {
-                list.add(new CellModel("5-" + i, formater.format(depInfo.getDateHeureDemande())));
+                list.add(new CellModel("5-" + i, "CRM"));
             } else {
                 list.add(new CellModel("5-" + i, "..."));
             }
 
-            if(depInfo.getDateHeureValidation()!=null) {
-                list.add(new CellModel("6-" + i, formater.format(depInfo.getDateHeureValidation())));
+            if(depInfo.getDateHeureDemande()!=null) {
+                list.add(new CellModel("6-" + i, formater.format(depInfo.getDateHeureDemande())));
             } else {
                 list.add(new CellModel("6-" + i, "..."));
             }
 
-            if(depInfo.getDateHeureEngagement()!=null) {
-                list.add(new CellModel("7-" + i, formater.format(depInfo.getDateHeureEngagement())));
+            if(depInfo.getDateHeureValidation()!=null) {
+                list.add(new CellModel("7-" + i, formater.format(depInfo.getDateHeureValidation())));
             } else {
                 list.add(new CellModel("7-" + i, "..."));
             }
 
-            if(depInfo.getDateHeureDesengagement()!=null) {
-                list.add(new CellModel("8-" + i, formater.format(depInfo.getDateHeureDesengagement())));
+            if(depInfo.getDateHeureEngagement()!=null) {
+                list.add(new CellModel("8-" + i, formater.format(depInfo.getDateHeureEngagement())));
             } else {
                 list.add(new CellModel("8-" + i, "..."));
+            }
+
+            if(depInfo.getDateHeureDesengagement()!=null) {
+                list.add(new CellModel("9-" + i, formater.format(depInfo.getDateHeureDesengagement())));
+            } else {
+                list.add(new CellModel("9-" + i, "..."));
             }
 
             // Add
@@ -232,7 +236,10 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         //update fields
+        // On masque la colonne 1
+        //mTableView.hideColumn(0);
     }
 
 }
