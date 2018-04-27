@@ -15,9 +15,9 @@ public class MissionDTO {
 
     private Boolean boucleFermee;
 
-    private Date dateHeureCreation;
+    //private Date dateHeureCreation;
 
-    private Date dateHeureFin;
+    //private Date dateHeureFin;
 
     private Long interventionId;
 
@@ -51,7 +51,7 @@ public class MissionDTO {
         this.boucleFermee = boucleFermee;
     }
 
-    public Date getDateHeureCreation() {
+    /*public Date getDateHeureCreation() {
         return dateHeureCreation;
     }
 
@@ -65,7 +65,7 @@ public class MissionDTO {
 
     public void setDateHeureFin(Date dateHeureFin) {
         this.dateHeureFin = dateHeureFin;
-    }
+    }*/
 
     public Long getInterventionId() {
         return interventionId;

@@ -8,7 +8,13 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -22,6 +28,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeoutException;
 
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
@@ -129,11 +139,14 @@ public class ServiceRabbitMQ extends Service {
             {
                 incomingMessageHandler = new String(body, "UTF-8");
                 Log.i(TAG, "Received MissionDTO");
-                GsonBuilder builder = new GsonBuilder();
+                GsonBuilder builder = new GsonBuilder()
+                        .registerTypeAdapter(Date.class, new DateDeserializer())
+                        .registerTypeAdapter(Date.class, new DateSerializer());
                 Gson gson = builder.create();
                 try
                 {
                     MissionDTO missionDTO = gson.fromJson(incomingMessageHandler, MissionDTO.class);
+                    Log.i(TAG, "Deserialized mission : " + missionDTO.toString());
                     EventBus.getDefault().post(missionDTO);
                 }
                 catch (JsonParseException e)
@@ -257,5 +270,42 @@ public class ServiceRabbitMQ extends Service {
         System.out.println(" [x] Sent '" + "drone.command."+event.getDroneId() + "':'" + message + "'");
     }
 
+    //endregion
+
+    //region GSON Date
+
+    //TODO: Centraliser un GSON builder
+    class DateDeserializer implements JsonDeserializer {
+
+        public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        {
+            SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            if(json == null){
+                return null;
+            } else {
+                try {
+                    Date date = dateParser.parse(json.getAsString().substring(0,19));
+                    return date;
+                } catch (ParseException e) {
+                    Log.e(TAG, e.toString());
+                }
+            }
+            return null;
+        }
+    }
+
+    class DateSerializer implements JsonSerializer<Date>
+    {
+        public JsonElement serialize(Date date, Type typeOfSrc, JsonSerializationContext context)
+        {
+            SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            if(date == null){
+                return null;
+            } else {
+                String json = dateParser.format(date);
+                return new JsonPrimitive(json);
+            }
+        }
+    }
     //endregion
 }

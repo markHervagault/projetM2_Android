@@ -331,7 +331,7 @@ public class MissionManager extends MapItem
                             index++;
                         }
                         currentMission.setDronePositions(points);
-                        Log.i(TAG, "Sending Misison : " + currentMission.toString());
+                        //Log.i(TAG, "Sending Misison : " + currentMission.toString());
 
                         //Envoi de la mission
                         AsyncTask.execute(new Runnable() {
@@ -484,10 +484,12 @@ public class MissionManager extends MapItem
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void OnDroneMisisonUpodate(MissionDTO currentMission)
+    public void OnDroneMisisonUpdate(MissionDTO currentMission)
     {
-        if(currentMission == null || !currentMission.getDroneId().equals(_selectedDrone.getId()))
+        if(currentMission == null || !currentMission.getDroneId().equals(_selectedDrone.getId())) {
+            Log.i(TAG, "ReceivedCurrent mission null or not selected drone : " + currentMission.toString());
             return;
+        }
 
         Log.i(TAG, "OnDroneMissionUpdate : " + currentMission.toString());
         SetCurrentMission(currentMission);
