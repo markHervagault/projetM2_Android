@@ -21,9 +21,11 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.concurrent.TimeoutException;
 
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
+import istic.m2.ila.firefighterapp.dto.IDTO;
 
 import static istic.m2.ila.firefighterapp.constantes.Endpoints.RABBITMQ_ANDROID_DELETE;
 import static istic.m2.ila.firefighterapp.constantes.Endpoints.RABBITMQ_ANDROID_UPDATE;
@@ -32,7 +34,7 @@ import static istic.m2.ila.firefighterapp.constantes.Endpoints.RABBITMQ_ANDROID_
  * Provide an Abstract class for RabbitMqService
  * @param <T> Type of the DTO
  */
-public abstract class ServiceRabbitMQGeneric<T> extends Service {
+public abstract class ServiceRabbitMQGeneric<T extends IDTO> extends Service {
 
     public String TAG = "Service "+ getGenericClass().getName() +" => ";
     private Connection _connection;
@@ -44,7 +46,7 @@ public abstract class ServiceRabbitMQGeneric<T> extends Service {
         return ((Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
     }
 
-    private void initConsumer(String routeType, final SyncAction action) throws IOException {
+    private <E extends Object> void initConsumer(final Class<E> t, final String routeType, final SyncAction action) throws IOException {
         Channel channel = _connection.createChannel();
         channel.exchangeDeclare(Endpoints.RABBITMQ_EXCHANGE_NAME, "topic");
 
@@ -66,14 +68,31 @@ public abstract class ServiceRabbitMQGeneric<T> extends Service {
                 Gson gson = builder.create();
                 try
                 {
-                    T typeInfoDTO = gson.fromJson(incomingMessageHandler, getGenericClass());
+                    T messageClass = null;
+                    E typeInfoDTO = gson.fromJson(incomingMessageHandler, t);
 
-                    MessageGeneric<T> message = new MessageGeneric<>(typeInfoDTO, action);
+                    if(typeInfoDTO instanceof Long){
+                        //delete
+                        Class<T> clazz = (Class<T>) Class.forName(getGenericClass().getName());
+                        messageClass = clazz.newInstance();
+                        messageClass.setId((Long)typeInfoDTO);
+                    } else {
+                        //update
+                        messageClass = (T)typeInfoDTO;
+                    }
+
+                    MessageGeneric<T> message = new MessageGeneric<>(messageClass, action);
                     EventBus.getDefault().post(message);
                 }
                 catch (JsonParseException e)
                 {
                     Log.e(TAG, e.getMessage());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
         };
@@ -105,8 +124,8 @@ public abstract class ServiceRabbitMQGeneric<T> extends Service {
 
         try {
             _connection = _factory.newConnection();
-            initConsumer(RABBITMQ_ANDROID_UPDATE,SyncAction.UPDATE);
-            initConsumer(RABBITMQ_ANDROID_DELETE,SyncAction.DELETE);
+            initConsumer(getGenericClass(),RABBITMQ_ANDROID_UPDATE,SyncAction.UPDATE);
+            initConsumer(Long.class,RABBITMQ_ANDROID_DELETE,SyncAction.DELETE);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
