@@ -107,10 +107,9 @@ public class DroneManager extends MapItem
         if(_selectedDrone != null && !_selectedDrone.getDrone().equals(message.Drone)){
             _selectedDrone.UnSelect();
         }
-        else {
-            _selectedDrone = _dronesById.get(message.Drone.getId());
-            _selectedDrone.Select();
-        }
+
+        _selectedDrone = _dronesById.get(message.Drone.getId());
+        _selectedDrone.Select();
 
     }
 

@@ -1,6 +1,7 @@
 package istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -38,8 +39,30 @@ public class DroneDrawing extends MapItem
 
     private boolean _isSelected;
     public boolean isSelected() { return _isSelected; }
-    public void Select() { _isSelected = true; }
-    public void UnSelect() {_isSelected = false; }
+    public void Select() {
+        _isSelected = true;
+        final Bitmap icon = getNewBitmapRenderedWithColor(R.drawable.drone, "#0e03a8");
+        _contextActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                _droneMarker.setIcon(BitmapDescriptorFactory.fromBitmap(icon));
+            }
+        });
+    }
+
+    public void UnSelect() {
+        _isSelected = false;
+        final Bitmap icon = getNewBitmapRenderedWithColor(R.drawable.drone, "#040b14");
+        _contextActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                _droneMarker.setIcon(BitmapDescriptorFactory.fromBitmap(icon));
+            }
+        });
+
+    }
 
     //endregion
 
