@@ -120,7 +120,7 @@ public class SinistreDrawing extends MapItem
      * Dessine sur la googleMap le marqueur
      */
     private void draw() {
-        int rIcone = referentielSinistre.get(_sinistreDTO.getType());
+        /*int rIcone = referentielSinistre.get(_sinistreDTO.getType());
 
         String rgbNoA = _sinistreDTO.getComposante().getCouleur().substring(0, 7);
         Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
@@ -134,7 +134,7 @@ public class SinistreDrawing extends MapItem
                 .icon(BitmapDescriptorFactory.fromBitmap(icon))
                 // Les sinistres qu'on ajoute manuellement sont déplaçables
                 .draggable(true)
-        );
+        );*/
     }
     // endregion
 
