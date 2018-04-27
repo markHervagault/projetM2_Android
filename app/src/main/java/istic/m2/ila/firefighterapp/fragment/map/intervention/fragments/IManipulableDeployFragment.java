@@ -5,8 +5,8 @@ package istic.m2.ila.firefighterapp.fragment.map.intervention.fragments;
  */
 
 public interface IManipulableDeployFragment extends IManipulableFragment {
-    void place();
-    void arrival();
+    void engage();
+    void action();
     void toCrm();
     void modif();
     void desengage();

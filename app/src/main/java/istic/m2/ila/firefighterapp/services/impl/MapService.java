@@ -418,5 +418,65 @@ public class MapService implements IMapService {
         return composantes;
     }
 
+    @Override
+    public void deploiementToAction(String token, Long id) {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        DeploimentConsumer consumer = restTemplate.builConsumer(DeploimentConsumer.class);
+
+        Response<DeploiementDTO> response = null;
+
+        try{
+            response = consumer.setDeploiementToAction(token, id).execute();
+            if(response == null || !(response.code() == HttpURLConnection.HTTP_OK))
+            {
+                Log.d("MapService","Error api deploy to action");
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deploiementToEngage(String token, Long id) {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        DeploimentConsumer consumer = restTemplate.builConsumer(DeploimentConsumer.class);
+
+        Response<DeploiementDTO> response = null;
+
+        try{
+            response = consumer.setDeploiementToEngage(token, id).execute();
+            if(response == null || !(response.code() == HttpURLConnection.HTTP_OK))
+            {
+                Log.d("MapService","Error api deploy to engage");
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deploiementToDesengage(String token, Long id) {
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        DeploimentConsumer consumer = restTemplate.builConsumer(DeploimentConsumer.class);
+
+        Response<DeploiementDTO> response = null;
+
+        try{
+            response = consumer.setDeploiementToDesengage(token, id).execute();
+            if(response == null || !(response.code() == HttpURLConnection.HTTP_OK))
+            {
+                Log.d("MapService","Error api deploy to desengage");
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
 
 }

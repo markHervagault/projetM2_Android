@@ -34,4 +34,7 @@ public interface IMapService {
     void sendDroneMission(final String token, MissionDTO missionDTO);
     MissionDTO getCurrentDroneMission(final String token, long id);
     List<TypeComposanteDTO> getTypeComposante(final String token);
+    void deploiementToAction(final String token, final Long id);
+    void deploiementToEngage(final String token, final Long id);
+    void deploiementToDesengage(final String token, final Long id);
 }

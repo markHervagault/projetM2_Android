@@ -6,23 +6,30 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
+import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
 
 
-public class DetailDeployFragment extends Fragment implements IManipulableFragment{
+public class DetailDeployFragment extends Fragment implements IManipulableDeployFragment{
     private static final String ARG = "data";
     private DeploiementDTO deploiementDTO;
-    private GeoPositionDTO newGeoPositionDTO;
-    //TODO boolean pour l'edition
+    private GeoPositionDTO newGeoposition;
+
+    private Boolean onModif = false;
+    private Boolean onMove = false;
 
     private Marker marker;
+
     public DetailDeployFragment() {
     }
 
@@ -39,7 +46,6 @@ public class DetailDeployFragment extends Fragment implements IManipulableFragme
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             deploiementDTO = (DeploiementDTO) getArguments().getSerializable(ARG);
-            newGeoPositionDTO = deploiementDTO.getGeoPosition();
         }
     }
 
@@ -73,6 +79,9 @@ public class DetailDeployFragment extends Fragment implements IManipulableFragme
         } else{
             ((TextView) view.findViewById(R.id.crm)).setText("FAUX");
         }
+
+        ButtonFactory.populate(this, deploiementDTO, (LinearLayout)view.findViewById(R.id.buttonLayout));
+
         return view;
     }
 
@@ -83,27 +92,85 @@ public class DetailDeployFragment extends Fragment implements IManipulableFragme
 
     @Override
     public void update() {
-        deploiementDTO.setGeoPosition(newGeoPositionDTO);
-        //deploiementDTO.setComposante();
-        ((NewMapActivity)getMeActivity()).getService().majDeploiement(((NewMapActivity)getMeActivity()).getToken(), deploiementDTO);
-
-        if(marker != null){
+        if(onMove){
+            this.onMove = false;
+            deploiementDTO.setPresenceCRM(false);
+            deploiementDTO.setGeoPosition(newGeoposition);
             marker.remove();
         }
+
+        if(onModif) {
+            this.onModif = false;
+        }
+        ((NewMapActivity)getMeActivity()).getService().majDeploiement(((NewMapActivity)getMeActivity()).getToken(), deploiementDTO);
     }
 
     @Override
     public void move() {
+        this.onMove = true;
+        GoogleMap map = ((NewMapActivity)getActivity()).getMap();
 
+        marker = map.addMarker(new MarkerOptions()
+                .position(map.getCameraPosition().target)
+                .draggable(true));
+
+        newGeoposition.setLongitude(marker.getPosition().longitude);
+        newGeoposition.setLatitude(marker.getPosition().latitude);
+
+        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                                        @Override
+                                        public void onMarkerDragStart(Marker marker) {
+
+                                        }
+
+                                        @Override
+                                        public void onMarkerDrag(Marker marker) {
+
+                                        }
+
+                                        @Override
+                                        public void onMarkerDragEnd(Marker marker) {
+                                            newGeoposition.setLongitude(marker.getPosition().longitude);
+                                            newGeoposition.setLatitude(marker.getPosition().latitude);
+                                        }
+                                    }
+
+        );
     }
 
     @Override
     public void delete() {
-
+        //nothing
     }
 
     @Override
     public Activity getMeActivity() {
         return this.getActivity();
+    }
+
+    @Override
+    public void engage() {
+        ((NewMapActivity)getActivity()).getService().deploiementToEngage(((NewMapActivity)getActivity()).getToken(),deploiementDTO.getId());
+    }
+
+    @Override
+    public void action() {
+        ((NewMapActivity)getActivity()).getService().deploiementToAction(((NewMapActivity)getActivity()).getToken(),deploiementDTO.getId());
+    }
+
+    @Override
+    public void toCrm() {
+        deploiementDTO.setPresenceCRM(true);
+        ((NewMapActivity)getMeActivity()).getService().majDeploiement(((NewMapActivity)getMeActivity()).getToken(), deploiementDTO);
+    }
+
+    @Override
+    public void modif() {
+        this.onModif = true;
+    }
+
+    @Override
+    public void desengage() {
+        ((NewMapActivity)getActivity()).getService().deploiementToDesengage(((NewMapActivity)getActivity()).getToken(),deploiementDTO.getId());
     }
 }
