@@ -9,6 +9,10 @@ import istic.m2.ila.firefighterapp.Intervention.model.*;
 import istic.m2.ila.firefighterapp.Intervention.holder.*;
 import com.evrencoskun.tableview.adapter.AbstractTableAdapter;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import istic.m2.ila.firefighterapp.R;
 
 
@@ -20,9 +24,12 @@ public class MoyenTableAdapter extends AbstractTableAdapter<ColumnHeaderModel, R
         CellModel> {
 
     private Context mContext;
+    private Map<Integer, RowHeaderViewHolder> rowHeaderViewHolderById;
+
     public MoyenTableAdapter(Context p_jContext) {
         super(p_jContext);
         mContext = p_jContext;
+        rowHeaderViewHolderById = new HashMap<>();
     }
 
 
@@ -46,8 +53,9 @@ public class MoyenTableAdapter extends AbstractTableAdapter<ColumnHeaderModel, R
 
             // Get the holder to update cell item text
             ((CellViewHolder) holder).setCellModel(cell, p_nXPosition);
-
-
+            ((CellViewHolder) holder).setRowHeaderViewHolder(
+                rowHeaderViewHolderById.get(p_nYPosition)
+            );
     }
 
     @Override
@@ -88,6 +96,9 @@ public class MoyenTableAdapter extends AbstractTableAdapter<ColumnHeaderModel, R
 
         RowHeaderViewHolder rowHeaderViewHolder = (RowHeaderViewHolder) holder;
         rowHeaderViewHolder.row_header_textview.setText(rowHeaderModel.getData());
+
+        // On sauvegarde le holder de la ligne
+        rowHeaderViewHolderById.put(p_nYPosition, rowHeaderViewHolder);
 
     }
 

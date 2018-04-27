@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.evrencoskun.tableview.TableView;
 
@@ -24,6 +23,7 @@ import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
+import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import retrofit2.Response;
 
@@ -110,7 +110,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
         // UserInfo data will be getting from a web server.
         populatedTableView(this.listDeploiment);
         mTableView.setTableViewListener(new MoyenTableViewListener(mTableView, getContext(), listDeploiment));
-
+        //mTableView.hideColumn(1);
         return view;
     }
 
@@ -172,8 +172,8 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
             // The order should be same with column header list;
             list.add(new CellModel("1-" + i, depInfo.getId()));
 
-            CellModel cellWithComposante = new CellModel("2-" + i, depInfo.getTypeDemande().getLabel());
-            cellWithComposante.setBackgroundColor(composante.getCouleur());
+            CellModel cellWithComposante = changeBackgroundAndText("2-" + i, depInfo.getTypeDemande().getLabel(),
+                    composante.getCouleur(), null /* default color*/);
             list.add(cellWithComposante);
 
             if(depInfo.getVehicule()!=null) {
@@ -181,7 +181,14 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
             } else {
                 list.add(new CellModel("3-" + i, "..."));
             }
-            list.add(new CellModel("4-" + i, depInfo.getState()));
+            CellModel cellEtat;
+            if (depInfo.getState() == EEtatDeploiement.DEMANDE) {
+//            if (depInfo.getState() == EEtatDeploiement.REFUSE) {
+                cellEtat= changeBackgroundAndText("4-" + i, depInfo.getState(),"#9D98AB", "#ffffff");
+            } else {
+                cellEtat = changeBackgroundAndText("4-" + i, depInfo.getState(),null, "#ffffff");
+            }
+            list.add(cellEtat);
 
             if( depInfo.isPresenceCRM()){
                 list.add(new CellModel("5-" + i, "CRM"));
@@ -218,6 +225,13 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
         }
 
         return lists;
+    }
+
+    public CellModel changeBackgroundAndText(String idTV, Object cellData, String backgroundColor, String textColor) {
+        CellModel cellWithColors = new CellModel(idTV, cellData);
+        cellWithColors.setBackgroundColor(backgroundColor);
+        cellWithColors.setTextColor(textColor);
+        return cellWithColors;
     }
 
     /**

@@ -10,11 +10,13 @@ public class CellModel implements ISortableModel {
     private String mId;
     private Object mData;
     private String backgroundColor;
+    private String textColor;
 
     public CellModel(String pId, Object mData) {
         this.mId = pId;
         this.mData = mData;
         this.backgroundColor = null;
+        this.textColor = null;
     }
 
     public Object getData() {
@@ -37,5 +39,13 @@ public class CellModel implements ISortableModel {
 
     public String getBackgroundColor() {
         return backgroundColor;
+    }
+
+    public void setTextColor(String textColor) {
+        this.textColor = textColor;
+    }
+
+    public String getTextColor() {
+        return textColor;
     }
 }
