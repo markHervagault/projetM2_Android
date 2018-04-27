@@ -7,6 +7,7 @@ import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
+import istic.m2.ila.firefighterapp.fragment.map.DemandeMoyenFragement;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationSinistre;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.CreationTraitTopo;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailDeployFragment;
@@ -37,8 +38,7 @@ public class FragmentFactory{
         if (dto.getId() != null) {
             return DetailDeployFragment.newInstance((DeploiementDTO)dto);
         } else {
-            //return Crea.newInstance();
-            return null;
+            return new DemandeMoyenFragement();
         }
     }
     public static Fragment getFragment(TraitTopographiqueBouchonDTO dto){
