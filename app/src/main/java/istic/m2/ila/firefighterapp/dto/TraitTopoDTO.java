@@ -21,7 +21,7 @@ public class TraitTopoDTO implements ITraitTopo {
 
     @Override
     public String menuTitle() {
-        return "";
+        return type.name() + composante.getDescription();
     }
 
     public void setId(Long id) {
