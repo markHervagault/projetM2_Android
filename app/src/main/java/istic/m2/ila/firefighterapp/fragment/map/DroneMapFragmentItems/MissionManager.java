@@ -389,13 +389,13 @@ public class MissionManager extends MapItem
                     //Ajout du marker à la collection
                     _pathPoints.add(pathPoint);
                     _pathPointsByTag.put(tag, pathPoint);
+
+                    //On rafraichit le path
+                    _pathDrawing.Update(_pathPoints);
                     if(dto.getBoucleFermee())
                         ClosePath();
                     else
                         OpenPath();
-
-                    //On rafraichit le path
-                    _pathDrawing.Update(_pathPoints);
                 }
             }
         });
@@ -445,7 +445,7 @@ public class MissionManager extends MapItem
                 break;
 
             case DECONNECTE:
-                setMissionMode(MissionMode.NONE);
+                setMissionMode(MissionMode.EDIT);
                 setCanSendMission(false);
                 _googleMap.setOnMapClickListener(onMapClickListener);
                 _googleMap.setOnMarkerDragListener(onMarkerDragListener);
@@ -475,7 +475,7 @@ public class MissionManager extends MapItem
                 break;
 
             case DECONNECTE:
-                setMissionMode(MissionMode.NONE);
+                setMissionMode(MissionMode.EDIT);
                 setCanSendMission(false);
                 _googleMap.setOnMapClickListener(onMapClickListener);
                 _googleMap.setOnMarkerDragListener(onMarkerDragListener);
