@@ -23,7 +23,7 @@ import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
 public class DetailDeployFragment extends Fragment implements IManipulableDeployFragment{
     private static final String ARG = "data";
     private DeploiementDTO deploiementDTO;
-    private GeoPositionDTO newGeoposition;
+    private GeoPositionDTO newGeoposition = new GeoPositionDTO();
 
     private Boolean onModif = false;
     private Boolean onMove = false;
@@ -101,6 +101,7 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
 
         if(onModif) {
             this.onModif = false;
+            //TODO
         }
         ((NewMapActivity)getMeActivity()).getService().majDeploiement(((NewMapActivity)getMeActivity()).getToken(), deploiementDTO);
     }

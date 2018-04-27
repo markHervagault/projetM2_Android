@@ -199,7 +199,6 @@ public class NewMapActivity extends AppCompatActivity implements InterventionDet
             }
         };
 
-
         BindService();
     }
 
