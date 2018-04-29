@@ -42,7 +42,6 @@ import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MissionManager;
 
 
 public class ServiceRabbitMQ extends Service {
@@ -146,7 +145,6 @@ public class ServiceRabbitMQ extends Service {
                 try
                 {
                     MissionDTO missionDTO = gson.fromJson(incomingMessageHandler, MissionDTO.class);
-                    Log.i(TAG, "Deserialized mission : " + missionDTO.toString());
                     EventBus.getDefault().post(missionDTO);
                 }
                 catch (JsonParseException e)

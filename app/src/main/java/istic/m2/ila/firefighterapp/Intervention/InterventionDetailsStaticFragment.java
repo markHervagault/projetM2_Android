@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
+import istic.m2.ila.firefighterapp.MapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 
@@ -58,7 +58,7 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
 
     @Override
     public void onClick(View v){
-        Intent redirectIntent = new Intent(getActivity(), NewMapActivity.class);
+        Intent redirectIntent = new Intent(getActivity(), MapActivity.class);
 
         redirectIntent.putExtra("intervention", interventionDTO);
         startActivity(redirectIntent);

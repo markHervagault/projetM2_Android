@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems;
+package istic.m2.ila.firefighterapp.fragment.map.DroneMap.Items;
 
 import android.app.Activity;
 
@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
 
 public class PathPointDrawing extends MapItem
 {

@@ -16,7 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
+import istic.m2.ila.firefighterapp.MapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
@@ -35,8 +35,8 @@ public class InterventionMapFragment extends Fragment {
     private GoogleMap googleMap;
 
 
-    public NewMapActivity getMeActivity(){
-        return (NewMapActivity)getActivity();
+    public MapActivity getMeActivity(){
+        return (MapActivity)getActivity();
     }
 
     @Override

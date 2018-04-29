@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems;
+package istic.m2.ila.firefighterapp.fragment.map.DroneMap.Items;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,10 +8,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -19,7 +17,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,13 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
-import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.MapActivity;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
+import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
 
 public class MissionManager extends MapItem
@@ -65,7 +62,7 @@ public class MissionManager extends MapItem
 
     //region Members
 
-    private static final String TAG = "MissonManager";
+    private static final String TAG = "MissionManager";
 
     //Map Items
     private List<PathPointDrawing> _pathPoints;
@@ -122,7 +119,7 @@ public class MissionManager extends MapItem
         _pathDrawing = new PathDrawing(_googleMap, _contextActivity);
         _editMode = false;
         _propertyChangeSupport = new PropertyChangeSupport(this);
-        _interventionId = ((NewMapActivity)_contextActivity).getIdIntervention();
+        _interventionId = ((MapActivity)_contextActivity).getIdIntervention();
 
         //Listener Init
         _googleMap.setOnMapClickListener(null);

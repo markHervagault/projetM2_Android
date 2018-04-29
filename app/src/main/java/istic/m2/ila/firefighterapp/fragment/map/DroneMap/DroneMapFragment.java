@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map;
+package istic.m2.ila.firefighterapp.fragment.map.DroneMap;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -20,12 +19,12 @@ import org.greenrobot.eventbus.EventBus;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
+import istic.m2.ila.firefighterapp.MapActivity;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.DroneManager;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MissionManager;
-import istic.m2.ila.firefighterapp.fragment.map.droneMapModeFragment.DroneCommandFragment;
-import istic.m2.ila.firefighterapp.fragment.map.droneMapModeFragment.DroneMissionFragment;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Items.DroneManager;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Items.MissionManager;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Mode.DroneCommandFragment;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Mode.DroneMissionFragment;
 
 public class DroneMapFragment extends Fragment {
     //Global Members
@@ -63,7 +62,7 @@ public class DroneMapFragment extends Fragment {
         final Button button = _view.findViewById(R.id.toggleView);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((NewMapActivity) getActivity()).toggleView();
+                ((MapActivity) getActivity()).toggleView();
             }
         });
 
@@ -81,7 +80,7 @@ public class DroneMapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 _googleMap = mMap;
-                ((NewMapActivity) getActivity()).initMap(_googleMap);
+                ((MapActivity) getActivity()).initMap(_googleMap);
 
                 //Initialise la carte et le menu
                 InitMap();

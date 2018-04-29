@@ -1,7 +1,6 @@
-package istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems;
+package istic.m2.ila.firefighterapp.fragment.map.DroneMap.Items;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -19,11 +18,10 @@ import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.DeclareDroneMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PauseMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.PlayMissionMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
-import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.dto.EDroneStatut;
+import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
 
 public class DroneManager extends MapItem
 {

@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map;
+package istic.m2.ila.firefighterapp.fragment.map.DroneMap;
 
 import android.content.Context;
 import android.os.AsyncTask;

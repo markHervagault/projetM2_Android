@@ -1,13 +1,9 @@
 package istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +11,7 @@ import java.util.Map;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.ESinistre;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MapItem;
+import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
 
 /**
  * Created by adou on 24/04/18.

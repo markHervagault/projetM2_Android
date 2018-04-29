@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map.droneMapModeFragment;
+package istic.m2.ila.firefighterapp.fragment.map.DroneMap.Mode;
 
 import android.content.Context;
 import android.os.Bundle;
