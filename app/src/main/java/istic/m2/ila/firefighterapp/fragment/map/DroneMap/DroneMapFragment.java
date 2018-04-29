@@ -21,8 +21,8 @@ import java.beans.PropertyChangeListener;
 
 import istic.m2.ila.firefighterapp.MapActivity;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Items.DroneManager;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Items.MissionManager;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Managers.DroneManager;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Managers.MissionManager;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Mode.DroneCommandFragment;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Mode.DroneMissionFragment;
 

@@ -1,9 +1,11 @@
-package istic.m2.ila.firefighterapp.fragment.map.DroneMap.Items;
+package istic.m2.ila.firefighterapp.fragment.map.DroneMap.Managers;
 
 import android.app.Activity;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -22,6 +24,7 @@ import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.StopMissionMessage;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Drawings.DroneDrawing;
 
 public class DroneManager extends MapItem
 {
@@ -37,13 +40,13 @@ public class DroneManager extends MapItem
 
     public static final String SELECTED_DRONE_CHANGED_EVENT = "selectedDroneChangedEvent";
     private DroneDrawing _selectedDrone;
-    private void SetSelectedDrone(DroneDrawing drone)
+    private synchronized void SetSelectedDrone(DroneDrawing drone)
     {
         _selectedDrone = drone;
+        _followingMode = true; //Following Mode automatique a la séléction
         _propertyChangeSupport.firePropertyChange(SELECTED_DRONE_CHANGED_EVENT, null, null);
     }
     public DroneDrawing getSelectedDrone() {
-
         return _selectedDrone;
     }
 
@@ -54,14 +57,37 @@ public class DroneManager extends MapItem
     public DroneManager(GoogleMap map, Activity contextActivity)
     {
         super(map,contextActivity);
-        _propertyChangeSupport = new PropertyChangeSupport(this);
-
         _dronesById = new HashMap<>();
-        Log.i(TAG, "Subscribed to the bus");
+        _authorizedCameraMove = false;
+        _followingMode = false;
+
+        _propertyChangeSupport = new PropertyChangeSupport(this);
+        map.setOnCameraMoveStartedListener(_onCameraMoveListener);
+
         EventBus.getDefault().register(this);
     }
 
     //endRegion
+
+    //region Camera Drag Listener
+
+    private boolean _authorizedCameraMove;
+    private boolean _followingMode;
+
+    private GoogleMap.OnCameraMoveStartedListener _onCameraMoveListener = new GoogleMap.OnCameraMoveStartedListener()
+    {
+        @Override
+        public synchronized void onCameraMoveStarted(int i)
+        {
+            Log.i(TAG, "OnCameraMoveStarted");
+            if(_authorizedCameraMove)
+                _authorizedCameraMove = false;
+            else
+                _followingMode = false;
+        }
+    };
+
+    //endregion
 
     //region DroneCommandes
 
@@ -99,7 +125,6 @@ public class DroneManager extends MapItem
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onDeclareDroneMessageEvent(DeclareDroneMessage message)
     {
-        Log.i(TAG, "DeclareDroneMessage");
         //Ajout du drone seulement si il n'existe pas déjà
         if(!_dronesById.containsKey(message.getDroneDTO().getId()))
             _dronesById.put(message.getDroneDTO().getId(), new DroneDrawing(message.getDroneDTO(), _googleMap, _contextActivity));
@@ -119,7 +144,6 @@ public class DroneManager extends MapItem
         //Evènement
         SetSelectedDrone(_dronesById.get(message.Drone.getId()));
         _selectedDrone.Select();
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -127,10 +151,20 @@ public class DroneManager extends MapItem
     {
         //Mise a jour du drone sur la map seulement si le drone existe deja en BDD
         if(_dronesById.containsKey(message.id_drone))
-        {
-            DroneDrawing drone = _dronesById.get(message.id_drone);
-            drone.Update(message);
-        }
+             _dronesById.get(message.id_drone).Update(message);
+
+        //Vérification du drone séléctionné
+        if(_selectedDrone != null && _selectedDrone.getId() != message.id_drone)
+            return;
+
+        //Vérification du mode de suivit
+        if(!_followingMode)
+            return;
+
+        //Mise a jour de la caméra
+        _authorizedCameraMove = true;
+        float zoom = _googleMap.getCameraPosition().zoom;
+        _googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(message.position.latitude, message.position.longitude), zoom));
     }
 
     //endregion

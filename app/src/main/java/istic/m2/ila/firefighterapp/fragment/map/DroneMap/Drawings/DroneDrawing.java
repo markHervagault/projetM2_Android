@@ -1,9 +1,14 @@
-package istic.m2.ila.firefighterapp.fragment.map.DroneMap.Items;
+package istic.m2.ila.firefighterapp.fragment.map.DroneMap.Drawings;
 
+import android.animation.TypeEvaluator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.view.animation.DecelerateInterpolator;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -12,11 +17,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.greenrobot.eventbus.EventBus;
 
+import javax.xml.validation.Validator;
+
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.dto.EDroneStatut;
+import istic.m2.ila.firefighterapp.fragment.map.Common.DoubleArrayEvaluator;
 import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
 
 public class DroneDrawing extends MapItem
@@ -131,8 +139,24 @@ public class DroneDrawing extends MapItem
 
     private void UpdatePosition(final double latitude, final double longitude)
     {
-        _droneMarker.setPosition(new LatLng(latitude, longitude));
+        double[] startValues = new double[]{_droneMarker.getPosition().latitude, _droneMarker.getPosition().longitude};
+        double[] endValues = new double[]{latitude, longitude};
+
+        ValueAnimator droneUpdater = ValueAnimator.ofObject(new DoubleArrayEvaluator(), startValues, endValues);
+        droneUpdater.setDuration(100); //100ms animation
+        droneUpdater.setInterpolator(new DecelerateInterpolator());
+        droneUpdater.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                double[] animatedValue = (double[])valueAnimator.getAnimatedValue();
+                _droneMarker.setPosition(new LatLng(animatedValue[0], animatedValue[1]));
+            }
+        });
+        droneUpdater.start();
+
+        //_droneMarker.setPosition(new LatLng(latitude, longitude));
     }
 
     //endregion
 }
+

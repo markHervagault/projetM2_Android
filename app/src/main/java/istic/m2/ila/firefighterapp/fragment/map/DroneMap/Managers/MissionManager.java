@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map.DroneMap.Items;
+package istic.m2.ila.firefighterapp.fragment.map.DroneMap.Managers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,6 +33,8 @@ import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Drawings.PathDrawing;
+import istic.m2.ila.firefighterapp.fragment.map.DroneMap.Drawings.PathPointDrawing;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
 
 public class MissionManager extends MapItem
@@ -479,6 +481,8 @@ public class MissionManager extends MapItem
                 break;
         }
     }
+
+    //TODO : Corriger problème récépetion de mission avant le changement de status du drone
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void OnDroneMisisonUpdate(MissionDTO currentMission)
