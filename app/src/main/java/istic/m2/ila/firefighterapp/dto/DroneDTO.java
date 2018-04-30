@@ -1,10 +1,14 @@
 package istic.m2.ila.firefighterapp.dto;
 
+import android.util.Log;
+
 /**
  * Created by hakima on 3/26/18.
  */
 
-    public class DroneDTO {
+public class DroneDTO
+{
+
     private Long id;
 
     private String nom;
@@ -54,4 +58,20 @@ package istic.m2.ila.firefighterapp.dto;
     public void setBattery(int battery) {
         this.battery = battery;
     }
+
+    public void Update(DroneInfosDTO dto)
+    {
+        EDroneStatut status = EDroneStatut.valueOf(dto.status);
+        if(status != null)
+            this.statut = status;
+        else
+            Log.e("DroneDTO Update", ("Wrong statuts : " + dto.status));
+
+        setBattery(dto.battery_level);
+    }
+
+    public boolean equals(DroneDTO drone2) {
+        return this.adresseMac.equals(drone2.adresseMac);
+    }
+
 }

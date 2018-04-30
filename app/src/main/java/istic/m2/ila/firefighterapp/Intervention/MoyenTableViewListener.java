@@ -10,7 +10,7 @@ import com.evrencoskun.tableview.listener.ITableViewListener;
 
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 
 /**
@@ -38,9 +38,9 @@ public class MoyenTableViewListener implements ITableViewListener {
         public void onCellClicked(@NonNull RecyclerView.ViewHolder p_jCellView, int p_nXPosition, int
             p_nYPosition) {
         onRowHeaderClicked(p_jCellView, p_nYPosition);
-        if (mContext != null && mContext instanceof NewMapActivity) {
+        if (mContext != null && mContext instanceof MapActivity) {
             // Le fragment existe
-            ((NewMapActivity) mContext).displayFragmentHolder(deploiements.get(p_nYPosition));
+            ((MapActivity) mContext).displayFragmentHolder(deploiements.get(p_nYPosition));
         } else {
             // La map (et le fragment) n'existe pas
             // On ne fait rien

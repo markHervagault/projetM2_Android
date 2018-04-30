@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,10 +21,10 @@ import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
+import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import retrofit2.Response;
 
@@ -225,7 +226,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
                     tmpText1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((NewMapActivity)getActivity()).displayFragmentHolder(listDeploiment.get(positionList));
+                            ((MapActivity)getActivity()).displayFragmentHolder(listDeploiment.get(positionList));
                         }
                     });
             }

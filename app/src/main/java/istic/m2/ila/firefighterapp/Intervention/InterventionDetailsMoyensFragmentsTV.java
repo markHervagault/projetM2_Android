@@ -20,17 +20,17 @@ import istic.m2.ila.firefighterapp.Intervention.model.CellModel;
 import istic.m2.ila.firefighterapp.Intervention.model.ColumnHeaderModel;
 import istic.m2.ila.firefighterapp.Intervention.model.RowHeaderModel;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
 import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InterventionDetailsMoyensFragmentsTV extends Fragment {
+public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
 
     private static String TAG = "FragmentMoyens";
 
@@ -45,10 +45,6 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment {
     private Long idIntervention;
     private List<DeploiementDTO> listDeploiment;
     private Context context;
-
-    public interface ActivityMoyens {
-        Long getIdIntervention();
-    }
 
     public InterventionDetailsMoyensFragmentsTV() {
         // Required empty public constructor

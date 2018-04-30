@@ -24,8 +24,8 @@ import java.net.HttpURLConnection;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
 import retrofit2.Response;
 

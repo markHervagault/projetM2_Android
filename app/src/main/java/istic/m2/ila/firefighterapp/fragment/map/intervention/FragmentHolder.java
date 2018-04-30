@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.IDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
@@ -76,7 +76,7 @@ public class FragmentHolder extends Fragment {
     }
 
     public void hideSelf() {
-        ((NewMapActivity) this.getActivity()).hideFragment();
+        ((MapActivity) this.getActivity()).hideFragment();
     }
 
     @Override

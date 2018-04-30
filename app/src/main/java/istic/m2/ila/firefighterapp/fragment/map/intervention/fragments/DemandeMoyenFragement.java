@@ -15,15 +15,15 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.DemandeDTO;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
 import istic.m2.ila.firefighterapp.dto.TypeVehiculeDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.adapter.ComposanteAdapter;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.adapter.TypeVehiculeAdapter;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
 import retrofit2.Response;
 
 /**
@@ -76,7 +76,7 @@ public class DemandeMoyenFragement extends Fragment {
         DeploimentConsumer consumer = restTemplate.builConsumer(DeploimentConsumer.class);
         Response<DemandeDTO> response = null;
         try {
-            response = consumer.createDeploiment(((NewMapActivity)getActivity()).getToken(),((NewMapActivity)getActivity()).getIdIntervention(), deploiement).execute();
+            response = consumer.createDeploiment(((MapActivity)getActivity()).getToken(),((MapActivity)getActivity()).getIdIntervention(), deploiement).execute();
             if (response != null && response.code() == HttpURLConnection.HTTP_OK){
                 Log.i(TAG, "Demande éffectué");
             }

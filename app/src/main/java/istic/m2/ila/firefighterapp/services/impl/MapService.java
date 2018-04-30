@@ -7,15 +7,14 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
-import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
-import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
-import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
-import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
-import istic.m2.ila.firefighterapp.consumer.SinistreConsumer;
-import istic.m2.ila.firefighterapp.consumer.TraitTopoConsumer;
-import istic.m2.ila.firefighterapp.consumer.TypeComposanteConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.BouchonConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.DroneConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.DroneMissionConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.SinistreConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.TraitTopoConsumer;
 import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
@@ -25,6 +24,7 @@ import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
+import istic.m2.ila.firefighterapp.rest.consumers.TypeComposanteConsumer;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import retrofit2.Response;
 
@@ -401,7 +401,8 @@ public class MapService implements IMapService {
         RestTemplate restTemplate = RestTemplate.getInstance();
         DroneMissionConsumer consumer = restTemplate.builConsumer(DroneMissionConsumer.class);
 
-        MissionDTO currentMission = new MissionDTO();
+        MissionDTO currentMission = null;
+
         Response<MissionDTO> response = null;
         try{
             response = consumer.getMission(token, droneId).execute();
@@ -410,6 +411,9 @@ public class MapService implements IMapService {
                 currentMission = response.body();
                 Log.i(TAG,  "Mission récupérée pour le drone : " + droneId);
             }
+            else if(response.code() == HttpURLConnection.HTTP_NOT_FOUND)
+                Log.i(TAG,  "Aucune mission en cours pour le drone : " + droneId);
+
         }
         catch (IOException e)
         {
