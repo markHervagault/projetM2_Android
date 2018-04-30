@@ -15,12 +15,16 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.eventbus.drone.UnSelectPathPointMessage;
+import istic.m2.ila.firefighterapp.fragment.map.Drone.Drawings.PathPointDrawing;
 import istic.m2.ila.firefighterapp.fragment.map.Drone.Managers.DroneManager;
 import istic.m2.ila.firefighterapp.fragment.map.Drone.Managers.MissionManager;
 import istic.m2.ila.firefighterapp.fragment.map.Drone.Mode.DroneCommandFragment;
@@ -41,6 +45,8 @@ public class DroneMapFragment extends Fragment {
     private DroneCommandFragment _droneCommandFrag;
     private DroneMissionFragment _droneMissionFrag;
 
+    private DroneListPictureFragment _listPictureFrag;
+
     public DroneMapFragment() {
     }
 
@@ -48,6 +54,7 @@ public class DroneMapFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -137,14 +144,17 @@ public class DroneMapFragment extends Fragment {
         //Fragments UI
         _droneCommandFrag = new DroneCommandFragment();
         _droneMissionFrag = new DroneMissionFragment();
+        _listPictureFrag = new DroneListPictureFragment();
 
         //Inflating UI
         getFragmentManager().beginTransaction().replace(R.id.droneCommandFragmentLayout, _droneCommandFrag).commit();
         getFragmentManager().beginTransaction().replace(R.id.droneMissionFragmentLayout, _droneMissionFrag).commit();
+        getFragmentManager().beginTransaction().replace(R.id.photoListFragmentLayout, _listPictureFrag).commit();
 
         //No View At start
         getFragmentManager().beginTransaction().hide(_droneMissionFrag).commit();
         getFragmentManager().beginTransaction().hide(_droneCommandFrag).commit();
+        getFragmentManager().beginTransaction().hide(_listPictureFrag).commit();
     }
 
 
@@ -329,5 +339,18 @@ public class DroneMapFragment extends Fragment {
         transaction.commit();
     }
 
+    //endregion
+
+    //region events
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onClickPassagePoint(PathPointDrawing pathPoint){
+        _listPictureFrag.onClickOnPathPointDrawing(pathPoint);
+        getFragmentManager().beginTransaction().show(_listPictureFrag).commit();
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onUnClickPassagePoint(UnSelectPathPointMessage m){
+        getFragmentManager().beginTransaction().hide(_listPictureFrag).commit();
+    }
     //endregion
 }
