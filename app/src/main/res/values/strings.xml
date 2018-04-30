@@ -49,6 +49,11 @@
     <string name="map_activity_fab_menu_trajet_open">Ouvrir le trajet</string>
     <string name="map_activity_fab_menu_trajet_close">Fermer le trajet</string>
 
+    <string-array name="vehicule">
+        <item> vehicule1</item>
+        <item>vehicule2</item>
+        <item>vehicule3</item>
+    </string-array>
 
     <!-- Formulaire d'ajout d'intervention-->
     <string name="title_activity_add_intervention">Nouvelle intervention</string>
@@ -58,4 +63,5 @@
     <string name="new_map_activity_fab_menu_deploiement_label">Déploiement</string>
     <string name="new_map_activity_fab_menu_sinistre_label">Sinistre</string>
     <string name="new_map_activity_fab_menu_trait_topo_label">Trait topographique</string>
+    <string name="fragment_holder_hide_button_alt">Masquer</string>
 </resources>

@@ -21,27 +21,27 @@ public interface DeploimentConsumer {
     /** Mise en action d'un deploiement pr l'intervenant */
     @PUT(Endpoints.DEPLOIEMENT_ID_ACTION)
     Call<DeploiementDTO> setDeploiementToAction(@Header("Authorization") String token,
-                                                      @Path("id") int id);
+                                                      @Path("id") Long id);
 
     /** Désengagement d'un déploiement par l'intervenant*/
     @PUT(Endpoints.DEPLOIEMENT_ID_DESENGAGE)
     Call<DeploiementDTO> setDeploiementToDesengage(@Header("Authorization")String token,
-                                                   @Path("id") double id);
+                                                   @Path("id") Long id);
 
     /** engagement d'un déploiement par l'intervenant*/
     @PUT(Endpoints.DEPLOIEMENT_ID_ENGAGE)
     Call<DeploiementDTO> setDeploiementToEngage(@Header("Authorization")String token,
-                                                   @Path("id") double id);
+                                                   @Path("id") Long id);
 
     /** Validation d'un déploiement par un operateur CODIS*/
     @PUT(Endpoints.DEPLOIEMENT_ID_VALIDE)
     Call<DeploiementDTO> setDeploiementToValide(@Header("Authorization")String token,
-                                                @Path("id") double id);
+                                                @Path("id") Long id);
 
     /** Refus d'un deploiement par un operateur CODIS*/
     @PUT(Endpoints.DEPLOIEMENT_ID_REFUSE)
     Call<DeploiementDTO> setDeploiementToRefuse(@Header("Authorization")String token,
-                                                @Path("id") double id);
+                                                @Path("id") Long id);
     /** Récupération des demandes de déploiment de l'intervention */
     @GET(Endpoints.INTERVENTION_DEMANDE)
     Call<Void> getDeploimentRequest(@Header("Authorization") String token
@@ -51,12 +51,17 @@ public interface DeploimentConsumer {
     /** Création d'une demande de déploiment*/
     @POST(Endpoints.INTERVENTION_DEMANDE)
     Call<DemandeDTO> createDeploiment(@Header("Authorization") String token
-            , @Path("id") String id
+            , @Path("id") Long id
             , @Body DemandeDTO demandeDto);
 
     /** Récuperation de la liste des déploiments de l'intervention*/
     @GET(Endpoints.INTERVENTION_DEPLOIMENT)
     Call<List<DeploiementDTO>> getListDeploimentById(@Header("Authorization") String token,
                                                @Path("id") String id );
+
+    /** Récuperation de la liste des déploiments de l'intervention*/
+    @PUT(Endpoints.DEPLOIEMENT_UPDATE)
+    Call<DeploiementDTO> updateDeploiment(@Header("Authorization") String token,
+                                                     @Body DeploiementDTO deploiementDTO);
 
 }

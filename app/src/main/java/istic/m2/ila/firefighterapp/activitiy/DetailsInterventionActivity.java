@@ -6,6 +6,7 @@ import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsStaticFragment;
 import istic.m2.ila.firefighterapp.R;
@@ -15,7 +16,7 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
  * Created by markh on 20/03/2018.
  */
 
-public class DetailsInterventionActivity extends AppCompatActivity implements InterventionDetailsMoyensFragments.ActivityMoyens, InterventionDetailsStaticFragment.ActivityDetails {
+public class DetailsInterventionActivity extends AppCompatActivity implements ActivityMoyens, InterventionDetailsStaticFragment.ActivityDetails {
 
     private static String TAG = "DetailIntervention";
 

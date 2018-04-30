@@ -1,0 +1,42 @@
+<LinearLayout
+    tools:context="istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+    <!-- Title holder-->
+    <LinearLayout
+        android:background="@color/colorMenuFabDefaultNormal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/holder_fragment_title"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="9"
+            android:textColor="#FFFFFF"
+            android:text="Fragment title"
+            android:textSize="@dimen/fragment_holder_title_size"
+            android:textAlignment="center" />
+            <ImageButton
+                android:id="@+id/dropdownButton"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:src="@drawable/icons8_expand_arrow_26"
+                android:gravity="end"
+                android:background="#00FFFFFF" android:contentDescription="@string/fragment_holder_hide_button_alt" />
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/fragment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
+

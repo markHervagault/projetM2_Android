@@ -45,13 +45,13 @@ public class TraitTopoDrawing extends MapItem
         super(map, contextActivity);
         _TraitTopoDTO = TraitTopoDTO;
 
-        initSinistre();
+        initTraitTopo();
     }
 
     /**
      * Réalise l'affichage du marker
      */
-    private void initSinistre()
+    private void initTraitTopo()
     {
         _contextActivity.runOnUiThread(new Runnable() {
             @Override
@@ -126,13 +126,16 @@ public class TraitTopoDrawing extends MapItem
 
         // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
         LatLng pos = new LatLng(_TraitTopoDTO.getPosition().getLatitude(), _TraitTopoDTO.getPosition().getLongitude());
-        _traitTopoMarker = _googleMap.addMarker(new MarkerOptions()
+        Marker marker = _googleMap.addMarker(new MarkerOptions()
             .position(pos)
             .title(_TraitTopoDTO.getComposante().getLabel())
             .snippet(_TraitTopoDTO.getType().name() + " - " + _TraitTopoDTO.getComposante().getDescription())
             .icon(BitmapDescriptorFactory.fromBitmap(icon))
             // Les traits topographiques qu'on ajoute manuellement sont déplaçables
-            .draggable(true));
+            .draggable(false));
+        marker.setTag(_TraitTopoDTO);
+
+        _traitTopoMarker = marker;
     }
     // endregion
 

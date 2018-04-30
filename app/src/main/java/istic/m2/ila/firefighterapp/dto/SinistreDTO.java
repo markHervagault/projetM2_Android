@@ -1,10 +1,12 @@
 package istic.m2.ila.firefighterapp.dto;
 
+import java.io.Serializable;
+
 /**
  * Created by hakima on 3/26/18.
  */
 
-public class SinistreDTO {
+public class SinistreDTO implements Serializable, IDTO {
     private Long id;
 
     private ESinistre type;
@@ -17,6 +19,11 @@ public class SinistreDTO {
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public String menuTitle() {
+        return "Sinistre";
     }
 
     public void setId(Long id) {

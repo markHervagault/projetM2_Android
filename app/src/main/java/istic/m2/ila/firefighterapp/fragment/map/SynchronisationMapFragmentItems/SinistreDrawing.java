@@ -1,9 +1,13 @@
 package istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -116,21 +120,24 @@ public class SinistreDrawing extends MapItem
      * Dessine sur la googleMap le marqueur
      */
     private void draw() {
-        /*int rIcone = referentielSinistre.get(_sinistreDTO.getType());
+        int rIcone = referentielSinistre.get(_sinistreDTO.getType());
 
         String rgbNoA = _sinistreDTO.getComposante().getCouleur().substring(0, 7);
         Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
 
         // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
         LatLng pos = new LatLng(_sinistreDTO.getGeoPosition().getLatitude(), _sinistreDTO.getGeoPosition().getLongitude());
-        _sinistreMarker = _googleMap.addMarker(new MarkerOptions()
+        Marker marker = _googleMap.addMarker(new MarkerOptions()
                 .position(pos)
                 .title(_sinistreDTO.getComposante().getLabel())
                 .snippet(_sinistreDTO.getType().name() + " - " + _sinistreDTO.getComposante().getDescription())
                 .icon(BitmapDescriptorFactory.fromBitmap(icon))
                 // Les sinistres qu'on ajoute manuellement sont déplaçables
-                .draggable(true)
-        );*/
+                .draggable(false)
+        );
+        marker.setTag(_sinistreDTO);
+
+        _sinistreMarker = marker;
     }
     // endregion
 

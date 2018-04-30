@@ -29,6 +29,6 @@ public interface SinistreConsumer {
     /** suppression d'un sinistre */
     @DELETE(Endpoints.SINISTRE_ID)
     Call<Void> deleteSinistre(@Header("Authorization")String token,
-                              @Path("id") int id);
+                              @Path("id") Long id);
 
 }

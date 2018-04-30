@@ -44,4 +44,9 @@ public class TypeComposanteDTO {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return this.getDescription();
+    }
 }

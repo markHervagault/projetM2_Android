@@ -17,7 +17,7 @@ public interface TypeComposanteConsumer {
 
     /** Récupération de tous les types de composante avec leurs attributs.*/
     @GET(Endpoints.TYPE_COMPOSANTE)
-    Call<List<TypeComposanteDTO>> getListTypeTraitTopo(@Header("Authorization") String token);
+    Call<List<TypeComposanteDTO>> getListTypeComposante(@Header("Authorization") String token);
 
     /** Récupération d'un type de composante avec son id*/
     @GET(Endpoints.TYPE_COMPOSANTE_ID)

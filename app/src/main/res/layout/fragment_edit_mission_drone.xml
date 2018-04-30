@@ -118,7 +118,6 @@
         fab:fab_size="normal"
         fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
         fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
-        fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
-        android:src="@drawable/ic_send_black_24dp"/>
+        fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"/>
 
 </FrameLayout>

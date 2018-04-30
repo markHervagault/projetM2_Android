@@ -4,7 +4,7 @@ package istic.m2.ila.firefighterapp.dto;
  * Created by hakima on 3/26/18.
  */
 
-public class TraitTopographiqueBouchonDTO {
+public class TraitTopographiqueBouchonDTO implements ITraitTopo {
     private Long id;
 
     private ETypeTraitTopographiqueBouchon type;
@@ -19,6 +19,10 @@ public class TraitTopographiqueBouchonDTO {
         return id;
     }
 
+    @Override
+    public String menuTitle() {
+        return type.name() + composante.getDescription();
+    }
     public void setId(Long id) {
         this.id = id;
     }
@@ -37,6 +41,16 @@ public class TraitTopographiqueBouchonDTO {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    @Override
+    public GeoPositionDTO getPosition() {
+        return geoPosition;
+    }
+
+    @Override
+    public void setPosition(GeoPositionDTO position) {
+        this.geoPosition = position;
     }
 
     public TypeComposanteDTO getComposante() {

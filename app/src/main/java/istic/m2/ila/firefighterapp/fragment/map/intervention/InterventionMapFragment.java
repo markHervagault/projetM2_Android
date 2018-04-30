@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map;
+package istic.m2.ila.firefighterapp.fragment.map.intervention;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,9 +21,6 @@ import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.DeploiementManager;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
 
 public class InterventionMapFragment extends Fragment {
 
@@ -33,6 +31,9 @@ public class InterventionMapFragment extends Fragment {
     MapView mMapView;
     View mView;
     private GoogleMap googleMap;
+    public GoogleMap getMap(){
+        return googleMap;
+    }
 
 
     public MapActivity getMeActivity(){
@@ -50,9 +51,25 @@ public class InterventionMapFragment extends Fragment {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_intervention_map, container, false);
         final Button button = mView.findViewById(R.id.toggleView);
+
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getMeActivity().toggleView();
+            }
+        });
+
+        final Button buttonMoy = mView.findViewById(R.id.toggleViewTabMoy);
+
+        buttonMoy.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                getMeActivity().toggleFragmentWeight();
+            }
+        });
+        buttonMoy.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                getMeActivity().showHideMoy();
+                return true;
             }
         });
 
@@ -79,20 +96,10 @@ public class InterventionMapFragment extends Fragment {
         return mView;
     }
 
-    // region MapInitialisation
-
-    private TraitTopoManager _traitTopoManager;
-    private DeploiementManager _deploiementManager;
-    private SinistreManager _sinistreManager;
-
     private void initMap() {
         getMeActivity().initMap(googleMap);
-        _sinistreManager = new SinistreManager(googleMap, getActivity());
-        _traitTopoManager = new TraitTopoManager(googleMap, getActivity());
-        _deploiementManager = new DeploiementManager(googleMap, getActivity());
         getVehicule();
     }
-    // endregion
 
     // region MenuFlottant
     private List<FloatingActionButton> floatingActionButtonList;
@@ -117,9 +124,8 @@ public class InterventionMapFragment extends Fragment {
         fabTraitTopographique.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isTraitTopoSelected = toggleColorFloatingButton(fabTraitTopographique, isTraitTopoSelected);
-                // TODO - Logique applicative pour le positionnement de traits topographiques
-                // TODO - Les traits doivent être draggable
+                //isTraitTopoSelected = toggleColorFloatingButton(fabTraitTopographique, isTraitTopoSelected);
+                getMeActivity().createTrait();
             }
         });
 
@@ -127,18 +133,16 @@ public class InterventionMapFragment extends Fragment {
         fabDeploiement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isDeploiementSelected = toggleColorFloatingButton(fabDeploiement, isDeploiementSelected);
-                // TODO - Logique applicative pour le positionnement de Déploiements
-                // TODO - Les déploiements doivent être draggable
+                //isDeploiementSelected = toggleColorFloatingButton(fabDeploiement, isDeploiementSelected);
+                getMeActivity().createMoyen();
             }
         });
 
         fabSinistre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean toggledValue = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
-                // TODO - Logique applicative pour le positionnement de Sinistres
-                // TODO - Les déploiements doivent être draggable
+                //isSinistreSelected = toggleColorFloatingButton(fabSinistre, isSinistreSelected);
+                getMeActivity().createSinistre();
             }
         });
 
@@ -217,7 +221,7 @@ public class InterventionMapFragment extends Fragment {
                 List<DeploiementDTO> deploys = getMeActivity().getService()
                         .getDeploy(token,getMeActivity().getIdIntervention());
                 for(DeploiementDTO deploy : deploys) {
-                    _deploiementManager.onCreateDeploiementDTOMessageEvent(deploy);
+                    getMeActivity().drawVehicule(googleMap,deploy);
                 }
             }
         });
@@ -247,5 +251,7 @@ public class InterventionMapFragment extends Fragment {
         super.onLowMemory();
         mMapView.onLowMemory();
     }
+
+
 
 }
