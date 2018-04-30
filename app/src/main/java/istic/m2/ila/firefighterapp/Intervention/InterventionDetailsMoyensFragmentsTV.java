@@ -20,11 +20,11 @@ import istic.m2.ila.firefighterapp.Intervention.model.CellModel;
 import istic.m2.ila.firefighterapp.Intervention.model.ColumnHeaderModel;
 import istic.m2.ila.firefighterapp.Intervention.model.RowHeaderModel;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
 import retrofit2.Response;
 
 /**

@@ -14,11 +14,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
-import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.ButtonFactory;
 
 public class DetailSinistreFragment extends Fragment implements IManipulableFragment {
@@ -70,14 +69,14 @@ public class DetailSinistreFragment extends Fragment implements IManipulableFrag
     public void update() {
         sinistre.setGeoPosition(newGeoposition);
 
-        ((NewMapActivity)getMeActivity()).getService().majSinistre(((NewMapActivity)getMeActivity()).getToken(),sinistre);
+        ((MapActivity)getMeActivity()).getService().majSinistre(((MapActivity)getMeActivity()).getToken(),sinistre);
 
         marker.remove();
     }
 
     @Override
     public void move() {
-        GoogleMap map = ((NewMapActivity)getActivity()).getMap();
+        GoogleMap map = ((MapActivity)getActivity()).getMap();
 
         marker = map.addMarker(new MarkerOptions()
                 .position(map.getCameraPosition().target)
@@ -109,7 +108,7 @@ public class DetailSinistreFragment extends Fragment implements IManipulableFrag
 
     @Override
     public void delete() {
-        ((NewMapActivity)getMeActivity()).getService().removeSinistre(((NewMapActivity)getMeActivity()).getToken(),sinistre.getId());
+        ((MapActivity)getMeActivity()).getService().removeSinistre(((MapActivity)getMeActivity()).getToken(),sinistre.getId());
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.util.Map;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.ESinistre;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MapItem;
+import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
 
 /**
  * Created by adou on 24/04/18.

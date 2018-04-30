@@ -17,8 +17,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.ESinistre;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
@@ -76,8 +76,8 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
 
     private void initSpinner(){
         typeSpinner.setAdapter(new ArrayAdapter<ESinistre>(this.getActivity(), android.R.layout.simple_spinner_item, ESinistre.values()));
-        List<TypeComposanteDTO> composantes = ((NewMapActivity)getActivity()).getService()
-                .getTypeComposante(((NewMapActivity)getActivity()).getToken());
+        List<TypeComposanteDTO> composantes = ((MapActivity)getActivity()).getService()
+                .getTypeComposante(((MapActivity)getActivity()).getToken());
         composanteSpinner.setAdapter(new ComposanteAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
     }
 
@@ -87,8 +87,8 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
         sinistreCreated.setType((ESinistre)typeSpinner.getSelectedItem());
         sinistreCreated.setComposante((TypeComposanteDTO) composanteSpinner.getSelectedItem());
         sinistreCreated.setGeoPosition(newGeoposition);
-        sinistreCreated.setInterventionId(((NewMapActivity)getMeActivity()).getIdIntervention());
-        ((NewMapActivity)getMeActivity()).getService().addSinistre(((NewMapActivity)getMeActivity()).getToken(),sinistreCreated);
+        sinistreCreated.setInterventionId(((MapActivity)getMeActivity()).getIdIntervention());
+        ((MapActivity)getMeActivity()).getService().addSinistre(((MapActivity)getMeActivity()).getToken(),sinistreCreated);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
         sinistre.getGeoPosition().setLatitude(marker.getPosition().latitude);
         sinistre.getGeoPosition().setLongitude(marker.getPosition().longitude);
 
-        ((NewMapActivity)getMeActivity()).getService().majSinistre(((NewMapActivity)getMeActivity()).getToken(),sinistre);
+        ((MapActivity)getMeActivity()).getService().majSinistre(((MapActivity)getMeActivity()).getToken(),sinistre);
 
         marker.remove();
     }
@@ -117,7 +117,7 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
     }
 
     private void createMarker() {
-        GoogleMap map = ((NewMapActivity)getActivity()).getMap();
+        GoogleMap map = ((MapActivity)getActivity()).getMap();
 
         marker = map.addMarker(new MarkerOptions()
                 .position(map.getCameraPosition().target)

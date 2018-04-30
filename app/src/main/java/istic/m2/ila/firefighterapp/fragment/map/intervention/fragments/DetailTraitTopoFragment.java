@@ -14,8 +14,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.ITraitTopo;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
@@ -72,7 +72,7 @@ public class DetailTraitTopoFragment extends Fragment implements IManipulableFra
     public void update() {
         traitTopo.setPosition(newGeoposition);
 
-        ((NewMapActivity)getMeActivity()).getService().majTraitTopo(((NewMapActivity)getMeActivity()).getToken(),(TraitTopoDTO)traitTopo);
+        ((MapActivity)getMeActivity()).getService().majTraitTopo(((MapActivity)getMeActivity()).getToken(),(TraitTopoDTO)traitTopo);
 
         marker.remove();
 
@@ -80,7 +80,7 @@ public class DetailTraitTopoFragment extends Fragment implements IManipulableFra
 
     @Override
     public void move() {
-        GoogleMap map = ((NewMapActivity)getActivity()).getMap();
+        GoogleMap map = ((MapActivity)getActivity()).getMap();
 
         marker = map.addMarker(new MarkerOptions()
                 .position(map.getCameraPosition().target)
@@ -112,7 +112,7 @@ public class DetailTraitTopoFragment extends Fragment implements IManipulableFra
 
     @Override
     public void delete() {
-        ((NewMapActivity)getMeActivity()).getService().removeTraitTopo(((NewMapActivity)getMeActivity()).getToken(),traitTopo.getId());
+        ((MapActivity)getMeActivity()).getService().removeTraitTopo(((MapActivity)getMeActivity()).getToken(),traitTopo.getId());
     }
 
     @Override

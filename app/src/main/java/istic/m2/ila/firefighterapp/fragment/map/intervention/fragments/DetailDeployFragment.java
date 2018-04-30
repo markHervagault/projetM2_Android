@@ -14,10 +14,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.List;
-
-import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
@@ -124,7 +122,7 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
             deploiementDTO.setPresenceCRM(false);
             deploiementDTO.setGeoPosition(newGeoposition);
             marker.remove();
-            ((NewMapActivity)getMeActivity()).getService().deploiementToEngage(((NewMapActivity)getMeActivity()).getToken(), deploiementDTO.getId());
+            ((MapActivity)getMeActivity()).getService().deploiementToEngage(((MapActivity)getMeActivity()).getToken(), deploiementDTO.getId());
         }
 
         if(onModif) {
@@ -132,13 +130,13 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
             deploiementDTO.setComposante((TypeComposanteDTO) composanteSpinner.getSelectedItem());
             switchView();
         }
-        ((NewMapActivity)getMeActivity()).getService().majDeploiement(((NewMapActivity)getMeActivity()).getToken(), deploiementDTO);
+        ((MapActivity)getMeActivity()).getService().majDeploiement(((MapActivity)getMeActivity()).getToken(), deploiementDTO);
     }
 
     @Override
     public void move() {
         this.onMove = true;
-        GoogleMap map = ((NewMapActivity)getActivity()).getMap();
+        GoogleMap map = ((MapActivity)getActivity()).getMap();
 
         marker = map.addMarker(new MarkerOptions()
                 .position(map.getCameraPosition().target)
@@ -180,19 +178,19 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
 
     @Override
     public void engage() {
-        ((NewMapActivity)getActivity()).getService().deploiementToEngage(((NewMapActivity)getActivity()).getToken(),deploiementDTO.getId());
+        ((MapActivity)getActivity()).getService().deploiementToEngage(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
     }
 
     @Override
     public void action() {
-        ((NewMapActivity)getActivity()).getService().deploiementToAction(((NewMapActivity)getActivity()).getToken(),deploiementDTO.getId());
+        ((MapActivity)getActivity()).getService().deploiementToAction(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
     }
 
     @Override
     public void toCrm() {
         deploiementDTO.setPresenceCRM(true);
-        ((NewMapActivity)getMeActivity()).getService().majDeploiement(((NewMapActivity)getMeActivity()).getToken(), deploiementDTO);
-        ((NewMapActivity)getActivity()).getService().deploiementToEngage(((NewMapActivity)getActivity()).getToken(),deploiementDTO.getId());
+        ((MapActivity)getMeActivity()).getService().majDeploiement(((MapActivity)getMeActivity()).getToken(), deploiementDTO);
+        ((MapActivity)getActivity()).getService().deploiementToEngage(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
     }
 
     @Override
@@ -203,6 +201,6 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
 
     @Override
     public void desengage() {
-        ((NewMapActivity)getActivity()).getService().deploiementToDesengage(((NewMapActivity)getActivity()).getToken(),deploiementDTO.getId());
+        ((MapActivity)getActivity()).getService().deploiementToDesengage(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
     }
 }
