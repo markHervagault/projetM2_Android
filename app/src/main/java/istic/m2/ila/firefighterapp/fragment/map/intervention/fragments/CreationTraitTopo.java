@@ -16,8 +16,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopo;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
@@ -88,8 +88,8 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
         traitCreated.setType((ETypeTraitTopo)typeSpinner.getSelectedItem());
         traitCreated.setComposante((TypeComposanteDTO) composanteSpinner.getSelectedItem());
         traitCreated.setPosition(newGeoposition);
-        traitCreated.setInterventionId(((NewMapActivity)getMeActivity()).getIdIntervention());
-        ((NewMapActivity)getMeActivity()).getService().addTraitTopo(((NewMapActivity)getMeActivity()).getToken(),traitCreated);
+        traitCreated.setInterventionId(((MapActivity)getMeActivity()).getIdIntervention());
+        ((MapActivity)getMeActivity()).getService().addTraitTopo(((MapActivity)getMeActivity()).getToken(),traitCreated);
 
         marker.remove();
     }
@@ -114,7 +114,7 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
     }
 
     private void createMarker() {
-        GoogleMap map = ((NewMapActivity)getActivity()).getMap();
+        GoogleMap map = ((MapActivity)getActivity()).getMap();
 
         marker = map.addMarker(new MarkerOptions()
                 .position(map.getCameraPosition().target)

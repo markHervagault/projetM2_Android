@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import istic.m2.ila.firefighterapp.Intervention.DetailsInterventionActivity;
+import istic.m2.ila.firefighterapp.activitiy.DetailsInterventionActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.AdresseDTO;
 import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;

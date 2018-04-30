@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
-import istic.m2.ila.firefighterapp.consumer.TypeComposanteConsumer;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.TypeComposanteConsumer;
 import retrofit2.Response;
 
 /**
