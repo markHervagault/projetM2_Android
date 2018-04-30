@@ -32,6 +32,7 @@ import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneStatusChangedMess
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
+import istic.m2.ila.firefighterapp.eventbus.drone.UnSelectPathPointMessage;
 import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
 import istic.m2.ila.firefighterapp.fragment.map.Drone.Drawings.PathDrawing;
 import istic.m2.ila.firefighterapp.fragment.map.Drone.Drawings.PathPointDrawing;
@@ -187,10 +188,19 @@ public class MissionManager extends MapItem
             //Vérification du tag du marker
             if(marker.getTag() != null && marker.getTag() instanceof Integer && _pathPointsByTag.containsKey(marker.getTag())) {
                 //Deselection du marker actuel
-                if(_selectedMarker != null)
+                if(_selectedMarker != null){
                     _selectedMarker.UnSelect();
+                    if(getMissionMode()==MissionMode.FOLLOW){
+                        EventBus.getDefault().post(new UnSelectPathPointMessage());
+                    }
+                }
+
                 _selectedMarker = _pathPointsByTag.get(marker.getTag());
                 _selectedMarker.Select();
+
+                if(getMissionMode()==MissionMode.FOLLOW){
+                    EventBus.getDefault().post(_selectedMarker);
+                }
             }
 
             return false;
