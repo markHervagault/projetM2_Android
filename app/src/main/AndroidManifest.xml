@@ -2,11 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="istic.m2.ila.firefighterapp">
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     <!-- Droits pour pouvoir accéder à la géolocalisation de l'utilisateur et la co internet -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -49,12 +44,20 @@
         <activity
             android:name=".activitiy.DetailsInterventionActivity"
             android:screenOrientation="landscape"
-            android:value="@string/title_intervention_details">
-        </activity>        <service
-        android:name=".rabbitMQ.RabbitMQDroneService"
-        android:label="Service RabbitMQ" >
-    </service>
-        Zone de message
+            android:value="@string/title_intervention_details"></activity>
+
+        <service
+            android:name=".rabbitMQ.RabbitMQDroneService"
+            android:label="Service RabbitMQ"></service>
+        <service
+            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo"
+            android:label="Service RabbitMQ TraitTopo"></service>
+        <service
+            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQSinistre"
+            android:label="Service RabbitMQ Sinistre"></service>
+        <service
+            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiment"
+            android:label="Service RabbitMQ Deploiment"></service>
     </application>
 
 </manifest>

@@ -230,7 +230,7 @@ public class ButtonFactory {
     private static Button createSimplebutton(final Activity activity, String title) {
         Button btn = new Button(activity);
         btn.setText(title);
-        btn.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+        btn.setSingleLine(true);
         btn.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
         return btn;
     }

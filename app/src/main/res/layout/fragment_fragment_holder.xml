@@ -9,7 +9,7 @@
 
     <!-- Title holder-->
     <LinearLayout
-        android:background="@color/colorMenuFabDefaultNormal"
+        android:background="#D0D0D0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -29,7 +29,8 @@
                 android:layout_weight="1"
                 android:src="@drawable/icons8_expand_arrow_26"
                 android:gravity="end"
-                android:background="#00FFFFFF" android:contentDescription="@string/fragment_holder_hide_button_alt" />
+                android:background="#D0D0D0"
+                android:contentDescription="@string/fragment_holder_hide_button_alt" />
     </LinearLayout>
 
 

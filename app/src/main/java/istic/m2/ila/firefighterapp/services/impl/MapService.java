@@ -455,7 +455,7 @@ public class MapService implements IMapService {
 
         try{
             response = consumer.setDeploiementToAction(token, id).execute();
-            if(response == null || !(response.code() == HttpURLConnection.HTTP_OK))
+            if(response == null || response.code() != HttpURLConnection.HTTP_OK)
             {
                 Log.d("MapService","Error api deploy to action");
             }
@@ -475,7 +475,7 @@ public class MapService implements IMapService {
 
         try{
             response = consumer.setDeploiementToEngage(token, id).execute();
-            if(response == null || !(response.code() == HttpURLConnection.HTTP_OK))
+            if(response == null || response.code() != HttpURLConnection.HTTP_OK)
             {
                 Log.d("MapService","Error api deploy to engage");
             }
