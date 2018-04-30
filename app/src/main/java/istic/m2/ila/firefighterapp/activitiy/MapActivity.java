@@ -333,6 +333,10 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         showFragment();
     }
 
+    public void hideSelf() {
+        fragmentHolder.hideSelf();
+    }
+
 
     public void displayFragmentHolder(IDTO dto) {
         if (fragmentHolder.getObjectHeld() == dto) {

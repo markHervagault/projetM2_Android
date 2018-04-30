@@ -98,7 +98,10 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
         sinistreCreated.setInterventionId(((MapActivity)getMeActivity()).getIdIntervention());
         ((MapActivity)getMeActivity()).getService().addSinistre(((MapActivity)getMeActivity()).getToken(),sinistreCreated);
 
-        marker.remove();
+        if(marker != null){
+            marker.remove();
+        }
+        ((MapActivity)getMeActivity()).hideSelf();
     }
 
     @Override

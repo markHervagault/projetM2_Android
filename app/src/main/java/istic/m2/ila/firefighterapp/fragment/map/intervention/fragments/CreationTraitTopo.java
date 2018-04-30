@@ -100,6 +100,7 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
         if(marker != null){
             marker.remove();
         }
+        ((MapActivity)getMeActivity()).hideSelf();
     }
 
     @Override

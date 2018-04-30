@@ -92,9 +92,8 @@ public class FragmentHolder extends Fragment {
 
     private void insertFragment(Fragment fragment) {
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        if(fragment == null){
+        if(fragment == null) {
             ft.remove(fragmentToDisplay);
-            fragmentToDisplay = null;
         } else {
             ft.replace(R.id.fragment_placeholder, fragment);
         }
