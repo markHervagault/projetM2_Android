@@ -176,7 +176,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
     protected void onCreate(Bundle savedInstanceState) {
         intervention = getService().getIntervention(getToken(),((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_map);
+        setContentView(R.layout.activity_map);
         this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
 
         serviceConnection = new ServiceConnection() {
