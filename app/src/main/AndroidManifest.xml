@@ -49,12 +49,20 @@
         <activity
             android:name=".activitiy.DetailsInterventionActivity"
             android:screenOrientation="landscape"
-            android:value="@string/title_intervention_details">
-        </activity>        <service
-        android:name=".rabbitMQ.RabbitMQDroneService"
-        android:label="Service RabbitMQ" >
-    </service>
-        Zone de message
+            android:value="@string/title_intervention_details"></activity>
+
+        <service
+            android:name=".rabbitMQ.RabbitMQDroneService"
+            android:label="Service RabbitMQ"></service>
+        <service
+            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo"
+            android:label="Service RabbitMQ TraitTopo"></service>
+        <service
+            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQSinistre"
+            android:label="Service RabbitMQ Sinistre"></service>
+        <service
+            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiment"
+            android:label="Service RabbitMQ Deploiment"></service>
     </application>
 
 </manifest>
