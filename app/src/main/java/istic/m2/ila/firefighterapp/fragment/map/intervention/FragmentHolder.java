@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -102,7 +103,7 @@ public class FragmentHolder extends Fragment {
 
     public void replace(IDTO dto) {
         this.setObjectHeld(dto);
-        this.changeTitle(dto.menuTitle());
+        this.changeTitle(dto.menuTitle(),dto.menuColor());
         this.setFragmentToDisplay(getFragment(dto));
     }
 
@@ -119,7 +120,8 @@ public class FragmentHolder extends Fragment {
         return null;
     }
 
-    public void changeTitle(String title){
+    public void changeTitle(String title, String color) {
+        this.titleView.setBackgroundColor(Color.parseColor(color));
         this.titleView.setText(title);
     }
 }

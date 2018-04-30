@@ -21,11 +21,19 @@ public class TraitTopoDTO implements ITraitTopo {
 
     @Override
     public String menuTitle() {
-        if (type == null) {
-            return "creation";
+        if(getId() == null){
+            return "Creation d'un Trait topographique";
+        } else {
+            return "Trait topographique de composante " + getComposante().getLabel();
         }
-        else{
-            return type.name();
+    }
+
+    @Override
+    public String menuColor() {
+        if(composante == null){
+            return "#D0D0D0";
+        } else {
+            return composante.getCouleur();
         }
     }
 
