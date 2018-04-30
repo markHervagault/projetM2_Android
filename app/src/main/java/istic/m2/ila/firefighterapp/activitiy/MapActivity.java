@@ -8,9 +8,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -61,6 +63,8 @@ import istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFrag
 import istic.m2.ila.firefighterapp.rabbitMQ.RabbitMQDroneService;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
+
+import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
 public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
@@ -448,6 +452,30 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         });
     }
 
+    public static Bitmap fusionImg(Bitmap bmp1, Bitmap bmp2) {
+        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawBitmap(bmp1, new Matrix(), null);
+        canvas.drawBitmap(bmp2, 6, 31, null);
+        return bmOverlay;
+    }
+
+    public Bitmap textAsBitmap(String text, float textSize, int textColor) {
+        Paint paint = new Paint(ANTI_ALIAS_FLAG);
+        paint.setTextSize(textSize);
+        paint.setColor(textColor);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
+        float baseline = -paint.ascent(); // ascent() is negative
+        int width = (int) (paint.measureText(text) + 0.5f); // round
+        int height = (int) (baseline + paint.descent() + 0.5f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(image);
+        canvas.drawText(text, 0, baseline, paint);
+        return image;
+    }
+
     public void drawVehicule(final GoogleMap googleMap, final DeploiementDTO deploy) {
         runOnUiThread(new Runnable() {
             @Override
@@ -462,15 +490,27 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                     if (deploy.getState() != EEtatDeploiement.DEMANDE) {
                         label = deploy.getVehicule().getLabel();
                     }
+                    Bitmap bm = textAsBitmap(label, 10, Color.BLACK );
+
+                    icon = fusionImg(icon, bm);
+
 
                     // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
                     LatLng pos = new LatLng(deploy.getGeoPosition().getLatitude(), deploy.getGeoPosition().getLongitude());
-                    googleMap.addMarker(new MarkerOptions()
+                    Marker marker = googleMap.addMarker(new MarkerOptions()
                             .position(pos)
                             .title(label)
                             .snippet(label + " - " + deploy.getComposante().getDescription())
                             .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                            .draggable(false)).setTag(deploy);
+                            .draggable(false));
+                    marker.setTag(deploy);
+
+
+
+
+
+
+
                 }
             }
         });
