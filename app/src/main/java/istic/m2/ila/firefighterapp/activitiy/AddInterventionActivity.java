@@ -59,7 +59,6 @@ public class AddInterventionActivity extends FragmentActivity implements Fragmen
         validateButton = findViewById(R.id.validateButton);
         validateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 // Création de la boîte de dialog pour confirmer la connexion
                 AlertDialog.Builder adb = new AlertDialog.Builder(AddInterventionActivity.this);
 
