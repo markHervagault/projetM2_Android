@@ -13,6 +13,8 @@ import java.util.Map;
 
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.MessageGeneric;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
 
 /**
  * Created by adou on 24/04/18.
@@ -38,31 +40,39 @@ public class DeploiementManager extends MapItem
 
     //endRegion
 
-    //region EventSubscribing
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onUpdateDeploiementDTOMessageEvent(DeploiementDTO message)
-    {
-        //Mise a jour du sinistre sur la map seulement si le drawing existe deja en BDD
-        if(_deploiementById.containsKey(message.getId())) {
-            _deploiementById.get(message.getId()).update(message);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onCreateDeploiementDTOMessageEvent(DeploiementDTO message)
+    //region Actions
+    public synchronized void onCreateOrUpdateDeploiementDTOMessageEvent(DeploiementDTO message)
     {
         // Création du sinistre
-        if(!_deploiementById.containsKey(message.getId())) {
+        if(_deploiementById.containsKey(message.getId())) {
+            _deploiementById.get(message.getId()).update(message);
+
+        } else {
             _deploiementById.put(message.getId(), new DeploiementDrawing(message, _googleMap, _contextActivity));
+
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onDeleteDeploiementDTOMessageEvent(DeploiementDTO message)
     {
         if(_deploiementById.containsKey(message.getId())) {
             _deploiementById.get(message.getId()).delete();
             _deploiementById.remove(message.getId());
+        }
+    }
+
+    //endregion
+
+    //region EventSuscribing
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public synchronized void onDeploiementDTOMessageEvent(MessageGeneric<DeploiementDTO> message) {
+        if (message != null) {
+            if (message.getSyncAction() == SyncAction.UPDATE) {
+                onCreateOrUpdateDeploiementDTOMessageEvent(message.getDto());
+            } else if (message.getSyncAction() == SyncAction.DELETE) {
+                onDeleteDeploiementDTOMessageEvent(message.getDto());
+            }
         }
     }
 

@@ -64,6 +64,7 @@ public abstract class ServiceRabbitMQGeneric<T extends IDTO> extends Service {
                 incomingMessageHandler = new String(body, "UTF-8");
                 Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
                 GsonBuilder builder = new GsonBuilder();
+                builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
                 Gson gson = builder.create();
                 try
                 {

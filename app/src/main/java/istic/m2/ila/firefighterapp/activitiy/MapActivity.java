@@ -1,4 +1,5 @@
 package istic.m2.ila.firefighterapp.activitiy;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -42,9 +43,6 @@ import java.util.Map;
 import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiment;
-import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQSinistre;
-import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
@@ -61,6 +59,9 @@ import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.
 import istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.rabbitMQ.RabbitMQDroneService;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiement;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQSinistre;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
 
@@ -129,7 +130,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
     private ServiceConnection serviceConnection;
     private ServiceConnection serviceConnectionTraitTopo;
     ServiceRabbitMQSinistre serviceRabbitMQSinistre;
-    ServiceRabbitMQDeploiment serviceRabbitMQDeploiment;
+    ServiceRabbitMQDeploiement serviceRabbitMQDeploiment;
 
     RabbitMQDroneService serviceRabbitMQ;
     ServiceRabbitMQTraitTopo serviceRabbitMQTraitTopo;
@@ -152,7 +153,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         bindService(new Intent(this, ServiceRabbitMQSinistre.class), serviceConnectionSinistre, Context.BIND_AUTO_CREATE);
         isServiceRabbitMQSinistreBind = true;
 
-        bindService(new Intent(this, ServiceRabbitMQDeploiment.class), serviceConnectionDeploiment, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, ServiceRabbitMQDeploiement.class), serviceConnectionDeploiment, Context.BIND_AUTO_CREATE);
         isServiceRabbitMQDeploimentBind = true;
     }
 
@@ -225,7 +226,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         serviceConnectionDeploiment = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                serviceRabbitMQDeploiment = (ServiceRabbitMQDeploiment) ((ServiceRabbitMQDeploiment.LocalBinder) service).getService();
+                serviceRabbitMQDeploiment = (ServiceRabbitMQDeploiement) ((ServiceRabbitMQDeploiement.LocalBinder) service).getService();
             }
 
             @Override
