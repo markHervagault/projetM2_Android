@@ -94,6 +94,8 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
         composanteSpinner = view.findViewById(R.id.composanteSpinner);
         composanteSpinner.setAdapter(new ComposanteAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
 
+        //int selectedPos = ((ComposanteAdapter)composanteSpinner.getAdapter()).getPosition(deploiementDTO.getComposante());
+        //composanteSpinner.setSelection(selectedPos);
 
         ButtonFactory.populate(this, deploiementDTO, (LinearLayout)view.findViewById(R.id.buttonLayout));
 
