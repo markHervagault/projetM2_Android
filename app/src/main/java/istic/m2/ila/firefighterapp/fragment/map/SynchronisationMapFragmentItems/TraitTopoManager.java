@@ -11,6 +11,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.MessageGeneric;
+import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.SyncAction;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MapItem;
 
@@ -38,26 +40,17 @@ public class TraitTopoManager extends MapItem
 
     //endRegion
 
-    //region EventSubscribing
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onUpdateTraitTopoDTOMessageEvent(TraitTopoDTO message)
+    //region Actions
+
+    public synchronized void onCreateOrUpdateTraitTopoDTOMessageEvent(TraitTopoDTO message)
     {
-        //Mise a jour du sinistre sur la map seulement si le drawing existe deja en BDD
         if(_traitTopoById.containsKey(message.getId())) {
             _traitTopoById.get(message.getId()).update(message);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onCreateTraitTopoDTOMessageEvent(TraitTopoDTO message)
-    {
-        // Création du sinistre
-        if(!_traitTopoById.containsKey(message.getId())) {
+        } else {
             _traitTopoById.put(message.getId(), new TraitTopoDrawing(message, _googleMap, _contextActivity));
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
     public synchronized void onDeleteTraitTopoDTOMessageEvent(TraitTopoDTO message)
     {
         if(_traitTopoById.containsKey(message.getId())) {
@@ -65,6 +58,21 @@ public class TraitTopoManager extends MapItem
             _traitTopoById.remove(message.getId());
         }
     }
+    //endregion
+
+    //region EventSuscribing
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public synchronized void onTraitTopoDTOMessageEvent(MessageGeneric<TraitTopoDTO> message){
+        if(message != null){
+            if(message.getSyncAction() == SyncAction.UPDATE){
+                onCreateOrUpdateTraitTopoDTOMessageEvent(message.getDto());
+            }else if (message.getSyncAction() == SyncAction.DELETE){
+                onDeleteTraitTopoDTOMessageEvent(message.getDto());
+            }
+        }
+    }
 
     //endregion
+
 }

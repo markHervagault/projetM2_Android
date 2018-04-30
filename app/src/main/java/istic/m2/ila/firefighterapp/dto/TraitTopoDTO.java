@@ -1,12 +1,10 @@
 package istic.m2.ila.firefighterapp.dto;
 
-import java.util.Objects;
-
 /**
  * Created by hakima on 3/22/18.
  */
 
-public class TraitTopoDTO {
+public class TraitTopoDTO implements ITraitTopo {
     private Long id;
 
     private ETypeTraitTopo type;
@@ -19,6 +17,16 @@ public class TraitTopoDTO {
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public String menuTitle() {
+        if (type == null) {
+            return "creation";
+        }
+        else{
+            return type.name();
+        }
     }
 
     public void setId(Long id) {

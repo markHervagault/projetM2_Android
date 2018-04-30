@@ -1,7 +1,6 @@
 package istic.m2.ila.firefighterapp.Intervention;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,28 +11,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-import org.w3c.dom.Text;
-
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+import istic.m2.ila.firefighterapp.NewMapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
 import istic.m2.ila.firefighterapp.consumer.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
-import istic.m2.ila.firefighterapp.dto.TypeVehiculeDTO;
 import retrofit2.Response;
 
 /**
@@ -45,8 +36,9 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
 
     private Long idIntervention;
-    private Map<String, List<DeploiementDTO>> mapSortDeploiment;
+    private List<DeploiementDTO> listDeploiment;
     private Context context;
+    private LinearLayout linLayTabMoy;
 
     public interface ActivityMoyens {
         Long getIdIntervention();
@@ -56,7 +48,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
         // Required empty public constructor
     }
 
-    private Map<String, List<DeploiementDTO>> getDeploiments() {
+    private List<DeploiementDTO> getDeploiments() {
         Log.i(TAG, "getDeploimentsTri Begin");
         String token = this.getActivity().getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
         String id = this.idIntervention.toString();
@@ -65,37 +57,22 @@ public class InterventionDetailsMoyensFragments extends Fragment {
         DeploimentConsumer deploimentConsumer = restTemplate.builConsumer(DeploimentConsumer.class);
         Response<List<DeploiementDTO>> response = null;
 
-        mapSortDeploiment = new HashMap<>();
-        List<DeploiementDTO> deploiementDTOList = null;
+        List<DeploiementDTO>  listDeploimentTmp = null;
 
 
         try {
             response = deploimentConsumer.getListDeploimentById(token, id).execute();
 
             if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                deploiementDTOList = response.body();
+                listDeploimentTmp = response.body();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        String type = null;
-        if (deploiementDTOList != null) {
-            for (DeploiementDTO deploiement : deploiementDTOList) {
 
-                if (deploiement.getVehicule() != null) {
-                    type = deploiement.getVehicule().getType().getLabel();
-                } else {
-                    type = deploiement.getTypeDemande().getLabel();
-                }
-                List<DeploiementDTO> list = !mapSortDeploiment.containsKey(type) ? new ArrayList<DeploiementDTO>() : mapSortDeploiment.get(type);
-                list.add(deploiement);
-
-                mapSortDeploiment.put(type, list);
-            }
-        }
         Log.i(TAG, "getDeploimentsTri End");
-        return mapSortDeploiment;
+        return listDeploimentTmp;
     }
 
     @Override
@@ -104,16 +81,19 @@ public class InterventionDetailsMoyensFragments extends Fragment {
         //init pojo data
         this.context = context;
         this.idIntervention = ((ActivityMoyens) this.getActivity()).getIdIntervention();
-        this.mapSortDeploiment = getDeploiments();
+        this.listDeploiment = getDeploiments();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+
         View rootView = inflater.inflate(R.layout.fragment_intervention_details_moyens_fragments, container, false);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.interventionDetailsMoyenRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new SimpleAdapter(recyclerView, mapSortDeploiment));
+        recyclerView.setAdapter(new SimpleAdapter(recyclerView, this.listDeploiment));
 
         return rootView;
     }
@@ -129,12 +109,12 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
         private RecyclerView recyclerView;
         private int selectedItem = UNSELECTED;
-        private Map<String, List<DeploiementDTO>> mapSortDeploiment;
+        private List<DeploiementDTO> listDeploiment;
 
 
-        public SimpleAdapter(RecyclerView recyclerView, Map<String, List<DeploiementDTO>> mapSortDeploiment) {
+        public SimpleAdapter(RecyclerView recyclerView,List<DeploiementDTO> listDeploimentParam) {
             this.recyclerView = recyclerView;
-            this.mapSortDeploiment = mapSortDeploiment;
+            this.listDeploiment = listDeploimentParam;
         }
 
         @Override
@@ -146,94 +126,109 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.bind();
+            holder.bind(holder, position);
         }
 
         @Override
         public int getItemCount() {
-            return mapSortDeploiment.size();
+            return listDeploiment.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
+        public class ViewHolder extends RecyclerView.ViewHolder {
             private ExpandableLayout expandableLayout;
             private LinearLayout expandedLinearLayout;
-            private TextView expandButton;
+            private TextView tvTypeMoyen;
+            private TextView tvEtatMoyen;
+            private TextView tvLabelMoyen;
+            private TextView tvCrm;
+            private TextView tvSpacetabMoyTop;
+            private TextView tvSpacetabMoyBot;
+
+            private TextView tvHeureDemande;
+            private TextView tvHeureValidationRefus;
+            private TextView tvHeureEngagement;
+            private TextView tvHeureLiberation;
+
+            private int positionList;
+
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                expandableLayout = itemView.findViewById(R.id.expandable_layout);
-                expandableLayout.setInterpolator(new OvershootInterpolator());
-                expandableLayout.setOnExpansionUpdateListener(this);
-                expandButton = itemView.findViewById(R.id.expand_button);
-                expandButton.setOnClickListener(this);
-                expandedLinearLayout = itemView.findViewById(R.id.list_layout_moyen);
+
+                tvTypeMoyen = itemView.findViewById(R.id.expand_button);
+                tvEtatMoyen = itemView.findViewById(R.id.tvEtatMoyen);
+                tvLabelMoyen = itemView.findViewById(R.id.tvLabelMoyen);
+                tvCrm = itemView.findViewById(R.id.tvCrmOrNot);
+                tvSpacetabMoyTop = itemView.findViewById(R.id.spaceTabMoyTop);
+                tvSpacetabMoyBot = itemView.findViewById(R.id.spaceTabMoyBottom);
+
+                tvHeureDemande  = itemView.findViewById(R.id.tvHeureDemande);
+                tvHeureValidationRefus = itemView.findViewById(R.id.tvHeureValidationRefus);
+                tvHeureEngagement = itemView.findViewById(R.id.tvHeureEngagement);
+                tvHeureLiberation = itemView.findViewById(R.id.tvHeureLiberation);
             }
 
-            public void bind() {
-                int position = getAdapterPosition();
-                ArrayList<String> keys = new ArrayList<>(mapSortDeploiment.keySet());
-
-                List<DeploiementDTO> content = mapSortDeploiment.get(keys.get(position));
+            public void bind(ViewHolder holder, int position) {
 
                 boolean isSelected = position == selectedItem;
 
-                expandButton.setText(keys.get(position));
-                expandButton.setSelected(isSelected);
-                expandableLayout.setExpanded(isSelected, false);
+                holder.tvTypeMoyen.setText(listDeploiment.get(position).getTypeDemande().getLabel());
+                holder.tvTypeMoyen.setBackgroundColor(Color.parseColor(listDeploiment.get(position).getComposante().getCouleur()));
+                holder.tvTypeMoyen.setTextColor(Color.WHITE);
+                holder.tvSpacetabMoyTop.setBackgroundColor(Color.GRAY);
 
-                for (DeploiementDTO deploiment : content) {
-                    TextView tmpText1 = new TextView(itemView.getContext());
-//                    Button dtn = new Button();
-//                    dtn.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//
-//                        }
-//                    });
-                    if (deploiment.getVehicule() != null) {
-                        tmpText1.setText(deploiment.getVehicule().getLabel());
-                        tmpText1.setTextColor(Color.WHITE);
+                if(position==0){
+                    holder.tvSpacetabMoyTop.setBackgroundColor(Color.GRAY);
+                    holder.tvSpacetabMoyTop.setVisibility(View.VISIBLE);
+                }
+                holder.tvSpacetabMoyBot.setBackgroundColor(Color.GRAY);
 
+                if(null != listDeploiment.get(position).getVehicule()){
+                        holder.tvLabelMoyen.setText(listDeploiment.get(position).getVehicule().getLabel());
                     } else {
-                        String text = deploiment.getTypeDemande().getLabel()
-                                + " "
-                                + getResources().getString(R.string.intervention_detail_fragment_moyens_status_demande);
-                        tmpText1.setText(text);
-                        tmpText1.setTextColor(Color.YELLOW);
+                        holder.tvLabelMoyen.setText("...");
                     }
 
-                    expandedLinearLayout.addView(tmpText1);
+                holder.tvEtatMoyen.setText(listDeploiment.get(position).getState().toString().toUpperCase());
+                    if( listDeploiment.get(position).isPresenceCRM()) {
+                        holder.tvCrm.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.tvCrm.setVisibility(View.INVISIBLE);
+
+                    }
+
+                holder.tvTypeMoyen.setSelected(isSelected);
+
+                SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+
+
+                if(listDeploiment.get(position).getDateHeureDemande()!=null) {
+                    holder.tvHeureDemande.setText(formater.format(listDeploiment.get(position).getDateHeureDemande()));
+                }
+
+                if(listDeploiment.get(position).getDateHeureValidation()!=null) {
+                    holder.tvHeureValidationRefus.setText(formater.format(listDeploiment.get(position).getDateHeureValidation()));
+                }
+
+                if(listDeploiment.get(position).getDateHeureEngagement()!=null) {
+                    holder.tvHeureEngagement.setText(formater.format(listDeploiment.get(position).getDateHeureEngagement()));
+                }
+
+                if(listDeploiment.get(position).getDateHeureDesengagement()!=null) {
+                    holder.tvHeureLiberation.setText(formater.format(listDeploiment.get(position).getDateHeureDesengagement()));
                 }
 
 
+                positionList = position;
+                    TextView tmpText1 = new TextView(itemView.getContext());
+                    tmpText1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ((NewMapActivity)getActivity()).displayFragmentHolder(listDeploiment.get(positionList));
+                        }
+                    });
             }
-
-            @Override
-            public void onClick(View view) {
-                ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(selectedItem);
-                if (holder != null) {
-                    holder.expandButton.setSelected(false);
-                    holder.expandableLayout.collapse();
-                }
-
-                int position = getAdapterPosition();
-                if (position == selectedItem) {
-                    selectedItem = UNSELECTED;
-                } else {
-                    expandButton.setSelected(true);
-                    expandableLayout.expand();
-                    selectedItem = position;
-                }
-            }
-
-            @Override
-            public void onExpansionUpdate(float expansionFraction, int state) {
-                Log.d("ExpandableLayout", "State: " + state);
-                if (state == ExpandableLayout.State.EXPANDING) {
-                    recyclerView.smoothScrollToPosition(getAdapterPosition());
-                }
-            }
-        }
+           }
     }
 }
