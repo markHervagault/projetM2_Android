@@ -3,6 +3,7 @@ package istic.m2.ila.firefighterapp.addintervention;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,42 +61,49 @@ public class InterventionCreationMoyensFragments extends Fragment {
     }
 
     private Map<String, List<VehiculeDTO>>  getVehicules(){
+
+        Map<String, List<VehiculeDTO>> mapSorted = new HashMap<>();
+
         Log.i(TAG, "getVehiculeDispo Begin");
         String token = this.getActivity().getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
 
-        RestTemplate restTemplate = RestTemplate.getInstance();
-        VehiculeConsumer vehiculeConsumer = restTemplate.builConsumer(VehiculeConsumer.class);
-        Response<List<VehiculeDTO>> response = null;
-
-        Map<String, List<VehiculeDTO>> mapSorted = new HashMap<>();
-        List<VehiculeDTO> vehiculeDTOList = null;
-
-
-        try {
-            response = vehiculeConsumer.getListVehiculeDispo(token).execute();
-
-            if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                vehiculeDTOList = response.body();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String type = null;
-        if (vehiculeDTOList != null) {
-            for (VehiculeDTO vehicule  : vehiculeDTOList) {
-
-
-                type = vehicule.getType().getLabel();
-
-                List<VehiculeDTO> list = !mapSorted.containsKey(type) ? new ArrayList<VehiculeDTO>() : mapSorted.get(type);
-                list.add(vehicule);
-
-                mapSorted.put(type, list);
-            }
-        }
-        Log.i(TAG, "getVehiculeDispo End");
+        getVehiculesFromServer(mapSorted, token);
         return mapSorted;
+    }
+
+    private void getVehiculesFromServer(final Map<String, List<VehiculeDTO>> mapSorted, final String token) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                RestTemplate restTemplate = RestTemplate.getInstance();
+                VehiculeConsumer vehiculeConsumer = restTemplate.builConsumer(VehiculeConsumer.class);
+                Response<List<VehiculeDTO>> response = null;
+
+                List<VehiculeDTO> vehiculeDTOList = null;
+                try {
+                    response = vehiculeConsumer.getListVehiculeDispo(token).execute();
+
+                    if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                        vehiculeDTOList = response.body();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                String type = null;
+                if (vehiculeDTOList != null) {
+                    for (VehiculeDTO vehicule  : vehiculeDTOList) {
+
+                        type = vehicule.getType().getLabel();
+                        List<VehiculeDTO> list = !mapSorted.containsKey(type) ? new ArrayList<VehiculeDTO>() : mapSorted.get(type);
+                        list.add(vehicule);
+
+                        mapSorted.put(type, list);
+                    }
+                }
+                Log.i(TAG, "getVehiculeDispo End");
+            }
+        });
     }
 
     public Set<DeploiementCreateInterventionDTO> getVehiculesSelected(){
@@ -111,7 +119,7 @@ public class InterventionCreationMoyensFragments extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_intervention_details_moyens_fragments, container, false);
+        View rootView = inflater.inflate(R.layout.fake_fragment_intervention_details_moyens_fragments, container, false);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.interventionDetailsMoyenRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -180,9 +188,9 @@ public class InterventionCreationMoyensFragments extends Fragment {
 
                 boolean isSelected = position == selectedItem;
 
-                expandButton.setText(keys.get(position));
-                expandButton.setSelected(isSelected);
-                expandableLayout.setExpanded(isSelected, false);
+//                expandButton.setText(keys.get(position));
+//                expandButton.setSelected(isSelected);
+//                expandableLayout.setExpanded(isSelected, false);
 //                expandableLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
                 for (final VehiculeDTO vehicule : content) {
@@ -199,7 +207,7 @@ public class InterventionCreationMoyensFragments extends Fragment {
                     });
                     aSwitch.setText(vehicule.getLabel());
                     aSwitch.setTextColor(Color.WHITE);
-                    expandedLinearLayout.addView(aSwitch);
+//                    expandedLinearLayout.addView(aSwitch);
                 }
 
 

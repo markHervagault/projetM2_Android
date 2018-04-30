@@ -39,6 +39,11 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
 
     // For TableView
     private List<List<CellModel>> mCellList;
+
+    public List<ColumnHeaderModel> getColumnHeaderList() {
+        return mColumnHeaderList;
+    }
+
     private List<ColumnHeaderModel> mColumnHeaderList;
     private List<RowHeaderModel> mRowHeaderList;
 

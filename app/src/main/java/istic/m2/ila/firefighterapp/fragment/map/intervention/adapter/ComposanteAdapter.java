@@ -1,6 +1,7 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention.adapter;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -19,23 +20,32 @@ import retrofit2.Response;
  */
 
 public class ComposanteAdapter extends ArrayAdapter<TypeComposanteDTO> {
+    private Context mContext;
     public ComposanteAdapter(@NonNull Context context, int resource) {
         super(context, resource);
         String token = context.getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
         RestTemplate restTemplate = RestTemplate.getInstance();
         TypeComposanteConsumer typeComposanteConsumer = restTemplate.builConsumer(TypeComposanteConsumer.class);
+        mContext = context;
+        getListTypeComposante(this, token, typeComposanteConsumer);
+    }
 
-        try {
-            Response<List<TypeComposanteDTO>> response = typeComposanteConsumer.getListTypeComposante(token).execute();
-            if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                for (TypeComposanteDTO typeComposanteDTO : response.body()) {
-                    this.insert(typeComposanteDTO, this.getCount());
+    private void getListTypeComposante(final ComposanteAdapter context, final String token, final TypeComposanteConsumer typeComposanteConsumer) {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                try {
+                    Response<List<TypeComposanteDTO>> response = typeComposanteConsumer.getListTypeComposante(token).execute();
+                    if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                        for (TypeComposanteDTO typeComposanteDTO : response.body()) {
+                            context.insert(typeComposanteDTO, context.getCount());
+                        }
+                    } else {
+                        Log.e("TypeComposante", "Error From Server : " + response.errorBody().string());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } else {
-                Log.e("TypeComposante", "Error From Server : " + response.errorBody().string());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        });
     }
 }

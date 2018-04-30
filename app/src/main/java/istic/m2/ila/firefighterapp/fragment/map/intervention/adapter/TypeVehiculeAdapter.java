@@ -1,6 +1,7 @@
 package istic.m2.ila.firefighterapp.fragment.map.intervention.adapter;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -25,16 +26,25 @@ public class TypeVehiculeAdapter extends ArrayAdapter<TypeVehiculeDTO> {
         RestTemplate restTemplate = RestTemplate.getInstance();
         TypeVehiculeConsumer consumer = restTemplate.builConsumer(TypeVehiculeConsumer.class);
         Response<List<TypeVehiculeDTO>> response = null;
-        try{
-            response = consumer.getListTypeVehicules(token).execute();
-            if (response != null && response.code() == HttpURLConnection.HTTP_OK){
-                Log.i("TypeVehicule", "type véhicule récupéré");
-                for (TypeVehiculeDTO typeVehiculeDTO : response.body()) {
-                    this.insert(typeVehiculeDTO, this.getCount());
+        getListTypeVehicules(this, token, consumer);
+    }
+
+    private void getListTypeVehicules(final TypeVehiculeAdapter context, final String token, final TypeVehiculeConsumer typeVehiculeConsumer) {
+        AsyncTask.execute(new Runnable() {
+            public void run() {
+                Response<List<TypeVehiculeDTO>> response = null;
+                try{
+                    response = typeVehiculeConsumer.getListTypeVehicules(token).execute();
+                    if (response != null && response.code() == HttpURLConnection.HTTP_OK){
+                        Log.i("TypeVehicule", "type véhicule récupéré");
+                        for (TypeVehiculeDTO typeVehiculeDTO : response.body()) {
+                            context.insert(typeVehiculeDTO, context.getCount());
+                        }
+                    }
+                }catch (IOException e){
+                    e.printStackTrace();
                 }
             }
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        });
     }
 }
