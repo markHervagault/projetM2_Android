@@ -38,6 +38,14 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
 
     private Marker marker;
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(marker != null){
+            marker.remove();
+        }
+    }
+
     public DetailDeployFragment() {
     }
 
