@@ -496,7 +496,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                     if (deploy.getState() != EEtatDeploiement.DEMANDE) {
                         label = deploy.getVehicule().getLabel();
                     }
-                    Bitmap bm = textAsBitmap(label, 13, Color.BLACK );
+                    Bitmap bm = textAsBitmap(label, 13, Color.parseColor(rgbNoA) );
 
                     icon = fusionImg(icon, bm);
 
