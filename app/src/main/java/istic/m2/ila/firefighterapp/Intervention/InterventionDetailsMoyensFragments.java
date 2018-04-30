@@ -1,7 +1,6 @@
 package istic.m2.ila.firefighterapp.Intervention;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,27 +12,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
-
-import org.w3c.dom.Text;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.consumer.DeploimentConsumer;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
-import istic.m2.ila.firefighterapp.dto.TypeVehiculeDTO;
 import retrofit2.Response;
 
 /**

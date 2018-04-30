@@ -1,14 +1,8 @@
 package istic.m2.ila.firefighterapp.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +12,14 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.clientRabbitMQ.messages.SelectedDroneChangedMessage;
+import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.constantes.IHMLabels;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
-import istic.m2.ila.firefighterapp.dto.EDroneStatut;
 
 /**
  * Created by markh on 28/03/2018.

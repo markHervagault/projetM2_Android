@@ -1,6 +1,5 @@
 package istic.m2.ila.firefighterapp.services.impl;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
@@ -8,13 +7,13 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.consumer.BouchonConsumer;
-import istic.m2.ila.firefighterapp.consumer.DroneConsumer;
-import istic.m2.ila.firefighterapp.consumer.DroneMissionConsumer;
-import istic.m2.ila.firefighterapp.consumer.InterventionConsumer;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
-import istic.m2.ila.firefighterapp.consumer.SinistreConsumer;
-import istic.m2.ila.firefighterapp.consumer.TraitTopoConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.BouchonConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.DroneConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.DroneMissionConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.SinistreConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.TraitTopoConsumer;
 import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;

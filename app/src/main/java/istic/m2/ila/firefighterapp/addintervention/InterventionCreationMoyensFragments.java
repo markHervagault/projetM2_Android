@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -29,10 +28,9 @@ import java.util.Map;
 import java.util.Set;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.consumer.RestTemplate;
-import istic.m2.ila.firefighterapp.consumer.VehiculeConsumer;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.VehiculeConsumer;
 import istic.m2.ila.firefighterapp.dto.DeploiementCreateInterventionDTO;
-import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.VehiculeDTO;
 import retrofit2.Response;
 

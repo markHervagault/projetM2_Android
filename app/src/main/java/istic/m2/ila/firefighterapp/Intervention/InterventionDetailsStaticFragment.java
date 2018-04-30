@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import istic.m2.ila.firefighterapp.MapActivity;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 
