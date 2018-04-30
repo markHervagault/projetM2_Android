@@ -38,6 +38,14 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
     private Spinner typeSpinner;
     private Spinner composanteSpinner;
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(marker != null){
+            marker.remove();
+        }
+    }
+
     public CreationSinistre() {
         sinistre = new SinistreDTO();
     }
@@ -89,6 +97,8 @@ public class CreationSinistre extends Fragment implements IManipulableFragment {
         sinistreCreated.setGeoPosition(newGeoposition);
         sinistreCreated.setInterventionId(((MapActivity)getMeActivity()).getIdIntervention());
         ((MapActivity)getMeActivity()).getService().addSinistre(((MapActivity)getMeActivity()).getToken(),sinistreCreated);
+
+        marker.remove();
     }
 
     @Override

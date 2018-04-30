@@ -79,6 +79,14 @@ public class DetailTraitTopoFragment extends Fragment implements IManipulableFra
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(marker != null){
+            marker.remove();
+        }
+    }
+
+    @Override
     public void move() {
         GoogleMap map = ((MapActivity)getActivity()).getMap();
 
