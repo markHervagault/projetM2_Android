@@ -244,10 +244,12 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     public void toggleView() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
         FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        frameMoyen.setVisibility(View.VISIBLE);
 
+        FrameLayout.LayoutParams params= (FrameLayout.LayoutParams) frameMoyen.getLayoutParams();
+        params.width = 500;
+
+        frameMoyen.setVisibility(View.VISIBLE);
         if (interventionView) {
             transaction.replace(R.id.mapFragment, intervMapFrag);
             transaction.replace(R.id.listViewFragment, intervListFrag);
@@ -460,7 +462,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(bmp1, new Matrix(), null);
-        canvas.drawBitmap(bmp2, 6, 31, null);
+        canvas.drawBitmap(bmp2, 7, 40, null);
         return bmOverlay;
     }
 
@@ -494,7 +496,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                     if (deploy.getState() != EEtatDeploiement.DEMANDE) {
                         label = deploy.getVehicule().getLabel();
                     }
-                    Bitmap bm = textAsBitmap(label, 10, Color.BLACK );
+                    Bitmap bm = textAsBitmap(label, 13, Color.BLACK );
 
                     icon = fusionImg(icon, bm);
 
@@ -537,40 +539,33 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
     public void toggleFragmentWeight() {
 
         FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        FrameLayout frameMap =   findViewById(R.id.mapFragmentParent);
         Button btnMoy = findViewById(R.id.toggleViewTabMoy);
 
-        LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameMoyen.getLayoutParams();
-        LinearLayout.LayoutParams paramMap = (LinearLayout.LayoutParams) frameMap.getLayoutParams();
-
-        float weight = param.weight;
+        FrameLayout.LayoutParams param = (FrameLayout.LayoutParams) frameMoyen.getLayoutParams();
+        float width = param.width;
 
         if(frameMoyen.getVisibility()== View.GONE){
             frameMoyen.setVisibility(View.VISIBLE);
         }
 
-        if(weight == 5.0f){
+        if(width == 1100){
             // On diminue
             btnMoy.setText("Moyens >");
-            param.weight = 10.0f;
-            paramMap.weight = 5.0f;
+            param.width = 355;
         } else {
             // On agrandit
             btnMoy.setText("< Moyens");
-            param.weight = 5.0f;
-            paramMap.weight = 10.0f;
+            param.width = 1100;
 
         }
 
         frameMoyen.setLayoutParams(param);
-        frameMap.setLayoutParams(paramMap);
 
     }
 
     public void showHideMoy() {
 
         FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        FrameLayout frameMap =   findViewById(R.id.mapFragmentParent);
         Button btnMoy = findViewById(R.id.toggleViewTabMoy);
 
         if(frameMoyen.getVisibility()!= View.GONE){
@@ -580,14 +575,16 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         } else {
             frameMoyen.setVisibility(View.VISIBLE);
             LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameMoyen.getLayoutParams();
-            float weight = param.weight;
+            float width = param.width;
 
-            if(weight == 5.0f){
+            if(width == 1100){
                 // On diminue
-                btnMoy.setText("< Moyens");
+                btnMoy.setText("Moyens >");
+                param.width = 355;
             } else {
                 // On agrandit
-                btnMoy.setText("Moyens >");
+                btnMoy.setText("< Moyens");
+                param.width = 1100;
 
             }
         }

@@ -178,10 +178,11 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
                 list.add(new CellModel("3-" + i, "..."));
             }
             CellModel cellEtat;
-            if (depInfo.getState() == EEtatDeploiement.DEMANDE) {
-//            if (depInfo.getState() == EEtatDeploiement.REFUSE) {
+            if (depInfo.getState() == EEtatDeploiement.REFUSE) {
                 cellEtat= changeBackgroundAndText("4-" + i, depInfo.getState(),"#9D98AB", "#ffffff");
-            } else {
+            } else if (depInfo.getState() == EEtatDeploiement.DEMANDE) {
+                cellEtat= changeBackgroundAndText("4-" + i, depInfo.getState(),"#cdcdc2", "#ffffff");
+            }else {
                 cellEtat = changeBackgroundAndText("4-" + i, depInfo.getState(),null, "#ffffff");
             }
             list.add(cellEtat);
