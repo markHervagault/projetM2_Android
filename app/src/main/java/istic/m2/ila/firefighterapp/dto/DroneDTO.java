@@ -15,15 +15,15 @@ public class DroneDTO
 
     private String adresseMac;
 
-    private EDroneStatut statut;
+    private EDroneStatus statut;
 
     private int battery;
 
-    public EDroneStatut getStatut() {
+    public EDroneStatus getStatut() {
         return statut;
     }
 
-    public void setStatut(EDroneStatut statut) {
+    public void setStatut(EDroneStatus statut) {
         this.statut = statut;
     }
 
@@ -61,7 +61,7 @@ public class DroneDTO
 
     public void Update(DroneInfosDTO dto)
     {
-        EDroneStatut status = EDroneStatut.valueOf(dto.status);
+        EDroneStatus status = EDroneStatus.valueOf(dto.status);
         if(status != null)
             this.statut = status;
         else

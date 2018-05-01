@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="istic.m2.ila.firefighterapp.fragment.map.Drone.DroneMapFragment">
+    tools:context="istic.m2.ila.firefighterapp.map.Drone.DroneMapFragment">
 
 
 

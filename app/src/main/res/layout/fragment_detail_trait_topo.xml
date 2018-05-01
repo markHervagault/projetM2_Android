@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="istic.m2.ila.firefighterapp.fragment.map.intervention.fragments.DetailTraitTopoFragment">
+    tools:context="istic.m2.ila.firefighterapp.map.intervention.fragments.DetailTraitTopoFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

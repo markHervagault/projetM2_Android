@@ -52,12 +52,12 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.fragment.map.Drone.DroneListViewFragment;
-import istic.m2.ila.firefighterapp.fragment.map.Drone.DroneMapFragment;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
-import istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder;
-import istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment;
+import istic.m2.ila.firefighterapp.map.Drone.DroneListViewFragment;
+import istic.m2.ila.firefighterapp.map.Drone.DroneMapFragment;
+import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.SinistreManager;
+import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.TraitTopoManager;
+import istic.m2.ila.firefighterapp.map.intervention.FragmentHolder;
+import istic.m2.ila.firefighterapp.map.intervention.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.rabbitMQ.RabbitMQDroneService;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
@@ -436,7 +436,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                         break;
                 }
 
-                // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
+                // Ajout des icônes (marqueurs) sur la istic.m2.ila.firefighterapp.map en fonction de la localisation du trait
                 LatLng pos = new LatLng(traitTopo.getGeoPosition().getLatitude(), traitTopo.getGeoPosition().getLongitude());
                 googleMap.addMarker(new MarkerOptions()
                         .position(pos)
@@ -463,7 +463,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                         label = deploy.getVehicule().getLabel();
                     }
 
-                    // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
+                    // Ajout des icônes (marqueurs) sur la istic.m2.ila.firefighterapp.map en fonction de la localisation du trait
                     LatLng pos = new LatLng(deploy.getGeoPosition().getLatitude(), deploy.getGeoPosition().getLongitude());
                     googleMap.addMarker(new MarkerOptions()
                             .position(pos)

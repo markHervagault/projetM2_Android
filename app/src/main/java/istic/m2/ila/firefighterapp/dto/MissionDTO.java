@@ -108,6 +108,4 @@ public class MissionDTO {
 
         return s.toString();
     }
-
-
 }
