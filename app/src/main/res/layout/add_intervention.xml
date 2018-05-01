@@ -33,11 +33,11 @@
 
         <fragment
             android:id="@+id/fragment"
-            android:name="istic.m2.ila.firefighterapp.map.intervention.fragments.DemandeMoyenFragement"
+            android:name="istic.m2.ila.firefighterapp.addintervention.FragmentFormulaire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            tools:layout="@layout/add_moyen_fragment" />
+            tools:layout="@layout/fragment_formulaire" />
 
         <View
             android:layout_width="2dp"
