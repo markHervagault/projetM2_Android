@@ -42,7 +42,7 @@ public class MoyenTableViewListener implements ITableViewListener {
             // Le fragment existe
             ((MapActivity) mContext).displayFragmentHolder(deploiements.get(p_nYPosition));
         } else {
-            // La map (et le fragment) n'existe pas
+            // La istic.m2.ila.firefighterapp.map (et le fragment) n'existe pas
             // On ne fait rien
         }
     }

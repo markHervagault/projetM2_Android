@@ -11,7 +11,7 @@ public class IHMLabels {
     public static final String DRONE_STATUT_DECONNECTE = "Déconnecté";
     public static final String DRONE_STATUT_EN_MISSION = "En mission";
     public static final String DRONE_STATUT_EN_PAUSE = "En pause";
-    public static final String DRONE_STATUT_EN_RETOUR = "Retour à la base";
+    public static final String DRONE_STATUT_EN_RETOUR = "Au Retour";
     public static final String DRONE_STATUT_INCONNU = " -- ";
 
 }

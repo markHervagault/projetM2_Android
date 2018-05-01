@@ -16,6 +16,17 @@ public class PhotoDTO {
 
     private Long pointMissionId;
 
+    private String imgBase64;
+
+    private String nomFichier;
+
+    public String getNomFichier() {
+        return this.nomFichier;
+    }
+
+    public String getImgBase64() {
+        return this.imgBase64;
+    }
     public Long getId() {
         return id;
     }

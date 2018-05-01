@@ -52,7 +52,7 @@ public class Endpoints {
     public static final String INTERVENTION = "intervention";
     public static final String INTERVENTION_ENCOUR = "intervention/en-cours";
     public static final String INTERVENTION_ID = "intervention/{id}";
-    public static final String INTERVENTION_DEMANDE = "intervention/{id}/demande";
+    public static final String INTERVENTION_DEMANDE = "deploiement";
     public static final String INTERVENTION_DEPLOIMENT = "intervention/{id}/deploiement";
     public static final String INTERVENTION_SINISTRE = "intervention/{id}/sinistre";
     public static final String INTERVENTION_TRAIT_TOPOGRAPHIQUE = "intervention/{id}/trait-topographique";
@@ -80,5 +80,6 @@ public class Endpoints {
 
     public static final String TRAIT_TOPOS ="trait-topos";
     public static final String TRAIT_TOPOS_ID = "trait-topos/{id}";
+    public static final String PHOTOS = "photo";
 
 }

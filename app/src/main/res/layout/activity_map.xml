@@ -43,7 +43,7 @@
                 android:id="@+id/holder_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:name="istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder"
+                android:name="istic.m2.ila.firefighterapp.map.intervention.FragmentHolder"
                 android:layout_gravity="bottom|left"
                 android:layout_marginRight="90px">
             </fragment>
