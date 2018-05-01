@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="istic.m2.ila.firefighterapp.map.Drone.DroneListViewFragment"
+    tools:context="istic.m2.ila.firefighterapp.map.Drone.fragments.DroneListViewFragment"
     android:layout_weight="3"
     android:orientation="vertical">
 

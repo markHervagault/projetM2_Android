@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp.map.Drone;
 
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -29,6 +30,7 @@ import istic.m2.ila.firefighterapp.map.Drone.Managers.DroneManager;
 import istic.m2.ila.firefighterapp.map.Drone.Managers.MissionManager;
 import istic.m2.ila.firefighterapp.map.Drone.Mode.DroneCommandFragment;
 import istic.m2.ila.firefighterapp.map.Drone.Mode.DroneMissionFragment;
+import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneListPictureFragment;
 
 public class DroneMapFragment extends Fragment {
     //Global Members
@@ -181,15 +183,18 @@ public class DroneMapFragment extends Fragment {
                 case MissionManager.MISSION_MODE_CHANGED_EVENT_NAME: //Changement de mode de mission
                     UpdateMissionMode();
                     break;
+
                 case MissionManager.EDIT_MODE_CHANGED_EVENT_NAME: //Prévenir l'UI changement de bouton
                     if(_missionManager.isEditMode())
                         _droneMissionFrag.SetAddMode();
                     else
                         _droneMissionFrag.UnSetAddMode();
                     break;
+
                 case MissionManager.POINTCOUNT_CHANGED_EVENT_NAME: //Prévenir l'UI, chanement de bouton
                     _droneMissionFrag.RefreshOpenPathButton(_missionManager.getPointsCount());
                     break;
+
                 case MissionManager.SENDMISSION_CHANGED_EVENT_NAME: //Prévenir l'UI, changement de bouton
                     if(_missionManager.canSendMission())
                         _droneMissionFrag.setCanSendMission();
@@ -213,6 +218,7 @@ public class DroneMapFragment extends Fragment {
         @Override
         public void onClick(View view)
         {
+            Log.i(TAG, "OnButtonPlayPause pushed with tag : " + view.getTag().toString());
             if(view.getTag().equals(DroneCommandFragment.PLAY_TAG))
                 _droneManager.SendPlayCommand();
             else

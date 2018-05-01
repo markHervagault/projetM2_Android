@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.map.Drone;
+package istic.m2.ila.firefighterapp.map.Drone.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -25,9 +25,9 @@ import android.support.v4.app.Fragment;
 
 public class DroneListPictureFragment extends Fragment {
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView _recyclerView;
+    private RecyclerView.Adapter _adapter;
+    private RecyclerView.LayoutManager _layoutManager;
 
     private List<PhotoDTO> photos;
 
@@ -47,19 +47,19 @@ public class DroneListPictureFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list_pictures, container, false);
         _context = view.getContext();
 
-        mRecyclerView = (RecyclerView)view.findViewById(R.id.pictureRecyclerView);
+        _recyclerView = (RecyclerView)view.findViewById(R.id.pictureRecyclerView);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
+        _recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(_context);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        _layoutManager = new LinearLayoutManager(_context);
+        _recyclerView.setLayoutManager(_layoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new ItemListPictureAdapter(photos);
-        mRecyclerView.setAdapter(mAdapter);
+        _adapter = new ItemListPictureAdapter(photos);
+        _recyclerView.setAdapter(_adapter);
 
         return view;
     }

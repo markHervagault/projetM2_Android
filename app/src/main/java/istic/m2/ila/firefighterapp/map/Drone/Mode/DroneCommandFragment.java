@@ -65,7 +65,7 @@ public class DroneCommandFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_commande_drone, container, false);
+        View view = inflater.inflate(R.layout.fragment_drone_command, container, false);
         this.view = view;
         this.context = view.getContext();
 
@@ -100,6 +100,8 @@ public class DroneCommandFragment extends Fragment {
             return;
         }
 
+        Log.e(TAG, "RefreshUI : " + status.toString());
+
         switch (status) {
             case EN_MISSION:
                 buttonPlayPause.setImageResource(R.drawable.pause_black);
@@ -108,21 +110,22 @@ public class DroneCommandFragment extends Fragment {
                 buttonPlayPause.setTag(PAUSE_TAG);
                 break;
 
+            case RETOUR_BASE:
+                buttonPlayPause.setImageResource(R.drawable.pause_black);
+                buttonStop.setVisibility(View.GONE);
+                buttonPlayPause.setVisibility(View.VISIBLE);
+                buttonPlayPause.setTag(PAUSE_TAG);
+                break;
+
             case EN_PAUSE:
-                buttonPlayPause.setImageResource(R.drawable.play_black);
                 buttonStop.setVisibility(View.VISIBLE);
+                buttonPlayPause.setImageResource(R.drawable.play_black);
                 buttonPlayPause.setVisibility(View.VISIBLE);
                 buttonPlayPause.setTag(PLAY_TAG);
                 break;
 
-            case RETOUR_BASE:
-                buttonPlayPause.setImageResource(R.drawable.pause_black);
-                buttonPlayPause.setVisibility(View.VISIBLE);
+            case PAUSE_RETOUR_BASE:
                 buttonStop.setVisibility(View.GONE);
-                buttonPlayPause.setTag(PAUSE_TAG);
-                break;
-
-            case EN_PAUSE_RETOUR_BASE:
                 buttonPlayPause.setImageResource(R.drawable.play_black);
                 buttonPlayPause.setVisibility(View.VISIBLE);
                 buttonPlayPause.setTag(PLAY_TAG);

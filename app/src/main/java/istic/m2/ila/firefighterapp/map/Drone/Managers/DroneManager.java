@@ -33,7 +33,6 @@ public class DroneManager extends MapItem
     private Map<Long, DroneDrawing> _dronesById;
     private static final String TAG = "DRONE MANAGER";
 
-
     //endregion
 
     //region Properties
@@ -93,7 +92,7 @@ public class DroneManager extends MapItem
 
     public void SendPlayCommand()
     {
-        if (_selectedDrone.getStatus() != EDroneStatus.EN_PAUSE)
+        if (_selectedDrone.getStatus() != EDroneStatus.EN_PAUSE && _selectedDrone.getStatus() != EDroneStatus.PAUSE_RETOUR_BASE)
             return;
 
         EventBus.getDefault().post(new PlayMissionMessage(_selectedDrone.getId()));

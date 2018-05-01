@@ -52,7 +52,7 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.map.Drone.DroneListViewFragment;
+import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.map.Drone.DroneMapFragment;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.SinistreManager;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.TraitTopoManager;

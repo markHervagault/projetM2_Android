@@ -3,6 +3,7 @@ package istic.m2.ila.firefighterapp.map.Drone.Mode;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +45,10 @@ public class DroneMissionFragment extends Fragment
     public boolean isPathClosed() { return _isPathClosed; }
     public void RefreshOpenPathButton(int markerCounts)
     {
+        Log.i(TAG, "Refreshing OpenPath button with marker count : " + markerCounts);
         if (markerCounts < 3)
             _openCloseClosePathButton.setEnabled(false);
+
         else
             _openCloseClosePathButton.setEnabled(true);
     }
@@ -73,8 +76,6 @@ public class DroneMissionFragment extends Fragment
     public void SetAddMode()
     {
         _addMode = true;
-        for (FloatingActionButton button : floatingActionButtonList)
-            button.setEnabled(false);
 
         _addModeButton.setColorNormal(getResources().getColor(R.color.colorMenuFabSelectedNormal));
         _addModeButton.setColorPressed(getResources().getColor(R.color.colorMenuFabSelectedPressed));
@@ -83,8 +84,6 @@ public class DroneMissionFragment extends Fragment
     public void UnSetAddMode()
     {
         _addMode = false;
-        for (FloatingActionButton button : floatingActionButtonList)
-            button.setEnabled(true);
 
         _addModeButton.setColorNormal(getResources().getColor(R.color.colorMenuFabDefaultNormal));
         _addModeButton.setColorPressed(getResources().getColor(R.color.colorMenuFabDefaultPressed));
@@ -119,7 +118,7 @@ public class DroneMissionFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_edit_mission_drone, container, false);
+        View view = inflater.inflate(R.layout.fragment_drone_edit_mode, container, false);
         this._view = view;
         this.context = view.getContext();
 
@@ -138,12 +137,6 @@ public class DroneMissionFragment extends Fragment
         _addModeButton = _view.findViewById(R.id.fabMenu_addMarker);
         _zoneButton = _view.findViewById(R.id.fabMenu_zone);
         _sendMissionButton = _view.findViewById(R.id.fab_menu2_send);
-
-        //Ajout des boutons � la liste pour la d�sactivation
-        floatingActionButtonList = new ArrayList<>();
-
-        floatingActionButtonList.add(_removeSelectedMarkerButton);
-        floatingActionButtonList.add(_zoneButton);
     }
 
     //endregion

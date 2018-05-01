@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.map.Drone;
+package istic.m2.ila.firefighterapp.map.Drone.fragments;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -38,7 +38,7 @@ public class DroneListViewFragment extends Fragment {
     /**
      * Identifiant de la classe pour les logs
      */
-    private static final String TAG = "DroneListView Fragment";
+    private static final String TAG = "DroneList";
 
     /**
      * Contexte

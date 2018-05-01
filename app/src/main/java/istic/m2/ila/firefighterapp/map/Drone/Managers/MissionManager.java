@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import istic.m2.ila.firefighterapp.activitiy.MapActivity;
+import istic.m2.ila.firefighterapp.dto.EDroneStatus;
 import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
@@ -106,7 +107,9 @@ public class MissionManager extends MapItem
     }
 
     public static final String POINTCOUNT_CHANGED_EVENT_NAME = "PointsCount";
-    public int getPointsCount() { return _pathPoints.size(); }
+    public int getPointsCount() {
+        return _pathPoints.size();
+    }
 
     //endregion
 
@@ -135,6 +138,8 @@ public class MissionManager extends MapItem
 
     public void ResetMission()
     {
+        Log.i(TAG, "Reseting Mission");
+
         for(PathPointDrawing point : _pathPoints)
             point.Remove();
 
@@ -144,6 +149,8 @@ public class MissionManager extends MapItem
         _selectedMarker = null;
 
         setEditMode(false);
+
+        _propertyChangeSupport.firePropertyChange(POINTCOUNT_CHANGED_EVENT_NAME, 1000,0);
     }
 
     //endregion
@@ -420,13 +427,18 @@ public class MissionManager extends MapItem
     {
         Log.i(TAG, "SelectedDroneChanged : " + message.Drone.getStatut());
 
+        //Même drone séléctionné, on ne fait pas de resfresh
+        if(_selectedDrone != null && _selectedDrone.getId().equals(message.Drone.getId()))
+            return;
+
         _selectedDrone = message.Drone;
         ResetMission();
 
         switch (message.Drone.getStatut()) {
             case EN_MISSION:
-            case EN_PAUSE:
             case RETOUR_BASE:
+            case EN_PAUSE:
+            case PAUSE_RETOUR_BASE:
                 setMissionMode(MissionMode.FOLLOW);
                 //Recupération de la mission
                 AsyncTask.execute(new Runnable() {
@@ -449,7 +461,6 @@ public class MissionManager extends MapItem
             case DISPONIBLE:
                 setMissionMode(MissionMode.EDIT);
                 setCanSendMission(true);
-
                 _googleMap.setOnMapClickListener(onMapClickListener);
                 _googleMap.setOnMarkerDragListener(onMarkerDragListener);
                 break;
@@ -466,14 +477,11 @@ public class MissionManager extends MapItem
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnSelectedDroneStatusChanged(final SelectedDroneStatusChangedMessage message)
     {
-        Log.i(TAG, "SelectedDroneStatusChanged : " + message.getDroneStatut());
-
-        //ResetMission();
-
         switch (message.getDroneStatut()) {
             case EN_MISSION:
             case EN_PAUSE:
             case RETOUR_BASE:
+            case PAUSE_RETOUR_BASE:
                 if(getMissionMode() != MissionMode.FOLLOW)
                 {
                     ResetMission();
@@ -482,17 +490,12 @@ public class MissionManager extends MapItem
                 break;
 
             case DISPONIBLE:
-                if(getMissionMode() != MissionMode.EDIT)
-                {
-                    ResetMission();
-                    setMissionMode(MissionMode.EDIT);
-                    _googleMap.setOnMapClickListener(onMapClickListener);
-                    _googleMap.setOnMarkerDragListener(onMarkerDragListener);
-                }
-                setCanSendMission(true);
-                break;
-
             case DECONNECTE:
+                if(message.getDroneStatut() == EDroneStatus.DISPONIBLE)
+                    setCanSendMission(true);
+                else
+                    setCanSendMission(false);
+
                 if(getMissionMode() != MissionMode.EDIT)
                 {
                     ResetMission();
@@ -500,12 +503,9 @@ public class MissionManager extends MapItem
                     _googleMap.setOnMapClickListener(onMapClickListener);
                     _googleMap.setOnMarkerDragListener(onMarkerDragListener);
                 }
-                setCanSendMission(false);
                 break;
         }
     }
-
-    //TODO : Corriger problème récépetion de mission avant le changement de status du drone
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void OnDroneMisisonUpdate(MissionDTO currentMission)
