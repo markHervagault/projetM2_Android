@@ -1,7 +1,10 @@
 package istic.m2.ila.firefighterapp.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,13 +65,18 @@ public class ItemListPictureAdapter extends RecyclerView.Adapter<ItemListPicture
     @Override
     public void onBindViewHolder(final ItemListPictureAdapter.ViewHolder holder, final int position) {
         final PhotoDTO photo = photos.get(position);
-        holder.image_list_picture.setImageBitmap(null); // TODO : récupérer la photo dans PhotoDTO
+        byte[] decodedString = Base64.decode(photo.getImgBase64(), Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        holder.image_list_picture.setImageBitmap(decodedByte);
         holder.date_list_picture.setText(photo.getDateHeure().toString());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
+        if(photos==null){
+            return 0;
+        }
         return photos.size();
     }
 

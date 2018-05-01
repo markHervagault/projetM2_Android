@@ -29,13 +29,13 @@ import retrofit2.Response;
 
 public class PhotoService {
     private String TAG = "photoService";
-    public List<File> getPhoto(String token, Context context){
+    public List<File> getAllPhotos(String token, Context context){
         List<File> images = new ArrayList<>();
         RestTemplate restTemplate = RestTemplate.getInstance();
         PhotoConsumer consumer = restTemplate.builConsumer(PhotoConsumer.class);
         Response<List<PhotoDTO>> response;
         try {
-            response = consumer.getPhoto(token).execute();
+            response = consumer.getAllPhotos(token).execute();
             if(response != null && response.code() == HttpURLConnection.HTTP_OK){
                 for(PhotoDTO dto : response.body()) {
                     images.add(decodeAndSave(dto, context));
@@ -45,6 +45,21 @@ public class PhotoService {
             Log.e(TAG, "An unexpected error occured while trying to open the file (see the exception for more details): ", e);
         }
         return images;
+    }
+
+    public List<PhotoDTO> getPhotosForPoint(String token, Context context, int pointIndex){
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        PhotoConsumer consumer = restTemplate.builConsumer(PhotoConsumer.class);
+        Response<List<PhotoDTO>> response;
+        try {
+            response = consumer.getPhotosForPoint(token, pointIndex).execute();
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK){
+                return response.body();
+            }
+        }catch (IOException e) {
+            Log.e(TAG, "An unexpected error occured while trying to open the file (see the exception for more details): ", e);
+        }
+        return null;
     }
 
 
