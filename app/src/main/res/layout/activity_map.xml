@@ -6,22 +6,50 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-    -->
-        <FrameLayout
-            android:id="@+id/mapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        android:orientation="horizontal"
+        android:weightSum="15">
 
         <FrameLayout
             android:id="@+id/listViewFragment"
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            />
-    <!-- </LinearLayout> -->
+            android:layout_weight="5">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/mapFragmentParent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10">
+
+            <FrameLayout
+                android:id="@+id/mapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </FrameLayout>
+
+            <fragment
+                android:id="@+id/holder_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="istic.m2.ila.firefighterapp.map.intervention.FragmentHolder"
+                android:layout_gravity="bottom|left"
+                android:layout_marginRight="90px">
+            </fragment>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
 </FrameLayout>
