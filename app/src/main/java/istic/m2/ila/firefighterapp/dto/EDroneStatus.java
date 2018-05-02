@@ -10,7 +10,7 @@ public enum EDroneStatus {
     EN_PAUSE("EN_PAUSE"),
     RETOUR_BASE("RETOUR_BASE"),
     DECONNECTE("DECONNECTE"),
-    PAUSE_RETOUR_BASE("PAUSE_RETOUR_BASE");
+    EN_PAUSE_RETOUR_BASE("EN_PAUSE_RETOUR_BASE");
 
     EDroneStatus(String droneStatus) {
     }

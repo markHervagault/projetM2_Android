@@ -97,7 +97,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
                     holder.image_battery_listDrone.setVisibility(View.VISIBLE);
                     break;
 
-                case PAUSE_RETOUR_BASE:
+                case EN_PAUSE_RETOUR_BASE:
                     status = IHMLabels.DRONE_STATUT_EN_PAUSE;
                     holder.image_statut_listDrone.setImageResource(R.drawable.droneenmission);
                     holder.image_battery_listDrone.setVisibility(View.VISIBLE);
