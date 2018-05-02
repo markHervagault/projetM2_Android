@@ -65,7 +65,9 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
     //region Detail/Creation fragment
     private final int MAX_SERVICE = 4;
     private int nbServiceConnected = 0;
-    private InterventionDetailsMoyensFragmentsTV intervListFrag;
+
+
+
     private InterventionMapFragment intervMapFrag;
 
     private DroneMapFragment droneMapFrag;
@@ -76,6 +78,10 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     public IMapService getService() {
         return service;
+    }
+
+    public InterventionMapFragment getIntervMapFrag() {
+        return intervMapFrag;
     }
 
     public String getToken() {
@@ -233,7 +239,6 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         //frameMoyen.setVisibility(View.VISIBLE);
         if (interventionView) {
             transaction.replace(R.id.mapFragment, intervMapFrag);
-            //transaction.replace(R.id.listViewFragment, intervListFrag);
         } else {
             transaction.replace(R.id.mapFragment, droneMapFrag);
             //transaction.replace(R.id.listViewFragment, droneListFrag);
@@ -470,5 +475,4 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         return icon;
     }
     //endregion
-
 }
