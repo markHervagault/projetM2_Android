@@ -188,9 +188,9 @@ public class InterventionCreationMoyensFragments extends Fragment {
 
                 boolean isSelected = position == selectedItem;
 
-//                expandButton.setText(keys.get(position));
-//                expandButton.setSelected(isSelected);
-//                expandableLayout.setExpanded(isSelected, false);
+                expandButton.setText(keys.get(position));
+                expandButton.setSelected(isSelected);
+                expandableLayout.setExpanded(isSelected, false);
 //                expandableLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
                 for (final VehiculeDTO vehicule : content) {
@@ -207,7 +207,7 @@ public class InterventionCreationMoyensFragments extends Fragment {
                     });
                     aSwitch.setText(vehicule.getLabel());
                     aSwitch.setTextColor(Color.WHITE);
-//                    expandedLinearLayout.addView(aSwitch);
+                    expandedLinearLayout.addView(aSwitch);
                 }
 
 
