@@ -15,6 +15,7 @@ import java.util.List;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.adapter.ItemListPictureAdapter;
 import istic.m2.ila.firefighterapp.dto.PhotoDTO;
+import istic.m2.ila.firefighterapp.dto.PhotoSansPhotoDTO;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathPointDrawing;
 import istic.m2.ila.firefighterapp.services.PhotoService;
 
@@ -33,7 +34,7 @@ public class DroneListPictureFragment extends Fragment {
     private RecyclerView.Adapter _adapter;
     private RecyclerView.LayoutManager _layoutManager;
 
-    private List<PhotoDTO> photos;
+    private List<PhotoSansPhotoDTO> photos;
 
     /**
      * Contexte
@@ -78,7 +79,9 @@ public class DroneListPictureFragment extends Fragment {
             // Récupération du token
             String token = _context.getSharedPreferences("user", _context.MODE_PRIVATE).getString("token", "null");
 
-            photos = photoService.getPhotosForPointWithoutPhoto(token, _context, point.getTag().intValue());
+            photos = photoService.getPhotosForPointWithoutPhoto(token, point.getPoinMission().getId());
+
+            // TODO : triée les photos dans l'ordre chronologique dans la liste
 
             }
         });

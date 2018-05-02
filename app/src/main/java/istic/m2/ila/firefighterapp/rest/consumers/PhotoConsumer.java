@@ -4,6 +4,7 @@ import java.util.List;
 
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import istic.m2.ila.firefighterapp.dto.PhotoDTO;
+import istic.m2.ila.firefighterapp.dto.PhotoSansPhotoDTO;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -19,7 +20,10 @@ public interface PhotoConsumer {
     Call<List<PhotoDTO>> getAllPhotos(@Header("Authorization") String header);
 
     @GET(Endpoints.PHOTOSWITHOUTPHOTOFORPOINT)
-    Call<List<PhotoDTO>> getPhotosForPointWithoutPhoto(@Header("Authorization") String header,
-                                           @Path("id") int index);
+    Call<List<PhotoSansPhotoDTO>> getPhotosForPointWithoutPhoto(@Header("Authorization") String header,
+                                                                @Path("id") long index);
+    @GET(Endpoints.PHOTOBYID)
+    Call<PhotoDTO> getPhoto(@Header("Authorization") String header,
+                                                                @Path("id") long index);
 
 }

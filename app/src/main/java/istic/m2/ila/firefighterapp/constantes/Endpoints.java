@@ -83,6 +83,6 @@ public class Endpoints {
     public static final String ALLPHOTOS = "photo";
 
     public static final String PHOTOSWITHOUTPHOTOFORPOINT = "/point-mission/{id}/photos";
-    public static final String PHOTOSFORPOINT = "routeADefinir";
+    public static final String PHOTOBYID = "/photo/{id}";
 
 }

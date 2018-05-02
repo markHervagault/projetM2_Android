@@ -15,6 +15,8 @@ import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.PhotoDTO;
+import istic.m2.ila.firefighterapp.dto.PhotoSansPhotoDTO;
+import istic.m2.ila.firefighterapp.services.PhotoService;
 
 /**
  * Created by markh on 30/04/2018.
@@ -26,10 +28,10 @@ public class ItemListPictureAdapter extends RecyclerView.Adapter<ItemListPicture
 
     private String TAG = "ItemListPictureAdapter => ";
 
-    private List<PhotoDTO> photos;
+    private List<PhotoSansPhotoDTO> photos;
 
     // On fournit un constructeur adéquat (dépendant de notre jeu de données)
-    public ItemListPictureAdapter(List<PhotoDTO> photos) {
+    public ItemListPictureAdapter(List<PhotoSansPhotoDTO> photos) {
         this.photos = photos;
     }
 
@@ -48,9 +50,18 @@ public class ItemListPictureAdapter extends RecyclerView.Adapter<ItemListPicture
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ItemListPictureAdapter.ViewHolder holder, final int position) {
-        final PhotoDTO photo = photos.get(position);
-        byte[] decodedString = Base64.decode(photo.getImgBase64(), Base64.DEFAULT);
+        final PhotoSansPhotoDTO photo = photos.get(position);
+
+        // On récupère la photo sur le serveur
+        PhotoService photoService = new PhotoService();
+        String token = context.getSharedPreferences("user", context.MODE_PRIVATE).getString("token", "null");
+        PhotoDTO photoWithPhoto = photoService.getPhotoById(token, photo.getId());
+
+        // on decode l'image en base64
+        byte[] decodedString = Base64.decode(photoWithPhoto.getImgBase64(), Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+        // On rempli l'item de la liste
         holder.image_list_picture.setImageBitmap(decodedByte);
         holder.date_list_picture.setText(photo.getDateHeure().toString());
     }

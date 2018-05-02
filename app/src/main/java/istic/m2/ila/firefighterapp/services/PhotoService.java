@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.dto.PhotoDTO;
+import istic.m2.ila.firefighterapp.dto.PhotoSansPhotoDTO;
 import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.rest.consumers.PhotoConsumer;
 import okhttp3.ResponseBody;
@@ -47,12 +48,27 @@ public class PhotoService {
         return images;
     }
 
-    public List<PhotoDTO> getPhotosForPointWithoutPhoto(String token, Context context, int pointIndex){
+    public List<PhotoSansPhotoDTO> getPhotosForPointWithoutPhoto(String token, long pointId){
         RestTemplate restTemplate = RestTemplate.getInstance();
         PhotoConsumer consumer = restTemplate.builConsumer(PhotoConsumer.class);
-        Response<List<PhotoDTO>> response;
+        Response<List<PhotoSansPhotoDTO>> response;
         try {
-            response = consumer.getPhotosForPointWithoutPhoto(token, pointIndex).execute();
+            response = consumer.getPhotosForPointWithoutPhoto(token, pointId).execute();
+            if(response != null && response.code() == HttpURLConnection.HTTP_OK){
+                return response.body();
+            }
+        }catch (IOException e) {
+            Log.e(TAG, "An unexpected error occured while trying to open the file (see the exception for more details): ", e);
+        }
+        return null;
+    }
+
+    public PhotoDTO getPhotoById(String token, long photoId){
+        RestTemplate restTemplate = RestTemplate.getInstance();
+        PhotoConsumer consumer = restTemplate.builConsumer(PhotoConsumer.class);
+        Response<PhotoDTO> response;
+        try {
+            response = consumer.getPhoto(token, photoId).execute();
             if(response != null && response.code() == HttpURLConnection.HTTP_OK){
                 return response.body();
             }
