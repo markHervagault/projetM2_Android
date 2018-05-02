@@ -5,26 +5,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.adapter.ItemListPictureAdapter;
-import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.PhotoDTO;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathPointDrawing;
-import istic.m2.ila.firefighterapp.rest.RestTemplate;
-import istic.m2.ila.firefighterapp.rest.consumers.DroneConsumer;
-import istic.m2.ila.firefighterapp.rest.consumers.PhotoConsumer;
 import istic.m2.ila.firefighterapp.services.PhotoService;
-import retrofit2.Response;
 
 import android.support.v4.app.Fragment;
 
@@ -34,6 +26,8 @@ import android.support.v4.app.Fragment;
  */
 
 public class DroneListPictureFragment extends Fragment {
+
+    private final String TAG = "DroneListPictFragment";
 
     private RecyclerView _recyclerView;
     private RecyclerView.Adapter _adapter;
@@ -84,8 +78,15 @@ public class DroneListPictureFragment extends Fragment {
             // Récupération du token
             String token = _context.getSharedPreferences("user", _context.MODE_PRIVATE).getString("token", "null");
 
-            photos = photoService.getPhotosForPoint(token, _context, point.getTag());
+            photos = photoService.getPhotosForPoint(token, _context, 1);
+
             }
         });
+        if(photos!=null){
+            Log.i(TAG, "Nombre de photos récupérées : " + photos.size());
+        }
+        else {
+            Log.i(TAG, "Aucune photo récupérées");
+        }
     }
 }
