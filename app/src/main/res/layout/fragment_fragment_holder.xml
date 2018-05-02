@@ -1,3 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragmentDetails"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:name="istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder"
+    android:layout_gravity="bottom|left"
+    android:layout_marginRight="90px">
+
 <LinearLayout
     tools:context="istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -40,4 +50,6 @@
         android:layout_height="wrap_content"/>
 
 </LinearLayout>
+
+</FrameLayout>
 

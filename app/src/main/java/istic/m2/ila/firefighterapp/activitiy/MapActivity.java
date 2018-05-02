@@ -70,6 +70,9 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     private Boolean interventionView = true;
 
+    //region Detail/Creation fragment
+    private Fragment fragmentToHide;
+
     private InterventionDetailsMoyensFragmentsTV intervListFrag;
     private InterventionMapFragment intervMapFrag;
 
@@ -180,16 +183,15 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
     protected void onCreate(Bundle savedInstanceState) {
         intervention = getService().getIntervention(getToken(),((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_map);
-        this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
+        setContentView(R.layout.activity_map);
 
         serviceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 serviceRabbitMQ = ((RabbitMQDroneService.LocalBinder) service).getService();
 
-                intervListFrag = new InterventionDetailsMoyensFragmentsTV();
                 intervMapFrag = new InterventionMapFragment();
+                intervListFrag = new InterventionDetailsMoyensFragmentsTV();
 
                 droneMapFrag = new DroneMapFragment(); //Map avant drone list
                 droneListFrag = new DroneListViewFragment();
@@ -246,8 +248,6 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
 
-        FrameLayout.LayoutParams params= (FrameLayout.LayoutParams) frameMoyen.getLayoutParams();
-        params.width = 500;
 
         frameMoyen.setVisibility(View.VISIBLE);
         if (interventionView) {
@@ -301,71 +301,69 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         }
     }
 
-    //region Detail/Creation fragment
-    private Fragment fragmentToHide;
-    private FragmentHolder fragmentHolder;
+
 
     public void showFragment() {
         Log.i("Visibility", "SHOW");
-        if (!fragmentHolder.isVisible()) {
+        if (!this.intervMapFrag.getFragmentHolder().isVisible()) {
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .show(fragmentHolder)
+                    .show(intervMapFrag.getFragmentHolder())
                     .commit();
-            fragmentHolder.getView().setVisibility(View.VISIBLE);
+            intervMapFrag.getFragmentHolder().getView().setVisibility(View.VISIBLE);
         }
     }
 
     public void hideFragment() {
         Log.i("Visibility", "HIDE");
-        if (fragmentHolder.isVisible()) {
+        if (intervMapFrag.getFragmentHolder().isVisible()) {
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .hide(fragmentHolder)
+                    .hide(intervMapFrag.getFragmentHolder())
                     .commit();
-            fragmentHolder.getView().setVisibility(View.GONE);
+            intervMapFrag.getFragmentHolder().getView().setVisibility(View.GONE);
         }
     }
 
     public void createMoyen() {
         hideFragment();
-        fragmentHolder.replace(new DeploiementDTO());
+        intervMapFrag.getFragmentHolder().replace(new DeploiementDTO());
         showFragment();
     }
 
     public void hideSelf() {
-        fragmentHolder.hideSelf();
+        intervMapFrag.getFragmentHolder().hideSelf();
     }
 
 
     public void displayFragmentHolder(IDTO dto) {
-        if (fragmentHolder.getObjectHeld() == dto) {
+        if (intervMapFrag.getFragmentHolder().getObjectHeld() == dto) {
             hideFragment();
-            fragmentHolder.setObjectHeld(null);
+            intervMapFrag.getFragmentHolder().setObjectHeld(null);
         }
-        else if(fragmentHolder.getObjectHeld() == null){
-            fragmentHolder.replace(dto);
+        else if(intervMapFrag.getFragmentHolder().getObjectHeld() == null){
+            intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
         }
         else {
             hideFragment();
-            fragmentHolder.replace(dto);
+            intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
         }
     }
 
     public void createTrait() {
         hideFragment();
-        fragmentHolder.replace(new TraitTopoDTO());
+        intervMapFrag.getFragmentHolder().replace(new TraitTopoDTO());
         showFragment();
     }
 
 
     public void createSinistre() {
         hideFragment();
-        fragmentHolder.replace(new SinistreDTO());
+        intervMapFrag.getFragmentHolder().replace(new SinistreDTO());
         showFragment();
     }
 
@@ -511,12 +509,6 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                             .draggable(false));
                     marker.setTag(deploy);
 
-
-
-
-
-
-
                 }
             }
         });
@@ -536,30 +528,22 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         return icon;
     }
 
-    public void toggleFragmentWeight() {
+    public void toggleReduceTabMoyens() {
 
         FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
         Button btnMoy = findViewById(R.id.toggleViewTabMoy);
-
-        FrameLayout.LayoutParams param = (FrameLayout.LayoutParams) frameMoyen.getLayoutParams();
-        float width = param.width;
 
         if(frameMoyen.getVisibility()== View.GONE){
             frameMoyen.setVisibility(View.VISIBLE);
         }
 
-        if(width == 1100){
-            // On diminue
+        if(!intervListFrag.isReduce()){
             btnMoy.setText("Moyens >");
-            param.width = 355;
+            intervListFrag.populatedTableViewReduce(intervListFrag.getListDeploiment(), false,-1);
         } else {
-            // On agrandit
             btnMoy.setText("< Moyens");
-            param.width = 1100;
-
+            intervListFrag.populatedTableViewAll(intervListFrag.getListDeploiment(), false,-1);
         }
-
-        frameMoyen.setLayoutParams(param);
 
     }
 
@@ -574,19 +558,15 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
         } else {
             frameMoyen.setVisibility(View.VISIBLE);
-            LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameMoyen.getLayoutParams();
-            float width = param.width;
 
-            if(width == 1100){
-                // On diminue
+            if(!intervListFrag.isReduce()){
                 btnMoy.setText("Moyens >");
-                param.width = 355;
+                intervListFrag.populatedTableViewReduce(intervListFrag.getListDeploiment(), false,-1);
             } else {
-                // On agrandit
                 btnMoy.setText("< Moyens");
-                param.width = 1100;
-
+                intervListFrag.populatedTableViewAll(intervListFrag.getListDeploiment(), false,-1);
             }
+
         }
     }
     //endregion
