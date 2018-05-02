@@ -76,7 +76,8 @@ public class DemandeMoyenFragement extends Fragment {
         DeploimentConsumer consumer = restTemplate.builConsumer(DeploimentConsumer.class);
         Response<DemandeDTO> response = null;
         try {
-            response = consumer.createDeploiment(((MapActivity)getActivity()).getToken(),((MapActivity)getActivity()).getIdIntervention(), deploiement).execute();
+            response = consumer.createDeploiment(((MapActivity)getActivity()).getToken(), deploiement).execute();
+
             if (response != null && response.code() == HttpURLConnection.HTTP_OK){
                 Log.i(TAG, "Demande éffectué");
             }
@@ -93,6 +94,7 @@ public class DemandeMoyenFragement extends Fragment {
             DemandeDTO demande = new DemandeDTO();
             demande.setTypeDemande((TypeVehiculeDTO)mySpinner.getSelectedItem());
             demande.setComposante((TypeComposanteDTO)composanteSpinner.getSelectedItem());
+            demande.setInterventionId(((MapActivity)getActivity()).getIdIntervention());
             demandes.add(demande);
         }
           return demandes;

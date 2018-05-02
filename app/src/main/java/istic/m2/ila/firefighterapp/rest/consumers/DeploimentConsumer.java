@@ -51,7 +51,6 @@ public interface DeploimentConsumer {
     /** Création d'une demande de déploiment*/
     @POST(Endpoints.INTERVENTION_DEMANDE)
     Call<DemandeDTO> createDeploiment(@Header("Authorization") String token
-            , @Path("id") Long id
             , @Body DemandeDTO demandeDto);
 
     /** Récuperation de la liste des déploiments de l'intervention*/
