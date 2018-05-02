@@ -177,7 +177,7 @@ public class InterventionCreationMoyensFragments extends Fragment {
                 expandableLayout.setOnExpansionUpdateListener(this);
                 expandButton = itemView.findViewById(R.id.expand_button_add_moyen_fragment);
                 expandButton.setOnClickListener(this);
-//                expandedLinearLayout = itemView.findViewById(R.id.list_layout_moyen_add_moyen_fragment);
+                expandedLinearLayout = itemView.findViewById(R.id.list_layout_moyen_add_moyen_fragment);
             }
 
             public void bind() {
