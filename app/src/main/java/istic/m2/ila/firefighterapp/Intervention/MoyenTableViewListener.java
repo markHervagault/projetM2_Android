@@ -43,6 +43,8 @@ public class MoyenTableViewListener implements ITableViewListener {
             p_nYPosition) {
         onRowHeaderClicked(p_jCellView, p_nYPosition);
         if (mContext != null && mContext instanceof MapActivity) {
+
+                ((MapActivity) mContext).displayFragmentHolder(deploiements.get(p_nYPosition));
             // Le fragment existe
             if (interventionDetailsMoyensFragmentsTV.isReduce()) {
                 interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
@@ -82,15 +84,6 @@ public class MoyenTableViewListener implements ITableViewListener {
             p_nYPosition) {
         Log.e(getClass().getSimpleName(), "onRowHeaderClicked a été appelé");
 
-        if (interventionDetailsMoyensFragmentsTV.isReduce()) {
-            interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
-        } else {
-            interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
-        }
-        if (mContext != null && mContext instanceof MapActivity) {
-
-            ((MapActivity) mContext).displayFragmentHolder(deploiements.get(p_nYPosition));
-        }
     }
 
     @Override
