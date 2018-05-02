@@ -182,8 +182,10 @@ public class MissionManager extends MapItem
         @Override
         public void onMapClick(LatLng latLng)
         {
+            Log.i(TAG, "Click sur la map");
             //Reset du marker selectionné
             setSelectedMarker(null);
+            EventBus.getDefault().post(new UnSelectPathPointMessage());
 
             //Seulement en mode édition
             if(!_editMode)
@@ -212,18 +214,42 @@ public class MissionManager extends MapItem
         public boolean onMarkerClick(Marker marker)
         {
             //Vérification du tag du marker
-            if(marker.getTag() != null && marker.getTag() instanceof Integer && _pathPointsByTag.containsKey(marker.getTag())) {
+            /*if(marker.getTag() != null && marker.getTag() instanceof Integer && _pathPointsByTag.containsKey(marker.getTag())) {
                 //Deselection du marker actuel
                 if(_selectedMarker != null){
                     _selectedMarker.UnSelect();
-                    EventBus.getDefault().post(new UnSelectPathPointMessage());
                 }
 
                 setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
-                EventBus.getDefault().post(_selectedMarker);
             }
-            else
+            else{
                 setSelectedMarker(null);
+            }*/
+
+            if(marker.getTag() != null && marker.getTag() instanceof Integer && _pathPointsByTag.containsKey(marker.getTag())) {
+                // Si un marqueur n'a jamais été sélectionné auparavant
+                if(_selectedMarker == null){
+                    setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
+                    EventBus.getDefault().post(_selectedMarker);
+                }
+                // si le marqueur sélectionné et le même que celui sélectionné auparavant
+                else if (_selectedMarker.getTag().equals(marker.getTag())){
+                    _selectedMarker.UnSelect();
+                    setSelectedMarker(null);
+                    EventBus.getDefault().post(new UnSelectPathPointMessage());
+                }
+                // si le marqueur n'est pas le même que celui sélectionné auparavant
+                else{
+                    _selectedMarker.UnSelect();
+                    setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
+                    EventBus.getDefault().post(_selectedMarker);
+                }
+            }
+            else{
+                setSelectedMarker(null);
+                EventBus.getDefault().post(new UnSelectPathPointMessage());
+            }
+
 
             return false;
         }
