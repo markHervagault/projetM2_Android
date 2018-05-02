@@ -15,9 +15,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.dto.EDroneStatus;
 import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneStatusChangedMessage;
-import istic.m2.ila.firefighterapp.dto.EDroneStatus;
 
 /**
  * Created by markh on 24/04/2018.
@@ -84,8 +84,7 @@ public class DroneCommandFragment extends Fragment {
     {
         getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 RefreshUI(status);
             }
         });

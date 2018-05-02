@@ -1,18 +1,18 @@
 package istic.m2.ila.firefighterapp.Intervention.holder;
 
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import istic.m2.ila.firefighterapp.Intervention.model.*;
-import istic.m2.ila.firefighterapp.R;
 
 import com.evrencoskun.tableview.ITableView;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractSorterViewHolder;
 import com.evrencoskun.tableview.sort.SortState;
+
+import istic.m2.ila.firefighterapp.Intervention.model.ColumnHeaderModel;
+import istic.m2.ila.firefighterapp.R;
 
 /**
  * Created by evrencoskun on 1.12.2017.

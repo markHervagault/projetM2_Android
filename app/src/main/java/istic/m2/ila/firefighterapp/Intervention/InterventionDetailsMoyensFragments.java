@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,9 +22,9 @@ import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.activitiy.MapActivity;
-import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
-import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
 import retrofit2.Response;
 
 /**
@@ -88,7 +87,7 @@ public class InterventionDetailsMoyensFragments extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_intervention_details_moyens_fragments, container, false);
 
-        RecyclerView recyclerView = rootView.findViewById(R.id.interventionDetailsMoyenRecycler);
+        RecyclerView recyclerView = rootView.findViewById(R.id.moyenTableView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new SimpleAdapter(recyclerView, this.listDeploiment));
 

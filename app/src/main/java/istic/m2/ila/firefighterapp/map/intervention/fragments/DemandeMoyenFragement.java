@@ -48,9 +48,9 @@ public class DemandeMoyenFragement extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.add_moyen_fragment, container, false);
-        editTextNumberDemand = (EditText) view.findViewById(R.id.editText_nom);
+        editTextNumberDemand = view.findViewById(R.id.editText_nom);
         setSpinnerData();
-        Button demande = (Button) view.findViewById(R.id.Demande);
+        Button demande = view.findViewById(R.id.Demande);
         demande.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 List<DemandeDTO> listDemande = buildListVehicule(type);
@@ -65,8 +65,8 @@ public class DemandeMoyenFragement extends Fragment {
 
 
     private void setSpinnerData(){
-        mySpinner = (Spinner) view.findViewById(R.id.menu);
-        composanteSpinner = (Spinner)view.findViewById(R.id.menuComposante);
+        mySpinner = view.findViewById(R.id.menu);
+        composanteSpinner = view.findViewById(R.id.menuComposante);
         composanteSpinner.setAdapter(new ComposanteAdapter(this.getActivity(),android.R.layout.simple_list_item_1));
         mySpinner.setAdapter(new TypeVehiculeAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
     }

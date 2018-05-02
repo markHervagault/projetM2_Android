@@ -44,10 +44,10 @@ public class MoyenTableViewListener implements ITableViewListener {
         onRowHeaderClicked(p_jCellView, p_nYPosition);
         if (mContext != null && mContext instanceof MapActivity) {
             // Le fragment existe
-            if(interventionDetailsMoyensFragmentsTV.isReduce()){
-                interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true,p_nYPosition);
+            if (interventionDetailsMoyensFragmentsTV.isReduce()) {
+                interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
             } else {
-                interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true,p_nYPosition);
+                interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
             }
 
         } else {
@@ -65,10 +65,10 @@ public class MoyenTableViewListener implements ITableViewListener {
     public void onColumnHeaderClicked(@NonNull RecyclerView.ViewHolder p_jColumnHeaderView, int
             p_nXPosition) {
 
-        if(interventionDetailsMoyensFragmentsTV.isReduce()){
-            interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), false,-1);
+        if (interventionDetailsMoyensFragmentsTV.isReduce()) {
+            interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), false, -1);
         } else {
-            interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), false,-1);
+            interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), false, -1);
         }
     }
 
@@ -82,10 +82,10 @@ public class MoyenTableViewListener implements ITableViewListener {
             p_nYPosition) {
         Log.e(getClass().getSimpleName(), "onRowHeaderClicked a été appelé");
 
-        if(interventionDetailsMoyensFragmentsTV.isReduce()){
-            interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true,p_nYPosition);
+        if (interventionDetailsMoyensFragmentsTV.isReduce()) {
+            interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
         } else {
-            interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true,p_nYPosition);
+            interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
         }
         if (mContext != null && mContext instanceof MapActivity) {
 

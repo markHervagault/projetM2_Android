@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.github.clans.fab.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;

@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class DroneDTO
 {
-    private static final String TAG  = "DroneDTO";
+    private static final String TAG = "DroneDTO";
 
     //region members
     private Long id;
@@ -17,13 +17,15 @@ public class DroneDTO
     private EDroneStatus statut;
     private int battery;
     //endregion
+    //region Localisation (utilisée pour l'affichage de l'altitude du drone dans la liste)
+    private LocalisationDroneDTO localisation;
 
-    //region Getter / Setters
-    public EDroneStatus getStatut() {
-        return statut;
-    }
-    public void setStatut(EDroneStatus statut) {
-        this.statut = statut;
+    //region Constructor
+    public DroneDTO() {
+        localisation = new LocalisationDroneDTO();
+        localisation.altitude = 0;
+        localisation.latitude = 0;
+        localisation.longitude = 0;
     }
     public Long getId() {
         return id;
@@ -51,34 +53,34 @@ public class DroneDTO
     }
     //endregion
 
-    //region Localisation (utilisée pour l'affichage de l'altitude du drone dans la liste)
-    private LocalisationDroneDTO localisation;
-    public LocalisationDroneDTO getLocalisation() { return localisation; }
-    public void setLocalisation(LocalisationDroneDTO loc) { localisation = loc; }
+    //region Getter / Setters
+    public EDroneStatus getStatut() {
+        return statut;
+    }
+
+    public void setStatut(EDroneStatus statut) {
+        this.statut = statut;
+    }
+
+    public LocalisationDroneDTO getLocalisation() {
+        return localisation;
+    }
     //endregion
 
-    //region Constructor
-    public DroneDTO()
-    {
-        localisation = new LocalisationDroneDTO();
-        localisation.altitude = 0;
-        localisation.latitude = 0;
-        localisation.longitude = 0;
+    public void setLocalisation(LocalisationDroneDTO loc) {
+        localisation = loc;
     }
     //endregion
 
     //Update
-    public void Update(DroneInfosDTO dto)
-    {
+    public void Update(DroneInfosDTO dto) {
         //Nouveau statut
         EDroneStatus status = null;
         try {
             status = EDroneStatus.valueOf(dto.status);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Log.e(TAG, "Wrong status received");
-        }
-        finally {
+        } finally {
             if (status != null)
                 statut = status;
         }

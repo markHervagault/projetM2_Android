@@ -118,8 +118,8 @@
         fab:fab_size="normal"
         fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
         fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+        android:src="@drawable/send_white"
         fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
-        fab:fab_showShadow="true"
-        android:src="@drawable/send_white"/>
+        fab:fab_showShadow="true" />
 
 </FrameLayout>

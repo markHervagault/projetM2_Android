@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems;
+package istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -20,7 +20,7 @@ import java.util.Map;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
-import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
+import istic.m2.ila.firefighterapp.map.Common.MapItem;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 

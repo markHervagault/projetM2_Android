@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems;
+package istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems;
 
 import android.app.Activity;
 
@@ -13,15 +13,14 @@ import java.util.Map;
 
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.map.Common.MapItem;
-import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.MessageGeneric;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.MessageGeneric;
 
 /**
  * Created by adou on 24/04/18.
  */
 
-public class InterventionManager extends MapItem
-{
+public class InterventionManager extends MapItem {
     //region Members
 
     private Map<Long, InterventionDTO> _interventionById;
@@ -30,9 +29,8 @@ public class InterventionManager extends MapItem
 
     //region Constructor
 
-    public InterventionManager(GoogleMap map, Activity contextActivity)
-    {
-        super(map,contextActivity);
+    public InterventionManager(GoogleMap map, Activity contextActivity) {
+        super(map, contextActivity);
 
         _interventionById = new HashMap<>();
         EventBus.getDefault().register(this);
@@ -42,14 +40,12 @@ public class InterventionManager extends MapItem
 
     //region Actions
 
-    public synchronized void onCreateOrUpdateInterventionDTOMessageEvent(InterventionDTO message)
-    {
+    public synchronized void onCreateOrUpdateInterventionDTOMessageEvent(InterventionDTO message) {
         _interventionById.put(message.getId(), message);
     }
 
-    public synchronized void onDeleteInterventionDTOMessageEvent(InterventionDTO message)
-    {
-        if(_interventionById.containsKey(message.getId())) {
+    public synchronized void onDeleteInterventionDTOMessageEvent(InterventionDTO message) {
+        if (_interventionById.containsKey(message.getId())) {
             _interventionById.remove(message.getId());
         }
     }
@@ -58,11 +54,11 @@ public class InterventionManager extends MapItem
     //region EventSuscribing
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onInterventionDTOMessageEvent(MessageGeneric<InterventionDTO> message){
-        if(message != null){
-            if(message.getSyncAction() == SyncAction.UPDATE){
+    public synchronized void onInterventionDTOMessageEvent(MessageGeneric<InterventionDTO> message) {
+        if (message != null) {
+            if (message.getSyncAction() == SyncAction.UPDATE) {
                 onCreateOrUpdateInterventionDTOMessageEvent(message.getDto());
-            }else if (message.getSyncAction() == SyncAction.DELETE){
+            } else if (message.getSyncAction() == SyncAction.DELETE) {
                 onDeleteInterventionDTOMessageEvent(message.getDto());
             }
         }

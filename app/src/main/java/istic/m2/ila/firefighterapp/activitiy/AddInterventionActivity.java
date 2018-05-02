@@ -1,7 +1,6 @@
 package istic.m2.ila.firefighterapp.activitiy;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,13 +21,13 @@ import java.util.Set;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.addintervention.FragmentFormulaire;
 import istic.m2.ila.firefighterapp.addintervention.InterventionCreationMoyensFragments;
-import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
-import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.AdresseDTO;
 import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementCreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -65,9 +64,9 @@ public class AddInterventionActivity extends FragmentActivity implements Fragmen
                 adb.setTitle("Confirmation de création");
                 adb.setMessage("Êtes-vous sûr de vouloir créer cette intervention ?");
 
-                adb.setPositiveButton("Confirmer", new DialogInterface.OnClickListener()  {
+                adb.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if(creationIntervention()){
+                        if (creationIntervention()) {
                             redirectToList();
                         }
                     }

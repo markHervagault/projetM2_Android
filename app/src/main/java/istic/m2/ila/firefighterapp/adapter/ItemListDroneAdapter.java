@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,14 +14,12 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.dto.EDroneStatus;
-import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.constantes.IHMLabels;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
+import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneChangedMessage;
 
 /**
  * Created by markh on 28/03/2018.
@@ -50,48 +47,12 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         //lastListDrones = new ArrayList<DroneDTO>(drones);
     }
 
-    // Fournit une reference aux vues pour chaque item
-    // les items complexes peuvent avoir besoin de plus d'une vue par item  et
-    // vous fournir un accès aux vues pour une donnée d'item dans le view holder
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView drone_name_listDrone;
-        public TextView statut_listDrone;
-        public ImageView image_statut_listDrone;
-        public ImageView image_battery_listDrone;
-        public LinearLayout layoutItemDroneList;
-        public TextView droneAltitudeTextView;
-
-        public ViewHolder(View v) {
-            super(v);
-            drone_name_listDrone = v.findViewById(R.id.drone_name_listDrone);
-            statut_listDrone = v.findViewById(R.id.statut_listDrone);
-            image_statut_listDrone = v.findViewById(R.id.image_statut_listDrone);
-            image_battery_listDrone = v.findViewById(R.id.image_battery_listDrone);
-            layoutItemDroneList = v.findViewById(R.id.item_Drone_List_layout);
-            droneAltitudeTextView = v.findViewById(R.id.drone_altitude_text);
-        }
-    }
-
-    // Créer de nouvelles vues (invoqué par le layout manager)
-    @Override
-    public ItemListDroneAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                            int viewType) {
-        // créer une nouvelle vue
-        View v =  LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_list_drone, parent, false);
-        context = parent.getContext();
-        ViewHolder vh= new ViewHolder(v);
-        return vh;
-    }
-
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position)
-    {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final DroneDTO drone = drones.get(position);
         holder.drone_name_listDrone.setText(drone.getNom());
-        if(indexSelected==position)
+        if (indexSelected == position)
             holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_selected));
         else
             holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_unselected));
@@ -110,8 +71,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         });
 
         String status = "statusIconnu";
-        if(drone.getStatut()!=null)
-        {
+        if (drone.getStatut() != null) {
             switch (drone.getStatut()){
                 case DISPONIBLE:
                     status = IHMLabels.DRONE_STATUT_DISPONIBLE;
@@ -158,8 +118,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
             }
 
             //Mise a jour de l'altitude du drone
-            switch (drone.getStatut())
-            {
+            switch (drone.getStatut()) {
                 case DISPONIBLE:
                     holder.droneAltitudeTextView.setText("Au Sol");
                     break;
@@ -172,9 +131,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
                     holder.droneAltitudeTextView.setText(String.valueOf(drone.getLocalisation().altitude) + " m");
                     break;
             }
-        }
-        else
-        {
+        } else {
             Log.d(TAG, "Statut du drone null");
             holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
             holder.image_battery_listDrone.setVisibility(View.GONE);
@@ -193,6 +150,41 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
             holder.image_battery_listDrone.setImageResource(R.drawable.emptybattery);
 
         holder.statut_listDrone.setText(status);
+    }
+
+    // Créer de nouvelles vues (invoqué par le layout manager)
+    @Override
+    public ItemListDroneAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                              int viewType) {
+        // créer une nouvelle vue
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_list_drone, parent, false);
+        context = parent.getContext();
+        ViewHolder vh = new ViewHolder(v);
+        return vh;
+    }
+
+    // Fournit une reference aux vues pour chaque item
+    // les items complexes peuvent avoir besoin de plus d'une vue par item  et
+    // vous fournir un accès aux vues pour une donnée d'item dans le view holder
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView drone_name_listDrone;
+        public TextView statut_listDrone;
+        public ImageView image_statut_listDrone;
+        public ImageView image_battery_listDrone;
+        public LinearLayout layoutItemDroneList;
+        public TextView droneAltitudeTextView;
+
+        public ViewHolder(View v) {
+            super(v);
+            drone_name_listDrone = v.findViewById(R.id.drone_name_listDrone);
+            statut_listDrone = v.findViewById(R.id.statut_listDrone);
+            image_statut_listDrone = v.findViewById(R.id.image_statut_listDrone);
+            image_battery_listDrone = v.findViewById(R.id.image_battery_listDrone);
+            layoutItemDroneList = v.findViewById(R.id.item_Drone_List_layout);
+            droneAltitudeTextView = v.findViewById(R.id.drone_altitude_text);
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

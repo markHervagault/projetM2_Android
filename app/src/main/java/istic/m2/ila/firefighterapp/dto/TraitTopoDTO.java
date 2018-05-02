@@ -21,7 +21,7 @@ public class TraitTopoDTO implements ITraitTopo {
 
     @Override
     public String menuTitle() {
-        if(getId() == null){
+        if (getId() == null) {
             return "Creation d'un Trait topographique";
         } else {
             return "Trait topographique de composante " + getComposante().getLabel();
@@ -30,7 +30,7 @@ public class TraitTopoDTO implements ITraitTopo {
 
     @Override
     public String menuColor() {
-        if(composante == null){
+        if (composante == null) {
             return "#D0D0D0";
         } else {
             return composante.getCouleur();

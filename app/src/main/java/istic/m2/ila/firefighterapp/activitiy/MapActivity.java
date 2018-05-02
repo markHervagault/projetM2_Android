@@ -16,15 +16,12 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
-import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
@@ -49,14 +45,8 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.fragment.map.Drone.DroneListViewFragment;
-import istic.m2.ila.firefighterapp.fragment.map.Drone.DroneMapFragment;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.DeploiementManager;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.SinistreManager;
-import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
-import istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder;
-import istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.map.Drone.DroneMapFragment;
+import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.DeploiementManager;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.SinistreManager;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.TraitTopoManager;
 import istic.m2.ila.firefighterapp.map.intervention.InterventionMapFragment;
@@ -258,12 +248,8 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
     private void initializeFragments() {
         nbServiceConnected++;
         if (nbServiceConnected == MAX_SERVICE) {
-            intervListFrag = new InterventionDetailsMoyensFragmentsTV();
             intervMapFrag = new InterventionMapFragment();
-
             droneMapFrag = new DroneMapFragment(); //Map avant drone list
-            droneListFrag = new DroneListViewFragment();
-
             toggleView();
         }
     }
@@ -350,8 +336,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         if (intervMapFrag.getFragmentHolder().getObjectHeld() == dto) {
             hideFragment();
             intervMapFrag.getFragmentHolder().setObjectHeld(null);
-        }
-        else if(intervMapFrag.getFragmentHolder().getObjectHeld() == null){
+        } else if (intervMapFrag.getFragmentHolder().getObjectHeld() == null) {
             intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
         }

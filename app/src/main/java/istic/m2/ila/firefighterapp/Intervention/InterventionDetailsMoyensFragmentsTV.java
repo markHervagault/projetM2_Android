@@ -103,7 +103,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_intervention_details_moyens_fragments, container, false);
 
-        mTableView = (TableView) view.findViewById(R.id.moyenTableView);
+        mTableView = view.findViewById(R.id.moyenTableView);
         // Create TableView Adapter
         mTableAdapter = new MoyenTableAdapter(getContext());
         mTableView.setAdapter(mTableAdapter);
@@ -111,7 +111,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
 
         // UserInfo data will be getting from a web server.
         populatedTableViewAll(this.listDeploiment, false, -1);
-        mTableView.setTableViewListener(new MoyenTableViewListener(mTableView, getContext(), listDeploiment,mTableAdapter,this));
+        mTableView.setTableViewListener(new MoyenTableViewListener(mTableView, getContext(), listDeploiment, mTableAdapter, this));
         //mTableView.hideColumn(1);
         return view;
     }
@@ -132,11 +132,11 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
         mTableAdapter.setAllItems(mColumnHeaderList, mRowHeaderList, mCellList);
     }
 
-    public void populatedTableViewReduce(List<DeploiementDTO> depDto, boolean selected ,int index) {
+    public void populatedTableViewReduce(List<DeploiementDTO> depDto, boolean selected, int index) {
         // create Models
-        isReduce  = true;
+        isReduce = true;
         mColumnHeaderList = createColumnHeaderModelListReduce();
-        mCellList = loadCellModelListReduce(depDto, selected,index);
+        mCellList = loadCellModelListReduce(depDto, selected, index);
         mRowHeaderList = createRowHeaderList();
 
         // Set all items to the TableView
@@ -193,10 +193,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
         boolean selected = false;
         for (int i = 0; i < depDto.size(); i++) {
 
-            selected = false;
-            if(selec && i == index){
-                selected = true;
-            }
+            selected = selec && i == index;
             DeploiementDTO depInfo = depDto.get(i);
             TypeComposanteDTO composante = depInfo.getComposante();
 
@@ -216,11 +213,11 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
             }
             CellModel cellEtat;
             if (depInfo.getState() == EEtatDeploiement.REFUSE) {
-                cellEtat= changeBackgroundAndText("4-" + i, depInfo.getState(),"#000000", "#ffffff", selected);
+                cellEtat = changeBackgroundAndText("4-" + i, depInfo.getState(), "#000000", "#ffffff", selected);
             } else if (depInfo.getState() == EEtatDeploiement.DEMANDE) {
-                cellEtat= changeBackgroundAndText("4-" + i, depInfo.getState(),"#747474", "#ffffff", selected);
-            }else {
-                cellEtat = changeBackgroundAndText("4-" + i, depInfo.getState(),null, null, selected);
+                cellEtat = changeBackgroundAndText("4-" + i, depInfo.getState(), "#747474", "#ffffff", selected);
+            } else {
+                cellEtat = changeBackgroundAndText("4-" + i, depInfo.getState(), null, null, selected);
             }
             list.add(cellEtat);
 
@@ -269,10 +266,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
         // In this example, UserInfo list is populated from web service
         boolean selected = false;
         for (int i = 0; i < depDto.size(); i++) {
-            selected = false;
-            if(selec && i == index){
-                selected = true;
-            }
+            selected = selec && i == index;
             DeploiementDTO depInfo = depDto.get(i);
             TypeComposanteDTO composante = depInfo.getComposante();
 
@@ -285,22 +279,22 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
                     composante.getCouleur(), "#ffffff", selected);
             list.add(cellWithComposante);
 
-            if(depInfo.getVehicule()!=null) {
+            if (depInfo.getVehicule() != null) {
                 list.add(new CellModel("3-" + i, depInfo.getVehicule().getLabel(), selected));
             } else {
                 list.add(new CellModel("3-" + i, "...", selected));
             }
             CellModel cellEtat;
             if (depInfo.getState() == EEtatDeploiement.REFUSE) {
-                cellEtat= changeBackgroundAndText("4-" + i, depInfo.getState(),"#000000", "#ffffff", selected);
+                cellEtat = changeBackgroundAndText("4-" + i, depInfo.getState(), "#000000", "#ffffff", selected);
             } else if (depInfo.getState() == EEtatDeploiement.DEMANDE) {
-                cellEtat= changeBackgroundAndText("4-" + i, depInfo.getState(),"#747474", "#ffffff", selected);
-            }else {
-                cellEtat = changeBackgroundAndText("4-" + i, depInfo.getState(),null, null, selected);
+                cellEtat = changeBackgroundAndText("4-" + i, depInfo.getState(), "#747474", "#ffffff", selected);
+            } else {
+                cellEtat = changeBackgroundAndText("4-" + i, depInfo.getState(), null, null, selected);
             }
             list.add(cellEtat);
 
-            if( depInfo.isPresenceCRM()){
+            if (depInfo.isPresenceCRM()) {
                 list.add(new CellModel("5-" + i, "CRM", selected));
             } else {
                 list.add(new CellModel("5-" + i, "...", selected));

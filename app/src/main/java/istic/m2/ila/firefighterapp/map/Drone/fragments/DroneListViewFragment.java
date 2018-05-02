@@ -26,11 +26,11 @@ import java.util.Map;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.adapter.ItemListDroneAdapter;
-import istic.m2.ila.firefighterapp.eventbus.drone.DeclareDroneMessage;
-import istic.m2.ila.firefighterapp.rest.consumers.DroneConsumer;
-import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
+import istic.m2.ila.firefighterapp.eventbus.drone.DeclareDroneMessage;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.DroneConsumer;
 import retrofit2.Response;
 
 public class DroneListViewFragment extends Fragment {
@@ -151,7 +151,7 @@ public class DroneListViewFragment extends Fragment {
                 Response<List<DroneDTO>> response = null;
                 try {
                     // Récupération du token
-                    String token = _context.getSharedPreferences("user", _context.MODE_PRIVATE).getString("token", "null");
+                    String token = _context.getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
 
                     // On récupère tous les drones du serveur
                     response = droneConsumer.getListDrone(token).execute();

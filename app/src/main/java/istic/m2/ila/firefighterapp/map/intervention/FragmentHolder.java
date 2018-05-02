@@ -93,7 +93,7 @@ public class FragmentHolder extends Fragment {
 
     private void insertFragment(Fragment fragment) {
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        if(fragment == null) {
+        if (fragment == null) {
             ft.remove(fragmentToDisplay);
         } else {
             ft.replace(R.id.fragment_placeholder, fragment);
@@ -103,7 +103,7 @@ public class FragmentHolder extends Fragment {
 
     public void replace(IDTO dto) {
         this.setObjectHeld(dto);
-        this.changeTitle(dto.menuTitle(),dto.menuColor());
+        this.changeTitle(dto.menuTitle(), dto.menuColor());
         this.setFragmentToDisplay(getFragment(dto));
     }
 

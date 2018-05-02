@@ -1,7 +1,6 @@
 package istic.m2.ila.firefighterapp.dto;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created by hakima on 3/26/18.

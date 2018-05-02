@@ -1,17 +1,15 @@
 package istic.m2.ila.firefighterapp.Intervention.holder;
 
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import istic.m2.ila.firefighterapp.Intervention.model.*;
-import istic.m2.ila.firefighterapp.R;
 
-import com.evrencoskun.tableview.TableView;
-import com.evrencoskun.tableview.adapter.recyclerview.CellRecyclerView;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
+
+import istic.m2.ila.firefighterapp.Intervention.model.CellModel;
+import istic.m2.ila.firefighterapp.R;
 
 
 
@@ -57,9 +55,9 @@ public class CellViewHolder extends AbstractViewHolder {
 
         // Adapter le text color de la cellule à la composante
         String textColor = p_jModel.getTextColor();
-    if(p_jModel.isSelected()){
-        cell_textview.setTextColor(Color.BLACK);
-    }else if (textColor != null) {
+        if (p_jModel.isSelected()) {
+            cell_textview.setTextColor(Color.BLACK);
+        } else if (textColor != null) {
             cell_textview.setTextColor(Color.parseColor(textColor));
 
         } else {

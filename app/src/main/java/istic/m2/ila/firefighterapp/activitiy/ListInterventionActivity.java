@@ -15,9 +15,9 @@ import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
-import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
-import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
 import retrofit2.Response;
 
 /**

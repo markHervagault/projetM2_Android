@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems;
+package istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems;
 
 import android.app.Activity;
 
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
-import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
+import istic.m2.ila.firefighterapp.map.Common.MapItem;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.DeploiementMessage;
 

@@ -35,7 +35,7 @@ public class TypeVehiculeDTO {
         this.composante = composante;
     }
 
-    public String toString(){
-       return  getLabel();
+    public String toString() {
+        return getLabel();
     }
 }

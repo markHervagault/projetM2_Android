@@ -7,14 +7,6 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.rest.consumers.BouchonConsumer;
-import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
-import istic.m2.ila.firefighterapp.rest.consumers.DroneConsumer;
-import istic.m2.ila.firefighterapp.rest.consumers.DroneMissionConsumer;
-import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
-import istic.m2.ila.firefighterapp.rest.RestTemplate;
-import istic.m2.ila.firefighterapp.rest.consumers.SinistreConsumer;
-import istic.m2.ila.firefighterapp.rest.consumers.TraitTopoConsumer;
 import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
@@ -24,6 +16,14 @@ import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.BouchonConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.DroneConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.DroneMissionConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.SinistreConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.TraitTopoConsumer;
 import istic.m2.ila.firefighterapp.rest.consumers.TypeComposanteConsumer;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import retrofit2.Response;
@@ -455,7 +455,7 @@ public class MapService implements IMapService {
 
         try{
             response = consumer.setDeploiementToAction(token, id).execute();
-            if(response == null || response.code() != HttpURLConnection.HTTP_OK)
+            if (response == null || response.code() != HttpURLConnection.HTTP_OK)
             {
                 Log.d("MapService","Error api deploy to action");
             }
@@ -475,7 +475,7 @@ public class MapService implements IMapService {
 
         try{
             response = consumer.setDeploiementToEngage(token, id).execute();
-            if(response == null || response.code() != HttpURLConnection.HTTP_OK)
+            if (response == null || response.code() != HttpURLConnection.HTTP_OK)
             {
                 Log.d("MapService","Error api deploy to engage");
             }

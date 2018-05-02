@@ -8,13 +8,14 @@
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment"/>
+        tools:context="istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="top|right">
+        android:layout_gravity="top|right"
+        android:orientation="vertical">
+
         <Button
             android:id="@+id/toggleView"
             android:layout_width="wrap_content"
@@ -116,8 +117,7 @@
                 fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
                 fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
                 fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
-                android:src="@drawable/moyen_little"
-                />
+                android:src="@drawable/moyen_little" />
         </com.github.clans.fab.FloatingActionMenu>
 
     </FrameLayout>
@@ -133,7 +133,7 @@
         android:id="@+id/tableauMoyen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="top|left"/>
+        android:layout_gravity="top|left" />
 
 </FrameLayout>
 
