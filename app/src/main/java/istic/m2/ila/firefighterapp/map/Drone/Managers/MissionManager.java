@@ -92,7 +92,7 @@ public class MissionManager extends MapItem
         if(_editMode && _missionMode == MissionMode.EDIT) //On autorise l'édition
             _googleMap.setOnMapClickListener(onMapClickListener);
         else
-            _googleMap.setOnMapClickListener(null);
+            _googleMap.setOnMapClickListener(onMapClickListenerCommand);
 
         _propertyChangeSupport.firePropertyChange(EDIT_MODE_CHANGED_EVENT_NAME, !_editMode, _editMode);
     }
@@ -185,7 +185,6 @@ public class MissionManager extends MapItem
             Log.i(TAG, "Click sur la map");
             //Reset du marker selectionné
             setSelectedMarker(null);
-            EventBus.getDefault().post(new UnSelectPathPointMessage());
 
             //Seulement en mode édition
             if(!_editMode)
@@ -204,6 +203,16 @@ public class MissionManager extends MapItem
 
             //On informe du rajout d'un nouveau point
             _propertyChangeSupport.firePropertyChange(POINTCOUNT_CHANGED_EVENT_NAME, getPointsCount() - 1, getPointsCount());
+        }
+    };
+
+    private GoogleMap.OnMapClickListener onMapClickListenerCommand = new GoogleMap.OnMapClickListener() {
+        @Override
+        public void onMapClick(LatLng latLng) {
+            Log.i(TAG, "Click sur la map");
+            //Reset du marker selectionné
+            setSelectedMarker(null);
+            EventBus.getDefault().post(new UnSelectPathPointMessage());
         }
     };
     //endregion
@@ -249,9 +258,8 @@ public class MissionManager extends MapItem
                 setSelectedMarker(null);
                 EventBus.getDefault().post(new UnSelectPathPointMessage());
             }
-
-
-            return false;
+            // TODO : Quand est ce qu'on renvoie TRUE ? Quand est ce qu'on renvoie FALSE ?
+            return true;
         }
     };
     //endregion
