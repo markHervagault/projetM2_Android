@@ -364,9 +364,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
 
     public void createSinistre() {
-        hideFragment();
-        intervMapFrag.getFragmentHolder().replace(new SinistreDTO());
-        showFragment();
+        displayFragmentHolder(new SinistreDTO());
     }
 
     //endregion

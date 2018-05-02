@@ -73,9 +73,6 @@ public class FragmentHolder extends Fragment {
     }
 
     //endregion lifeCycle
-    public Fragment getFragmentToDisplay() {
-        return this.getFragmentToDisplay();
-    }
 
     public Object getObjectHeld() {
         return objectHeld;

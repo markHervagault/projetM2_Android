@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by hakima on 3/21/18.
  */
 
-public class InterventionDTO implements Serializable{
+public class InterventionDTO implements Serializable, IRabbitDTO{
 
     private Long id;
 

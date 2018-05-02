@@ -2,11 +2,13 @@ package istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages;
 
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.IDTO;
+import istic.m2.ila.firefighterapp.dto.IRabbitDTO;
+import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
 
-public abstract class MessageGeneric<T> {
+public abstract class MessageGeneric<T extends IRabbitDTO> {
 
     private T dto;
     private SyncAction syncAction;
@@ -24,13 +26,15 @@ public abstract class MessageGeneric<T> {
         return syncAction;
     }
 
-    public static <A extends IDTO, E extends MessageGeneric> E getInstance(A dto, SyncAction syncAction) {
+    public static <A extends IRabbitDTO, E extends MessageGeneric> E getInstance(A dto, SyncAction syncAction) {
         if (dto instanceof TraitTopoDTO) {
             return (E) new TraitTopoMessage((TraitTopoDTO) dto, syncAction);
         } else if (dto instanceof SinistreDTO) {
             return (E) new SinistreMessage((SinistreDTO) dto, syncAction);
         } else if (dto instanceof DeploiementDTO) {
             return (E) new DeploiementMessage((DeploiementDTO) dto, syncAction);
+        } else if (dto instanceof InterventionDTO) {
+            return (E) new InterventionMessage((InterventionDTO) dto, syncAction);
         } else {
             return null;
         }

@@ -167,7 +167,7 @@ public class DeploiementDrawing extends MapItem
                 label = _deploiementDTO.getVehicule().getLabel();
             }
 
-            if(label != null && label.isEmpty()){
+            if(label != null && !label.isEmpty()){
                 Bitmap bm = textAsBitmap(label, 13, Color.parseColor(rgbNoA));
                 icon = fusionImg(icon, bm);
             }
