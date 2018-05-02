@@ -45,7 +45,7 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.map.Drone.DroneMapFragment;
+import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneMapFragment;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.DeploiementManager;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.SinistreManager;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.TraitTopoManager;
@@ -64,10 +64,11 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
     //region Detail/Creation fragment
     private final int MAX_SERVICE = 4;
     private int nbServiceConnected = 0;
-    private InterventionDetailsMoyensFragmentsTV intervListFrag;
-    private InterventionMapFragment intervMapFrag;
 
+    //MainFragments
+    private InterventionMapFragment intervMapFrag;
     private DroneMapFragment droneMapFrag;
+    
 
     public final Integer RAYON_RECHERCHE_TRAIT_TOPO = 5000;
 
