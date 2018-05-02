@@ -24,19 +24,15 @@
     <color name="colorItemListDroneSelected">#0050d1</color>
 
     <!-- Couleur de la table -->
-    <color name="selected_background_color">#99FFFF</color>
+    <color name="selected_background_color">#ffffff</color>
+
     <color name="unselected_background_color">#ffffff</color>
     <color name="shadow_background_color">#28415f</color>
     <color name="unselected_header_background_color">#ffffff</color>
+    <color name="selected_header_background_color">#ffffff</color>
 
     <!--<color name="unselected_text_color">#537095</color>-->
     <color name="unselected_text_color">#000000</color>
-    <color name="selected_text_color">#000000</color>
     <color name="separator_color">#273e5b</color>
-
-    <color name="popup_menu_item_text_color">#88a5c9</color>
-
-    <color name="female_icon_color">#e9515f</color>
-    <color name="male_icon_color">#f28944</color>
     <!-- Fin Couleur de la table -->
 </resources>

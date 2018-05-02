@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp.Intervention.holder;
 
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
@@ -55,24 +56,11 @@ public class ColumnHeaderViewHolder extends AbstractSorterViewHolder {
         int nBackgroundColorId;
         int nForegroundColorId;
 
-        if (p_nSelectionState == SelectionState.SELECTED) {
-            nBackgroundColorId = R.color.selected_background_color;
-            nForegroundColorId = R.color.selected_text_color;
+        nBackgroundColorId = Color.parseColor("#28415f");
+        nForegroundColorId = Color.WHITE;
 
-        } else if (p_nSelectionState == SelectionState.UNSELECTED) {
-            nBackgroundColorId = R.color.unselected_header_background_color;
-            nForegroundColorId = R.color.unselected_text_color;
-
-        } else { // SelectionState.SHADOWED
-
-            nBackgroundColorId = R.color.shadow_background_color;
-            nForegroundColorId = R.color.unselected_text_color;
-        }
-
-        column_header_container.setBackgroundColor(ContextCompat.getColor(column_header_container
-                .getContext(), nBackgroundColorId));
-        column_header_textview.setTextColor(ContextCompat.getColor(column_header_container
-                .getContext(), nForegroundColorId));
+        column_header_container.setBackgroundColor(nBackgroundColorId);
+        column_header_textview.setTextColor(nForegroundColorId);
     }
 
     @Override

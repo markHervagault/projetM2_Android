@@ -7,17 +7,19 @@
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:context="istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-    <Button
-        android:id="@+id/toggleView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="toDrone" />
+        android:orientation="vertical"
+        android:layout_gravity="top|right">
+        <Button
+            android:id="@+id/toggleView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="toDrone" />
 
         <Button
             android:id="@+id/toggleViewTabMoy"
@@ -25,6 +27,7 @@
             android:layout_height="wrap_content"
             android:text="&lt; Moyens" />
     </LinearLayout>
+
     <!-- Gestion du Menu Flottant -->
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:fab="http://schemas.android.com/apk/res-auto"
@@ -113,10 +116,24 @@
                 fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
                 fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
                 fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
-                android:src="@drawable/moyen"
-            />
+                android:src="@drawable/moyen_little"
+                />
         </com.github.clans.fab.FloatingActionMenu>
 
     </FrameLayout>
 
+    <!-- Detail des differents element-->
+    <FrameLayout
+        android:id="@+id/interventionDetailsFragmentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!--ListView Moyen -->
+    <FrameLayout
+        android:id="@+id/tableauMoyen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="top|left"/>
+
 </FrameLayout>
+

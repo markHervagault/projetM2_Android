@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,6 +17,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments;
+import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
@@ -28,8 +31,16 @@ public class InterventionMapFragment extends Fragment {
     }
 
     MapView mMapView;
+
     View mView;
+
     private GoogleMap googleMap;
+
+    private FragmentHolder fragmentHolder;
+
+    private InterventionDetailsMoyensFragmentsTV tableauMoyen;
+    private FrameLayout tableauMoyenLayout;
+
     public GoogleMap getMap(){
         return googleMap;
     }
@@ -49,6 +60,15 @@ public class InterventionMapFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_intervention_map, container, false);
+        //this.fragmentHolder = (FragmentHolder) mView.findViewById(R.id.interventionDetailsFragmentLayout);
+        this.fragmentHolder = new FragmentHolder();
+
+        getFragmentManager().beginTransaction().replace(R.id.interventionDetailsFragmentLayout, fragmentHolder).commit();
+        this.tableauMoyen = new InterventionDetailsMoyensFragmentsTV();
+        this.tableauMoyenLayout = mView.findViewById(R.id.tableauMoyen);
+
+        getFragmentManager().beginTransaction().replace(R.id.tableauMoyen,tableauMoyen ).commit();
+
         final Button button = mView.findViewById(R.id.toggleView);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -61,13 +81,13 @@ public class InterventionMapFragment extends Fragment {
 
         buttonMoy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                getMeActivity().toggleFragmentWeight();
+                toggleReduceTabMoyens();
             }
         });
         buttonMoy.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                getMeActivity().showHideMoy();
+                showHideMoy();
                 return true;
             }
         });
@@ -98,6 +118,47 @@ public class InterventionMapFragment extends Fragment {
     private void initMap() {
         getMeActivity().initMap(googleMap);
         getVehicule();
+    }
+
+    public void toggleReduceTabMoyens() {
+
+        Button btnMoy = mView.findViewById(R.id.toggleViewTabMoy);
+
+        if(tableauMoyenLayout.getVisibility()== View.GONE){
+            tableauMoyenLayout.setVisibility(View.VISIBLE);
+        }
+
+        if(!tableauMoyen.isReduce()){
+            btnMoy.setText("Moyens >");
+            tableauMoyen.populatedTableViewReduce(tableauMoyen.getListDeploiment(), false,-1);
+        } else {
+            btnMoy.setText("< Moyens");
+            tableauMoyen.populatedTableViewAll(tableauMoyen.getListDeploiment(), false,-1);
+        }
+
+    }
+
+    public void showHideMoy() {
+
+        //FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
+        Button btnMoy = mView.findViewById(R.id.toggleViewTabMoy);
+
+        if(tableauMoyenLayout.getVisibility() != View.GONE){
+            tableauMoyenLayout.setVisibility(View.GONE);
+            btnMoy.setText("Moyens");
+
+        } else {
+            tableauMoyenLayout.setVisibility(View.VISIBLE);
+
+            if(!tableauMoyen.isReduce()){
+                btnMoy.setText("Moyens >");
+                tableauMoyen.populatedTableViewReduce(tableauMoyen.getListDeploiment(), false,-1);
+            } else {
+                btnMoy.setText("< Moyens");
+                tableauMoyen.populatedTableViewAll(tableauMoyen.getListDeploiment(), false,-1);
+            }
+
+        }
     }
 
     // region MenuFlottant
@@ -206,11 +267,6 @@ public class InterventionMapFragment extends Fragment {
     // endregion
 
     private void getVehicule() {
-        /*AsyncTask.execute(new Runnable() {
-            public void run() {
-
-            }
-        });*/
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -251,6 +307,7 @@ public class InterventionMapFragment extends Fragment {
         mMapView.onLowMemory();
     }
 
-
-
+    public FragmentHolder getFragmentHolder() {
+        return fragmentHolder;
+    }
 }

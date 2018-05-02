@@ -74,7 +74,22 @@ public class DeploiementDTO implements Serializable, IDTO {
 
     @Override
     public String menuTitle() {
-        return "Deploiement";
+        if(getId() == null){
+            return "Demande de deploiement";
+        } else  if (getVehicule()!=null){
+            return "Deploiement du véhicule "+getVehicule().getLabel();
+        } else {
+            return "Deploiement du véhicule";
+        }
+    }
+
+    @Override
+    public String menuColor() {
+        if(composante == null){
+            return "#D0D0D0";
+        } else {
+            return composante.getCouleur();
+        }
     }
 
     public void setId(Long id) {

@@ -8,9 +8,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,7 +26,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
+import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiment;
@@ -52,24 +54,23 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.map.Drone.DroneMapFragment;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.SinistreManager;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.TraitTopoManager;
-import istic.m2.ila.firefighterapp.map.intervention.FragmentHolder;
 import istic.m2.ila.firefighterapp.map.intervention.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.rabbitMQ.RabbitMQDroneService;
 import istic.m2.ila.firefighterapp.services.IMapService;
 import istic.m2.ila.firefighterapp.services.impl.MapService;
 
+import static android.graphics.Paint.ANTI_ALIAS_FLAG;
+
 public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     private Boolean interventionView = true;
 
-    private InterventionDetailsMoyensFragmentsTV intervListFrag;
+    //region Detail/Creation fragment
     private InterventionMapFragment intervMapFrag;
 
-    private DroneListViewFragment droneListFrag;
     private DroneMapFragment droneMapFrag;
 
     public final Integer RAYON_RECHERCHE_TRAIT_TOPO = 5000;
@@ -177,18 +178,16 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         intervention = getService().getIntervention(getToken(),((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
+        //this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
 
         serviceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 serviceRabbitMQ = ((RabbitMQDroneService.LocalBinder) service).getService();
 
-                intervListFrag = new InterventionDetailsMoyensFragmentsTV();
                 intervMapFrag = new InterventionMapFragment();
 
                 droneMapFrag = new DroneMapFragment(); //Map avant drone list
-                droneListFrag = new DroneListViewFragment();
 
                 toggleView();
             }
@@ -240,16 +239,16 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     public void toggleView() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        //FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
 
-        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        frameMoyen.setVisibility(View.VISIBLE);
 
+        //frameMoyen.setVisibility(View.VISIBLE);
         if (interventionView) {
             transaction.replace(R.id.mapFragment, intervMapFrag);
-            transaction.replace(R.id.listViewFragment, intervListFrag);
+            //transaction.replace(R.id.listViewFragment, intervListFrag);
         } else {
             transaction.replace(R.id.mapFragment, droneMapFrag);
-            transaction.replace(R.id.listViewFragment, droneListFrag);
+            //transaction.replace(R.id.listViewFragment, droneListFrag);
         }
         transaction.commit();
         interventionView = !interventionView;
@@ -295,67 +294,69 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         }
     }
 
-    //region Detail/Creation fragment
-    private Fragment fragmentToHide;
-    private FragmentHolder fragmentHolder;
+
 
     public void showFragment() {
         Log.i("Visibility", "SHOW");
-        if (!fragmentHolder.isVisible()) {
+        if (!this.intervMapFrag.getFragmentHolder().isVisible()) {
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .show(fragmentHolder)
+                    .show(intervMapFrag.getFragmentHolder())
                     .commit();
-            fragmentHolder.getView().setVisibility(View.VISIBLE);
+            intervMapFrag.getFragmentHolder().getView().setVisibility(View.VISIBLE);
         }
     }
 
     public void hideFragment() {
         Log.i("Visibility", "HIDE");
-        if (fragmentHolder.isVisible()) {
+        if (intervMapFrag.getFragmentHolder().isVisible()) {
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .hide(fragmentHolder)
+                    .hide(intervMapFrag.getFragmentHolder())
                     .commit();
-            fragmentHolder.getView().setVisibility(View.GONE);
+            intervMapFrag.getFragmentHolder().getView().setVisibility(View.GONE);
         }
     }
 
     public void createMoyen() {
         hideFragment();
-        fragmentHolder.replace(new DeploiementDTO());
+        intervMapFrag.getFragmentHolder().replace(new DeploiementDTO());
         showFragment();
+    }
+
+    public void hideSelf() {
+        intervMapFrag.getFragmentHolder().hideSelf();
     }
 
 
     public void displayFragmentHolder(IDTO dto) {
-        if (fragmentHolder.getObjectHeld() == dto) {
+        if (intervMapFrag.getFragmentHolder().getObjectHeld() == dto) {
             hideFragment();
-            fragmentHolder.setObjectHeld(null);
+            intervMapFrag.getFragmentHolder().setObjectHeld(null);
         }
-        else if(fragmentHolder.getObjectHeld() == null){
-            fragmentHolder.replace(dto);
+        else if(intervMapFrag.getFragmentHolder().getObjectHeld() == null){
+            intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
         }
         else {
             hideFragment();
-            fragmentHolder.replace(dto);
+            intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
         }
     }
 
     public void createTrait() {
         hideFragment();
-        fragmentHolder.replace(new TraitTopoDTO());
+        intervMapFrag.getFragmentHolder().replace(new TraitTopoDTO());
         showFragment();
     }
 
 
     public void createSinistre() {
         hideFragment();
-        fragmentHolder.replace(new SinistreDTO());
+        intervMapFrag.getFragmentHolder().replace(new SinistreDTO());
         showFragment();
     }
 
@@ -448,6 +449,30 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         });
     }
 
+    public static Bitmap fusionImg(Bitmap bmp1, Bitmap bmp2) {
+        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawBitmap(bmp1, new Matrix(), null);
+        canvas.drawBitmap(bmp2, 7, 40, null);
+        return bmOverlay;
+    }
+
+    public Bitmap textAsBitmap(String text, float textSize, int textColor) {
+        Paint paint = new Paint(ANTI_ALIAS_FLAG);
+        paint.setTextSize(textSize);
+        paint.setColor(textColor);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
+        float baseline = -paint.ascent(); // ascent() is negative
+        int width = (int) (paint.measureText(text) + 0.5f); // round
+        int height = (int) (baseline + paint.descent() + 0.5f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(image);
+        canvas.drawText(text, 0, baseline, paint);
+        return image;
+    }
+
     public void drawVehicule(final GoogleMap googleMap, final DeploiementDTO deploy) {
         runOnUiThread(new Runnable() {
             @Override
@@ -462,15 +487,21 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                     if (deploy.getState() != EEtatDeploiement.DEMANDE) {
                         label = deploy.getVehicule().getLabel();
                     }
+                    Bitmap bm = textAsBitmap(label, 13, Color.parseColor(rgbNoA) );
 
-                    // Ajout des icônes (marqueurs) sur la istic.m2.ila.firefighterapp.map en fonction de la localisation du trait
+                    icon = fusionImg(icon, bm);
+
+
+                    // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
                     LatLng pos = new LatLng(deploy.getGeoPosition().getLatitude(), deploy.getGeoPosition().getLongitude());
-                    googleMap.addMarker(new MarkerOptions()
+                    Marker marker = googleMap.addMarker(new MarkerOptions()
                             .position(pos)
                             .title(label)
                             .snippet(label + " - " + deploy.getComposante().getDescription())
                             .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                            .draggable(false)).setTag(deploy);
+                            .draggable(false));
+                    marker.setTag(deploy);
+
                 }
             }
         });
@@ -488,65 +519,6 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         Canvas canvas = new Canvas(icon);
         canvas.drawBitmap(icon, 0, 0, paint);
         return icon;
-    }
-
-    public void toggleFragmentWeight() {
-
-        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        FrameLayout frameMap =   findViewById(R.id.mapFragmentParent);
-        Button btnMoy = findViewById(R.id.toggleViewTabMoy);
-
-        LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameMoyen.getLayoutParams();
-        LinearLayout.LayoutParams paramMap = (LinearLayout.LayoutParams) frameMap.getLayoutParams();
-
-        float weight = param.weight;
-
-        if(frameMoyen.getVisibility()== View.GONE){
-            frameMoyen.setVisibility(View.VISIBLE);
-        }
-
-        if(weight == 5.0f){
-            // On diminue
-            btnMoy.setText("Moyens >");
-            param.weight = 10.0f;
-            paramMap.weight = 5.0f;
-        } else {
-            // On agrandit
-            btnMoy.setText("< Moyens");
-            param.weight = 5.0f;
-            paramMap.weight = 10.0f;
-
-        }
-
-        frameMoyen.setLayoutParams(param);
-        frameMap.setLayoutParams(paramMap);
-
-    }
-
-    public void showHideMoy() {
-
-        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        FrameLayout frameMap =   findViewById(R.id.mapFragmentParent);
-        Button btnMoy = findViewById(R.id.toggleViewTabMoy);
-
-        if(frameMoyen.getVisibility()!= View.GONE){
-            frameMoyen.setVisibility(View.GONE);
-            btnMoy.setText("Moyens");
-
-        } else {
-            frameMoyen.setVisibility(View.VISIBLE);
-            LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameMoyen.getLayoutParams();
-            float weight = param.weight;
-
-            if(weight == 5.0f){
-                // On diminue
-                btnMoy.setText("< Moyens");
-            } else {
-                // On agrandit
-                btnMoy.setText("Moyens >");
-
-            }
-        }
     }
     //endregion
 

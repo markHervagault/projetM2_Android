@@ -10,4 +10,6 @@ public interface IDTO {
     public void setId(Long id);
 
     public String menuTitle();
+
+    String menuColor();
 }
