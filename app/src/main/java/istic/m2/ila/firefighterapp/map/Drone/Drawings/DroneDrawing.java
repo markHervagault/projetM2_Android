@@ -3,6 +3,7 @@ package istic.m2.ila.firefighterapp.map.Drone.Drawings;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Icon;
 import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
@@ -33,6 +34,9 @@ public class DroneDrawing extends MapItem
     private EDroneStatus _oldStatus;
     private Marker _droneMarker;
 
+    private Bitmap _selectedIcon;
+    private Bitmap _unselectedIcon;
+
     //endregion
 
     //region Properties
@@ -48,24 +52,24 @@ public class DroneDrawing extends MapItem
     public boolean isSelected() { return _isSelected; }
     public void Select() {
         _isSelected = true;
-        final Bitmap icon = getNewBitmapRenderedWithColor(R.drawable.drone, "#0e03a8");
         _contextActivity.runOnUiThread(new Runnable() {
             @Override
             public void run()
             {
-                _droneMarker.setIcon(BitmapDescriptorFactory.fromBitmap(icon));
+                _droneMarker.setIcon(BitmapDescriptorFactory.fromBitmap(_selectedIcon));
+                _droneMarker.setZIndex(150);
             }
         });
     }
 
     public void UnSelect() {
         _isSelected = false;
-        final Bitmap icon = getNewBitmapRenderedWithColor(R.drawable.drone, "#040b14");
         _contextActivity.runOnUiThread(new Runnable() {
             @Override
             public void run()
             {
-                _droneMarker.setIcon(BitmapDescriptorFactory.fromBitmap(icon));
+                _droneMarker.setIcon(BitmapDescriptorFactory.fromBitmap(_unselectedIcon));
+                _droneMarker.setZIndex(50);
             }
         });
 
@@ -78,6 +82,9 @@ public class DroneDrawing extends MapItem
     {
         super(map, contextActivity);
         _drone = droneDTO;
+
+        _selectedIcon = getNewBitmapRenderedWithColor(R.drawable.drone, "#0000ff");
+        _unselectedIcon = getNewBitmapRenderedWithColor(R.drawable.drone, "#000000");
 
         InitDrone();
     }
@@ -94,10 +101,10 @@ public class DroneDrawing extends MapItem
                 .position(new LatLng(BASE_LATITUDE, BASE_LONGITUDE))
                 .rotation(0)
                 .title(_drone.getNom())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
+                .icon(BitmapDescriptorFactory.fromBitmap(_unselectedIcon))
                 .anchor(0.5f,0.5f) //Center on point
                 .draggable(false)
-                        .zIndex(50f)); //TODO placer les z_Index dans un fichier de conf, pour être sur des superpositions dans la istic.m2.ila.firefighterapp.map
+                .zIndex(50f));
             }
         });
     }

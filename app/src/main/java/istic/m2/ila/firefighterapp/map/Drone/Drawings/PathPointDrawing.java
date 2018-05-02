@@ -1,6 +1,8 @@
 package istic.m2.ila.firefighterapp.map.Drone.Drawings;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Icon;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -17,6 +19,10 @@ public class PathPointDrawing extends MapItem
     //region Members
 
     private Marker _marker;
+
+    private Bitmap _normalIcon;
+    private Bitmap _photoIcon;
+
 
     //endregion
 
@@ -37,24 +43,39 @@ public class PathPointDrawing extends MapItem
 
     //Action
     private boolean _action;
+    public boolean getAction() {
+        return _action;
+    }
+
+    public void setAction(boolean action) {
+        _action = action;
+        if(action)
+            _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_photoIcon));
+        else
+            _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_normalIcon));
+    }
 
     //PointMission
     private PointMissionDTO _poinMission;
     public PointMissionDTO getPoinMission() {
         return _poinMission;
     }
+    //endregion
 
-    //Constructor
+    //region Constructor
+
     public PathPointDrawing(LatLng position, boolean draggable, Integer tag, GoogleMap map, Activity activity) {
         super(map, activity);
         _action = false;
+        _normalIcon = getNewBitmapRenderedWithColor(R.drawable.map_marker, "#ff6666");
+        _photoIcon = getNewBitmapRenderedWithColor(R.drawable.map_marker, "#79d279");
 
         _marker = _googleMap.addMarker(new MarkerOptions()
                 .position(position)
                 .zIndex(10)
                 .title("Point de passage")
                 .draggable(draggable)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
+                .icon(BitmapDescriptorFactory.fromBitmap(_normalIcon)));
 
         _marker.setTag(tag);
         _isSelected = false;
@@ -65,18 +86,8 @@ public class PathPointDrawing extends MapItem
     {
         this(new LatLng(point.getLatitude(), point.getLongitude()), draggable, tag, map, activity);
         _poinMission = point;
-    }
-
-    public boolean getAction() {
-        return _action;
-    }
-
-    //endregion
-
-    //region Constructor
-
-    public void setAction(boolean action) {
-        _action = action;
+        if(point.getAction())
+            _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_photoIcon));
     }
 
     //endregion

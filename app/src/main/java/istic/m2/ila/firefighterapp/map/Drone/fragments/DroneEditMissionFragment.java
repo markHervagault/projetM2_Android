@@ -18,11 +18,11 @@ import istic.m2.ila.firefighterapp.R;
  * Created by markh on 25/04/2018.
  */
 
-public class DroneMissionFragment extends Fragment
+public class DroneEditMissionFragment extends Fragment
 {
     //region Members
 
-    private String TAG = "DroneMissionFragment";
+    private String TAG = "DroneEditMissionFragment";
     private View _view;
     public Context context;
 
@@ -128,7 +128,7 @@ public class DroneMissionFragment extends Fragment
 
     //region Constructor
 
-    public DroneMissionFragment(){}
+    public DroneEditMissionFragment(){}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -15,21 +15,14 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.eventbus.drone.UnSelectPathPointMessage;
-import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathPointDrawing;
 import istic.m2.ila.firefighterapp.map.Drone.Managers.DroneManager;
 import istic.m2.ila.firefighterapp.map.Drone.Managers.MissionManager;
-import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneCommandFragment;
-import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneMissionFragment;
-import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneListPictureFragment;
 
 public class DroneMapFragment extends Fragment {
     //Global Members
@@ -45,7 +38,7 @@ public class DroneMapFragment extends Fragment {
     private DroneManager _droneManager;
 
     private DroneCommandFragment _droneCommandFrag;
-    private DroneMissionFragment _droneMissionFrag;
+    private DroneEditMissionFragment _droneMissionFrag;
 
     public DroneMapFragment() {
     }
@@ -142,7 +135,7 @@ public class DroneMapFragment extends Fragment {
     {
         //Fragments UI
         _droneCommandFrag = new DroneCommandFragment();
-        _droneMissionFrag = new DroneMissionFragment();
+        _droneMissionFrag = new DroneEditMissionFragment();
 
         //Inflating UI
         getFragmentManager().beginTransaction().replace(R.id.droneCommandFragmentLayout, _droneCommandFrag).commit();

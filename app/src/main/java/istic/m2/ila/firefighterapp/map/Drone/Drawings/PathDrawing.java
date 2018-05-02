@@ -86,10 +86,10 @@ public class PathDrawing extends MapItem
         //Boucle fermée, on rajoute le premier point
         if (_isPathClosed && _passingPoints.size() > 2) {
             pathPoints.add(_passingPoints.get(0).getPosition());
-            options.color(Color.GREEN);
+            options.color(Color.parseColor("#ffa64d"));
         }
         else
-            options.color(Color.BLUE);
+            options.color(Color.parseColor("#3366ff"));
 
         options.addAll(pathPoints)
                 .width(STROKE_WIDTH);
