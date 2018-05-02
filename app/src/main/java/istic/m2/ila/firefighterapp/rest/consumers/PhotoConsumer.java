@@ -18,8 +18,8 @@ public interface PhotoConsumer {
     @GET(Endpoints.ALLPHOTOS)
     Call<List<PhotoDTO>> getAllPhotos(@Header("Authorization") String header);
 
-    @GET(Endpoints.PHOTOSFORPOINT)
-    Call<List<PhotoDTO>> getPhotosForPoint(@Header("Authorization") String header,
+    @GET(Endpoints.PHOTOSWITHOUTPHOTOFORPOINT)
+    Call<List<PhotoDTO>> getPhotosForPointWithoutPhoto(@Header("Authorization") String header,
                                            @Path("id") int index);
 
 }

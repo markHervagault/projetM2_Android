@@ -47,12 +47,12 @@ public class PhotoService {
         return images;
     }
 
-    public List<PhotoDTO> getPhotosForPoint(String token, Context context, int pointIndex){
+    public List<PhotoDTO> getPhotosForPointWithoutPhoto(String token, Context context, int pointIndex){
         RestTemplate restTemplate = RestTemplate.getInstance();
         PhotoConsumer consumer = restTemplate.builConsumer(PhotoConsumer.class);
         Response<List<PhotoDTO>> response;
         try {
-            response = consumer.getPhotosForPoint(token, pointIndex).execute();
+            response = consumer.getPhotosForPointWithoutPhoto(token, pointIndex).execute();
             if(response != null && response.code() == HttpURLConnection.HTTP_OK){
                 return response.body();
             }

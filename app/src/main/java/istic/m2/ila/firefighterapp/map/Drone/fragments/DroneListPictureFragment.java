@@ -78,7 +78,7 @@ public class DroneListPictureFragment extends Fragment {
             // Récupération du token
             String token = _context.getSharedPreferences("user", _context.MODE_PRIVATE).getString("token", "null");
 
-            photos = photoService.getPhotosForPoint(token, _context, 1);
+            photos = photoService.getPhotosForPointWithoutPhoto(token, _context, point.getTag().intValue());
 
             }
         });
