@@ -36,17 +36,16 @@ public class DroneMapFragment extends Fragment {
     private final String TAG = "DroneMap Fragment";
 
     // Init Members
+    private View _view;
+
     MapView _MapView;
     private GoogleMap _googleMap;
-    private View _view;
 
     private MissionManager _missionManager;
     private DroneManager _droneManager;
 
     private DroneCommandFragment _droneCommandFrag;
     private DroneMissionFragment _droneMissionFrag;
-
-    private DroneListPictureFragment _listPictureFrag;
 
     public DroneMapFragment() {
     }
@@ -145,17 +144,14 @@ public class DroneMapFragment extends Fragment {
         //Fragments UI
         _droneCommandFrag = new DroneCommandFragment();
         _droneMissionFrag = new DroneMissionFragment();
-        _listPictureFrag = new DroneListPictureFragment();
 
         //Inflating UI
         getFragmentManager().beginTransaction().replace(R.id.droneCommandFragmentLayout, _droneCommandFrag).commit();
         getFragmentManager().beginTransaction().replace(R.id.droneMissionFragmentLayout, _droneMissionFrag).commit();
-        getFragmentManager().beginTransaction().replace(R.id.photoListFragmentLayout, _listPictureFrag).commit();
 
         //No View At start
         getFragmentManager().beginTransaction().hide(_droneMissionFrag).commit();
         getFragmentManager().beginTransaction().hide(_droneCommandFrag).commit();
-        getFragmentManager().beginTransaction().hide(_listPictureFrag).commit();
     }
 
 
@@ -373,18 +369,5 @@ public class DroneMapFragment extends Fragment {
         transaction.commit();
     }
 
-    //endregion
-
-    //region events
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onClickPassagePoint(PathPointDrawing pathPoint){
-        _listPictureFrag.onClickOnPathPointDrawing(pathPoint);
-        getFragmentManager().beginTransaction().show(_listPictureFrag).commit();
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onUnClickPassagePoint(UnSelectPathPointMessage m){
-        getFragmentManager().beginTransaction().hide(_listPictureFrag).commit();
-    }
     //endregion
 }
