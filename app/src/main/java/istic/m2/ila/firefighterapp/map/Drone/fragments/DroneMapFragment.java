@@ -1,6 +1,5 @@
-package istic.m2.ila.firefighterapp.map.Drone;
+package istic.m2.ila.firefighterapp.map.Drone.fragments;
 
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -28,8 +27,8 @@ import istic.m2.ila.firefighterapp.eventbus.drone.UnSelectPathPointMessage;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathPointDrawing;
 import istic.m2.ila.firefighterapp.map.Drone.Managers.DroneManager;
 import istic.m2.ila.firefighterapp.map.Drone.Managers.MissionManager;
-import istic.m2.ila.firefighterapp.map.Drone.Mode.DroneCommandFragment;
-import istic.m2.ila.firefighterapp.map.Drone.Mode.DroneMissionFragment;
+import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneCommandFragment;
+import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneMissionFragment;
 import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneListPictureFragment;
 
 public class DroneMapFragment extends Fragment {
@@ -200,6 +199,19 @@ public class DroneMapFragment extends Fragment {
                         _droneMissionFrag.setCanSendMission();
                     else
                         _droneMissionFrag.unSetCanSendButton();
+                    break;
+
+                case MissionManager.SELECTED_MARKER_CHANGED: //Vérification avec l'UI du changement de marker
+                    if(_missionManager.getSelectedMarker() != null)
+                    {
+                        _droneMissionFrag.EnableActionButtons();
+                        if(_missionManager.getSelectedMarker().getAction()) //Si trait de prise de photo, bouton enfoncé
+                            _droneMissionFrag.setTakePhoto();
+                        else
+                            _droneMissionFrag.unsetTakePhoto();
+                    }
+                    else
+                        _droneMissionFrag.DisableActionButtons();
 
                 default:
                     break;
@@ -237,8 +249,6 @@ public class DroneMapFragment extends Fragment {
     //endregion
 
     //region DroneMissionListener
-
-    //TODO : Abonnement sur selectedMarker, et modification du bouton (enabled ou pas)
 
     private View.OnClickListener _onRemoveButtonListener = new View.OnClickListener() {
         @Override
@@ -289,6 +299,23 @@ public class DroneMapFragment extends Fragment {
         }
     };
 
+    private View.OnClickListener _onPhotoButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view)
+        {
+            if(_missionManager.getSelectedMarker().getAction())
+            {
+                _missionManager.getSelectedMarker().setAction(false);
+                _droneMissionFrag.unsetTakePhoto();
+            }
+            else
+            {
+                _missionManager.getSelectedMarker().setAction(true);
+                _droneMissionFrag.setTakePhoto();
+            }
+        }
+    };
+
     private View.OnClickListener _onSendMissionButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view)
@@ -331,6 +358,7 @@ public class DroneMapFragment extends Fragment {
                 _droneMissionFrag._addModeButton.setOnClickListener(_onAddModeButtonListener);
                 _droneMissionFrag._zoneButton.setOnClickListener(_onZoneButtonListener);
                 _droneMissionFrag._sendMissionButton.setOnClickListener(_onSendMissionButtonListener);
+                _droneMissionFrag._photoButton.setOnClickListener(_onPhotoButtonListener);
 
                 break;
 

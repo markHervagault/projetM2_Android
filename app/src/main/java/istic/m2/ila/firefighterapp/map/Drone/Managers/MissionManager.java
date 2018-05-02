@@ -71,7 +71,6 @@ public class MissionManager extends MapItem
     //Map Items
     private List<PathPointDrawing> _pathPoints;
     private Map<Integer, PathPointDrawing> _pathPointsByTag;
-    private PathPointDrawing _selectedMarker;
 
     private PathDrawing _pathDrawing;
     private DroneDTO _selectedDrone;
@@ -81,6 +80,7 @@ public class MissionManager extends MapItem
 
     //region Properties
 
+    //Edit mode
     public static final String EDIT_MODE_CHANGED_EVENT_NAME = "EditMode";
     private boolean _editMode;
     public boolean isEditMode() { return _editMode; }
@@ -97,6 +97,7 @@ public class MissionManager extends MapItem
         _propertyChangeSupport.firePropertyChange(EDIT_MODE_CHANGED_EVENT_NAME, !_editMode, _editMode);
     }
 
+    //Send Mission
     public static final String SENDMISSION_CHANGED_EVENT_NAME = "SendMission";
     private boolean _canSendMission;
     public boolean canSendMission() { return _canSendMission; }
@@ -106,9 +107,26 @@ public class MissionManager extends MapItem
         _propertyChangeSupport.firePropertyChange(SENDMISSION_CHANGED_EVENT_NAME, !_canSendMission, _canSendMission);
     }
 
+    //PointCount
     public static final String POINTCOUNT_CHANGED_EVENT_NAME = "PointsCount";
     public int getPointsCount() {
         return _pathPoints.size();
+    }
+
+    //Selected Marker
+    public static final String SELECTED_MARKER_CHANGED = "SelectedMarker";
+    private PathPointDrawing _selectedMarker;
+    public PathPointDrawing getSelectedMarker() { return _selectedMarker; }
+    private void setSelectedMarker(PathPointDrawing marker)
+    {
+        if(_selectedMarker != null)
+            _selectedMarker.UnSelect();
+
+        _selectedMarker = marker;
+        if(_selectedMarker != null)
+            _selectedMarker.Select();
+
+        _propertyChangeSupport.firePropertyChange(SELECTED_MARKER_CHANGED, null, null);
     }
 
     //endregion
@@ -151,6 +169,7 @@ public class MissionManager extends MapItem
         setEditMode(false);
 
         _propertyChangeSupport.firePropertyChange(POINTCOUNT_CHANGED_EVENT_NAME, 1000,0);
+        _propertyChangeSupport.firePropertyChange(SELECTED_MARKER_CHANGED, null, null);
     }
 
     //endregion
@@ -164,7 +183,7 @@ public class MissionManager extends MapItem
         public void onMapClick(LatLng latLng)
         {
             //Reset du marker selectionné
-            _selectedMarker = null;
+            setSelectedMarker(null);
 
             //Seulement en mode édition
             if(!_editMode)
@@ -197,18 +216,12 @@ public class MissionManager extends MapItem
                 //Deselection du marker actuel
                 if(_selectedMarker != null){
                     _selectedMarker.UnSelect();
-                    if(getMissionMode()==MissionMode.FOLLOW){
-                        EventBus.getDefault().post(new UnSelectPathPointMessage());
-                    }
                 }
 
-                _selectedMarker = _pathPointsByTag.get(marker.getTag());
-                _selectedMarker.Select();
-
-                if(getMissionMode()==MissionMode.FOLLOW){
-                    EventBus.getDefault().post(_selectedMarker);
-                }
+                setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
             }
+            else
+                setSelectedMarker(null);
 
             return false;
         }
@@ -265,6 +278,7 @@ public class MissionManager extends MapItem
 
         _selectedMarker.Remove();
         _pathPoints.remove(_selectedMarker);
+        setSelectedMarker(null);
 
         ReindexPoints();
         _pathDrawing.Update(_pathPoints);
@@ -339,7 +353,7 @@ public class MissionManager extends MapItem
                         {
                             PointMissionDTO pointMissionDTO = new PointMissionDTO();
                             pointMissionDTO.setIndex(index);
-                            pointMissionDTO.setAction(false);
+                            pointMissionDTO.setAction(point.getAction());
                             pointMissionDTO.setLatitude(point.getPosition().latitude);
                             pointMissionDTO.setLongitude(point.getPosition().longitude);
 
