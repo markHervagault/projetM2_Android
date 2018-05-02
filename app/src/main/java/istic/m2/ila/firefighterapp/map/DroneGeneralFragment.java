@@ -18,6 +18,7 @@ import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.eventbus.drone.UnSelectPathPointMessage;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathPointDrawing;
 import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneListPictureFragment;
+import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneMapFragment;
 
 /**
@@ -41,6 +42,7 @@ public class DroneGeneralFragment extends Fragment {
 
     private DroneListPictureFragment _listPictureFrag;
     private DroneMapFragment _droneMapFrag;
+    private DroneListViewFragment _droneListFrag;
 
     public DroneGeneralFragment(){}
 
@@ -60,13 +62,6 @@ public class DroneGeneralFragment extends Fragment {
 
         InitUI();
 
-        final Button button = _view.findViewById(R.id.toggleView);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ((MapActivity) getActivity()).toggleView();
-            }
-        });
-
         return _view;
     }
 
@@ -74,12 +69,15 @@ public class DroneGeneralFragment extends Fragment {
     {
         _listPictureFrag = new DroneListPictureFragment();
         _droneMapFrag = new DroneMapFragment();
+        _droneListFrag = new DroneListViewFragment();
 
         getFragmentManager().beginTransaction().replace(R.id.mapDroneContainer, _droneMapFrag).commit();
         getFragmentManager().beginTransaction().replace(R.id.photoListFragmentLayout, _listPictureFrag).commit();
+        getFragmentManager().beginTransaction().replace(R.id.listViewDroneContainer, _droneListFrag).commit();
 
         getFragmentManager().beginTransaction().hide(_listPictureFrag).commit();
         getFragmentManager().beginTransaction().show(_droneMapFrag).commit();
+        getFragmentManager().beginTransaction().show(_droneListFrag).commit();
     }
 
     @Override
