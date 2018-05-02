@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 import istic.m2.ila.firefighterapp.map.Common.MapItem;
 
 public class PathPointDrawing extends MapItem
@@ -36,6 +37,14 @@ public class PathPointDrawing extends MapItem
 
     //Action
     private boolean _action;
+
+    //PointMission
+    private PointMissionDTO _poinMission;
+    public PointMissionDTO getPoinMission() {
+        return _poinMission;
+    }
+
+    //Constructor
     public PathPointDrawing(LatLng position, boolean draggable, Integer tag, GoogleMap map, Activity activity) {
         super(map, activity);
         _action = false;
@@ -49,6 +58,13 @@ public class PathPointDrawing extends MapItem
 
         _marker.setTag(tag);
         _isSelected = false;
+        _poinMission = null;
+    }
+
+    public PathPointDrawing(PointMissionDTO point, boolean draggable, Integer tag, GoogleMap map, Activity activity)
+    {
+        this(new LatLng(point.getLatitude(), point.getLongitude()), draggable, tag, map, activity);
+        _poinMission = point;
     }
 
     public boolean getAction() {

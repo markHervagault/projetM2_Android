@@ -415,7 +415,7 @@ public class MissionManager extends MapItem
                 {
                     //Tag pour pouvoir retrouver le point
                     Integer tag = _pathPoints.size();
-                    PathPointDrawing pathPoint = new PathPointDrawing(new LatLng(point.getLatitude(), point.getLongitude()), false, tag, _googleMap, _contextActivity);
+                    PathPointDrawing pathPoint = new PathPointDrawing(point, false, tag, _googleMap, _contextActivity);
 
                     //Ajout du marker à la collection
                     _pathPoints.add(pathPoint);
