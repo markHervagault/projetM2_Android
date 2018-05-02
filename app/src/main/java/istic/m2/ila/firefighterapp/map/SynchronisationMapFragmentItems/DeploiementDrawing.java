@@ -127,7 +127,7 @@ public class DeploiementDrawing extends MapItem
         Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(bmp1, new Matrix(), null);
-        canvas.drawBitmap(bmp2, 6, 31, null);
+        canvas.drawBitmap(bmp2, 7, 40, null);
         return bmOverlay;
     }
 
@@ -161,7 +161,7 @@ public class DeploiementDrawing extends MapItem
             if (_deploiementDTO.getState() != EEtatDeploiement.DEMANDE) {
                 label = _deploiementDTO.getVehicule().getLabel();
             }
-            Bitmap bm = textAsBitmap(label, 10, Color.BLACK);
+            Bitmap bm = textAsBitmap(label, 13, Color.parseColor(rgbNoA));
 
             icon = fusionImg(icon, bm);
 
