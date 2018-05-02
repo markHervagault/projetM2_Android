@@ -24,7 +24,7 @@ public class MoyenTableAdapter extends AbstractTableAdapter<ColumnHeaderModel, R
         CellModel> {
 
     private Context mContext;
-    private Map<Integer, RowHeaderViewHolder> rowHeaderViewHolderById;
+    public Map<Integer, RowHeaderViewHolder> rowHeaderViewHolderById;
 
     public MoyenTableAdapter(Context p_jContext) {
         super(p_jContext);
@@ -117,6 +117,8 @@ public class MoyenTableAdapter extends AbstractTableAdapter<ColumnHeaderModel, R
     public int getRowHeaderItemViewType(int position) {
         return 0;
     }
+
+
 
     @Override
     public int getCellItemViewType(int position) {

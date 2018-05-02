@@ -33,14 +33,37 @@ public class CellViewHolder extends AbstractViewHolder {
 
         // Adapter le background de la cellule à la composante
         String backgroundColor = p_jModel.getBackgroundColor();
-        if (backgroundColor != null) {
+        if (p_jModel.isSelected()) {
+            cell_textview.setBackgroundColor(Color.parseColor("#99FFFF"));
+            cell_textview.setPadding(10, 0, 10, 0);
+            LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) cell_textview.getLayoutParams();
+            param.setMargins(0, 0, 0, 0);
+            cell_textview.setLayoutParams(param);
+
+
+        } else if (backgroundColor != null) {
             cell_textview.setBackgroundColor(Color.parseColor(backgroundColor));
+            cell_textview.setPadding(10, 0, 10, 0);
+            LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) cell_textview.getLayoutParams();
+            param.setMargins(0, 0, 0, 0);
+            cell_textview.setLayoutParams(param);
+
+        } else {
+            LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) cell_textview.getLayoutParams();
+            param.setMargins(10, 0, 10, 0);
+            cell_textview.setLayoutParams(param);
+
         }
 
         // Adapter le text color de la cellule à la composante
         String textColor = p_jModel.getTextColor();
-        if (textColor != null) {
+    if(p_jModel.isSelected()){
+        cell_textview.setTextColor(Color.BLACK);
+    }else if (textColor != null) {
             cell_textview.setTextColor(Color.parseColor(textColor));
+
+        } else {
+            cell_textview.setTextColor(Color.BLACK);
         }
 
         // Change textView align by column
@@ -59,20 +82,6 @@ public class CellViewHolder extends AbstractViewHolder {
     public void setSelected(SelectionState p_nSelectionState) {
         super.setSelected(p_nSelectionState);
 
-        if (p_nSelectionState == SelectionState.SELECTED) {
-            if (cellRow != null) {
-                // Sélectionner la ligne
-                cellRow.setSelected(p_nSelectionState);
-//                cellRow.row_header_textview.performClick();
-
-            } else {
-                cell_textview.setTextColor(ContextCompat.getColor(cell_textview.getContext(), R.color
-                    .selected_text_color));
-            }
-        } else {
-            cell_textview.setTextColor(ContextCompat.getColor(cell_textview.getContext(), R.color
-                    .selected_text_color));
-        }
     }
 
     private RowHeaderViewHolder cellRow;

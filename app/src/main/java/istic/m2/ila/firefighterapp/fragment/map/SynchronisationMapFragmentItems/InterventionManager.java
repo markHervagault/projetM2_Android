@@ -11,10 +11,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 
-import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.MessageGeneric;
-import istic.m2.ila.firefighterapp.clientRabbitMqGeneric.SyncAction;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
-import istic.m2.ila.firefighterapp.fragment.map.DroneMapFragmentItems.MapItem;
+import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.MessageGeneric;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
 
 /**
  * Created by adou on 24/04/18.
