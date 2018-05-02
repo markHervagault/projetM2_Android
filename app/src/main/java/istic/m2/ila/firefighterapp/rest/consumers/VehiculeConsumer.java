@@ -39,7 +39,7 @@ public interface VehiculeConsumer {
     /** Récupération de tous les véhicules disponibles par type. Le filtrage par type est géré avec l'identifiant technique du type*/
     @GET(Endpoints.VEHICULE_DISPONIBLE_TYPE)
     Call<List<VehiculeDTO>> getListVehiculeDispoByType(@Header("Authorization")String token,
-                                                       @Path("idType") int idType);
+                                                       @Path("idType") Long idType);
 
     /** Récupère un véhicule par id*/
     @GET(Endpoints.VEHICULE_ID)
