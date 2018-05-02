@@ -121,7 +121,7 @@ public class InterventionCreationMoyensFragments extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fake_fragment_intervention_details_moyens_fragments, container, false);
 
-        RecyclerView recyclerView = rootView.findViewById(R.id.interventionDetailsMoyenRecycler);
+        RecyclerView recyclerView = rootView.findViewById(R.id.recycler_add_moyen_fragment);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new SimpleAdapter(recyclerView, mapVehiculesDisponibles));
 
@@ -150,7 +150,7 @@ public class InterventionCreationMoyensFragments extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.fragment_intervention_recycler_item_type_moyen, parent, false);
+                    .inflate(R.layout.add_moyens_creation_intervention_fragment, parent, false);
             return new ViewHolder(itemView);
         }
 
@@ -172,12 +172,12 @@ public class InterventionCreationMoyensFragments extends Fragment {
             public ViewHolder(View itemView) {
                 super(itemView);
 
-               /* expandableLayout = itemView.findViewById(R.id.expandable_layout);
+                expandableLayout = itemView.findViewById(R.id.expandable_layout_add_moyen_fragment);
                 expandableLayout.setInterpolator(new OvershootInterpolator());
                 expandableLayout.setOnExpansionUpdateListener(this);
-                expandButton = itemView.findViewById(R.id.expand_button);
+                expandButton = itemView.findViewById(R.id.expand_button_add_moyen_fragment);
                 expandButton.setOnClickListener(this);
-                expandedLinearLayout = itemView.findViewById(R.id.list_layout_moyen);*/
+                expandedLinearLayout = itemView.findViewById(R.id.list_layout_moyen_add_moyen_fragment);
             }
 
             public void bind() {

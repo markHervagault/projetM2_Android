@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,9 +15,11 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.dto.EDroneStatus;
 import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.constantes.IHMLabels;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
@@ -57,6 +60,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         public ImageView image_statut_listDrone;
         public ImageView image_battery_listDrone;
         public LinearLayout layoutItemDroneList;
+        public TextView droneAltitudeTextView;
 
         public ViewHolder(View v) {
             super(v);
@@ -65,6 +69,7 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
             image_statut_listDrone = v.findViewById(R.id.image_statut_listDrone);
             image_battery_listDrone = v.findViewById(R.id.image_battery_listDrone);
             layoutItemDroneList = v.findViewById(R.id.item_Drone_List_layout);
+            droneAltitudeTextView = v.findViewById(R.id.drone_altitude_text);
         }
     }
 
@@ -82,14 +87,14 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position)
+    {
         final DroneDTO drone = drones.get(position);
         holder.drone_name_listDrone.setText(drone.getNom());
-        if(indexSelected==position){
+        if(indexSelected==position)
             holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_selected));
-        }else{
+        else
             holder.layoutItemDroneList.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_for_list_drone_unselected));
-        }
 
 
         // Gestion du clic
@@ -105,19 +110,21 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         });
 
         String status = "statusIconnu";
-
-        if(drone.getStatut()!=null){
+        if(drone.getStatut()!=null)
+        {
             switch (drone.getStatut()){
                 case DISPONIBLE:
                     status = IHMLabels.DRONE_STATUT_DISPONIBLE;
                     holder.image_statut_listDrone.setImageResource(R.drawable.connected);
                     holder.image_battery_listDrone.setVisibility(View.VISIBLE);
                     break;
+
                 case DECONNECTE:
                     status = IHMLabels.DRONE_STATUT_DECONNECTE;
                     holder.image_statut_listDrone.setImageResource(R.drawable.disconnected);
                     holder.image_battery_listDrone.setVisibility(View.GONE);
                     break;
+
                 case EN_MISSION:
                     status = IHMLabels.DRONE_STATUT_EN_MISSION;
                     holder.image_statut_listDrone.setImageResource(R.drawable.droneenmission);
@@ -125,6 +132,12 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
                     break;
 
                 case EN_PAUSE:
+                    status = IHMLabels.DRONE_STATUT_EN_PAUSE;
+                    holder.image_statut_listDrone.setImageResource(R.drawable.droneenmission);
+                    holder.image_battery_listDrone.setVisibility(View.VISIBLE);
+                    break;
+
+                case PAUSE_RETOUR_BASE:
                     status = IHMLabels.DRONE_STATUT_EN_PAUSE;
                     holder.image_statut_listDrone.setImageResource(R.drawable.droneenmission);
                     holder.image_battery_listDrone.setVisibility(View.VISIBLE);
@@ -141,8 +154,27 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
                     holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
                     holder.image_battery_listDrone.setVisibility(View.GONE);
                     status = IHMLabels.DRONE_STATUT_INCONNU;
+                    break;
             }
-        }else{
+
+            //Mise a jour de l'altitude du drone
+            switch (drone.getStatut())
+            {
+                case DISPONIBLE:
+                    holder.droneAltitudeTextView.setText("Au Sol");
+                    break;
+
+                case DECONNECTE:
+                    holder.droneAltitudeTextView.setText("Indisponible");
+                    break;
+
+                default:
+                    holder.droneAltitudeTextView.setText(String.valueOf(drone.getLocalisation().altitude) + " m");
+                    break;
+            }
+        }
+        else
+        {
             Log.d(TAG, "Statut du drone null");
             holder.image_statut_listDrone.setImageResource(R.drawable.rond_gris_croix);
             holder.image_battery_listDrone.setVisibility(View.GONE);
@@ -152,23 +184,15 @@ public class ItemListDroneAdapter extends RecyclerView.Adapter<ItemListDroneAdap
         int battery = drone.getBattery();
 
         if(battery > 70)
-        {
             holder.image_battery_listDrone.setImageResource(R.drawable.fullbattery);
-        }
         else if (battery > 45 )
-        {
             holder.image_battery_listDrone.setImageResource(R.drawable.midbattery);
-        }
         else if (battery > 20)
-        {
             holder.image_battery_listDrone.setImageResource(R.drawable.criticalbattery);
-        }
-        else {
+        else
             holder.image_battery_listDrone.setImageResource(R.drawable.emptybattery);
-        }
 
         holder.statut_listDrone.setText(status);
-        //lastListDrones = new ArrayList<DroneDTO>(drones);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

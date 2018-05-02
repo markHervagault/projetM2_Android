@@ -51,7 +51,7 @@ public class MoyenTableViewListener implements ITableViewListener {
             }
 
         } else {
-            // La map (et le fragment) n'existe pas
+            // La istic.m2.ila.firefighterapp.map (et le fragment) n'existe pas
             // On ne fait rien
         }
     }

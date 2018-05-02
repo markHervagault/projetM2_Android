@@ -8,66 +8,84 @@ import android.util.Log;
 
 public class DroneDTO
 {
+    private static final String TAG  = "DroneDTO";
 
+    //region members
     private Long id;
-
     private String nom;
-
     private String adresseMac;
-
-    private EDroneStatut statut;
-
+    private EDroneStatus statut;
     private int battery;
+    //endregion
 
-    public EDroneStatut getStatut() {
+    //region Getter / Setters
+    public EDroneStatus getStatut() {
         return statut;
     }
-
-    public void setStatut(EDroneStatut statut) {
+    public void setStatut(EDroneStatus statut) {
         this.statut = statut;
     }
-
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getNom() {
         return nom;
     }
-
     public void setNom(String nom) {
         this.nom = nom;
     }
-
     public String getAdresseMac() {
         return adresseMac;
     }
-
     public void setAdresseMac(String adresseMac) {
         this.adresseMac = adresseMac;
     }
-
     public int getBattery() {
         return battery;
     }
-
     public void setBattery(int battery) {
         this.battery = battery;
     }
+    //endregion
 
+    //region Localisation (utilisée pour l'affichage de l'altitude du drone dans la liste)
+    private LocalisationDroneDTO localisation;
+    public LocalisationDroneDTO getLocalisation() { return localisation; }
+    public void setLocalisation(LocalisationDroneDTO loc) { localisation = loc; }
+    //endregion
+
+    //region Constructor
+    public DroneDTO()
+    {
+        localisation = new LocalisationDroneDTO();
+        localisation.altitude = 0;
+        localisation.latitude = 0;
+        localisation.longitude = 0;
+    }
+    //endregion
+
+    //Update
     public void Update(DroneInfosDTO dto)
     {
-        EDroneStatut status = EDroneStatut.valueOf(dto.status);
-        if(status != null)
-            this.statut = status;
-        else
-            Log.e("DroneDTO Update", ("Wrong statuts : " + dto.status));
+        //Nouveau statut
+        EDroneStatus status = null;
+        try {
+            status = EDroneStatus.valueOf(dto.status);
+        }
+        catch (IllegalArgumentException e) {
+            Log.e(TAG, "Wrong status received");
+        }
+        finally {
+            if (status != null)
+                statut = status;
+        }
 
+        //Update de la batterie
         setBattery(dto.battery_level);
+        setLocalisation(dto.position);
     }
 
     public boolean equals(DroneDTO drone2) {
