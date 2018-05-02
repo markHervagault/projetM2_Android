@@ -34,28 +34,35 @@ public class VehiculeDispoAdapter extends ArrayAdapter<VehiculeDTO> {
     }
 
     public void setData(final ArrayAdapter<VehiculeDTO> adapter) {
-        AsyncTask.execute(new Runnable() {
-            public void run() {
-                String token = context.getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                VehiculeConsumer vehiculeConsumer = restTemplate.builConsumer(VehiculeConsumer.class);
-                try {
-                    Response<List<VehiculeDTO>> response = vehiculeConsumer.getListVehiculeDispoByType(token, typeVehiculeDTO.getId()).execute();
-                    if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        vehiculeDTOS = (ArrayList<VehiculeDTO>) response.body();
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        Log.e("Vehicule", "Error From Server : " + response.errorBody().string());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        new TestAsynchTask().execute();
     }
 
-    @Override
-    public void
+    public class TestAsynchTask extends AsyncTask<Void, Void, Object>{
+
+        @Override
+        protected Object doInBackground(Void... voids) {
+            String token = context.getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
+            RestTemplate restTemplate = RestTemplate.getInstance();
+            VehiculeConsumer vehiculeConsumer = restTemplate.builConsumer(VehiculeConsumer.class);
+            try {
+                Response<List<VehiculeDTO>> response = vehiculeConsumer.getListVehiculeDispoByType(token, typeVehiculeDTO.getId()).execute();
+                if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                    vehiculeDTOS = (ArrayList<VehiculeDTO>) response.body();
+                } else {
+                    Log.e("Vehicule", "Error From Server : " + response.errorBody().string());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return vehiculeDTOS;
+        }
+
+        @Override
+        protected void onPostExecute(Object response){
+            populate();
+        }
+    }
+
 
     public void populate(){
         for (VehiculeDTO vehiculeDTO : vehiculeDTOS) {
