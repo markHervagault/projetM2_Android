@@ -143,7 +143,7 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
             switchView();
         }
         ((MapActivity)getMeActivity()).getService().majDeploiement(((MapActivity)getMeActivity()).getToken(), deploiementDTO);
-        ((MapActivity)getMeActivity()).hideSelf();
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override
@@ -192,13 +192,13 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
     @Override
     public void engage() {
         ((MapActivity)getActivity()).getService().deploiementToEngage(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
-        ((MapActivity)getMeActivity()).hideSelf();
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override
     public void action() {
         ((MapActivity)getActivity()).getService().deploiementToAction(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
-        ((MapActivity)getMeActivity()).hideSelf();
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override
@@ -206,7 +206,7 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
         deploiementDTO.setPresenceCRM(true);
         ((MapActivity)getMeActivity()).getService().majDeploiement(((MapActivity)getMeActivity()).getToken(), deploiementDTO);
         ((MapActivity)getActivity()).getService().deploiementToEngage(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
-        ((MapActivity)getMeActivity()).hideSelf();
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override
@@ -218,6 +218,6 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
     @Override
     public void desengage() {
         ((MapActivity)getActivity()).getService().deploiementToDesengage(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
-        ((MapActivity)getMeActivity()).hideSelf();
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 }

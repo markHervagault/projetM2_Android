@@ -34,7 +34,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Composante : "/>
+                android:text="Composante : " />
             <TextView
                 android:id="@+id/composante"
                 android:layout_width="wrap_content"
@@ -91,7 +91,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Présence au CRM : "/>
+                android:text="Présence au CRM : " />
             <TextView
                 android:id="@+id/crm"
                 android:layout_width="wrap_content"
@@ -105,7 +105,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heure de demande : "/>
+                android:text="Heure de demande : " />
             <TextView
                 android:id="@+id/dateHeureDemande"
                 android:layout_width="wrap_content"
@@ -118,7 +118,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heure de validation : "/>
+                android:text="Heure de validation : " />
             <TextView
                 android:id="@+id/dateHeureValidation"
                 android:layout_width="wrap_content"
@@ -131,7 +131,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heure d'engagement : "/>
+                android:text="Heure d'engagement : " />
             <TextView
                 android:id="@+id/dateHeureEngagement"
                 android:layout_width="wrap_content"
@@ -144,7 +144,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heure de desengagement : "/>
+                android:text="Heure de desengagement : " />
             <TextView
                 android:id="@+id/dateHeureDesengagement"
                 android:layout_width="wrap_content"
@@ -161,7 +161,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
 
 
 </FrameLayout>

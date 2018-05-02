@@ -74,10 +74,10 @@ public class DeploiementDTO implements Serializable, IDTO {
 
     @Override
     public String menuTitle() {
-        if(getId() == null){
+        if (getId() == null) {
             return "Demande de deploiement";
-        } else  if (getVehicule()!=null){
-            return "Deploiement du véhicule "+getVehicule().getLabel();
+        } else if (getVehicule() != null) {
+            return "Deploiement du véhicule " + getVehicule().getLabel();
         } else {
             return "Deploiement du véhicule";
         }
@@ -85,7 +85,7 @@ public class DeploiementDTO implements Serializable, IDTO {
 
     @Override
     public String menuColor() {
-        if(composante == null){
+        if (composante == null) {
             return "#D0D0D0";
         } else {
             return composante.getCouleur();

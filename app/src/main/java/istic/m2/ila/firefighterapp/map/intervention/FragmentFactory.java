@@ -7,9 +7,9 @@ import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.map.intervention.fragments.DemandeMoyenFragement;
 import istic.m2.ila.firefighterapp.map.intervention.fragments.CreationSinistre;
 import istic.m2.ila.firefighterapp.map.intervention.fragments.CreationTraitTopo;
+import istic.m2.ila.firefighterapp.map.intervention.fragments.DemandeMoyenFragement;
 import istic.m2.ila.firefighterapp.map.intervention.fragments.DetailDeployFragment;
 import istic.m2.ila.firefighterapp.map.intervention.fragments.DetailSinistreFragment;
 import istic.m2.ila.firefighterapp.map.intervention.fragments.DetailTraitTopoFragment;
@@ -21,14 +21,14 @@ import istic.m2.ila.firefighterapp.map.intervention.fragments.DetailTraitTopoFra
 public class FragmentFactory{
     public static Fragment getFragment(TraitTopoDTO dto){
         if (dto.getId() != null) {
-            return DetailTraitTopoFragment.newInstance((TraitTopoDTO)dto);
+            return DetailTraitTopoFragment.newInstance(dto);
         } else {
             return CreationTraitTopo.newInstance();
         }
     }
     public static Fragment getFragment(SinistreDTO dto){
         if (dto.getId() != null) {
-            return DetailSinistreFragment.newInstance((SinistreDTO)dto);
+            return DetailSinistreFragment.newInstance(dto);
         } else {
             return CreationSinistre.newInstance();
         }
@@ -36,14 +36,14 @@ public class FragmentFactory{
 
     public static Fragment getFragment(DeploiementDTO dto){
         if (dto.getId() != null) {
-            return DetailDeployFragment.newInstance((DeploiementDTO)dto);
+            return DetailDeployFragment.newInstance(dto);
         } else {
             return new DemandeMoyenFragement();
         }
     }
     public static Fragment getFragment(TraitTopographiqueBouchonDTO dto){
         if (dto.getId() != null) {
-            return DetailTraitTopoFragment.newInstance((TraitTopographiqueBouchonDTO)dto);
+            return DetailTraitTopoFragment.newInstance(dto);
         } else {
             return CreationTraitTopo.newInstance();
         }

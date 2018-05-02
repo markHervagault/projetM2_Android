@@ -8,6 +8,9 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -21,10 +24,13 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.concurrent.TimeoutException;
 
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import istic.m2.ila.firefighterapp.dto.IDTO;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.MessageGeneric;
 
 import static istic.m2.ila.firefighterapp.constantes.Endpoints.RABBITMQ_ANDROID_DELETE;
 import static istic.m2.ila.firefighterapp.constantes.Endpoints.RABBITMQ_ANDROID_UPDATE;
@@ -33,7 +39,7 @@ import static istic.m2.ila.firefighterapp.constantes.Endpoints.RABBITMQ_ANDROID_
  * Provide an Abstract class for RabbitMqService
  * @param <T> Type of the DTO
  */
-public abstract class ServiceRabbitMQGeneric<T extends IDTO> extends Service {
+public abstract class ServiceRabbitMQGeneric<T extends IDTO, M extends MessageGeneric<T>> extends Service {
 
     public String TAG = "Service "+ getGenericClass().getName() +" => ";
     private Connection _connection;
@@ -64,6 +70,13 @@ public abstract class ServiceRabbitMQGeneric<T extends IDTO> extends Service {
                 incomingMessageHandler = new String(body, "UTF-8");
                 Log.i(TAG, "Received '" + envelope.getRoutingKey() + "':'" + incomingMessageHandler + "'");
                 GsonBuilder builder = new GsonBuilder();
+
+                builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+                    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                        return new Date(json.getAsJsonPrimitive().getAsLong());
+                    }
+                });
+
                 Gson gson = builder.create();
                 try
                 {
@@ -80,7 +93,7 @@ public abstract class ServiceRabbitMQGeneric<T extends IDTO> extends Service {
                         messageClass = (T)typeInfoDTO;
                     }
 
-                    MessageGeneric<T> message = new MessageGeneric<>(messageClass, action);
+                    M message = MessageGeneric.getInstance(messageClass, action);
                     EventBus.getDefault().post(message);
                 }
                 catch (JsonParseException e)

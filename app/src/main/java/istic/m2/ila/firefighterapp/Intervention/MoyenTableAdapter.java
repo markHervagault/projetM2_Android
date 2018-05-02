@@ -5,14 +5,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import istic.m2.ila.firefighterapp.Intervention.model.*;
-import istic.m2.ila.firefighterapp.Intervention.holder.*;
+
 import com.evrencoskun.tableview.adapter.AbstractTableAdapter;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import istic.m2.ila.firefighterapp.Intervention.holder.CellViewHolder;
+import istic.m2.ila.firefighterapp.Intervention.holder.ColumnHeaderViewHolder;
+import istic.m2.ila.firefighterapp.Intervention.holder.RowHeaderViewHolder;
+import istic.m2.ila.firefighterapp.Intervention.model.CellModel;
+import istic.m2.ila.firefighterapp.Intervention.model.ColumnHeaderModel;
+import istic.m2.ila.firefighterapp.Intervention.model.RowHeaderModel;
 import istic.m2.ila.firefighterapp.R;
 
 
@@ -117,7 +122,6 @@ public class MoyenTableAdapter extends AbstractTableAdapter<ColumnHeaderModel, R
     public int getRowHeaderItemViewType(int position) {
         return 0;
     }
-
 
 
     @Override

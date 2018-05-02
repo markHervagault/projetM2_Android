@@ -12,5 +12,6 @@ public enum EDroneStatus {
     DECONNECTE("DECONNECTE"),
     PAUSE_RETOUR_BASE("PAUSE_RETOUR_BASE");
 
-    EDroneStatus(String droneStatus) {}
+    EDroneStatus(String droneStatus) {
+    }
 }

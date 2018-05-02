@@ -23,7 +23,7 @@ public class SinistreDTO implements Serializable, IDTO {
 
     @Override
     public String menuTitle() {
-        if(getId() == null){
+        if (getId() == null) {
             return "Creation d'un sinistre";
         } else {
             return "Sinistre de composante " + getComposante().getLabel();
@@ -32,7 +32,7 @@ public class SinistreDTO implements Serializable, IDTO {
 
     @Override
     public String menuColor() {
-        if(composante == null){
+        if (composante == null) {
             return "#D0D0D0";
         } else {
             return composante.getCouleur();

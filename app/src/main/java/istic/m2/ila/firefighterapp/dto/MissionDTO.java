@@ -1,7 +1,5 @@
 package istic.m2.ila.firefighterapp.dto;
 
-import java.util.Date;
-import java.util.Objects;
 import java.util.Set;
 
 /**

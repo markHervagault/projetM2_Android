@@ -1,11 +1,11 @@
 package istic.m2.ila.firefighterapp.Intervention.holder;
 
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
+
 import istic.m2.ila.firefighterapp.R;
 
 
@@ -29,8 +29,8 @@ public class RowHeaderViewHolder extends AbstractViewHolder {
         int nForegroundColorId;
 
 
-            nBackgroundColorId = Color.parseColor("#28415f");
-            nForegroundColorId = Color.WHITE;
+        nBackgroundColorId = Color.parseColor("#28415f");
+        nForegroundColorId = Color.WHITE;
 
 
         itemView.setBackgroundColor(nBackgroundColorId);

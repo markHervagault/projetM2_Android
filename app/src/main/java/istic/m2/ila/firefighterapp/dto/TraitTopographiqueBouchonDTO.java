@@ -26,7 +26,7 @@ public class TraitTopographiqueBouchonDTO implements ITraitTopo {
 
     @Override
     public String menuColor() {
-        if(composante == null){
+        if (composante == null) {
             return "#D0D0D0";
         } else {
             return composante.getCouleur();

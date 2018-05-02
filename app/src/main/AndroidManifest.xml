@@ -36,6 +36,7 @@
         <activity
             android:name=".activitiy.MapActivity"
             android:label="@string/title_activity_map"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitiy.ListInterventionActivity"
@@ -44,20 +45,20 @@
         <activity
             android:name=".activitiy.DetailsInterventionActivity"
             android:screenOrientation="landscape"
-            android:value="@string/title_intervention_details"></activity>
+            android:value="@string/title_intervention_details" />
 
         <service
             android:name=".rabbitMQ.RabbitMQDroneService"
-            android:label="Service RabbitMQ"></service>
+            android:label="Service RabbitMQ" />
         <service
             android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo"
-            android:label="Service RabbitMQ TraitTopo"></service>
+            android:label="Service RabbitMQ TraitTopo" />
         <service
             android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQSinistre"
-            android:label="Service RabbitMQ Sinistre"></service>
+            android:label="Service RabbitMQ Sinistre" />
         <service
-            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiment"
-            android:label="Service RabbitMQ Deploiment"></service>
+            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiement"
+            android:label="Service RabbitMQ Deploiment" />
     </application>
 
 </manifest>

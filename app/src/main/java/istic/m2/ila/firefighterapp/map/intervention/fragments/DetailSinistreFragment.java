@@ -69,10 +69,10 @@ public class DetailSinistreFragment extends Fragment implements IManipulableFrag
         sinistre.setGeoPosition(newGeoposition);
 
         ((MapActivity)getMeActivity()).getService().majSinistre(((MapActivity)getMeActivity()).getToken(),sinistre);
-        if(marker != null) {
+        if (marker != null) {
             marker.remove();
         }
-        ((MapActivity)getMeActivity()).hideSelf();
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override

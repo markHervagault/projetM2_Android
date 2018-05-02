@@ -29,10 +29,10 @@ import java.util.Map;
 import java.util.Set;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.rest.RestTemplate;
-import istic.m2.ila.firefighterapp.rest.consumers.VehiculeConsumer;
 import istic.m2.ila.firefighterapp.dto.DeploiementCreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.VehiculeDTO;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.VehiculeConsumer;
 import retrofit2.Response;
 
 /**
@@ -92,7 +92,7 @@ public class InterventionCreationMoyensFragments extends Fragment {
 
                 String type = null;
                 if (vehiculeDTOList != null) {
-                    for (VehiculeDTO vehicule  : vehiculeDTOList) {
+                    for (VehiculeDTO vehicule : vehiculeDTOList) {
 
                         type = vehicule.getType().getLabel();
                         List<VehiculeDTO> list = !mapSorted.containsKey(type) ? new ArrayList<VehiculeDTO>() : mapSorted.get(type);
@@ -177,7 +177,7 @@ public class InterventionCreationMoyensFragments extends Fragment {
                 expandableLayout.setOnExpansionUpdateListener(this);
                 expandButton = itemView.findViewById(R.id.expand_button_add_moyen_fragment);
                 expandButton.setOnClickListener(this);
-                expandedLinearLayout = itemView.findViewById(R.id.list_layout_moyen_add_moyen_fragment);
+//                expandedLinearLayout = itemView.findViewById(R.id.list_layout_moyen_add_moyen_fragment);
             }
 
             public void bind() {

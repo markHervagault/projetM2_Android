@@ -36,13 +36,6 @@ public class PathPointDrawing extends MapItem
 
     //Action
     private boolean _action;
-    public void setAction(boolean action) { _action = action; }
-    public  boolean getAction() { return _action; }
-
-    //endregion
-
-    //region Constructor
-
     public PathPointDrawing(LatLng position, boolean draggable, Integer tag, GoogleMap map, Activity activity) {
         super(map, activity);
         _action = false;
@@ -56,6 +49,18 @@ public class PathPointDrawing extends MapItem
 
         _marker.setTag(tag);
         _isSelected = false;
+    }
+
+    public boolean getAction() {
+        return _action;
+    }
+
+    //endregion
+
+    //region Constructor
+
+    public void setAction(boolean action) {
+        _action = action;
     }
 
     //endregion

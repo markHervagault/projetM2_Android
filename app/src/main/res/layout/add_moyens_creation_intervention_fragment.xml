@@ -5,23 +5,20 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/recycler_add_moyen_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="45dp"
-        />
+        android:layout_marginTop="45dp" />
 
-    <TextView
+    <TextView xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/expand_button_add_moyen_fragment"
         style="@style/TextAppearance.AppCompat.Medium"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:context="istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?selectableItemBackground"
-        android:padding="16dp" />
+        android:padding="16dp"
+        tools:context="istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV" />
 
     <net.cachapa.expandablelayout.ExpandableLayout
         android:id="@+id/expandable_layout_add_moyen_fragment"
