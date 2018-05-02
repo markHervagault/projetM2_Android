@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.adapter.ItemListPictureAdapter;
 import istic.m2.ila.firefighterapp.dto.PhotoDTO;
+import istic.m2.ila.firefighterapp.dto.PhotoSansPhotoDTO;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathPointDrawing;
 import istic.m2.ila.firefighterapp.services.PhotoService;
 
@@ -33,7 +35,7 @@ public class DroneListPictureFragment extends Fragment {
     private RecyclerView.Adapter _adapter;
     private RecyclerView.LayoutManager _layoutManager;
 
-    private List<PhotoDTO> photos;
+    private List<PhotoSansPhotoDTO> photos;
 
     /**
      * Contexte
@@ -43,6 +45,7 @@ public class DroneListPictureFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        photos = new ArrayList<PhotoSansPhotoDTO>();
     }
 
     @Override
@@ -69,24 +72,37 @@ public class DroneListPictureFragment extends Fragment {
     }
 
     public void onClickOnPathPointDrawing (final PathPointDrawing point) {
-        AsyncTask.execute(new Runnable()
+        /*AsyncTask.execute(new Runnable()
         {
             public void run()
-            {
+            {*/
             // Construction de notre appel service
             PhotoService photoService = new PhotoService();
             // Récupération du token
             String token = _context.getSharedPreferences("user", _context.MODE_PRIVATE).getString("token", "null");
 
-            photos = photoService.getPhotosForPoint(token, _context, 1);
+            List<PhotoSansPhotoDTO> result = photoService.getPhotosForPointWithoutPhoto(token, point.getPoinMission().getId());
 
+            photos.clear();
+            if(result!=null){
+                photos.addAll(result);
             }
-        });
+
+            // TODO : triée les photos dans l'ordre chronologique dans la liste
+
+            /*}
+        });*/
+        // TODO : à supprimer quand le serveur fonctionnera
+        for(int i =0; i<10; i++){
+            photos.add(new PhotoSansPhotoDTO());
+        }
+
         if(photos!=null){
             Log.i(TAG, "Nombre de photos récupérées : " + photos.size());
         }
         else {
-            Log.i(TAG, "Aucune photo récupérées");
+            Log.i(TAG, "Aucune photo récupérée");
+
         }
     }
 }

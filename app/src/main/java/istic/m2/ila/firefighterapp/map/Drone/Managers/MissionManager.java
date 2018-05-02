@@ -33,6 +33,7 @@ import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneStatusChangedMess
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
+import istic.m2.ila.firefighterapp.eventbus.drone.UnSelectPathPointMessage;
 import istic.m2.ila.firefighterapp.map.Common.MapItem;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathDrawing;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathPointDrawing;
@@ -91,7 +92,7 @@ public class MissionManager extends MapItem
         if(_editMode && _missionMode == MissionMode.EDIT) //On autorise l'édition
             _googleMap.setOnMapClickListener(onMapClickListener);
         else
-            _googleMap.setOnMapClickListener(null);
+            _googleMap.setOnMapClickListener(onMapClickListenerCommand);
 
         _propertyChangeSupport.firePropertyChange(EDIT_MODE_CHANGED_EVENT_NAME, !_editMode, _editMode);
     }
@@ -181,6 +182,7 @@ public class MissionManager extends MapItem
         @Override
         public void onMapClick(LatLng latLng)
         {
+            Log.i(TAG, "Click sur la map");
             //Reset du marker selectionné
             setSelectedMarker(null);
 
@@ -203,6 +205,16 @@ public class MissionManager extends MapItem
             _propertyChangeSupport.firePropertyChange(POINTCOUNT_CHANGED_EVENT_NAME, getPointsCount() - 1, getPointsCount());
         }
     };
+
+    private GoogleMap.OnMapClickListener onMapClickListenerCommand = new GoogleMap.OnMapClickListener() {
+        @Override
+        public void onMapClick(LatLng latLng) {
+            Log.i(TAG, "Click sur la map");
+            //Reset du marker selectionné
+            setSelectedMarker(null);
+            EventBus.getDefault().post(new UnSelectPathPointMessage());
+        }
+    };
     //endregion
 
     //region Marker Click
@@ -211,7 +223,7 @@ public class MissionManager extends MapItem
         public boolean onMarkerClick(Marker marker)
         {
             //Vérification du tag du marker
-            if(marker.getTag() != null && marker.getTag() instanceof Integer && _pathPointsByTag.containsKey(marker.getTag())) {
+            /*if(marker.getTag() != null && marker.getTag() instanceof Integer && _pathPointsByTag.containsKey(marker.getTag())) {
                 //Deselection du marker actuel
                 if(_selectedMarker != null){
                     _selectedMarker.UnSelect();
@@ -219,10 +231,35 @@ public class MissionManager extends MapItem
 
                 setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
             }
-            else
+            else{
                 setSelectedMarker(null);
+            }*/
 
-            return false;
+            if(marker.getTag() != null && marker.getTag() instanceof Integer && _pathPointsByTag.containsKey(marker.getTag())) {
+                // Si un marqueur n'a jamais été sélectionné auparavant
+                if(_selectedMarker == null){
+                    setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
+                    EventBus.getDefault().post(_selectedMarker);
+                }
+                // si le marqueur sélectionné et le même que celui sélectionné auparavant
+                else if (_selectedMarker.getTag().equals(marker.getTag())){
+                    _selectedMarker.UnSelect();
+                    setSelectedMarker(null);
+                    EventBus.getDefault().post(new UnSelectPathPointMessage());
+                }
+                // si le marqueur n'est pas le même que celui sélectionné auparavant
+                else{
+                    _selectedMarker.UnSelect();
+                    setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
+                    EventBus.getDefault().post(_selectedMarker);
+                }
+            }
+            else{
+                setSelectedMarker(null);
+                EventBus.getDefault().post(new UnSelectPathPointMessage());
+            }
+            // TODO : Quand est ce qu'on renvoie TRUE ? Quand est ce qu'on renvoie FALSE ?
+            return true;
         }
     };
     //endregion

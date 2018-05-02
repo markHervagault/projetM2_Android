@@ -104,12 +104,14 @@ public class DroneGeneralFragment extends Fragment {
     //region events
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onClickPassagePoint(PathPointDrawing pathPoint){
+        Log.i(TAG, "Sélection d'un point de passage");
         _listPictureFrag.onClickOnPathPointDrawing(pathPoint);
         getFragmentManager().beginTransaction().show(_listPictureFrag).commit();
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onUnClickPassagePoint(UnSelectPathPointMessage m){
+        Log.i(TAG, "Deselection d'un point de passage");
         getFragmentManager().beginTransaction().hide(_listPictureFrag).commit();
     }
     //endregion
