@@ -60,6 +60,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center|bottom"
-        android:text="Create" />
+        android:text="@string/add_intervention_validation_button" />
 
 </LinearLayout>
