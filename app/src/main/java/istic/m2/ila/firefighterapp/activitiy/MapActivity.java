@@ -278,7 +278,6 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                 Object obj = marker.getTag();
                 if (obj instanceof IDTO) {
                     displayFragmentHolder((IDTO) obj);
-                    getMap().moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                 }
                 return true;
             }
@@ -336,6 +335,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         if (intervMapFrag.getFragmentHolder().getObjectHeld() == dto) {
             hideFragment();
             intervMapFrag.getFragmentHolder().setObjectHeld(null);
+            //intervMapFrag.getFragmentHolder().replace(null);
         } else if (intervMapFrag.getFragmentHolder().getObjectHeld() == null) {
             intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
@@ -344,6 +344,9 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
             hideFragment();
             intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
+        }
+        if(dto.getPosition() != null){
+            getMap().moveCamera(CameraUpdateFactory.newLatLng(new LatLng(dto.getPosition().getLatitude(),dto.getPosition().getLongitude())));
         }
     }
 

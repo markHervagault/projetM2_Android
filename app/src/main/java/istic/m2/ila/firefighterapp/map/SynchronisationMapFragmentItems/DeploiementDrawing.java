@@ -162,13 +162,17 @@ public class DeploiementDrawing extends MapItem
 
             String rgbNoA = _deploiementDTO.getComposante().getCouleur().substring(0, 7);
             Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
-            String label = "";
+            String label = null;
             if (_deploiementDTO.getState() != EEtatDeploiement.DEMANDE) {
                 label = _deploiementDTO.getVehicule().getLabel();
             }
-            Bitmap bm = textAsBitmap(label, 13, Color.parseColor(rgbNoA));
 
-            icon = fusionImg(icon, bm);
+            if(label != null && label.isEmpty()){
+                Bitmap bm = textAsBitmap(label, 13, Color.parseColor(rgbNoA));
+                icon = fusionImg(icon, bm);
+            }
+
+
 
 
             // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait

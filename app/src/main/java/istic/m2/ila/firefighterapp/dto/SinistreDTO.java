@@ -39,6 +39,11 @@ public class SinistreDTO implements Serializable, IDTO {
         }
     }
 
+    @Override
+    public GeoPositionDTO getPosition() {
+        return geoPosition;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
