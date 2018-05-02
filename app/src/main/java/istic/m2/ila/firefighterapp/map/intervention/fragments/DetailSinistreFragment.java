@@ -118,6 +118,7 @@ public class DetailSinistreFragment extends Fragment implements IManipulableFrag
     @Override
     public void delete() {
         ((MapActivity)getMeActivity()).getService().removeSinistre(((MapActivity)getMeActivity()).getToken(),sinistre.getId());
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override

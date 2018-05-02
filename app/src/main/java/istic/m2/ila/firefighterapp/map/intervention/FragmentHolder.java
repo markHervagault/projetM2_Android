@@ -65,7 +65,6 @@ public class FragmentHolder extends Fragment {
         setObjectHeld(null);
         setFragmentToDisplay(null);
         ((MapActivity) this.getActivity()).hideFragment();
-
     }
 
     @Override

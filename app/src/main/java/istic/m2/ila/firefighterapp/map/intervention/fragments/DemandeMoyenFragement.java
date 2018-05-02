@@ -83,6 +83,7 @@ public class DemandeMoyenFragement extends Fragment {
         }catch (IOException e){
             e.printStackTrace();
         }
+        ((MapActivity)getActivity()).hideSelf();
     }
 
     private List<DemandeDTO> buildListVehicule(TypeVehiculeDTO type){

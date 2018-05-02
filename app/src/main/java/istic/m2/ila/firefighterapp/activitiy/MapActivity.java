@@ -38,6 +38,7 @@ import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
+import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.IDTO;
@@ -333,9 +334,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     public void displayFragmentHolder(IDTO dto) {
         if (intervMapFrag.getFragmentHolder().getObjectHeld() == dto) {
-            hideFragment();
-            intervMapFrag.getFragmentHolder().setObjectHeld(null);
-            //intervMapFrag.getFragmentHolder().replace(null);
+            hideSelf();
         } else if (intervMapFrag.getFragmentHolder().getObjectHeld() == null) {
             intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
@@ -346,7 +345,14 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
             showFragment();
         }
         if(dto.getPosition() != null){
-            getMap().moveCamera(CameraUpdateFactory.newLatLng(new LatLng(dto.getPosition().getLatitude(),dto.getPosition().getLongitude())));
+            if(dto instanceof DeploiementDTO){
+                if(((DeploiementDTO)dto).getState() != EEtatDeploiement.DESENGAGE
+                    && ((DeploiementDTO)dto).getState() != EEtatDeploiement.REFUSE) {
+                    getMap().moveCamera(CameraUpdateFactory.newLatLng(new LatLng(dto.getPosition().getLatitude(),dto.getPosition().getLongitude())));
+                }
+            } else {
+                getMap().moveCamera(CameraUpdateFactory.newLatLng(new LatLng(dto.getPosition().getLatitude(),dto.getPosition().getLongitude())));
+            }
         }
     }
 
