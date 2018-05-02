@@ -22,16 +22,20 @@ public class MoyenTableViewListener implements ITableViewListener {
     private ITableView mTableView;
     private Context mContext;
     private List<DeploiementDTO> deploiements;
+    private MoyenTableAdapter mTableAdapter;
+    private InterventionDetailsMoyensFragmentsTV interventionDetailsMoyensFragmentsTV;
 
     public MoyenTableViewListener(ITableView pTableView) {
         this.mTableView = pTableView;
         this.mContext = null;
     }
 
-    public MoyenTableViewListener(ITableView pTableView, Context mContext, List<DeploiementDTO> deploiements) {
+    public MoyenTableViewListener(ITableView pTableView, Context mContext, List<DeploiementDTO> deploiements, MoyenTableAdapter mTableAdapter, InterventionDetailsMoyensFragmentsTV interventionDetailsMoyensFragmentsTV) {
         this.mTableView = pTableView;
         this.mContext = mContext;
         this.deploiements = deploiements;
+        this.mTableAdapter = mTableAdapter;
+        this.interventionDetailsMoyensFragmentsTV = interventionDetailsMoyensFragmentsTV;
     }
 
     @Override
@@ -40,7 +44,12 @@ public class MoyenTableViewListener implements ITableViewListener {
         onRowHeaderClicked(p_jCellView, p_nYPosition);
         if (mContext != null && mContext instanceof MapActivity) {
             // Le fragment existe
-            ((MapActivity) mContext).displayFragmentHolder(deploiements.get(p_nYPosition));
+            if (interventionDetailsMoyensFragmentsTV.isReduce()) {
+                interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
+            } else {
+                interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
+            }
+
         } else {
             // La istic.m2.ila.firefighterapp.map (et le fragment) n'existe pas
             // On ne fait rien
@@ -56,6 +65,11 @@ public class MoyenTableViewListener implements ITableViewListener {
     public void onColumnHeaderClicked(@NonNull RecyclerView.ViewHolder p_jColumnHeaderView, int
             p_nXPosition) {
 
+        if (interventionDetailsMoyensFragmentsTV.isReduce()) {
+            interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), false, -1);
+        } else {
+            interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), false, -1);
+        }
     }
 
     @Override
@@ -67,7 +81,16 @@ public class MoyenTableViewListener implements ITableViewListener {
     public void onRowHeaderClicked(@NonNull RecyclerView.ViewHolder p_jRowHeaderView, int
             p_nYPosition) {
         Log.e(getClass().getSimpleName(), "onRowHeaderClicked a été appelé");
-        p_jRowHeaderView.itemView.callOnClick();
+
+        if (interventionDetailsMoyensFragmentsTV.isReduce()) {
+            interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
+        } else {
+            interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
+        }
+        if (mContext != null && mContext instanceof MapActivity) {
+
+            ((MapActivity) mContext).displayFragmentHolder(deploiements.get(p_nYPosition));
+        }
     }
 
     @Override

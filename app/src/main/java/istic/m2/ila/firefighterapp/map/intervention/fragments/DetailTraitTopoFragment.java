@@ -73,8 +73,18 @@ public class DetailTraitTopoFragment extends Fragment implements IManipulableFra
 
         ((MapActivity)getMeActivity()).getService().majTraitTopo(((MapActivity)getMeActivity()).getToken(),(TraitTopoDTO)traitTopo);
 
-        marker.remove();
+        if (marker != null) {
+            marker.remove();
+        }
+        ((MapActivity) getMeActivity()).hideSelf();
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(marker != null){
+            marker.remove();
+        }
     }
 
     @Override

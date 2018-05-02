@@ -11,13 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="100dp"
+        android:orientation="vertical">
     <Button
         android:id="@+id/toggleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="250dp"
         android:text="toIntervention" />
-
+    </LinearLayout>
     <FrameLayout
         android:id="@+id/droneMissionFragmentLayout"
         android:layout_width="match_parent"
@@ -31,7 +36,7 @@
     <FrameLayout
         android:id="@+id/photoListFragmentLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 
 

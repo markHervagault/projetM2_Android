@@ -11,12 +11,14 @@ public class CellModel implements ISortableModel {
     private Object mData;
     private String backgroundColor;
     private String textColor;
+    private boolean selected;
 
-    public CellModel(String pId, Object mData) {
+    public CellModel(String pId, Object mData, boolean select) {
         this.mId = pId;
         this.mData = mData;
         this.backgroundColor = null;
         this.textColor = null;
+        this.selected = select;
     }
 
     public Object getData() {
@@ -47,5 +49,13 @@ public class CellModel implements ISortableModel {
 
     public String getTextColor() {
         return textColor;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

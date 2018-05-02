@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     tools:context="istic.m2.ila.firefighterapp.map.intervention.fragments.DetailDeployFragment">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,7 +34,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Compsante : "/>
+                android:text="Composante : " />
             <TextView
                 android:id="@+id/composante"
                 android:layout_width="wrap_content"
@@ -90,21 +91,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Etat"/>
-            <TextView
-                android:id="@+id/etat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Présence au CRM"/>
+                android:text="Présence au CRM : " />
             <TextView
                 android:id="@+id/crm"
                 android:layout_width="wrap_content"
@@ -118,7 +105,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heure de demande"/>
+                android:text="Heure de demande : " />
             <TextView
                 android:id="@+id/dateHeureDemande"
                 android:layout_width="wrap_content"
@@ -131,7 +118,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heure de validation"/>
+                android:text="Heure de validation : " />
             <TextView
                 android:id="@+id/dateHeureValidation"
                 android:layout_width="wrap_content"
@@ -144,7 +131,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heure d'engagement"/>
+                android:text="Heure d'engagement : " />
             <TextView
                 android:id="@+id/dateHeureEngagement"
                 android:layout_width="wrap_content"
@@ -157,7 +144,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heure de desengagement"/>
+                android:text="Heure de desengagement : " />
             <TextView
                 android:id="@+id/dateHeureDesengagement"
                 android:layout_width="wrap_content"
@@ -174,5 +161,6 @@
         </LinearLayout>
 
     </LinearLayout>
+
 
 </FrameLayout>

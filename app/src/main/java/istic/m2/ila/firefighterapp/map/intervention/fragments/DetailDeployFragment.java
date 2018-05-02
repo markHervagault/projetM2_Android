@@ -14,6 +14,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.SimpleDateFormat;
+
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
@@ -38,6 +40,14 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
 
     private Marker marker;
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(marker != null){
+            marker.remove();
+        }
+    }
+
     public DetailDeployFragment() {
     }
 
@@ -60,23 +70,23 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail_deploy, container, false);
         ((TextView) view.findViewById(R.id.status)).setText(deploiementDTO.getState().toString());
         ((TextView) view.findViewById(R.id.composante)).setText(deploiementDTO.getComposante().getDescription());
-        ((TextView) view.findViewById(R.id.etat)).setText(deploiementDTO.getState().name());
 
         if (deploiementDTO.getDateHeureDemande() != null) {
-            ((TextView) view.findViewById(R.id.dateHeureDemande)).setText(deploiementDTO.getDateHeureDemande().toString());
+            ((TextView) view.findViewById(R.id.dateHeureDemande)).setText(formater.format(deploiementDTO.getDateHeureDemande()));
         }
         if (deploiementDTO.getDateHeureValidation() != null) {
-            ((TextView) view.findViewById(R.id.dateHeureValidation)).setText(deploiementDTO.getDateHeureValidation().toString());
+            ((TextView) view.findViewById(R.id.dateHeureValidation)).setText(formater.format(deploiementDTO.getDateHeureValidation()));
         }
         if (deploiementDTO.getDateHeureEngagement() != null) {
-            ((TextView) view.findViewById(R.id.dateHeureEngagement)).setText(deploiementDTO.getDateHeureEngagement().toString());
+            ((TextView) view.findViewById(R.id.dateHeureEngagement)).setText(formater.format(deploiementDTO.getDateHeureEngagement()));
         }
         if (deploiementDTO.getDateHeureDesengagement() != null) {
-            ((TextView) view.findViewById(R.id.dateHeureDesengagement)).setText(deploiementDTO.getDateHeureDesengagement().toString());
+            ((TextView) view.findViewById(R.id.dateHeureDesengagement)).setText(formater.format(deploiementDTO.getDateHeureDesengagement()));
         }
         if (deploiementDTO.getVehicule() != null) {
             ((TextView) view.findViewById(R.id.vehiculeName)).setText(deploiementDTO.getVehicule().getLabel());
@@ -94,6 +104,8 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
         composanteSpinner = view.findViewById(R.id.composanteSpinner);
         composanteSpinner.setAdapter(new ComposanteAdapter(this.getActivity(), android.R.layout.simple_spinner_item));
 
+        //int selectedPos = ((ComposanteAdapter)composanteSpinner.getAdapter()).getPosition(deploiementDTO.getComposante());
+        //composanteSpinner.setSelection(selectedPos);
 
         ButtonFactory.populate(this, deploiementDTO, (LinearLayout)view.findViewById(R.id.buttonLayout));
 
@@ -131,6 +143,7 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
             switchView();
         }
         ((MapActivity)getMeActivity()).getService().majDeploiement(((MapActivity)getMeActivity()).getToken(), deploiementDTO);
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override
@@ -179,11 +192,13 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
     @Override
     public void engage() {
         ((MapActivity)getActivity()).getService().deploiementToEngage(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override
     public void action() {
         ((MapActivity)getActivity()).getService().deploiementToAction(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override
@@ -191,6 +206,7 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
         deploiementDTO.setPresenceCRM(true);
         ((MapActivity)getMeActivity()).getService().majDeploiement(((MapActivity)getMeActivity()).getToken(), deploiementDTO);
         ((MapActivity)getActivity()).getService().deploiementToEngage(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override
@@ -202,5 +218,6 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
     @Override
     public void desengage() {
         ((MapActivity)getActivity()).getService().deploiementToDesengage(((MapActivity)getActivity()).getToken(),deploiementDTO.getId());
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 }

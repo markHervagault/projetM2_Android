@@ -16,13 +16,13 @@ import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 
+import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
+import istic.m2.ila.firefighterapp.dto.EDroneStatus;
 import istic.m2.ila.firefighterapp.eventbus.drone.DeclareDroneMessage;
 import istic.m2.ila.firefighterapp.eventbus.drone.PauseMissionMessage;
 import istic.m2.ila.firefighterapp.eventbus.drone.PlayMissionMessage;
 import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.eventbus.drone.StopMissionMessage;
-import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
-import istic.m2.ila.firefighterapp.dto.EDroneStatus;
 import istic.m2.ila.firefighterapp.map.Common.MapItem;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.DroneDrawing;
 
@@ -110,7 +110,7 @@ public class DroneManager extends MapItem
 
     public void SendStopCommand()
     {
-        if(_selectedDrone.getStatus() == EDroneStatus.RETOUR_BASE)
+        if (_selectedDrone.getStatus() == EDroneStatus.RETOUR_BASE)
             return;
 
         EventBus.getDefault().post(new StopMissionMessage(_selectedDrone.getId()));

@@ -23,7 +23,20 @@ public class SinistreDTO implements Serializable, IDTO {
 
     @Override
     public String menuTitle() {
-        return "Sinistre";
+        if (getId() == null) {
+            return "Creation d'un sinistre";
+        } else {
+            return "Sinistre de composante " + getComposante().getLabel();
+        }
+    }
+
+    @Override
+    public String menuColor() {
+        if (composante == null) {
+            return "#D0D0D0";
+        } else {
+            return composante.getCouleur();
+        }
     }
 
     public void setId(Long id) {

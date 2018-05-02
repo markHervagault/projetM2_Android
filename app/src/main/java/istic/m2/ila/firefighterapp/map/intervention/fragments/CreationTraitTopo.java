@@ -40,6 +40,14 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
     private Spinner typeSpinner;
     private Spinner composanteSpinner;
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(marker != null){
+            marker.remove();
+        }
+    }
+
     public CreationTraitTopo() {
         traitTopo = new TraitTopoDTO();
     }
@@ -89,7 +97,10 @@ public class CreationTraitTopo extends Fragment implements IManipulableFragment 
         traitCreated.setInterventionId(((MapActivity)getMeActivity()).getIdIntervention());
         ((MapActivity)getMeActivity()).getService().addTraitTopo(((MapActivity)getMeActivity()).getToken(),traitCreated);
 
-        marker.remove();
+        if(marker != null){
+            marker.remove();
+        }
+        ((MapActivity) getMeActivity()).hideSelf();
     }
 
     @Override

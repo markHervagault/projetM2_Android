@@ -2,11 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="istic.m2.ila.firefighterapp">
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     <!-- Droits pour pouvoir accéder à la géolocalisation de l'utilisateur et la co internet -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -41,6 +36,7 @@
         <activity
             android:name=".activitiy.MapActivity"
             android:label="@string/title_activity_map"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitiy.ListInterventionActivity"
@@ -49,20 +45,20 @@
         <activity
             android:name=".activitiy.DetailsInterventionActivity"
             android:screenOrientation="landscape"
-            android:value="@string/title_intervention_details"></activity>
+            android:value="@string/title_intervention_details" />
 
         <service
             android:name=".rabbitMQ.RabbitMQDroneService"
-            android:label="Service RabbitMQ"></service>
+            android:label="Service RabbitMQ" />
         <service
             android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQTraitTopo"
-            android:label="Service RabbitMQ TraitTopo"></service>
+            android:label="Service RabbitMQ TraitTopo" />
         <service
             android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQSinistre"
-            android:label="Service RabbitMQ Sinistre"></service>
+            android:label="Service RabbitMQ Sinistre" />
         <service
-            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiment"
-            android:label="Service RabbitMQ Deploiment"></service>
+            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiement"
+            android:label="Service RabbitMQ Deploiment" />
     </application>
 
 </manifest>

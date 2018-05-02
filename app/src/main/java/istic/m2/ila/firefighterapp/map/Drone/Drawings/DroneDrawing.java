@@ -15,10 +15,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.greenrobot.eventbus.EventBus;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.DroneInfosDTO;
 import istic.m2.ila.firefighterapp.dto.EDroneStatus;
+import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneStatusChangedMessage;
 import istic.m2.ila.firefighterapp.map.Common.DoubleArrayEvaluator;
 import istic.m2.ila.firefighterapp.map.Common.MapItem;
 
@@ -38,7 +38,10 @@ public class DroneDrawing extends MapItem
     //region Properties
 
     public long getId() { return _drone.getId(); }
-    public EDroneStatus getStatus() { return _drone.getStatut(); }
+
+    public EDroneStatus getStatus() {
+        return _drone.getStatut();
+    }
     public DroneDTO getDrone() { return _drone; }
 
     private boolean _isSelected;
@@ -94,7 +97,7 @@ public class DroneDrawing extends MapItem
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.drone))
                 .anchor(0.5f,0.5f) //Center on point
                 .draggable(false)
-                .zIndex(50f)); //TODO placer les z_Index dans un fichier de conf, pour être sur des superpositions dans la istic.m2.ila.firefighterapp.map
+                        .zIndex(50f)); //TODO placer les z_Index dans un fichier de conf, pour être sur des superpositions dans la istic.m2.ila.firefighterapp.map
             }
         });
     }

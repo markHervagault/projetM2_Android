@@ -1,6 +1,8 @@
 package istic.m2.ila.firefighterapp.activitiy;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,13 +21,13 @@ import java.util.Set;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.addintervention.FragmentFormulaire;
 import istic.m2.ila.firefighterapp.addintervention.InterventionCreationMoyensFragments;
-import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
-import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.AdresseDTO;
 import istic.m2.ila.firefighterapp.dto.CreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementCreateInterventionDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -56,9 +58,26 @@ public class AddInterventionActivity extends FragmentActivity implements Fragmen
         validateButton = findViewById(R.id.validateButton);
         validateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(creationIntervention()){
-                    redirectToList();
-                }
+                // Création de la boîte de dialog pour confirmer la connexion
+                AlertDialog.Builder adb = new AlertDialog.Builder(AddInterventionActivity.this);
+
+                adb.setTitle("Confirmation de création");
+                adb.setMessage("Êtes-vous sûr de vouloir créer cette intervention ?");
+
+                adb.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (creationIntervention()) {
+                            redirectToList();
+                        }
+                    }
+                });
+                adb.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Annuler l'action
+                        dialog.cancel();
+                    }
+                });
+                adb.create().show();
             }
         });
     }

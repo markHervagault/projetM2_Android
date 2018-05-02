@@ -24,7 +24,6 @@ public class ComposanteAdapter extends ArrayAdapter<TypeComposanteDTO> {
         String token = context.getSharedPreferences("user", Context.MODE_PRIVATE).getString("token", "null");
         RestTemplate restTemplate = RestTemplate.getInstance();
         TypeComposanteConsumer typeComposanteConsumer = restTemplate.builConsumer(TypeComposanteConsumer.class);
-
         try {
             Response<List<TypeComposanteDTO>> response = typeComposanteConsumer.getListTypeComposante(token).execute();
             if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
