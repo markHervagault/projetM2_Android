@@ -123,7 +123,7 @@ public class DroneCommandFragment extends Fragment {
                 buttonPlayPause.setTag(PLAY_TAG);
                 break;
 
-            case PAUSE_RETOUR_BASE:
+            case EN_PAUSE_RETOUR_BASE:
                 buttonStop.setVisibility(View.GONE);
                 buttonPlayPause.setImageResource(R.drawable.play_black);
                 buttonPlayPause.setVisibility(View.VISIBLE);

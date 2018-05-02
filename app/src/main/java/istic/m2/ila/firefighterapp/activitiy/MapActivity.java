@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
+import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;

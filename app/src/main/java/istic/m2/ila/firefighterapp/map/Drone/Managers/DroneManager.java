@@ -92,7 +92,7 @@ public class DroneManager extends MapItem
 
     public void SendPlayCommand()
     {
-        if (_selectedDrone.getStatus() != EDroneStatus.EN_PAUSE && _selectedDrone.getStatus() != EDroneStatus.PAUSE_RETOUR_BASE)
+        if (_selectedDrone.getStatus() != EDroneStatus.EN_PAUSE && _selectedDrone.getStatus() != EDroneStatus.EN_PAUSE_RETOUR_BASE)
             return;
 
         EventBus.getDefault().post(new PlayMissionMessage(_selectedDrone.getId()));

@@ -33,7 +33,6 @@ import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneStatusChangedMess
 import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.MissionDTO;
 import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
-import istic.m2.ila.firefighterapp.eventbus.drone.UnSelectPathPointMessage;
 import istic.m2.ila.firefighterapp.map.Common.MapItem;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathDrawing;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathPointDrawing;
@@ -415,7 +414,7 @@ public class MissionManager extends MapItem
                 {
                     //Tag pour pouvoir retrouver le point
                     Integer tag = _pathPoints.size();
-                    PathPointDrawing pathPoint = new PathPointDrawing(new LatLng(point.getLatitude(), point.getLongitude()), false, tag, _googleMap, _contextActivity);
+                    PathPointDrawing pathPoint = new PathPointDrawing(point, false, tag, _googleMap, _contextActivity);
 
                     //Ajout du marker à la collection
                     _pathPoints.add(pathPoint);
@@ -452,7 +451,7 @@ public class MissionManager extends MapItem
             case EN_MISSION:
             case RETOUR_BASE:
             case EN_PAUSE:
-            case PAUSE_RETOUR_BASE:
+            case EN_PAUSE_RETOUR_BASE:
                 setMissionMode(MissionMode.FOLLOW);
                 //Recupération de la mission
                 AsyncTask.execute(new Runnable() {
@@ -495,7 +494,7 @@ public class MissionManager extends MapItem
             case EN_MISSION:
             case EN_PAUSE:
             case RETOUR_BASE:
-            case PAUSE_RETOUR_BASE:
+            case EN_PAUSE_RETOUR_BASE:
                 if(getMissionMode() != MissionMode.FOLLOW)
                 {
                     ResetMission();
