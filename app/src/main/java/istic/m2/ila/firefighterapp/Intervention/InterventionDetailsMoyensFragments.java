@@ -41,10 +41,6 @@ public class InterventionDetailsMoyensFragments extends Fragment {
     private Context context;
     private LinearLayout linLayTabMoy;
 
-    public interface ActivityMoyens {
-        Long getIdIntervention();
-    }
-
     public InterventionDetailsMoyensFragments() {
         // Required empty public constructor
     }

@@ -26,7 +26,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
+import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiment;
@@ -54,11 +54,9 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneListViewFragment;
 import istic.m2.ila.firefighterapp.map.Drone.DroneMapFragment;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.SinistreManager;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.TraitTopoManager;
-import istic.m2.ila.firefighterapp.map.intervention.FragmentHolder;
 import istic.m2.ila.firefighterapp.map.intervention.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.rabbitMQ.RabbitMQDroneService;
 import istic.m2.ila.firefighterapp.services.IMapService;
@@ -71,12 +69,8 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
     private Boolean interventionView = true;
 
     //region Detail/Creation fragment
-    private Fragment fragmentToHide;
-
-    private InterventionDetailsMoyensFragmentsTV intervListFrag;
     private InterventionMapFragment intervMapFrag;
 
-    private DroneListViewFragment droneListFrag;
     private DroneMapFragment droneMapFrag;
 
     public final Integer RAYON_RECHERCHE_TRAIT_TOPO = 5000;
@@ -184,7 +178,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         intervention = getService().getIntervention(getToken(),((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
+        //this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
 
         serviceConnection = new ServiceConnection() {
             @Override
@@ -192,10 +186,8 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                 serviceRabbitMQ = ((RabbitMQDroneService.LocalBinder) service).getService();
 
                 intervMapFrag = new InterventionMapFragment();
-                intervListFrag = new InterventionDetailsMoyensFragmentsTV();
 
                 droneMapFrag = new DroneMapFragment(); //Map avant drone list
-                droneListFrag = new DroneListViewFragment();
 
                 toggleView();
             }
@@ -247,16 +239,16 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     public void toggleView() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
+        //FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
 
 
-        frameMoyen.setVisibility(View.VISIBLE);
+        //frameMoyen.setVisibility(View.VISIBLE);
         if (interventionView) {
             transaction.replace(R.id.mapFragment, intervMapFrag);
-            transaction.replace(R.id.listViewFragment, intervListFrag);
+            //transaction.replace(R.id.listViewFragment, intervListFrag);
         } else {
             transaction.replace(R.id.mapFragment, droneMapFrag);
-            transaction.replace(R.id.listViewFragment, droneListFrag);
+            //transaction.replace(R.id.listViewFragment, droneListFrag);
         }
         transaction.commit();
         interventionView = !interventionView;
@@ -527,48 +519,6 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         Canvas canvas = new Canvas(icon);
         canvas.drawBitmap(icon, 0, 0, paint);
         return icon;
-    }
-
-    public void toggleReduceTabMoyens() {
-
-        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        Button btnMoy = findViewById(R.id.toggleViewTabMoy);
-
-        if(frameMoyen.getVisibility()== View.GONE){
-            frameMoyen.setVisibility(View.VISIBLE);
-        }
-
-        if(!intervListFrag.isReduce()){
-            btnMoy.setText("Moyens >");
-            intervListFrag.populatedTableViewReduce(intervListFrag.getListDeploiment(), false,-1);
-        } else {
-            btnMoy.setText("< Moyens");
-            intervListFrag.populatedTableViewAll(intervListFrag.getListDeploiment(), false,-1);
-        }
-
-    }
-
-    public void showHideMoy() {
-
-        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        Button btnMoy = findViewById(R.id.toggleViewTabMoy);
-
-        if(frameMoyen.getVisibility()!= View.GONE){
-            frameMoyen.setVisibility(View.GONE);
-            btnMoy.setText("Moyens");
-
-        } else {
-            frameMoyen.setVisibility(View.VISIBLE);
-
-            if(!intervListFrag.isReduce()){
-                btnMoy.setText("Moyens >");
-                intervListFrag.populatedTableViewReduce(intervListFrag.getListDeploiment(), false,-1);
-            } else {
-                btnMoy.setText("< Moyens");
-                intervListFrag.populatedTableViewAll(intervListFrag.getListDeploiment(), false,-1);
-            }
-
-        }
     }
     //endregion
 
