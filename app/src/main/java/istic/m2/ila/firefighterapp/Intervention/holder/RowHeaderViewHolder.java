@@ -1,5 +1,6 @@
 package istic.m2.ila.firefighterapp.Intervention.holder;
 
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
@@ -27,23 +28,12 @@ public class RowHeaderViewHolder extends AbstractViewHolder {
         int nBackgroundColorId;
         int nForegroundColorId;
 
-        if (p_nSelectionState == SelectionState.SELECTED) {
-            nBackgroundColorId = R.color.selected_background_color;
-            nForegroundColorId = R.color.selected_text_color;
 
-        } else if (p_nSelectionState == SelectionState.UNSELECTED) {
-            nBackgroundColorId = R.color.unselected_header_background_color;
-            nForegroundColorId = R.color.unselected_text_color;
+            nBackgroundColorId = Color.parseColor("#28415f");
+            nForegroundColorId = Color.WHITE;
 
-        } else { // SelectionState.SHADOWED
 
-            nBackgroundColorId = R.color.shadow_background_color;
-            nForegroundColorId = R.color.unselected_text_color;
-        }
-
-        itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),
-                nBackgroundColorId));
-        row_header_textview.setTextColor(ContextCompat.getColor(row_header_textview.getContext(),
-                nForegroundColorId));
+        itemView.setBackgroundColor(nBackgroundColorId);
+        row_header_textview.setTextColor(nForegroundColorId);
     }
 }

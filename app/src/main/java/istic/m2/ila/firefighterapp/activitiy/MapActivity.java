@@ -25,7 +25,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
+import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
@@ -56,6 +56,10 @@ import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.
 import istic.m2.ila.firefighterapp.fragment.map.SynchronisationMapFragmentItems.TraitTopoManager;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.FragmentHolder;
 import istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment;
+import istic.m2.ila.firefighterapp.map.Drone.DroneMapFragment;
+import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.SinistreManager;
+import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.TraitTopoManager;
+import istic.m2.ila.firefighterapp.map.intervention.InterventionMapFragment;
 import istic.m2.ila.firefighterapp.rabbitMQ.RabbitMQDroneService;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiement;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQSinistre;
@@ -66,12 +70,13 @@ import istic.m2.ila.firefighterapp.services.impl.MapService;
 public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     private Boolean interventionView = true;
+
+    //region Detail/Creation fragment
     private final int MAX_SERVICE = 4;
     private int nbServiceConnected = 0;
     private InterventionDetailsMoyensFragmentsTV intervListFrag;
     private InterventionMapFragment intervMapFrag;
 
-    private DroneListViewFragment droneListFrag;
     private DroneMapFragment droneMapFrag;
 
     public final Integer RAYON_RECHERCHE_TRAIT_TOPO = 5000;
@@ -175,8 +180,8 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
     protected void onCreate(Bundle savedInstanceState) {
         intervention = getService().getIntervention(getToken(),((InterventionDTO) getIntent().getSerializableExtra("intervention")).getId());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_map);
-        this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
+        setContentView(R.layout.activity_map);
+        //this.fragmentHolder = (FragmentHolder) this.getSupportFragmentManager().findFragmentById(R.id.holder_fragment);
 
 
         serviceConnection = new ServiceConnection() {
@@ -231,16 +236,16 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     public void toggleView() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        //FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
 
-        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        frameMoyen.setVisibility(View.VISIBLE);
 
+        //frameMoyen.setVisibility(View.VISIBLE);
         if (interventionView) {
             transaction.replace(R.id.mapFragment, intervMapFrag);
-            transaction.replace(R.id.listViewFragment, intervListFrag);
+            //transaction.replace(R.id.listViewFragment, intervListFrag);
         } else {
             transaction.replace(R.id.mapFragment, droneMapFrag);
-            transaction.replace(R.id.listViewFragment, droneListFrag);
+            //transaction.replace(R.id.listViewFragment, droneListFrag);
         }
         transaction.commit();
         interventionView = !interventionView;
@@ -304,67 +309,69 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         }
     }
 
-    //region Detail/Creation fragment
-    private Fragment fragmentToHide;
-    private FragmentHolder fragmentHolder;
+
 
     public void showFragment() {
         Log.i("Visibility", "SHOW");
-        if (!fragmentHolder.isVisible()) {
+        if (!this.intervMapFrag.getFragmentHolder().isVisible()) {
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .show(fragmentHolder)
+                    .show(intervMapFrag.getFragmentHolder())
                     .commit();
-            fragmentHolder.getView().setVisibility(View.VISIBLE);
+            intervMapFrag.getFragmentHolder().getView().setVisibility(View.VISIBLE);
         }
     }
 
     public void hideFragment() {
         Log.i("Visibility", "HIDE");
-        if (fragmentHolder.isVisible()) {
+        if (intervMapFrag.getFragmentHolder().isVisible()) {
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .hide(fragmentHolder)
+                    .hide(intervMapFrag.getFragmentHolder())
                     .commit();
-            fragmentHolder.getView().setVisibility(View.GONE);
+            intervMapFrag.getFragmentHolder().getView().setVisibility(View.GONE);
         }
     }
 
     public void createMoyen() {
         hideFragment();
-        fragmentHolder.replace(new DeploiementDTO());
+        intervMapFrag.getFragmentHolder().replace(new DeploiementDTO());
         showFragment();
+    }
+
+    public void hideSelf() {
+        intervMapFrag.getFragmentHolder().hideSelf();
     }
 
 
     public void displayFragmentHolder(IDTO dto) {
-        if (fragmentHolder.getObjectHeld() == dto) {
+        if (intervMapFrag.getFragmentHolder().getObjectHeld() == dto) {
             hideFragment();
-            fragmentHolder.setObjectHeld(null);
+            intervMapFrag.getFragmentHolder().setObjectHeld(null);
         }
-        else if(fragmentHolder.getObjectHeld() == null){
-            fragmentHolder.replace(dto);
+        else if(intervMapFrag.getFragmentHolder().getObjectHeld() == null){
+            intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
         }
         else {
             hideFragment();
-            fragmentHolder.replace(dto);
+            intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
         }
     }
 
     public void createTrait() {
         hideFragment();
-        fragmentHolder.replace(new TraitTopoDTO());
+        intervMapFrag.getFragmentHolder().replace(new TraitTopoDTO());
         showFragment();
     }
 
 
     public void createSinistre() {
         hideFragment();
-        fragmentHolder.replace(new SinistreDTO());
+        intervMapFrag.getFragmentHolder().replace(new SinistreDTO());
         showFragment();
     }
 
@@ -445,7 +452,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                         break;
                 }
 
-                // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
+                // Ajout des icônes (marqueurs) sur la istic.m2.ila.firefighterapp.map en fonction de la localisation du trait
                 LatLng pos = new LatLng(traitTopo.getGeoPosition().getLatitude(), traitTopo.getGeoPosition().getLongitude());
                 googleMap.addMarker(new MarkerOptions()
                         .position(pos)
@@ -469,65 +476,6 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         Canvas canvas = new Canvas(icon);
         canvas.drawBitmap(icon, 0, 0, paint);
         return icon;
-    }
-
-    public void toggleFragmentWeight() {
-
-        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        FrameLayout frameMap =   findViewById(R.id.mapFragmentParent);
-        Button btnMoy = findViewById(R.id.toggleViewTabMoy);
-
-        LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameMoyen.getLayoutParams();
-        LinearLayout.LayoutParams paramMap = (LinearLayout.LayoutParams) frameMap.getLayoutParams();
-
-        float weight = param.weight;
-
-        if(frameMoyen.getVisibility()== View.GONE){
-            frameMoyen.setVisibility(View.VISIBLE);
-        }
-
-        if(weight == 5.0f){
-            // On diminue
-            btnMoy.setText("Moyens >");
-            param.weight = 10.0f;
-            paramMap.weight = 5.0f;
-        } else {
-            // On agrandit
-            btnMoy.setText("< Moyens");
-            param.weight = 5.0f;
-            paramMap.weight = 10.0f;
-
-        }
-
-        frameMoyen.setLayoutParams(param);
-        frameMap.setLayoutParams(paramMap);
-
-    }
-
-    public void showHideMoy() {
-
-        FrameLayout frameMoyen =   findViewById(R.id.listViewFragment);
-        FrameLayout frameMap =   findViewById(R.id.mapFragmentParent);
-        Button btnMoy = findViewById(R.id.toggleViewTabMoy);
-
-        if(frameMoyen.getVisibility()!= View.GONE){
-            frameMoyen.setVisibility(View.GONE);
-            btnMoy.setText("Moyens");
-
-        } else {
-            frameMoyen.setVisibility(View.VISIBLE);
-            LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameMoyen.getLayoutParams();
-            float weight = param.weight;
-
-            if(weight == 5.0f){
-                // On diminue
-                btnMoy.setText("< Moyens");
-            } else {
-                // On agrandit
-                btnMoy.setText("Moyens >");
-
-            }
-        }
     }
     //endregion
 

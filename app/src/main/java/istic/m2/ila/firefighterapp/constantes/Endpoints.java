@@ -37,12 +37,12 @@ public class Endpoints {
     public static final String CODE_SINISTRE_BY_ID = "code-sinistre/{id}";
 
     //public static final String DEPLOIEMENT_ID_ACTION = "api/deploiement/{id}/etat/SyncAction";
-    public static final String DEPLOIEMENT_UPDATE = "/api/deploiement";
-    public static final String DEPLOIEMENT_ID_ACTION = "api/deploiement/{id}/etat/action";
-    public static final String DEPLOIEMENT_ID_DESENGAGE = "put /api/deploiement/{id}/etat/desengage";
-    public static final String DEPLOIEMENT_ID_ENGAGE = "api/deploiement/{id}/etat/engage";
-    public static final String DEPLOIEMENT_ID_VALIDE = "api/deploiement/{id}/etat/valide";
-    public static final String DEPLOIEMENT_ID_REFUSE = "api/deploiement/{id}/etat/refuse";
+    public static final String DEPLOIEMENT_UPDATE = "deploiement";
+    public static final String DEPLOIEMENT_ID_ACTION = "deploiement/{id}/etat/action";
+    public static final String DEPLOIEMENT_ID_DESENGAGE = "deploiement/{id}/etat/desengage";
+    public static final String DEPLOIEMENT_ID_ENGAGE = "deploiement/{id}/etat/engage";
+    public static final String DEPLOIEMENT_ID_VALIDE = "deploiement/{id}/etat/valide";
+    public static final String DEPLOIEMENT_ID_REFUSE = "deploiement/{id}/etat/refuse";
 
     public static final String DRONE = "drone";
     public static final String DRONE_DISPO = "drone/disponible";
@@ -52,7 +52,7 @@ public class Endpoints {
     public static final String INTERVENTION = "intervention";
     public static final String INTERVENTION_ENCOUR = "intervention/en-cours";
     public static final String INTERVENTION_ID = "intervention/{id}";
-    public static final String INTERVENTION_DEMANDE = "intervention/{id}/demande";
+    public static final String INTERVENTION_DEMANDE = "deploiement";
     public static final String INTERVENTION_DEPLOIMENT = "intervention/{id}/deploiement";
     public static final String INTERVENTION_SINISTRE = "intervention/{id}/sinistre";
     public static final String INTERVENTION_TRAIT_TOPOGRAPHIQUE = "intervention/{id}/trait-topographique";
@@ -80,5 +80,6 @@ public class Endpoints {
 
     public static final String TRAIT_TOPOS ="trait-topos";
     public static final String TRAIT_TOPOS_ID = "trait-topos/{id}";
+    public static final String PHOTOS = "photo";
 
 }

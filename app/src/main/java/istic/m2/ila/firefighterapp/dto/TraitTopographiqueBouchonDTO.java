@@ -21,8 +21,19 @@ public class TraitTopographiqueBouchonDTO implements ITraitTopo {
 
     @Override
     public String menuTitle() {
-        return type.name() + composante.getDescription();
+        return "Trait topographique de type " + getComposante().getLabel();
     }
+
+    @Override
+    public String menuColor() {
+        if(composante == null){
+            return "#D0D0D0";
+        } else {
+            return composante.getCouleur();
+        }
+    }
+
+
     public void setId(Long id) {
         this.id = id;
     }

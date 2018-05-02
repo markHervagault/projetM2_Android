@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="istic.m2.ila.firefighterapp.fragment.map.Drone.DroneMapFragment">
+    tools:context="istic.m2.ila.firefighterapp.map.Drone.DroneMapFragment">
 
 
 
@@ -10,14 +10,19 @@
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="100dp">
     <Button
         android:id="@+id/toggleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="250dp"
-        android:text="toIntervention" />
-
+        android:text="toIntervention"
+       />
+    </LinearLayout>
     <FrameLayout
         android:id="@+id/droneMissionFragmentLayout"
         android:layout_width="match_parent"
@@ -25,6 +30,11 @@
 
     <FrameLayout
         android:id="@+id/droneCommandFragmentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/photoListFragmentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
