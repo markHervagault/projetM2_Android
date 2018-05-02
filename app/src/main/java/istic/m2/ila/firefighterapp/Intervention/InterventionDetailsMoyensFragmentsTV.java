@@ -20,6 +20,7 @@ import istic.m2.ila.firefighterapp.Intervention.model.CellModel;
 import istic.m2.ila.firefighterapp.Intervention.model.ColumnHeaderModel;
 import istic.m2.ila.firefighterapp.Intervention.model.RowHeaderModel;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.TypeComposanteDTO;
@@ -50,6 +51,11 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
     private List<RowHeaderModel> mRowHeaderList;
 
     private Long idIntervention;
+
+    public void setDataDTO(List<DeploiementDTO> listDeploiment) {
+        this.listDeploiment = listDeploiment;
+    }
+
     private List<DeploiementDTO> listDeploiment;
     private Context context;
 
@@ -94,8 +100,11 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
         //init pojo data
         this.context = context;
         this.idIntervention = ((ActivityMoyens) this.getActivity()).getIdIntervention();
-        this.listDeploiment = getDeploiments();
-
+        if(this.context instanceof MapActivity) {
+            this.listDeploiment = new ArrayList<>();
+        } else {
+            this.listDeploiment = getDeploiments();
+        }
     }
 
     @Override
@@ -107,13 +116,17 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
         // Create TableView Adapter
         mTableAdapter = new MoyenTableAdapter(getContext());
         mTableView.setAdapter(mTableAdapter);
+        mTableView.setTableViewListener(new MoyenTableViewListener(mTableView, getContext(), listDeploiment, mTableAdapter, this));
 
+        // Call InitTable pour avoir les données au chargement de la table
+        initTable();
 
+        return view;
+    }
+
+    public void initTable() {
         // UserInfo data will be getting from a web server.
         populatedTableViewAll(this.listDeploiment, false, -1);
-        mTableView.setTableViewListener(new MoyenTableViewListener(mTableView, getContext(), listDeploiment, mTableAdapter, this));
-        //mTableView.hideColumn(1);
-        return view;
     }
 
     /**
@@ -181,7 +194,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
     /**
      * Crée les lignes de données pour les déploiements dans le tableau
      * @param depDto Liste de déploiement à créer
-     * @param selected
+     * @param selec
      * @return Liste de lignes créées
      */
     private List<List<CellModel>> loadCellModelListAll(List<DeploiementDTO> depDto, boolean selec, int index) {
@@ -202,7 +215,14 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
             // The order should be same with column header list;
             list.add(new CellModel("1-" + i, depInfo.getId(), selected));
 
-            CellModel cellWithComposante = changeBackgroundAndText("2-" + i, depInfo.getTypeDemande().getLabel(),
+            String labelToDisplay = null;
+            if(depInfo.getTypeDemande() != null){
+                labelToDisplay = depInfo.getTypeDemande().getLabel();
+            } else {
+                labelToDisplay = depInfo.getVehicule().getType().getLabel();
+            }
+
+            CellModel cellWithComposante = changeBackgroundAndText("2-" + i, labelToDisplay,
                     composante.getCouleur(), "#ffffff" /* default color*/, selected);
             list.add(cellWithComposante);
 
@@ -344,5 +364,36 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
 
     public boolean isReduce() {
         return isReduce;
+    }
+
+    public void synchroDeployUpdate(DeploiementDTO deploiementDTO) {
+
+        for (int i = 0; i < listDeploiment.size(); i++) {
+            DeploiementDTO deploy = listDeploiment.get(i);
+            if(deploy.getId() == deploiementDTO.getId()){
+                listDeploiment.set(i,deploiementDTO);
+                // On sort - break
+                break;
+            }
+        }
+
+        if (isReduce()) {
+            populatedTableViewReduce(listDeploiment, false, -1);
+        } else {
+            populatedTableViewAll(listDeploiment, false, -1);
+        }
+    }
+
+
+
+    public void synchroDeployCreate(DeploiementDTO deploiementDTO) {
+
+    listDeploiment.add(deploiementDTO);
+
+        if (isReduce()) {
+            populatedTableViewReduce(listDeploiment, false, -1);
+        } else {
+            populatedTableViewAll(listDeploiment, false, -1);
+        }
     }
 }
