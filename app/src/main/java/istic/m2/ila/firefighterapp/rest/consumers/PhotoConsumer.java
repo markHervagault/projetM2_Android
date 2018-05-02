@@ -7,6 +7,7 @@ import istic.m2.ila.firefighterapp.dto.PhotoDTO;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Path;
 
 /**
  * Created by hakima on 4/30/18.
@@ -14,7 +15,11 @@ import retrofit2.http.Header;
 
 public interface PhotoConsumer {
 
-    @GET(Endpoints.PHOTOS)
-    Call<List<PhotoDTO>> getPhoto(@Header("Authorization") String header);
+    @GET(Endpoints.ALLPHOTOS)
+    Call<List<PhotoDTO>> getAllPhotos(@Header("Authorization") String header);
+
+    @GET(Endpoints.PHOTOSFORPOINT)
+    Call<List<PhotoDTO>> getPhotosForPoint(@Header("Authorization") String header,
+                                           @Path("id") int index);
 
 }

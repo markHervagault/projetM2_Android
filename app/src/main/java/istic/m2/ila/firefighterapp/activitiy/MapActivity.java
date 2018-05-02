@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
-import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
@@ -45,7 +44,8 @@ import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.dto.TraitTopographiqueBouchonDTO;
-import istic.m2.ila.firefighterapp.map.Drone.DroneMapFragment;
+import istic.m2.ila.firefighterapp.map.Drone.fragments.DroneMapFragment;
+import istic.m2.ila.firefighterapp.map.DroneGeneralFragment;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.DeploiementManager;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.SinistreManager;
 import istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems.TraitTopoManager;
@@ -64,10 +64,11 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
     //region Detail/Creation fragment
     private final int MAX_SERVICE = 4;
     private int nbServiceConnected = 0;
-    private InterventionDetailsMoyensFragmentsTV intervListFrag;
-    private InterventionMapFragment intervMapFrag;
 
-    private DroneMapFragment droneMapFrag;
+    //MainFragments
+    private InterventionMapFragment intervMapFrag;
+    private DroneGeneralFragment droneGeneralFrag;
+    
 
     public final Integer RAYON_RECHERCHE_TRAIT_TOPO = 5000;
 
@@ -234,7 +235,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
             transaction.replace(R.id.mapFragment, intervMapFrag);
             //transaction.replace(R.id.listViewFragment, intervListFrag);
         } else {
-            transaction.replace(R.id.mapFragment, droneMapFrag);
+            transaction.replace(R.id.mapFragment, droneGeneralFrag);
             //transaction.replace(R.id.listViewFragment, droneListFrag);
         }
         transaction.commit();
@@ -249,7 +250,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         nbServiceConnected++;
         if (nbServiceConnected == MAX_SERVICE) {
             intervMapFrag = new InterventionMapFragment();
-            droneMapFrag = new DroneMapFragment(); //Map avant drone list
+            droneGeneralFrag = new DroneGeneralFragment(); //Map avant drone list
             toggleView();
         }
     }

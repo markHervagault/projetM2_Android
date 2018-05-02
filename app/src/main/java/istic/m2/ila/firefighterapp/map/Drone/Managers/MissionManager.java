@@ -27,12 +27,12 @@ import java.util.Map;
 import java.util.Set;
 
 import istic.m2.ila.firefighterapp.activitiy.MapActivity;
-import istic.m2.ila.firefighterapp.dto.DroneDTO;
 import istic.m2.ila.firefighterapp.dto.EDroneStatus;
-import istic.m2.ila.firefighterapp.dto.MissionDTO;
-import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneChangedMessage;
 import istic.m2.ila.firefighterapp.eventbus.drone.SelectedDroneStatusChangedMessage;
+import istic.m2.ila.firefighterapp.dto.DroneDTO;
+import istic.m2.ila.firefighterapp.dto.MissionDTO;
+import istic.m2.ila.firefighterapp.dto.PointMissionDTO;
 import istic.m2.ila.firefighterapp.eventbus.drone.UnSelectPathPointMessage;
 import istic.m2.ila.firefighterapp.map.Common.MapItem;
 import istic.m2.ila.firefighterapp.map.Drone.Drawings.PathDrawing;
@@ -55,8 +55,12 @@ public class MissionManager extends MapItem
     {
         return _missionMode;
     }
-
-    public static final String EDIT_MODE_CHANGED_EVENT_NAME = "EditMode";
+    private void setMissionMode(MissionMode mode)
+    {
+        MissionMode lastMode = _missionMode;
+        _missionMode = mode;
+        _propertyChangeSupport.firePropertyChange(MISSION_MODE_CHANGED_EVENT_NAME, lastMode, _missionMode);
+    }
 
     //endregion
 
@@ -67,61 +71,19 @@ public class MissionManager extends MapItem
     //Map Items
     private List<PathPointDrawing> _pathPoints;
     private Map<Integer, PathPointDrawing> _pathPointsByTag;
-    private PathPointDrawing _selectedMarker;
 
     private PathDrawing _pathDrawing;
     private DroneDTO _selectedDrone;
     private long _interventionId;
 
     //endregion
-    public static final String SENDMISSION_CHANGED_EVENT_NAME = "SendMission";
+
+    //region Properties
+
+    //Edit mode
+    public static final String EDIT_MODE_CHANGED_EVENT_NAME = "EditMode";
     private boolean _editMode;
     public boolean isEditMode() { return _editMode; }
-
-    public static final String POINTCOUNT_CHANGED_EVENT_NAME = "PointsCount";
-    //region Properties
-    //region Marker Click
-    private GoogleMap.OnMarkerClickListener onMarkerClickListener = new GoogleMap.OnMarkerClickListener() {
-        @Override
-        public boolean onMarkerClick(Marker marker) {
-            //Vérification du tag du marker
-            if (marker.getTag() != null && marker.getTag() instanceof Integer && _pathPointsByTag.containsKey(marker.getTag())) {
-                //Deselection du marker actuel
-                if (_selectedMarker != null) {
-                    _selectedMarker.UnSelect();
-                    if (getMissionMode() == MissionMode.FOLLOW) {
-                        EventBus.getDefault().post(new UnSelectPathPointMessage());
-                    }
-                }
-
-                _selectedMarker = _pathPointsByTag.get(marker.getTag());
-                _selectedMarker.Select();
-
-                if (getMissionMode() == MissionMode.FOLLOW) {
-                    EventBus.getDefault().post(_selectedMarker);
-                }
-            }
-
-            return false;
-        }
-    };
-    private boolean _canSendMission;
-
-    private void setMissionMode(MissionMode mode) {
-        MissionMode lastMode = _missionMode;
-        _missionMode = mode;
-        _propertyChangeSupport.firePropertyChange(MISSION_MODE_CHANGED_EVENT_NAME, lastMode, _missionMode);
-    }
-
-    public boolean canSendMission() {
-        return _canSendMission;
-    }
-
-    private void setCanSendMission(boolean canSendMission) {
-        _canSendMission = canSendMission;
-        _propertyChangeSupport.firePropertyChange(SENDMISSION_CHANGED_EVENT_NAME, !_canSendMission, _canSendMission);
-    }
-
     public void setEditMode(boolean editMode)
     {
         _editMode = editMode;
@@ -133,6 +95,38 @@ public class MissionManager extends MapItem
             _googleMap.setOnMapClickListener(null);
 
         _propertyChangeSupport.firePropertyChange(EDIT_MODE_CHANGED_EVENT_NAME, !_editMode, _editMode);
+    }
+
+    //Send Mission
+    public static final String SENDMISSION_CHANGED_EVENT_NAME = "SendMission";
+    private boolean _canSendMission;
+    public boolean canSendMission() { return _canSendMission; }
+    private void setCanSendMission(boolean canSendMission)
+    {
+        _canSendMission = canSendMission;
+        _propertyChangeSupport.firePropertyChange(SENDMISSION_CHANGED_EVENT_NAME, !_canSendMission, _canSendMission);
+    }
+
+    //PointCount
+    public static final String POINTCOUNT_CHANGED_EVENT_NAME = "PointsCount";
+    public int getPointsCount() {
+        return _pathPoints.size();
+    }
+
+    //Selected Marker
+    public static final String SELECTED_MARKER_CHANGED = "SelectedMarker";
+    private PathPointDrawing _selectedMarker;
+    public PathPointDrawing getSelectedMarker() { return _selectedMarker; }
+    private void setSelectedMarker(PathPointDrawing marker)
+    {
+        if(_selectedMarker != null)
+            _selectedMarker.UnSelect();
+
+        _selectedMarker = marker;
+        if(_selectedMarker != null)
+            _selectedMarker.Select();
+
+        _propertyChangeSupport.firePropertyChange(SELECTED_MARKER_CHANGED, null, null);
     }
 
     //endregion
@@ -160,8 +154,22 @@ public class MissionManager extends MapItem
         EventBus.getDefault().register(this);
     }
 
-    public int getPointsCount() {
-        return _pathPoints.size();
+    public void ResetMission()
+    {
+        Log.i(TAG, "Reseting Mission");
+
+        for(PathPointDrawing point : _pathPoints)
+            point.Remove();
+
+        _pathPoints.clear();
+        _pathPointsByTag.clear();
+        _pathDrawing.Clear();
+        _selectedMarker = null;
+
+        setEditMode(false);
+
+        _propertyChangeSupport.firePropertyChange(POINTCOUNT_CHANGED_EVENT_NAME, 1000,0);
+        _propertyChangeSupport.firePropertyChange(SELECTED_MARKER_CHANGED, null, null);
     }
 
     //endregion
@@ -175,7 +183,7 @@ public class MissionManager extends MapItem
         public void onMapClick(LatLng latLng)
         {
             //Reset du marker selectionné
-            _selectedMarker = null;
+            setSelectedMarker(null);
 
             //Seulement en mode édition
             if(!_editMode)
@@ -198,21 +206,26 @@ public class MissionManager extends MapItem
     };
     //endregion
 
-    public void ResetMission() {
-        Log.i(TAG, "Reseting Mission");
+    //region Marker Click
+    private GoogleMap.OnMarkerClickListener onMarkerClickListener = new GoogleMap.OnMarkerClickListener() {
+        @Override
+        public boolean onMarkerClick(Marker marker)
+        {
+            //Vérification du tag du marker
+            if(marker.getTag() != null && marker.getTag() instanceof Integer && _pathPointsByTag.containsKey(marker.getTag())) {
+                //Deselection du marker actuel
+                if(_selectedMarker != null){
+                    _selectedMarker.UnSelect();
+                }
 
-        for (PathPointDrawing point : _pathPoints)
-            point.Remove();
+                setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
+            }
+            else
+                setSelectedMarker(null);
 
-        _pathPoints.clear();
-        _pathPointsByTag.clear();
-        _pathDrawing.Clear();
-        _selectedMarker = null;
-
-        setEditMode(false);
-
-        _propertyChangeSupport.firePropertyChange(POINTCOUNT_CHANGED_EVENT_NAME, 1000, 0);
-    }
+            return false;
+        }
+    };
     //endregion
 
     //region Marker Drag
@@ -265,6 +278,7 @@ public class MissionManager extends MapItem
 
         _selectedMarker.Remove();
         _pathPoints.remove(_selectedMarker);
+        setSelectedMarker(null);
 
         ReindexPoints();
         _pathDrawing.Update(_pathPoints);
@@ -339,7 +353,7 @@ public class MissionManager extends MapItem
                         {
                             PointMissionDTO pointMissionDTO = new PointMissionDTO();
                             pointMissionDTO.setIndex(index);
-                            pointMissionDTO.setAction(false);
+                            pointMissionDTO.setAction(point.getAction());
                             pointMissionDTO.setLatitude(point.getPosition().latitude);
                             pointMissionDTO.setLongitude(point.getPosition().longitude);
 
@@ -392,7 +406,7 @@ public class MissionManager extends MapItem
             public void run()
             {
                 //Passage en mode Follow
-                if (getMissionMode() != MissionMode.FOLLOW)
+                if(getMissionMode() != MissionMode.FOLLOW)
                     setMissionMode(MissionMode.FOLLOW);
 
                 ResetMission();
@@ -428,7 +442,7 @@ public class MissionManager extends MapItem
         Log.i(TAG, "SelectedDroneChanged : " + message.Drone.getStatut());
 
         //Même drone séléctionné, on ne fait pas de resfresh
-        if (_selectedDrone != null && _selectedDrone.getId().equals(message.Drone.getId()))
+        if(_selectedDrone != null && _selectedDrone.getId().equals(message.Drone.getId()))
             return;
 
         _selectedDrone = message.Drone;
@@ -482,7 +496,8 @@ public class MissionManager extends MapItem
             case EN_PAUSE:
             case RETOUR_BASE:
             case PAUSE_RETOUR_BASE:
-                if (getMissionMode() != MissionMode.FOLLOW) {
+                if(getMissionMode() != MissionMode.FOLLOW)
+                {
                     ResetMission();
                     setMissionMode(MissionMode.FOLLOW);
                 }
@@ -490,12 +505,13 @@ public class MissionManager extends MapItem
 
             case DISPONIBLE:
             case DECONNECTE:
-                if (message.getDroneStatut() == EDroneStatus.DISPONIBLE)
+                if(message.getDroneStatut() == EDroneStatus.DISPONIBLE)
                     setCanSendMission(true);
                 else
                     setCanSendMission(false);
 
-                if (getMissionMode() != MissionMode.EDIT) {
+                if(getMissionMode() != MissionMode.EDIT)
+                {
                     ResetMission();
                     setMissionMode(MissionMode.EDIT);
                     _googleMap.setOnMapClickListener(onMapClickListener);
