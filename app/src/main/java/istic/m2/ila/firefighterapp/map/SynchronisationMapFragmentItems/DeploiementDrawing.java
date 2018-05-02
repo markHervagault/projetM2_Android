@@ -83,7 +83,9 @@ public class DeploiementDrawing extends MapItem
             public void run()
             {
                 // Supprimer l'ancien sinistre, Dessiner et Mémoriser le nouveau sinistre
-                _deploimentMarker.remove();
+                if(_deploimentMarker != null){
+                    _deploimentMarker.remove();
+                }
                 _deploiementDTO = DeploiementDTO;
                 draw();
             }
@@ -151,7 +153,10 @@ public class DeploiementDrawing extends MapItem
      * Dessine sur la googleMap le marqueur en fonction des données de la DTO
      */
     public void draw() {
-        if (_deploiementDTO.getGeoPosition() != null) {
+        if(!(_deploiementDTO.getState() == EEtatDeploiement.DESENGAGE
+                || _deploiementDTO.getState() == EEtatDeploiement.REFUSE)
+                && !_deploiementDTO.isPresenceCRM()
+                && _deploiementDTO.getGeoPosition() != null) {
             // Récupération des icônes en fonction du type (change ou change pas)
             int rIcone = referentielMoyen.get(_deploiementDTO.getState());
 
