@@ -13,8 +13,8 @@ import java.util.Map;
 
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
-import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.MessageGeneric;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.DeploiementMessage;
 
 /**
  * Created by adou on 24/04/18.
@@ -66,7 +66,7 @@ public class DeploiementManager extends MapItem
     //region EventSuscribing
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onDeploiementDTOMessageEvent(MessageGeneric<DeploiementDTO> message) {
+    public synchronized void onDeploiementDTOMessageEvent(DeploiementMessage message) {
         if (message != null) {
             if (message.getSyncAction() == SyncAction.UPDATE) {
                 onCreateOrUpdateDeploiementDTOMessageEvent(message.getDto());

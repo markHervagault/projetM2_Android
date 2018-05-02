@@ -11,10 +11,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 
-import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.MessageGeneric;
-import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
 import istic.m2.ila.firefighterapp.dto.TraitTopoDTO;
 import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.TraitTopoMessage;
 
 /**
  * Created by adou on 24/04/18.
@@ -63,7 +63,7 @@ public class TraitTopoManager extends MapItem
     //region EventSuscribing
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onTraitTopoDTOMessageEvent(MessageGeneric<TraitTopoDTO> message){
+    public synchronized void onTraitTopoDTOMessageEvent(TraitTopoMessage message) {
         if(message != null){
             if(message.getSyncAction() == SyncAction.UPDATE){
                 onCreateOrUpdateTraitTopoDTOMessageEvent(message.getDto());

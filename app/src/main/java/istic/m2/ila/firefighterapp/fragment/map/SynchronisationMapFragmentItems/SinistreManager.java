@@ -11,10 +11,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 
-import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.MessageGeneric;
-import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
 import istic.m2.ila.firefighterapp.dto.SinistreDTO;
 import istic.m2.ila.firefighterapp.fragment.map.Common.MapItem;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.SinistreMessage;
 
 /**
  * Created by adou on 24/04/18.
@@ -64,7 +64,7 @@ public class SinistreManager extends MapItem
     //region EventSuscribing
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onSinistreMessageEvent(MessageGeneric<SinistreDTO> message) {
+    public synchronized void onSinistreMessageEvent(SinistreMessage message) {
         if (message != null) {
             if (message.getSyncAction() == SyncAction.UPDATE) {
                 onCreateOrUpdateSinistreDTOMessageEvent(message.getDto());

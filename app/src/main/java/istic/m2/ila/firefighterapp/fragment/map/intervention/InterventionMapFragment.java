@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,8 +16,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 
@@ -73,7 +72,7 @@ public class InterventionMapFragment extends Fragment {
             }
         });
 
-        mMapView = (MapView) mView.findViewById(R.id.mapView);
+        mMapView = mView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
         mMapView.onResume(); // needed to get the map to display immediately
@@ -221,7 +220,7 @@ public class InterventionMapFragment extends Fragment {
                 List<DeploiementDTO> deploys = getMeActivity().getService()
                         .getDeploy(token,getMeActivity().getIdIntervention());
                 for(DeploiementDTO deploy : deploys) {
-                    getMeActivity().drawVehicule(googleMap,deploy);
+                    getMeActivity().getDeploiementManager().onCreateOrUpdateDeploiementDTOMessageEvent(deploy);
                 }
             }
         });
