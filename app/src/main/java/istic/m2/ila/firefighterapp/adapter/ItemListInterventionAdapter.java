@@ -158,19 +158,28 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
         String statut = (intervention.isFini()) ? "Terminé" : "En cours";
         holder.statutIntervention.setText(statut);
 
-        // Gestion du clic
-        holder.layoutItemIntervention.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                //(ListInterventionActivity).onClickIntervention();
-                Log.i(TAG, "Un clic a été effectué sur l'item " + position);
+        // Récupérer l'information de connexion Codis/Intervenant
+        Boolean userCodis = context.getSharedPreferences("user", context.getApplicationContext().MODE_PRIVATE)
+                .getBoolean("isCodis", false);
+        if(userCodis){
+            // Aucune action n'est autorisée au clic
+        }
+        else{
+            // Gestion du clic
+            holder.layoutItemIntervention.setOnClickListener(new View.OnClickListener() {
 
-                Intent intent = new Intent(context, DetailsInterventionActivity.class);
-                intent.putExtra("interventionDTO", intervention);
-                context.startActivity(intent);
-            }
-        });
+                @Override
+                public void onClick(View view) {
+                    //(ListInterventionActivity).onClickIntervention();
+                    Log.i(TAG, "Un clic a été effectué sur l'item " + position);
+
+                    Intent intent = new Intent(context, DetailsInterventionActivity.class);
+                    intent.putExtra("interventionDTO", intervention);
+                    context.startActivity(intent);
+                }
+            });
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
