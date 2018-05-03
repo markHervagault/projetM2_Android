@@ -59,6 +59,10 @@
             android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiement"
             android:label="Service RabbitMQ Deploiment" />
 
+        <service
+            android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQIntervention"
+            android:label="Service RabbitMQ intervention" />
+
         <activity
             android:name=".activitiy.NewListInterventionActivity"
             android:label="@string/title_activity_new_list_intervention"

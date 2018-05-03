@@ -43,7 +43,7 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
     }
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
         //fetch data from activity
         interventionDTO = ((ActivityDetails) getActivity()).getIntervention();
@@ -57,7 +57,7 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
     }
 
     @Override
-    public void onClick(View v){
+    public void onClick(View v) {
         Intent redirectIntent = new Intent(getActivity(), MapActivity.class);
 
         redirectIntent.putExtra("intervention", interventionDTO);
@@ -70,7 +70,13 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
 
         //Link Button
         openMap = getActivity().findViewById(R.id.button_map);
-        openMap.setOnClickListener(this);
+        Boolean userCodis = this.getActivity().getSharedPreferences("user", this.getActivity().getApplicationContext().MODE_PRIVATE)
+                .getBoolean("isCodis", false);
+        if (userCodis) {
+            openMap.setVisibility(View.GONE);
+        } else {
+            openMap.setOnClickListener(this);
+        }
 
         //Link fields
         statusTextView = getActivity().findViewById(R.id.status_textview);
@@ -87,27 +93,28 @@ public class InterventionDetailsStaticFragment extends Fragment implements View.
 
         statusTextView.setText(statut);
 
-        if(interventionDTO.getAdresse() != null) {
+        if (interventionDTO.getAdresse() != null) {
             String address = interventionDTO.getAdresse().getNumero().toString()
                     + " " + interventionDTO.getAdresse().getVoie();
             addresseTextView.setText(address);
             villeTextView.setText(interventionDTO.getAdresse().getVille());
         }
-        if(interventionDTO.getCodeSinistre() != null) {
-        String codeSinistre = interventionDTO.getCodeSinistre().getCode()
-                + " : "
-                + interventionDTO.getCodeSinistre().getIntitule();
+        if (interventionDTO.getCodeSinistre() != null) {
+            String codeSinistre = interventionDTO.getCodeSinistre().getCode()
+                    + " : "
+                    + interventionDTO.getCodeSinistre().getIntitule();
             codeSinistreTextView.setText(codeSinistre);
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss d MMMM yyyy", Locale.FRANCE);
-        if(interventionDTO.getDateHeureCreation() !=null ){
+        if (interventionDTO.getDateHeureCreation() != null) {
             String heureCreation = dateFormat.format(interventionDTO.getDateHeureCreation());
             heureCreationTextView.setText(heureCreation);
         }
-        if(interventionDTO.getDateHeureFin() !=null ){
+        if (interventionDTO.getDateHeureFin() != null) {
             String heureFin = dateFormat.format(interventionDTO.getDateHeureCreation());
             heureFinTextView.setText(heureFin);
         }
+
         // todo add creator
 //        if(interventionDTO.getCreator() != null){
 //            codeSinistreTextView.setText(interventionDTO.getCreator().toString());

@@ -1,12 +1,3 @@
-<!-- <android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:conteistic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTVTVents"
-    android:id="@+id/interventionDetailsMoyenRecycler"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="45dp"/> -->
-
 <RelativeLayout
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
@@ -15,7 +6,7 @@
     >
     <com.evrencoskun.tableview.TableView android:id="@+id/moyenTableView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="350dp"
         app:column_header_height="@dimen/table_view_cell_height"
         app:row_header_width="@dimen/table_view_row_header_width"
         app:selected_color="@color/selected_background_color"

@@ -51,12 +51,21 @@ public class ListInterventionFragment extends Fragment {
         mAdapter = new ItemListInterventionAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
         floatingActionButton = view.findViewById(R.id.fab_list_intervention_add);
-        floatingActionButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                openAddInterventionActivity(view);
-            }
-        });
+        // Récupérer l'information de connexion Codis/Intervenant
+        Boolean userCodis = this.getActivity().getSharedPreferences("user", this.getActivity().getApplicationContext().MODE_PRIVATE)
+                .getBoolean("isCodis", false);
+        if(userCodis){
+            floatingActionButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    openAddInterventionActivity(view);
+                }
+            });
+        }
+        else{
+            floatingActionButton.setVisibility(View.GONE);
+        }
+
         return view;
     }
 
@@ -77,4 +86,6 @@ public class ListInterventionFragment extends Fragment {
     public void openAddInterventionActivity(View view) {
         startActivity(new Intent(this.getActivity(), AddInterventionActivity.class));
     }
+
+
 }
