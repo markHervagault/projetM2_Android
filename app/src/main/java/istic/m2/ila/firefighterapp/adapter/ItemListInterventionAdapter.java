@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -29,6 +30,7 @@ import istic.m2.ila.firefighterapp.dto.AdresseDTO;
 import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.InterventionMessage;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.MessageGeneric;
 import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
@@ -47,6 +49,7 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
     // On fournit un constructeur adéquat (dépendant de notre jeu de données)
     public ItemListInterventionAdapter(Context context) {
         this.context = context;
+        EventBus.getDefault().register(this);
         setData(context);
     }
 
@@ -178,7 +181,7 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
 
     //region EventSuscribing
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public synchronized void onInterventionDTOMessageEvent(MessageGeneric<InterventionDTO> message) {
+    public synchronized void onInterventionDTOMessageEvent(InterventionMessage message) {
         if (message != null) {
             if (message.getSyncAction() == SyncAction.UPDATE) {
                 if (mDataset.contains(message.getDto())) {

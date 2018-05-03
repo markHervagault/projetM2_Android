@@ -2,6 +2,7 @@ package istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -129,22 +130,28 @@ public abstract class ServiceRabbitMQGeneric<T extends IRabbitDTO, M extends Mes
     @Override
     public void onCreate()
     {
-        ConnectionFactory _factory = new ConnectionFactory();
+        final ConnectionFactory _factory = new ConnectionFactory();
 
         _factory.setHost(Endpoints.RABBITMQ_SERVERADRESS);
         _factory.setUsername(Endpoints.RABBITMQ_USERNAME);
         _factory.setPassword(Endpoints.RABBITMQ_USERPASSWORD);
         _factory.setPort(Endpoints.RABBITMQ_SERVERPORT);
 
-        try {
-            _connection = _factory.newConnection();
-            initConsumer(getGenericClass(),RABBITMQ_ANDROID_UPDATE,SyncAction.UPDATE);
-            initConsumer(Long.class,RABBITMQ_ANDROID_DELETE,SyncAction.DELETE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    _connection = _factory.newConnection();
+                    initConsumer(getGenericClass(),RABBITMQ_ANDROID_UPDATE,SyncAction.UPDATE);
+                    initConsumer(Long.class,RABBITMQ_ANDROID_DELETE,SyncAction.DELETE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     @Override

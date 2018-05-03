@@ -9,11 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
-        <fragment
+        <FrameLayout
             android:id="@+id/list_fragment"
-            class="istic.m2.ila.firefighterapp.listIntervention.ListInterventionFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/fragment_list_intervention"/>
+            ></FrameLayout>
+
     </LinearLayout>
 </FrameLayout>

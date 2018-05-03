@@ -183,7 +183,6 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 serviceRabbitMQ = ((RabbitMQDroneService.LocalBinder) service).getService();
                 initializeFragments();
-
             }
 
             @Override
