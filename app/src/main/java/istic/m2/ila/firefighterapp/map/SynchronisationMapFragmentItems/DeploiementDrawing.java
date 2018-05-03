@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -53,6 +54,7 @@ public class DeploiementDrawing extends MapItem
         super(map, contextActivity);
         _deploiementDTO = DeploiementDTO;
 
+        // Dessin du marqueur
         initDeploiement();
     }
 
@@ -66,6 +68,12 @@ public class DeploiementDrawing extends MapItem
             public void run()
             {
                 draw();
+
+                // Synchronisation du tableau
+                Log.println(Log.INFO,"TEST !!!!", "TEST !!!!");
+                ((MapActivity)_contextActivity).getIntervMapFrag().getTableauMoyen().synchroDeployCreate(_deploiementDTO);
+
+
             }
         });
     }
@@ -163,6 +171,9 @@ public class DeploiementDrawing extends MapItem
                 && _deploiementDTO.getGeoPosition() != null) {
             // Récupération des icônes en fonction du type (change ou change pas)
             int rIcone = referentielMoyen.get(_deploiementDTO.getState());
+
+            String couleur = _deploiementDTO.getComposante().getCouleur();
+            Log.e(this.getClass().getSimpleName(), couleur);
 
             String rgbNoA = _deploiementDTO.getComposante().getCouleur().substring(0, 7);
             Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
