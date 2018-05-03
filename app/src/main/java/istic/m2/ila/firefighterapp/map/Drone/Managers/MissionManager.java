@@ -246,7 +246,13 @@ public class MissionManager extends MapItem
                 else{
                     setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
                     if(_missionMode == MissionMode.FOLLOW)
-                        EventBus.getDefault().post(_selectedMarker);
+                    {
+                        if(_selectedMarker.getAction())
+                            EventBus.getDefault().post(_selectedMarker);
+                        else
+                            EventBus.getDefault().post(new UnSelectPathPointMessage());
+
+                    }
                 }
             }
             else{
