@@ -3,6 +3,7 @@ package istic.m2.ila.firefighterapp.map;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,7 +107,9 @@ public class DroneGeneralFragment extends Fragment {
     public void onClickPassagePoint(PathPointDrawing pathPoint){
         Log.i(TAG, "Sélection d'un point de passage");
         _listPictureFrag.onClickOnPathPointDrawing(pathPoint);
-        getFragmentManager().beginTransaction().show(_listPictureFrag).commit();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.hide(_listPictureFrag);
+        fragmentTransaction.show(_listPictureFrag).commit();
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
