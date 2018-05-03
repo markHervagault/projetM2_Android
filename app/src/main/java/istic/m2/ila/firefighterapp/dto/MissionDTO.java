@@ -99,10 +99,15 @@ public class MissionDTO {
 
     public String toString()
     {
-        StringBuilder s = new StringBuilder();
-        if(getDronePositions() != null)
+        String s = "idMission = " + id + ", nbIteration = "+ nbIteration + ", boucleFermé = "+ boucleFermee
+            + ", droneId = " + droneId ;
+        if(getDronePositions() != null){
+            s = s + " points mission = [ ";
             for(PointMissionDTO dto : getDronePositions())
-                s.append(dto.getIndex()).append("\n");
+                s = s + dto.getIndex() + ", ";
+            s = s + "] ";
+        }
+
 
         return s.toString();
     }
