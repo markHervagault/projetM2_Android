@@ -117,7 +117,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
         mTableAdapter = new MoyenTableAdapter(getContext());
         mTableView.setAdapter(mTableAdapter);
         mTableView.setTableViewListener(new MoyenTableViewListener(mTableView, getContext(), mTableAdapter, this));
-
+        mTableView.setHasFixedWidth(false);
         // Call InitTable pour avoir les données au chargement de la table
         initTable();
 
@@ -199,7 +199,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
      */
     private List<List<CellModel>> loadCellModelListAll(List<DeploiementDTO> depDto, boolean selec, int index) {
         List<List<CellModel>> lists = new ArrayList<>();
-        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
         // Creating cell model list from UserInfo list for Cell Items
         // In this example, UserInfo list is populated from web service
