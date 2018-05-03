@@ -10,10 +10,15 @@ public class NewListInterventionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_list_intervention);
 
         // Récupérer l'information de connexion Codis/Intervenant
         userCodis = getSharedPreferences("user", getApplicationContext().MODE_PRIVATE)
                 .getBoolean("isCodis", false);
+
+        if(userCodis){
+            setContentView(R.layout.activity_new_list_intervention_codis);
+        } else {
+            setContentView(R.layout.activity_new_list_intervention_intervenant);
+        }
     }
 }

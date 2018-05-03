@@ -31,7 +31,7 @@ public class ListInterventionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_list_intervention);
+        setContentView(R.layout.activity_new_list_intervention_codis);
 
         // use a linear layout manager
         mRecyclerView = findViewById(R.id.recycler_list_intervention);
