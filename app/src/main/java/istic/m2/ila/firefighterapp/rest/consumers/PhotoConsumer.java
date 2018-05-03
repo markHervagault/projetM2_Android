@@ -21,9 +21,9 @@ public interface PhotoConsumer {
 
     @GET(Endpoints.PHOTOSWITHOUTPHOTOFORPOINT)
     Call<List<PhotoSansPhotoDTO>> getPhotosForPointWithoutPhoto(@Header("Authorization") String header,
-                                                                @Path("id") long index);
+                                                                @Path("id") Long index);
     @GET(Endpoints.PHOTOBYID)
     Call<PhotoDTO> getPhoto(@Header("Authorization") String header,
-                                                                @Path("id") long index);
+                                                                @Path("id") Long index);
 
 }

@@ -82,7 +82,7 @@ public class Endpoints {
     public static final String TRAIT_TOPOS_ID = "trait-topos/{id}";
     public static final String ALLPHOTOS = "photo";
 
-    public static final String PHOTOSWITHOUTPHOTOFORPOINT = "/point-mission/{id}/photos";
-    public static final String PHOTOBYID = "/photo/{id}";
+    public static final String PHOTOSWITHOUTPHOTOFORPOINT = "point-mission/{id}/photos";
+    public static final String PHOTOBYID = "photo/{id}";
 
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
@@ -88,7 +89,7 @@ public class DroneListPictureFragment extends Fragment {
                 photos.addAll(result);
             }
 
-            // TODO : triée les photos dans l'ordre chronologique dans la liste
+            Collections.sort(photos);
 
             /*}
         });*/

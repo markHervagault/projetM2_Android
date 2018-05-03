@@ -99,8 +99,6 @@ public class DroneCommandFragment extends Fragment {
             return;
         }
 
-        Log.e(TAG, "RefreshUI : " + status.toString());
-
         switch (status) {
             case EN_MISSION:
                 buttonPlayPause.setImageResource(R.drawable.pause_black);
