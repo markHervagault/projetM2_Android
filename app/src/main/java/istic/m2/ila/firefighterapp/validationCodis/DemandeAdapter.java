@@ -170,33 +170,35 @@ public class DemandeAdapter extends RecyclerView.Adapter<DemandeAdapter.DemandeV
         }
 
         public void accepteDemande(final DemandeDTO demandeDTO) {
-            AsyncTask.execute(new Runnable() {
-                public void run() {
-                    RestTemplate restTemplate = RestTemplate.getInstance();
-                    DeploimentConsumer deployConsumer = restTemplate.builConsumer(DeploimentConsumer.class);
-                    DeploiementDTO deploy = new DeploiementDTO();
-                    deploy.setId(demandeDTO.getId());
-                    deploy.setInterventionId(demandeDTO.getInterventionId());
-                    deploy.setPresenceCRM(demandeDTO.getPresenceCRM());
-                    deploy.setGeoPosition(demandeDTO.getGeoPosition());
-                    deploy.setVehicule((VehiculeDTO) vehiculeDisponible.getSelectedItem());
-                    deploy.setComposante(demandeDTO.getComposante());
-                    deploy.setTypeDemande(demandeDTO.getTypeDemande());
-                    Response<DeploiementDTO> response = null;
-                    try {
-                        // Récupération du token
-                        String token = context.getSharedPreferences("user", context.getApplicationContext().MODE_PRIVATE)
-                                .getString("token", "null");
-                        // On récupère toutes les interventions du Serveur
-                        response = deployConsumer.setDeploiementToValide(token, deploy.getId(), deploy).execute();
-                        if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                            Log.i("DemandeAdapter", "demande accepter");
+            if (demandeDTO != null) {
+                AsyncTask.execute(new Runnable() {
+                    public void run() {
+                        RestTemplate restTemplate = RestTemplate.getInstance();
+                        DeploimentConsumer deployConsumer = restTemplate.builConsumer(DeploimentConsumer.class);
+                        DeploiementDTO deploy = new DeploiementDTO();
+                        deploy.setId(demandeDTO.getId());
+                        deploy.setInterventionId(demandeDTO.getInterventionId());
+                        deploy.setPresenceCRM(demandeDTO.getPresenceCRM());
+                        deploy.setGeoPosition(demandeDTO.getGeoPosition());
+                        deploy.setVehicule((VehiculeDTO) vehiculeDisponible.getSelectedItem());
+                        deploy.setComposante(demandeDTO.getComposante());
+                        deploy.setTypeDemande(demandeDTO.getTypeDemande());
+                        Response<DeploiementDTO> response = null;
+                        try {
+                            // Récupération du token
+                            String token = context.getSharedPreferences("user", context.getApplicationContext().MODE_PRIVATE)
+                                    .getString("token", "null");
+                            // On récupère toutes les interventions du Serveur
+                            response = deployConsumer.setDeploiementToValide(token, deploy.getId(), deploy).execute();
+                            if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                                Log.i("DemandeAdapter", "demande accepter");
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
-            });
+                });
+            }
         }
     }
 
