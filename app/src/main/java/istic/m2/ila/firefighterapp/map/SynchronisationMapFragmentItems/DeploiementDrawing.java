@@ -70,7 +70,6 @@ public class DeploiementDrawing extends MapItem
                 draw();
 
                 // Synchronisation du tableau
-                Log.println(Log.INFO,"TEST !!!!", "TEST !!!!");
                 ((MapActivity)_contextActivity).getIntervMapFrag().getTableauMoyen().synchroDeployCreate(_deploiementDTO);
 
 

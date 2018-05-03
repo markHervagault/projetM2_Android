@@ -19,32 +19,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/intervention_detail_fragment_static_status"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/status_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/intervention_detail_fragment_static_adresse"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/addresse_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/intervention_detail_fragment_static_ville"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,56 +52,56 @@
             android:id="@+id/ville_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/intervention_detail_fragment_static_code_sinistre"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/code_sinistre_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/intervention_detail_fragment_static_heure_creation"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/heure_creation_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/intervention_detail_fragment_static_heure_fin"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/heure_fin_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/intervention_detail_fragment_static_createur"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/creator_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textSize="18sp" />
 
 
         <Button
