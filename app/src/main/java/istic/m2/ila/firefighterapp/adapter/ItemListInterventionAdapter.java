@@ -24,9 +24,11 @@ import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.activitiy.DetailsInterventionActivity;
 import istic.m2.ila.firefighterapp.dto.AdresseDTO;
 import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
+import istic.m2.ila.firefighterapp.dto.DemandeDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
+import istic.m2.ila.firefighterapp.validationCodis.DemandeAdapter;
 import retrofit2.Response;
 
 /**
@@ -46,32 +48,45 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
     }
 
     public void setData(final Context context) {
-        AsyncTask.execute(new Runnable() {
-            public void run() {
-                // On peuple notre RecyclerView
-                List<InterventionDTO> myDataset = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                InterventionConsumer interventionConsumer = restTemplate.builConsumer(InterventionConsumer.class);
-
-                Response<List<InterventionDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = context.getSharedPreferences("user", context.getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-                    // On récupère toutes les interventions du Serveur
-                    response = interventionConsumer.getListInterventionEnCours(token).execute();
-                    if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        myDataset = response.body();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mDataset = myDataset;
-            }
-        });
+        new TestAsynchTask().execute();
     }
+
+    private class TestAsynchTask extends AsyncTask<Void, Void, Object>{
+
+        @Override
+        protected Object doInBackground(Void... voids) {
+            // Construction de notre appel REST
+            RestTemplate restTemplate = RestTemplate.getInstance();
+            InterventionConsumer interventionConsumer = restTemplate.builConsumer(InterventionConsumer.class);
+
+            Response<List<InterventionDTO>> response = null;
+            try {
+                // Récupération du token
+                String token = context.getSharedPreferences("user", context.getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                // On récupère toutes les interventions du Serveur
+                response = interventionConsumer.getListInterventionEnCours(token).execute();
+                if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                    mDataset = response.body();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return mDataset;
+        }
+
+        @Override
+        protected void onPostExecute(Object response){
+            notifyDataSetChanged();
+        }
+    }
+
+    public void insertValue(InterventionDTO intervention){
+        mDataset.add(intervention);
+        notifyDataSetChanged();
+    }
+
+
 
     // Fournit une reference aux vues pour chaque item
     // les items complexes peuvent avoir besoin de plus d'une vue par item  et
