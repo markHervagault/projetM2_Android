@@ -116,7 +116,7 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
         // Create TableView Adapter
         mTableAdapter = new MoyenTableAdapter(getContext());
         mTableView.setAdapter(mTableAdapter);
-        mTableView.setTableViewListener(new MoyenTableViewListener(mTableView, getContext(), listDeploiment, mTableAdapter, this));
+        mTableView.setTableViewListener(new MoyenTableViewListener(mTableView, getContext(), mTableAdapter, this));
 
         // Call InitTable pour avoir les données au chargement de la table
         initTable();
