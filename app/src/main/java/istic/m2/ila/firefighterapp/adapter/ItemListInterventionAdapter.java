@@ -180,7 +180,7 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
     }
 
     //region EventSuscribing
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public synchronized void onInterventionDTOMessageEvent(InterventionMessage message) {
         if (message != null) {
             if (message.getSyncAction() == SyncAction.UPDATE) {
