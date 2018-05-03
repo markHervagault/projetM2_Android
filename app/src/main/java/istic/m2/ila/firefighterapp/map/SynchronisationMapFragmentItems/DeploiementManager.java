@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.map.Common.MapItem;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
@@ -43,12 +44,13 @@ public class DeploiementManager extends MapItem
     //region Actions
     public synchronized void onCreateOrUpdateDeploiementDTOMessageEvent(DeploiementDTO message)
     {
-        // Création du sinistre
+        // Création du déploiement
         if(_deploiementById.containsKey(message.getId())) {
-            _deploiementById.get(message.getId()).update(message);
+           _deploiementById.get(message.getId()).update(message);
 
         } else {
             _deploiementById.put(message.getId(), new DeploiementDrawing(message, _googleMap, _contextActivity));
+           ((MapActivity)_contextActivity).getIntervMapFrag().getTableauMoyen().synchroDeployCreate(message);
 
         }
     }

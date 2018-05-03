@@ -65,7 +65,6 @@ public class FragmentHolder extends Fragment {
         setObjectHeld(null);
         setFragmentToDisplay(null);
         ((MapActivity) this.getActivity()).hideFragment();
-
     }
 
     @Override
@@ -74,9 +73,6 @@ public class FragmentHolder extends Fragment {
     }
 
     //endregion lifeCycle
-    public Fragment getFragmentToDisplay() {
-        return this.getFragmentToDisplay();
-    }
 
     public Object getObjectHeld() {
         return objectHeld;

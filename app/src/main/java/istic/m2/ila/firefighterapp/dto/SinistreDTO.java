@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by hakima on 3/26/18.
  */
 
-public class SinistreDTO implements Serializable, IDTO {
+public class SinistreDTO implements Serializable, IDTO, IRabbitDTO {
     private Long id;
 
     private ESinistre type;
@@ -37,6 +37,11 @@ public class SinistreDTO implements Serializable, IDTO {
         } else {
             return composante.getCouleur();
         }
+    }
+
+    @Override
+    public GeoPositionDTO getPosition() {
+        return geoPosition;
     }
 
     public void setId(Long id) {

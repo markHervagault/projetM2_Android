@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import istic.m2.ila.firefighterapp.R;
+import istic.m2.ila.firefighterapp.activitiy.MapActivity;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.map.Common.MapItem;
@@ -52,13 +53,13 @@ public class DeploiementDrawing extends MapItem
         super(map, contextActivity);
         _deploiementDTO = DeploiementDTO;
 
-        initSinistre();
+        initDeploiement();
     }
 
     /**
      * Réalise l'affichage du marker
      */
-    private void initSinistre()
+    private void initDeploiement()
     {
         _contextActivity.runOnUiThread(new Runnable() {
             @Override
@@ -82,12 +83,15 @@ public class DeploiementDrawing extends MapItem
             @Override
             public void run()
             {
-                // Supprimer l'ancien sinistre, Dessiner et Mémoriser le nouveau sinistre
+                // Supprimer l'ancien déploiement, Dessiner et Mémoriser le nouveau déploiement
                 if(_deploimentMarker != null){
                     _deploimentMarker.remove();
                 }
                 _deploiementDTO = DeploiementDTO;
                 draw();
+
+                //MaJ du tableau des moyens
+                ((MapActivity)_contextActivity).getIntervMapFrag().getTableauMoyen().synchroDeployUpdate(DeploiementDTO);
             }
         });
     }
@@ -101,7 +105,7 @@ public class DeploiementDrawing extends MapItem
             @Override
             public void run()
             {
-                // Supprimer l'ancien sinistre
+                // Supprimer l'ancien déploiement
                 _deploimentMarker.remove();
                 _deploiementDTO = null;
             }
@@ -162,14 +166,15 @@ public class DeploiementDrawing extends MapItem
 
             String rgbNoA = _deploiementDTO.getComposante().getCouleur().substring(0, 7);
             Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
-            String label = "";
+            String label = null;
             if (_deploiementDTO.getState() != EEtatDeploiement.DEMANDE) {
                 label = _deploiementDTO.getVehicule().getLabel();
             }
-            Bitmap bm = textAsBitmap(label, 13, Color.parseColor(rgbNoA));
 
-            icon = fusionImg(icon, bm);
-
+            if(label != null && !label.isEmpty()){
+                Bitmap bm = textAsBitmap(label, 13, Color.parseColor(rgbNoA));
+                icon = fusionImg(icon, bm);
+            }
 
             // Ajout des icônes (marqueurs) sur la map en fonction de la localisation du trait
             LatLng pos = new LatLng(_deploiementDTO.getGeoPosition().getLatitude(), _deploiementDTO.getGeoPosition().getLongitude());

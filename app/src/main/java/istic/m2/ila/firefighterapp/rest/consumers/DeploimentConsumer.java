@@ -36,7 +36,8 @@ public interface DeploimentConsumer {
     /** Validation d'un déploiement par un operateur CODIS*/
     @PUT(Endpoints.DEPLOIEMENT_ID_VALIDE)
     Call<DeploiementDTO> setDeploiementToValide(@Header("Authorization")String token,
-                                                @Path("id") Long id);
+                                                @Path("id") Long id,
+                                                @Body DeploiementDTO deploiementDto);
 
     /** Refus d'un deploiement par un operateur CODIS*/
     @PUT(Endpoints.DEPLOIEMENT_ID_REFUSE)
@@ -51,7 +52,6 @@ public interface DeploimentConsumer {
     /** Création d'une demande de déploiment*/
     @POST(Endpoints.INTERVENTION_DEMANDE)
     Call<DemandeDTO> createDeploiment(@Header("Authorization") String token
-            , @Path("id") Long id
             , @Body DemandeDTO demandeDto);
 
     /** Récuperation de la liste des déploiments de l'intervention*/

@@ -57,6 +57,7 @@ public class DemandeMoyenFragement extends Fragment {
                 for(int i = 0; i < listDemande.size(); i++){
                     createDeploiement(listDemande.get(i));
                 }
+                ((MapActivity)getActivity()).hideSelf();
             }
         });
 
@@ -76,9 +77,13 @@ public class DemandeMoyenFragement extends Fragment {
         DeploimentConsumer consumer = restTemplate.builConsumer(DeploimentConsumer.class);
         Response<DemandeDTO> response = null;
         try {
-            response = consumer.createDeploiment(((MapActivity)getActivity()).getToken(),((MapActivity)getActivity()).getIdIntervention(), deploiement).execute();
+            response = consumer.createDeploiment(((MapActivity)getActivity()).getToken(), deploiement).execute();
+
             if (response != null && response.code() == HttpURLConnection.HTTP_OK){
                 Log.i(TAG, "Demande éffectué");
+
+            } else {
+
             }
         }catch (IOException e){
             e.printStackTrace();
@@ -86,12 +91,13 @@ public class DemandeMoyenFragement extends Fragment {
     }
 
     private List<DemandeDTO> buildListVehicule(TypeVehiculeDTO type){
-        List<DemandeDTO> demandes = new ArrayList<DemandeDTO>();
+        List<DemandeDTO> demandes = new ArrayList<>();
 
-        for (int i = 0; i <= Integer.decode(editTextNumberDemand.getText().toString()); i++){
+        for (int i = 0; i < Integer.decode(editTextNumberDemand.getText().toString()); i++){
             DemandeDTO demande = new DemandeDTO();
             demande.setTypeDemande((TypeVehiculeDTO)mySpinner.getSelectedItem());
             demande.setComposante((TypeComposanteDTO)composanteSpinner.getSelectedItem());
+            demande.setInterventionId(((MapActivity)getActivity()).getIdIntervention());
             demandes.add(demande);
         }
           return demandes;

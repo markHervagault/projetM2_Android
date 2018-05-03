@@ -94,28 +94,6 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textAdresse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="/!\\ Adresse autocomplete en chantier /!\\ "
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <AutoCompleteTextView
-                android:id="@+id/search_place"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:background="#f4f4f4"
-                android:hint="Enter Address, City or Zip Code"
-                android:imeOptions="flagNoExtractUi"
-                android:inputType="text"
-                android:maxLines="1"
-                android:textColor="#000"
-                android:textSize="15sp" />
-
-            <TextView
                 android:id="@+id/textVille"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -215,7 +193,7 @@
                     android:ems="10"
                     android:hint="Latitude"
                     android:imeOptions="flagNoExtractUi"
-                    android:inputType="numberDecimal"
+                    android:inputType="numberSigned|numberDecimal"
                     android:maxLines="1" />
 
                 <View
@@ -231,7 +209,7 @@
                     android:ems="10"
                     android:hint="Longitude"
                     android:imeOptions="flagNoExtractUi"
-                    android:inputType="numberDecimal"
+                    android:inputType="numberSigned|numberDecimal"
                     android:maxLines="1" />
 
             </LinearLayout>

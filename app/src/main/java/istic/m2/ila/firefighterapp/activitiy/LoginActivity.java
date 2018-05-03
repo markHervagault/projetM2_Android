@@ -283,7 +283,7 @@ public class LoginActivity extends AppCompatActivity {
             isRunning = false;
             mAuthTask = new UserLoginTask();
             if (success) {
-                startActivity(new Intent(LoginActivity.this, ListInterventionActivity.class));
+                startActivity(new Intent(LoginActivity.this, NewListInterventionActivity.class));
             } else {
                 Log.e(TAG, "you shall not pass");
                 runOnUiThread(new Runnable() {

@@ -12,4 +12,6 @@ public interface IDTO {
     String menuTitle();
 
     String menuColor();
+
+    GeoPositionDTO getPosition();
 }

@@ -36,4 +36,9 @@ public class VehiculeDTO {
         this.type = type;
     }
 
+
+    @Override
+    public String toString() {
+        return this.getType().getLabel() + " - " + this.getLabel();
+    }
 }

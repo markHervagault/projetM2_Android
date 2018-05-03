@@ -24,15 +24,14 @@ import java.net.HttpURLConnection;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
-import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
+import istic.m2.ila.firefighterapp.rest.RestTemplate;
+import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
 import retrofit2.Response;
 
 public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
     /*Champs du formulaire à enregistrer et vérfier*/
-    private AutoCompleteTextView searchPlace;
     private AutoCompleteTextView searchCodeSinistre;
 
     //TODO faire une liste de champs pour éviter la verbosité de la vérification
@@ -72,16 +71,15 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Log.i("FragmentFormulaire", "OnViewCreated");
 
-        searchPlace = (AutoCompleteTextView) getView().findViewById(R.id.search_place);
-        searchCodeSinistre = (AutoCompleteTextView) getView().findViewById(R.id.searchCodeSinistre);
+        searchCodeSinistre = getView().findViewById(R.id.searchCodeSinistre);
 
-        editTextVille = (EditText) getView().findViewById(R.id.editText_ville);
-        editTextRue = (EditText) getView().findViewById(R.id.editText_rue);
-        editTextCp = (EditText) getView().findViewById(R.id.editText_cp);
-        editTextNRue = (EditText) getView().findViewById(R.id.editText_nrue);
-        editTextLat = (EditText) getView().findViewById(R.id.editText_lat);
-        editTextLng = (EditText) getView().findViewById(R.id.editText_lng);
-        editTextNom = (EditText) getView().findViewById(R.id.editText_nom);
+        editTextVille = getView().findViewById(R.id.editText_ville);
+        editTextRue = getView().findViewById(R.id.editText_rue);
+        editTextCp = getView().findViewById(R.id.editText_cp);
+        editTextNRue = getView().findViewById(R.id.editText_nrue);
+        editTextLat = getView().findViewById(R.id.editText_lat);
+        editTextLng = getView().findViewById(R.id.editText_lng);
+        editTextNom = getView().findViewById(R.id.editText_nom);
         /*TODO
         searchPlace.setAdapter(searchPlaceAdapter);
         */
@@ -181,10 +179,7 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
         if (this.editTextLat.getText().toString().isEmpty()) {
             return false;
         }
-        if (this.editTextLng.getText().toString().isEmpty()) {
-            return false;
-        }
-        return true;
+        return !this.editTextLng.getText().toString().isEmpty();
     }
 
     public Bundle getBundle() {
@@ -203,7 +198,6 @@ public class FragmentFormulaire extends Fragment implements OnMapReadyCallback, 
             bundle.putDouble("latitude", Double.valueOf(this.editTextLat.getText().toString()));
             bundle.putDouble("longitude", Double.valueOf(this.editTextLng.getText().toString()));
 
-            bundle.putString("adresse", this.searchPlace.getText().toString());
             return bundle;
         }
         else {
