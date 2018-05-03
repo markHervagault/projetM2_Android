@@ -49,6 +49,7 @@ public class PhotoService {
     }
 
     public List<PhotoSansPhotoDTO> getPhotosForPointWithoutPhoto(String token, long pointId){
+        Log.i(TAG, "Récupération des photos pour le point d'id : "+pointId);
         RestTemplate restTemplate = RestTemplate.getInstance();
         PhotoConsumer consumer = restTemplate.builConsumer(PhotoConsumer.class);
         Response<List<PhotoSansPhotoDTO>> response;
@@ -64,6 +65,7 @@ public class PhotoService {
     }
 
     public PhotoDTO getPhotoById(String token, long photoId){
+        Log.i(TAG, "Récupération de la photo d'id : "+photoId);
         RestTemplate restTemplate = RestTemplate.getInstance();
         PhotoConsumer consumer = restTemplate.builConsumer(PhotoConsumer.class);
         Response<PhotoDTO> response;
