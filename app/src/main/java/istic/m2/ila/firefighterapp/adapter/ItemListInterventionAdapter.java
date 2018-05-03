@@ -137,8 +137,8 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
 
         // Date de l'intervention
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
-        Date dateHeureCreation = new Date();
-        System.out.println(); //16/11/2016 12:08:43
+        Date dateHeureCreation = intervention.getDateHeureCreation();
+        // Date formatée : 16/11/2016 12:08:43
         holder.dateIntervention.setText(dateFormat.format(dateHeureCreation));
 
         // Code sinistre
