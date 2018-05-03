@@ -90,6 +90,7 @@ public class DroneListPictureFragment extends Fragment {
             }
 
             Collections.sort(photos);
+            _adapter.notifyDataSetChanged();
 
             /*}
         });*/
