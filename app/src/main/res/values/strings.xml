@@ -67,4 +67,15 @@
     <string name="fragment_holder_hide_button_alt">Masquer</string>
     <string name="title_activity_new_list_intervention">NewListIntervention</string>
     <string name="add_intervention_validation_button">CREER L\'INTERVENTION</string>
+    <string name="nom_de_l_intervention">Nom de l\'intervention</string>
+    <string name="code_sinistre">Code Sinistre</string>
+    <string name="localisation">Localisation</string>
+    <string name="ville">Ville</string>
+    <string name="code_postal">Code postal</string>
+    <string name="rue">Rue</string>
+    <string name="numero">Numéro</string>
+    <string name="coordonnee_gps">Coordonnée GPS</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="code_sinistre_dot">Code sinistre :</string>
 </resources>
