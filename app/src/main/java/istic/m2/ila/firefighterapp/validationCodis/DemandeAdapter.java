@@ -1,6 +1,7 @@
 package istic.m2.ila.firefighterapp.validationCodis;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,17 +15,20 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DemandeDTO;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
+import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.VehiculeDTO;
 import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
 import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
-import istic.m2.ila.firefighterapp.rest.consumers.VehiculeConsumer;
 import retrofit2.Response;
 
 /**
@@ -44,7 +48,7 @@ public class DemandeAdapter extends RecyclerView.Adapter<DemandeAdapter.DemandeV
         new TestAsynchTask().execute();
     }
 
-    private class TestAsynchTask extends AsyncTask<Void, Void, Object>{
+    private class TestAsynchTask extends AsyncTask<Void, Void, Object> {
 
         @Override
         protected Object doInBackground(Void... voids) {
@@ -65,17 +69,27 @@ public class DemandeAdapter extends RecyclerView.Adapter<DemandeAdapter.DemandeV
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            Collections.sort(demandeDTOList, new Comparator<DemandeDTO>() {
+                public int compare(DemandeDTO o1, DemandeDTO o2) {
+                    return o1.getDateHeureDemande().compareTo(o2.getDateHeureDemande());
+                }
+            });
             return demandeDTOList;
         }
 
         @Override
-        protected void onPostExecute(Object response){
+        protected void onPostExecute(Object response) {
             notifyDataSetChanged();
         }
     }
 
-    public void insertValue(DemandeDTO demande){
+    public void insertData(DemandeDTO demande) {
         demandeDTOList.add(demande);
+        notifyDataSetChanged();
+    }
+
+    public void removeData(DemandeDTO demandeDTO) {
+        demandeDTOList.remove(demandeDTO);
         notifyDataSetChanged();
     }
 
@@ -86,6 +100,7 @@ public class DemandeAdapter extends RecyclerView.Adapter<DemandeAdapter.DemandeV
         public Spinner vehiculeDisponible;
         public Button buttonValidate;
         public Button buttonDismiss;
+        public View stateColor;
         Context context;
 
         public DemandeViewHolder(View v, Context context) {
@@ -96,18 +111,25 @@ public class DemandeAdapter extends RecyclerView.Adapter<DemandeAdapter.DemandeV
             vehiculeDisponible = (Spinner) v.findViewById(R.id.vehiculeDisponible);
             buttonDismiss = (Button) v.findViewById(R.id.refuserDemande);
             buttonValidate = (Button) v.findViewById(R.id.validerDemande);
+            stateColor = (View) v.findViewById(R.id.state_color);
             this.context = context;
         }
 
         public void bindDemande(final DemandeDTO demandeDTO) {
             this.intervention.setText(demandeDTO.getId().toString());
-            this.date.setText(demandeDTO.getDateHeureDemande().toString());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+            this.date.setText(dateFormat.format(demandeDTO.getDateHeureDemande()));
             this.typeVehicule.setText(demandeDTO.getTypeDemande().getLabel());
+            if (demandeDTO.getState() == EEtatDeploiement.DEMANDE) {
+                this.stateColor.setBackgroundColor(Color.parseColor("#ff0000"));
+            } else if (demandeDTO.getState() == EEtatDeploiement.VALIDE) {
+                this.stateColor.setBackgroundColor(Color.parseColor("#00ff00"));
+            }
             this.vehiculeDisponible.setAdapter(
                     new VehiculeDispoAdapter(this.context,
                             android.R.layout.simple_spinner_item,
                             demandeDTO.getTypeDemande()));
-            buttonDismiss.setOnClickListener(new View.OnClickListener(){
+            buttonDismiss.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //Refuse demande
@@ -115,7 +137,7 @@ public class DemandeAdapter extends RecyclerView.Adapter<DemandeAdapter.DemandeV
                 }
             });
 
-            buttonValidate.setOnClickListener(new View.OnClickListener(){
+            buttonValidate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //Accepte demande
@@ -143,7 +165,8 @@ public class DemandeAdapter extends RecyclerView.Adapter<DemandeAdapter.DemandeV
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }});
+                }
+            });
         }
 
         public void accepteDemande(final DemandeDTO demandeDTO) {
@@ -172,7 +195,8 @@ public class DemandeAdapter extends RecyclerView.Adapter<DemandeAdapter.DemandeV
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }});
+                }
+            });
         }
     }
 
@@ -192,4 +216,5 @@ public class DemandeAdapter extends RecyclerView.Adapter<DemandeAdapter.DemandeV
     public int getItemCount() {
         return demandeDTOList.size();
     }
+
 }
