@@ -387,6 +387,7 @@ public class MissionManager extends MapItem
                         long index = 0;
                         for(PathPointDrawing point : _pathPoints)
                         {
+                            Log.i(TAG, "Ajout du point d'index "+ index + " avec le tag "+ point.getTag().intValue());
                             PointMissionDTO pointMissionDTO = new PointMissionDTO();
                             pointMissionDTO.setIndex(index);
                             pointMissionDTO.setAction(point.getAction());
