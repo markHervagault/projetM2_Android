@@ -48,6 +48,7 @@
     <string name="map_activity_fab_menu_trajet_open_close">Ouvrir/fermer un trajet</string>
     <string name="map_activity_fab_menu_trajet_open">Ouvrir le trajet</string>
     <string name="map_activity_fab_menu_trajet_close">Fermer le trajet</string>
+    <string name="map_activity_fab_menu_photo_label">Définir un point de prise de photo</string>
 
     <string-array name="vehicule">
         <item> vehicule1</item>

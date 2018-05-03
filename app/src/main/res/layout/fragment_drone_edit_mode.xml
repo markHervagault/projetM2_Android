@@ -48,9 +48,6 @@
         fab:menu_shadowXOffset="1dp"
         fab:menu_shadowYOffset="3dp"
         fab:menu_showShadow="true">
-        <!--fab:menu_labels_style="@style/YourCustomLabelsStyle"-->
-        <!--fab:menu_fab_show_animation="@anim/my_show_animation"-->
-        <!--fab:menu_fab_hide_animation="@anim/my_hide_animation"-->
 
         <!-- Add Marker Button -->
         <com.github.clans.fab.FloatingActionButton
@@ -94,6 +91,18 @@
 
         <!-- Remove Marker button -->
         <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabMenu_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_size="mini"
+            fab:fab_label="@string/map_activity_fab_menu_photo_label"
+            fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
+            fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
+            fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
+            android:src="@drawable/photo_camera"/>
+
+        <!-- Remove Marker button -->
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabMenu_removeSelectedMarker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -102,8 +111,9 @@
             fab:fab_colorNormal="@color/colorMenuFabDefaultNormal"
             fab:fab_colorPressed="@color/colorMenuFabDefaultPressed"
             fab:fab_colorRipple="@color/colorMenuFabDefaultRipple"
-            android:src="@drawable/dustbin"
-            />
+            android:src="@drawable/dustbin"/>
+
+
     </com.github.clans.fab.FloatingActionMenu>
 
     <!--Bouton d'envoi de mission-->

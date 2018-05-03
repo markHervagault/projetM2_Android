@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.map.Drone.Mode;
+package istic.m2.ila.firefighterapp.map.Drone.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -123,7 +123,7 @@ public class DroneCommandFragment extends Fragment {
                 buttonPlayPause.setTag(PLAY_TAG);
                 break;
 
-            case PAUSE_RETOUR_BASE:
+            case EN_PAUSE_RETOUR_BASE:
                 buttonStop.setVisibility(View.GONE);
                 buttonPlayPause.setImageResource(R.drawable.play_black);
                 buttonPlayPause.setVisibility(View.VISIBLE);

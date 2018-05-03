@@ -1,4 +1,4 @@
-package istic.m2.ila.firefighterapp.map.Drone.Mode;
+package istic.m2.ila.firefighterapp.map.Drone.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -18,11 +18,11 @@ import istic.m2.ila.firefighterapp.R;
  * Created by markh on 25/04/2018.
  */
 
-public class DroneMissionFragment extends Fragment
+public class DroneEditMissionFragment extends Fragment
 {
     //region Members
 
-    private String TAG = "DroneMissionFragment";
+    private String TAG = "DroneEditMissionFragment";
     private View _view;
     public Context context;
 
@@ -38,6 +38,7 @@ public class DroneMissionFragment extends Fragment
     public FloatingActionButton _addModeButton;
     public FloatingActionButton _zoneButton;
     public FloatingActionButton _sendMissionButton;
+    public FloatingActionButton _photoButton;
 
     //Path Closed
     private boolean _isPathClosed;
@@ -103,11 +104,31 @@ public class DroneMissionFragment extends Fragment
         _sendMissionButton.setEnabled(false);
     }
 
+    //TakePhoto
+    private boolean _isTakingPhoto;
+    public boolean isTakingPhoto() { return _isTakingPhoto; }
+    public void setTakePhoto()
+    {
+        _isTakingPhoto = true;
+
+        _photoButton.setColorNormal(getResources().getColor(R.color.colorMenuFabSelectedNormal));
+        _photoButton.setColorPressed(getResources().getColor(R.color.colorMenuFabSelectedPressed));
+        _photoButton.setColorRipple(getResources().getColor(R.color.colorMenuFabSelectedRipple));
+    }
+    public void unsetTakePhoto()
+    {
+        _isTakingPhoto = false;
+
+        _photoButton.setColorNormal(getResources().getColor(R.color.colorMenuFabDefaultNormal));
+        _photoButton.setColorPressed(getResources().getColor(R.color.colorMenuFabDefaultPressed));
+        _photoButton.setColorRipple(getResources().getColor(R.color.colorMenuFabDefaultRipple));
+    }
+
     //endregion
 
     //region Constructor
 
-    public DroneMissionFragment(){}
+    public DroneEditMissionFragment(){}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,12 +151,14 @@ public class DroneMissionFragment extends Fragment
     {
         _isPathClosed = false;
         _addMode = false;
+        _isTakingPhoto = false;
 
         _removeSelectedMarkerButton = _view.findViewById(R.id.fabMenu_removeSelectedMarker);
         _openCloseClosePathButton = _view.findViewById(R.id.fabMenu_openClosePath);
         _addModeButton = _view.findViewById(R.id.fabMenu_addMarker);
         _zoneButton = _view.findViewById(R.id.fabMenu_zone);
         _sendMissionButton = _view.findViewById(R.id.fab_menu2_send);
+        _photoButton = _view.findViewById(R.id.fabMenu_photo);
     }
 
     //endregion
@@ -147,6 +170,18 @@ public class DroneMissionFragment extends Fragment
         RefreshOpenPathButton(0);
         UnSetAddMode();
         OpenPath();
+    }
+
+    public void EnableActionButtons()
+    {
+        _photoButton.setEnabled(true);
+        _removeSelectedMarkerButton.setEnabled(true);
+    }
+
+    public void DisableActionButtons()
+    {
+        _photoButton.setEnabled(false);
+        _removeSelectedMarkerButton.setEnabled(false);
     }
 
     //endregion
