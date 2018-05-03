@@ -149,7 +149,7 @@ public class AddInterventionActivity extends FragmentActivity implements Fragmen
     }
 
     public void redirectToList(){
-        Intent homepage = new Intent(this.getApplicationContext(), ListInterventionActivity.class);
+        Intent homepage = new Intent(this.getApplicationContext(), NewListInterventionActivity.class);
         startActivity(homepage);
     }
 }

@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.text.DateFormat;
@@ -25,6 +29,9 @@ import istic.m2.ila.firefighterapp.activitiy.DetailsInterventionActivity;
 import istic.m2.ila.firefighterapp.dto.AdresseDTO;
 import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.InterventionMessage;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.MessageGeneric;
 import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
 import retrofit2.Response;
@@ -42,36 +49,45 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
     // On fournit un constructeur adéquat (dépendant de notre jeu de données)
     public ItemListInterventionAdapter(Context context) {
         this.context = context;
+        EventBus.getDefault().register(this);
         setData(context);
     }
 
     public void setData(final Context context) {
-        AsyncTask.execute(new Runnable() {
-            public void run() {
-                // On peuple notre RecyclerView
-                List<InterventionDTO> myDataset = new ArrayList<>();
-
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                InterventionConsumer interventionConsumer = restTemplate.builConsumer(InterventionConsumer.class);
-
-                Response<List<InterventionDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = context.getSharedPreferences("user", context.getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-                    // On récupère toutes les interventions du Serveur
-                    response = interventionConsumer.getListInterventionEnCours(token).execute();
-                    if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        myDataset = response.body();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mDataset = myDataset;
-            }
-        });
+        new TestAsynchTask().execute();
     }
+
+    private class TestAsynchTask extends AsyncTask<Void, Void, Object>{
+
+        @Override
+        protected Object doInBackground(Void... voids) {
+            // Construction de notre appel REST
+            RestTemplate restTemplate = RestTemplate.getInstance();
+            InterventionConsumer interventionConsumer = restTemplate.builConsumer(InterventionConsumer.class);
+
+            Response<List<InterventionDTO>> response = null;
+            try {
+                // Récupération du token
+                String token = context.getSharedPreferences("user", context.getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                // On récupère toutes les interventions du Serveur
+                response = interventionConsumer.getListInterventionEnCours(token).execute();
+                if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                    mDataset = response.body();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return mDataset;
+        }
+
+        @Override
+        protected void onPostExecute(Object response){
+            notifyDataSetChanged();
+        }
+    }
+
+
 
     // Fournit une reference aux vues pour chaque item
     // les items complexes peuvent avoir besoin de plus d'une vue par item  et
@@ -162,4 +178,24 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
     public int getItemCount() {
         return mDataset.size();
     }
+
+    //region EventSuscribing
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public synchronized void onInterventionDTOMessageEvent(InterventionMessage message) {
+        if (message != null) {
+            if (message.getSyncAction() == SyncAction.UPDATE) {
+                if (mDataset.contains(message.getDto())) {
+                    mDataset.remove(message.getDto());
+                }
+                mDataset.add(message.getDto());
+            } else if (message.getSyncAction() == SyncAction.DELETE) {
+                if (mDataset.contains(message.getDto())) {
+                    mDataset.remove(message.getDto());
+                }
+            }
+            notifyDataSetChanged();
+        }
+    }
+    //endregion
+
 }

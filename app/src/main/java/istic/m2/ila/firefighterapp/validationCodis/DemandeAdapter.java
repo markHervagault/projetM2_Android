@@ -24,6 +24,7 @@ import istic.m2.ila.firefighterapp.dto.VehiculeDTO;
 import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.rest.consumers.DeploimentConsumer;
 import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
+import istic.m2.ila.firefighterapp.rest.consumers.VehiculeConsumer;
 import retrofit2.Response;
 
 /**
@@ -40,31 +41,42 @@ public class DemandeAdapter extends RecyclerView.Adapter<DemandeAdapter.DemandeV
     }
 
     public void setData(final Context context) {
-        AsyncTask.execute(new Runnable() {
-            public void run() {
-                // On peuple notre RecyclerView
-                ArrayList<DemandeDTO> myDataset = new ArrayList<>();
+        new TestAsynchTask().execute();
+    }
 
-                // Construction de notre appel REST
-                RestTemplate restTemplate = RestTemplate.getInstance();
-                InterventionConsumer interventionConsumer = restTemplate.builConsumer(InterventionConsumer.class);
+    private class TestAsynchTask extends AsyncTask<Void, Void, Object>{
 
-                Response<List<DemandeDTO>> response = null;
-                try {
-                    // Récupération du token
-                    String token = context.getSharedPreferences("user", context.getApplicationContext().MODE_PRIVATE)
-                            .getString("token", "null");
-                    // On récupère toutes les interventions du Serveur
-                    response = interventionConsumer.getListDemandeDeploiement(token).execute();
-                    if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
-                        myDataset = (ArrayList<DemandeDTO>) response.body();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+        @Override
+        protected Object doInBackground(Void... voids) {
+            // Construction de notre appel REST
+            RestTemplate restTemplate = RestTemplate.getInstance();
+            InterventionConsumer interventionConsumer = restTemplate.builConsumer(InterventionConsumer.class);
+
+            Response<List<DemandeDTO>> response = null;
+            try {
+                // Récupération du token
+                String token = context.getSharedPreferences("user", context.getApplicationContext().MODE_PRIVATE)
+                        .getString("token", "null");
+                // On récupère toutes les interventions du Serveur
+                response = interventionConsumer.getListDemandeDeploiement(token).execute();
+                if (response != null && response.code() == HttpURLConnection.HTTP_OK) {
+                    demandeDTOList = (ArrayList<DemandeDTO>) response.body();
                 }
-                demandeDTOList = myDataset;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
+            return demandeDTOList;
+        }
+
+        @Override
+        protected void onPostExecute(Object response){
+            notifyDataSetChanged();
+        }
+    }
+
+    public void insertValue(DemandeDTO demande){
+        demandeDTOList.add(demande);
+        notifyDataSetChanged();
     }
 
     public static class DemandeViewHolder extends RecyclerView.ViewHolder {
