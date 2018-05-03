@@ -8,10 +8,7 @@ import android.util.Log;
 import com.evrencoskun.tableview.ITableView;
 import com.evrencoskun.tableview.listener.ITableViewListener;
 
-import java.util.List;
-
 import istic.m2.ila.firefighterapp.activitiy.MapActivity;
-import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
 
 /**
  * Created by evrencoskun on 2.12.2017.
@@ -21,21 +18,19 @@ public class MoyenTableViewListener implements ITableViewListener {
 
     private ITableView mTableView;
     private Context mContext;
-    private List<DeploiementDTO> deploiements;
     private MoyenTableAdapter mTableAdapter;
-    private InterventionDetailsMoyensFragmentsTV interventionDetailsMoyensFragmentsTV;
+    private InterventionDetailsMoyensFragmentsTV interTabMoyensFrag;
 
     public MoyenTableViewListener(ITableView pTableView) {
         this.mTableView = pTableView;
         this.mContext = null;
     }
 
-    public MoyenTableViewListener(ITableView pTableView, Context mContext, List<DeploiementDTO> deploiements, MoyenTableAdapter mTableAdapter, InterventionDetailsMoyensFragmentsTV interventionDetailsMoyensFragmentsTV) {
+    public MoyenTableViewListener(ITableView pTableView, Context mContext, MoyenTableAdapter mTableAdapter, InterventionDetailsMoyensFragmentsTV InterTabMoyensFrag) {
         this.mTableView = pTableView;
         this.mContext = mContext;
-        this.deploiements = deploiements;
         this.mTableAdapter = mTableAdapter;
-        this.interventionDetailsMoyensFragmentsTV = interventionDetailsMoyensFragmentsTV;
+        this.interTabMoyensFrag = InterTabMoyensFrag;
     }
 
     @Override
@@ -44,12 +39,12 @@ public class MoyenTableViewListener implements ITableViewListener {
         onRowHeaderClicked(p_jCellView, p_nYPosition);
         if (mContext != null && mContext instanceof MapActivity) {
 
-                ((MapActivity) mContext).displayFragmentHolder(deploiements.get(p_nYPosition));
+                ((MapActivity) mContext).displayFragmentHolder(interTabMoyensFrag.getListDeploiment().get(p_nYPosition));
             // Le fragment existe
-            if (interventionDetailsMoyensFragmentsTV.isReduce()) {
-                interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
+            if (interTabMoyensFrag.isReduce()) {
+                interTabMoyensFrag.populatedTableViewReduce(interTabMoyensFrag.getListDeploiment(), true, p_nYPosition);
             } else {
-                interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), true, p_nYPosition);
+                interTabMoyensFrag.populatedTableViewAll(interTabMoyensFrag.getListDeploiment(), true, p_nYPosition);
             }
 
         } else {
@@ -67,10 +62,10 @@ public class MoyenTableViewListener implements ITableViewListener {
     public void onColumnHeaderClicked(@NonNull RecyclerView.ViewHolder p_jColumnHeaderView, int
             p_nXPosition) {
 
-        if (interventionDetailsMoyensFragmentsTV.isReduce()) {
-            interventionDetailsMoyensFragmentsTV.populatedTableViewReduce(interventionDetailsMoyensFragmentsTV.getListDeploiment(), false, -1);
+        if (interTabMoyensFrag.isReduce()) {
+            interTabMoyensFrag.populatedTableViewReduce(interTabMoyensFrag.getListDeploiment(), false, -1);
         } else {
-            interventionDetailsMoyensFragmentsTV.populatedTableViewAll(interventionDetailsMoyensFragmentsTV.getListDeploiment(), false, -1);
+            interTabMoyensFrag.populatedTableViewAll(interTabMoyensFrag.getListDeploiment(), false, -1);
         }
     }
 

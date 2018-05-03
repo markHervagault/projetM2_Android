@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.text.DateFormat;
@@ -24,11 +28,12 @@ import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.activitiy.DetailsInterventionActivity;
 import istic.m2.ila.firefighterapp.dto.AdresseDTO;
 import istic.m2.ila.firefighterapp.dto.CodeSinistreDTO;
-import istic.m2.ila.firefighterapp.dto.DemandeDTO;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.SyncAction;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.InterventionMessage;
+import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.MessageGeneric;
 import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
-import istic.m2.ila.firefighterapp.validationCodis.DemandeAdapter;
 import retrofit2.Response;
 
 /**
@@ -44,6 +49,7 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
     // On fournit un constructeur adéquat (dépendant de notre jeu de données)
     public ItemListInterventionAdapter(Context context) {
         this.context = context;
+        EventBus.getDefault().register(this);
         setData(context);
     }
 
@@ -79,11 +85,6 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
         protected void onPostExecute(Object response){
             notifyDataSetChanged();
         }
-    }
-
-    public void insertValue(InterventionDTO intervention){
-        mDataset.add(intervention);
-        notifyDataSetChanged();
     }
 
 
@@ -177,4 +178,24 @@ public class ItemListInterventionAdapter extends RecyclerView.Adapter<ItemListIn
     public int getItemCount() {
         return mDataset.size();
     }
+
+    //region EventSuscribing
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public synchronized void onInterventionDTOMessageEvent(InterventionMessage message) {
+        if (message != null) {
+            if (message.getSyncAction() == SyncAction.UPDATE) {
+                if (mDataset.contains(message.getDto())) {
+                    mDataset.remove(message.getDto());
+                }
+                mDataset.add(message.getDto());
+            } else if (message.getSyncAction() == SyncAction.DELETE) {
+                if (mDataset.contains(message.getDto())) {
+                    mDataset.remove(message.getDto());
+                }
+            }
+            notifyDataSetChanged();
+        }
+    }
+    //endregion
+
 }
