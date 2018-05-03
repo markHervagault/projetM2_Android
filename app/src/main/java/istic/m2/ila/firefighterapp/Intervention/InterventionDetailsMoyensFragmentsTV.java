@@ -295,7 +295,14 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
             // The order should be same with column header list;
             list.add(new CellModel("1-" + i, depInfo.getId(), selected));
 
-            CellModel cellWithComposante = changeBackgroundAndText("2-" + i, depInfo.getTypeDemande().getLabel(),
+            String labelToDisplay = null;
+            if(depInfo.getTypeDemande() != null){
+                labelToDisplay = depInfo.getTypeDemande().getLabel();
+            } else {
+                labelToDisplay = depInfo.getVehicule().getType().getLabel();
+            }
+
+            CellModel cellWithComposante = changeBackgroundAndText("2-" + i, labelToDisplay,
                     composante.getCouleur(), "#ffffff", selected);
             list.add(cellWithComposante);
 
