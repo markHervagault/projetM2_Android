@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Icon;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -20,9 +21,12 @@ public class PathPointDrawing extends MapItem
 
     private Marker _marker;
 
-    private Bitmap _normalIcon;
-    private Bitmap _photoIcon;
-    private Bitmap _selectedIcon;
+    //Icon
+
+    private BitmapDescriptor _normalIcon;
+    private BitmapDescriptor _selectedNormalIcon;
+    private BitmapDescriptor _photoIcon;
+    private BitmapDescriptor _selectedPhotoIcon;
 
 
     //endregion
@@ -35,15 +39,18 @@ public class PathPointDrawing extends MapItem
     public void Select()
     {
         _isSelected = true;
-        _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_selectedIcon));
+        if(_action)
+            _marker.setIcon(_selectedPhotoIcon);
+        else
+            _marker.setIcon(_selectedNormalIcon);
     }
     public void UnSelect()
     {
         _isSelected = false;
         if(_action)
-            _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_photoIcon));
+            _marker.setIcon(_photoIcon);
         else
-            _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_normalIcon));
+            _marker.setIcon(_normalIcon);
     }
 
     //Position
@@ -58,13 +65,21 @@ public class PathPointDrawing extends MapItem
     public boolean getAction() {
         return _action;
     }
-
     public void setAction(boolean action) {
         _action = action;
-        if(action)
-            _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_photoIcon));
+        if(action) {
+            if (_isSelected)
+                _marker.setIcon(_selectedPhotoIcon);
+            else
+                _marker.setIcon(_photoIcon);
+        }
         else
-            _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_normalIcon));
+        {
+            if(_isSelected)
+                _marker.setIcon(_selectedNormalIcon);
+            else
+                _marker.setIcon(_normalIcon);
+        }
     }
 
     //PointMission
@@ -79,16 +94,25 @@ public class PathPointDrawing extends MapItem
     public PathPointDrawing(LatLng position, boolean draggable, Integer tag, GoogleMap map, Activity activity) {
         super(map, activity);
         _action = false;
-        _normalIcon = getNewBitmapRenderedWithColor(R.drawable.map_marker, "#ff6666");
-        _photoIcon = getNewBitmapRenderedWithColor(R.drawable.map_marker, "#79d279");
-        _selectedIcon = getNewBitmapRenderedWithColor(R.drawable.map_marker, "#1a53ff");
+
+        //Normal & Selected
+        Bitmap normal = getNewBitmapRenderedWithColor(R.drawable.pin_normal, "#ff6666");
+        _normalIcon = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(normal, 48, 48, false));
+        Bitmap selectedNormal = getNewBitmapRenderedWithColor(R.drawable.pin_normal, "#79d279");
+        _selectedNormalIcon = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(selectedNormal, 64, 64, false));
+
+        //Photo & Selected
+        Bitmap photo = getNewBitmapRenderedWithColor(R.drawable.pin_full, "#ff6666");
+        _photoIcon = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(photo, 48, 48, false));
+        Bitmap selectedPhoto = getNewBitmapRenderedWithColor(R.drawable.pin_full, "#79d279");
+        _selectedPhotoIcon = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(selectedPhoto, 64, 64, false));
 
         _marker = _googleMap.addMarker(new MarkerOptions()
                 .position(position)
                 .zIndex(10)
                 .title("Point de passage")
                 .draggable(draggable)
-                .icon(BitmapDescriptorFactory.fromBitmap(_normalIcon)));
+                .icon(_normalIcon));
 
         _marker.setTag(tag);
         _isSelected = false;
@@ -100,7 +124,7 @@ public class PathPointDrawing extends MapItem
         this(new LatLng(point.getLatitude(), point.getLongitude()), draggable, tag, map, activity);
         _poinMission = point;
         if(point.getAction())
-            _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_photoIcon));
+            _marker.setIcon(_photoIcon);
     }
 
     //endregion
