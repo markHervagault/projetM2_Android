@@ -77,4 +77,6 @@ public class ListInterventionFragment extends Fragment {
     public void openAddInterventionActivity(View view) {
         startActivity(new Intent(this.getActivity(), AddInterventionActivity.class));
     }
+
+
 }
