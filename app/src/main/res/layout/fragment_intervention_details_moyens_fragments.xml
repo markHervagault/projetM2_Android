@@ -6,7 +6,7 @@
     >
     <com.evrencoskun.tableview.TableView android:id="@+id/moyenTableView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="350dp"
         app:column_header_height="@dimen/table_view_cell_height"
         app:row_header_width="@dimen/table_view_row_header_width"
         app:selected_color="@color/selected_background_color"
