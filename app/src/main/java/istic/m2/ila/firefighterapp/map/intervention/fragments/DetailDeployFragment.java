@@ -148,35 +148,37 @@ public class DetailDeployFragment extends Fragment implements IManipulableDeploy
 
     @Override
     public void move() {
-        this.onMove = true;
-        GoogleMap map = ((MapActivity)getActivity()).getMap();
+        if(!onMove) {
+            this.onMove = true;
+            GoogleMap map = ((MapActivity)getActivity()).getMap();
 
-        marker = map.addMarker(new MarkerOptions()
-                .position(map.getCameraPosition().target)
-                .draggable(true));
+            marker = map.addMarker(new MarkerOptions()
+                    .position(map.getCameraPosition().target)
+                    .draggable(true));
 
-        newGeoposition.setLongitude(marker.getPosition().longitude);
-        newGeoposition.setLatitude(marker.getPosition().latitude);
+            newGeoposition.setLongitude(marker.getPosition().longitude);
+            newGeoposition.setLatitude(marker.getPosition().latitude);
 
-        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-                                        @Override
-                                        public void onMarkerDragStart(Marker marker) {
+            map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                                            @Override
+                                            public void onMarkerDragStart(Marker marker) {
 
+                                            }
+
+                                            @Override
+                                            public void onMarkerDrag(Marker marker) {
+
+                                            }
+
+                                            @Override
+                                            public void onMarkerDragEnd(Marker marker) {
+                                                newGeoposition.setLongitude(marker.getPosition().longitude);
+                                                newGeoposition.setLatitude(marker.getPosition().latitude);
+                                            }
                                         }
 
-                                        @Override
-                                        public void onMarkerDrag(Marker marker) {
-
-                                        }
-
-                                        @Override
-                                        public void onMarkerDragEnd(Marker marker) {
-                                            newGeoposition.setLongitude(marker.getPosition().longitude);
-                                            newGeoposition.setLatitude(marker.getPosition().latitude);
-                                        }
-                                    }
-
-        );
+            );
+        }
     }
 
     @Override
