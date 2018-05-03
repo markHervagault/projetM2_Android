@@ -22,6 +22,7 @@ public class PathPointDrawing extends MapItem
 
     private Bitmap _normalIcon;
     private Bitmap _photoIcon;
+    private Bitmap _selectedIcon;
 
 
     //endregion
@@ -31,8 +32,19 @@ public class PathPointDrawing extends MapItem
     //Selected
     private boolean _isSelected;
     public boolean isSelected() { return _isSelected; }
-    public void Select() { _isSelected = true; }
-    public void UnSelect() { _isSelected = false; }
+    public void Select()
+    {
+        _isSelected = true;
+        _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_selectedIcon));
+    }
+    public void UnSelect()
+    {
+        _isSelected = false;
+        if(_action)
+            _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_photoIcon));
+        else
+            _marker.setIcon(BitmapDescriptorFactory.fromBitmap(_normalIcon));
+    }
 
     //Position
     public LatLng getPosition() { return _marker.getPosition(); }
@@ -69,6 +81,7 @@ public class PathPointDrawing extends MapItem
         _action = false;
         _normalIcon = getNewBitmapRenderedWithColor(R.drawable.map_marker, "#ff6666");
         _photoIcon = getNewBitmapRenderedWithColor(R.drawable.map_marker, "#79d279");
+        _selectedIcon = getNewBitmapRenderedWithColor(R.drawable.map_marker, "#1a53ff");
 
         _marker = _googleMap.addMarker(new MarkerOptions()
                 .position(position)
