@@ -387,60 +387,17 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
 
     private void changeDiffValue(DeploiementDTO reelDep, DeploiementDTO momDep) {
 
-        if(reelDep.getComposante() != null
-                && momDep.getComposante() != null) {
-            if (!reelDep.getComposante().equals(momDep.getComposante())) {
-                reelDep.setComposante(momDep.getComposante());
-            }
-        }
-
-        if(reelDep.getDateHeureDesengagement() != null
-                && momDep.getDateHeureDesengagement() != null) {
-            if (!reelDep.getDateHeureDesengagement().equals(momDep.getDateHeureDesengagement())) {
-                reelDep.setDateHeureDesengagement(momDep.getDateHeureDesengagement());
-            }
-        }
-
-        if(reelDep.getDateHeureEngagement() != null
-                && momDep.getDateHeureEngagement() != null) {
-            if (!reelDep.getDateHeureEngagement().equals(momDep.getDateHeureEngagement())) {
-                reelDep.setDateHeureEngagement(momDep.getDateHeureEngagement());
-            }
-        }
-
-        if(reelDep.getDateHeureValidation() != null
-                && momDep.getDateHeureValidation() != null) {
-            if (!reelDep.getDateHeureValidation().equals(momDep.getDateHeureValidation())) {
-                reelDep.setDateHeureValidation(momDep.getDateHeureValidation());
-            }
-        }
-
-        if(reelDep.getDateHeureDemande() != null
-                && momDep.getDateHeureDemande() != null) {
-            if (!reelDep.getDateHeureDemande().equals(momDep.getDateHeureDemande())) {
-                reelDep.setDateHeureDemande(momDep.getDateHeureDemande());
-            }
-        }
-        if(reelDep.getState() != null
-                && momDep.getState() != null) {
-            if (!reelDep.getState().equals(momDep.getState())) {
-                reelDep.setState(momDep.getState());
-            }
-        }
-
-        if(reelDep.getPresenceCRM() != null
-                && momDep.getPresenceCRM() != null) {
-            if (!reelDep.getPresenceCRM().equals(momDep.getPresenceCRM())) {
-                reelDep.setPresenceCRM(momDep.getPresenceCRM());
-            }
-        }
-
-        if(reelDep.getGeoPosition() != null
-                && momDep.getGeoPosition() != null) {
-            if (!reelDep.getGeoPosition().equals(momDep.getGeoPosition())) {
-                reelDep.setGeoPosition(momDep.getGeoPosition());
-            }
-        }
+        reelDep.setComposante(momDep.getComposante());
+        reelDep.setGeoPosition(momDep.getGeoPosition());
+        reelDep.setPresenceCRM(momDep.getPresenceCRM());
+        reelDep.setState(momDep.getState());
+        reelDep.setDateHeureDemande(momDep.getDateHeureDemande());
+        reelDep.setDateHeureValidation(momDep.getDateHeureValidation());
+        reelDep.setDateHeureDesengagement(momDep.getDateHeureDesengagement());
+        reelDep.setDateHeureEngagement(momDep.getDateHeureEngagement());
+        reelDep.setTypeDemande(momDep.getTypeDemande());
+        reelDep.setComposante(momDep.getComposante());
+        reelDep.setVehicule(momDep.getVehicule());
     }
 
 
