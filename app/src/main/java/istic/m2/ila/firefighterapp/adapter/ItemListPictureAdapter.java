@@ -53,20 +53,25 @@ public class ItemListPictureAdapter extends RecyclerView.Adapter<ItemListPicture
     @Override
     public void onBindViewHolder(final ItemListPictureAdapter.ViewHolder holder, final int position) {
         final PhotoSansPhotoDTO photo = photos.get(position);
-        Log.i(TAG, "Actualisation de la liste des images");
+        Log.i(TAG, "Actualisation de la liste des images, récupération de la photo n° "+position+ " dans la liste.");
         // On récupère la photo sur le serveur
-        /*PhotoService photoService = new PhotoService();
+        PhotoService photoService = new PhotoService();
         String token = context.getSharedPreferences("user", context.MODE_PRIVATE).getString("token", "null");
         PhotoDTO photoWithPhoto = photoService.getPhotoById(token, photo.getId());
+        if(photoWithPhoto==null){
+            Log.e(TAG, "Impossible de récupérer l'image sur le serveur, photoWithPhoto = null");
+            return;
+        }else{
+            Log.i(TAG, "Une image a bien été récupérée");
+        }
 
         // on decode l'image en base64
-        byte[] decodedString = Base64.decode(photoWithPhoto.getImgBase64(), Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);*/
-
-        String base64String = PhotoTest.getPhotoEn64();
-        String base64Image = base64String.split(",")[1];
-
+        String base64Image = photoWithPhoto.getImgBase64().split(",")[1];
         byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+
+        /*String base64String = PhotoTest.getPhotoEn64();
+        String base64Image = base64String.split(",")[1];*/
+
         if(decodedString == null){
             Log.e(TAG, "Problème de décodage de l'image, result = null");
             return;
@@ -85,8 +90,8 @@ public class ItemListPictureAdapter extends RecyclerView.Adapter<ItemListPicture
             return;
         }
         holder.image_list_picture.setImageBitmap(decodedByte);
-        //holder.date_list_picture.setText(photo.getDateHeure().toString());
-        holder.date_list_picture.setText("01/01/1970");
+        holder.date_list_picture.setText(photo.getDateHeure().toString());
+        //holder.date_list_picture.setText("01/01/1970");
     }
 
     // Return the size of your dataset (invoked by the layout manager)

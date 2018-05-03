@@ -93,9 +93,9 @@ public class DroneListPictureFragment extends Fragment {
             /*}
         });*/
         // TODO : à supprimer quand le serveur fonctionnera
-        for(int i =0; i<10; i++){
+        /*for(int i =0; i<10; i++){
             photos.add(new PhotoSansPhotoDTO());
-        }
+        }*/
 
         if(photos!=null){
             Log.i(TAG, "Nombre de photos récupérées : " + photos.size());

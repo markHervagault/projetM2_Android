@@ -111,7 +111,7 @@ public class DroneCommandFragment extends Fragment {
 
             case RETOUR_BASE:
                 buttonPlayPause.setImageResource(R.drawable.pause_black);
-                buttonStop.setVisibility(View.GONE);
+                buttonStop.setVisibility(View.INVISIBLE);
                 buttonPlayPause.setVisibility(View.VISIBLE);
                 buttonPlayPause.setTag(PAUSE_TAG);
                 break;
@@ -124,7 +124,7 @@ public class DroneCommandFragment extends Fragment {
                 break;
 
             case EN_PAUSE_RETOUR_BASE:
-                buttonStop.setVisibility(View.GONE);
+                buttonStop.setVisibility(View.INVISIBLE);
                 buttonPlayPause.setImageResource(R.drawable.play_black);
                 buttonPlayPause.setVisibility(View.VISIBLE);
                 buttonPlayPause.setTag(PLAY_TAG);
@@ -133,8 +133,8 @@ public class DroneCommandFragment extends Fragment {
             case DISPONIBLE:
             case DECONNECTE:
             default:
-                buttonStop.setVisibility(View.GONE);
-                buttonPlayPause.setVisibility(View.GONE);
+                buttonStop.setVisibility(View.INVISIBLE);
+                buttonPlayPause.setVisibility(View.INVISIBLE);
                 break;
         }
     }

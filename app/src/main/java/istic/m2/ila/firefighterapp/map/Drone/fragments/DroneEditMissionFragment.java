@@ -159,6 +159,8 @@ public class DroneEditMissionFragment extends Fragment
         _zoneButton = _view.findViewById(R.id.fabMenu_zone);
         _sendMissionButton = _view.findViewById(R.id.fab_menu2_send);
         _photoButton = _view.findViewById(R.id.fabMenu_photo);
+
+        _zoneButton.setVisibility(View.GONE);
     }
 
     //endregion
