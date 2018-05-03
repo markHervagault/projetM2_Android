@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:background="#e5e5e5"
                 android:gravity="start"
-                android:text="Nom de l'intervention"
+                android:text="@string/nom_de_l_intervention"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Nom de l'intervention"
+                android:text="@string/nom_de_l_intervention"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:hint="Nom de l'intervention"
+                android:hint="@string/nom_de_l_intervention"
                 android:imeOptions="flagNoExtractUi"
                 android:inputType="text"
                 android:maxLines="1"/>
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:background="#e5e5e5"
                 android:gravity="start"
-                android:text="Code Sinistre"
+                android:text="@string/code_sinistre"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Code sinistre :"
+                android:text="@string/code_sinistre_dot"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -77,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:hint="Code sinistre"
+                android:hint="@string/code_sinistre"
                 android:imeOptions="flagNoExtractUi"
                 android:inputType="textAutoComplete"
                 android:maxLines="1" />
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:background="#e5e5e5"
                 android:gravity="start"
-                android:text="Localisation"
+                android:text="@string/localisation"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -98,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Ville"
+                android:text="@string/ville"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -107,7 +107,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:hint="Ville"
+                android:hint="@string/ville"
                 android:imeOptions="flagNoExtractUi"
                 android:inputType="text"
                 android:maxLines="1"/>
@@ -117,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Code postal"
+                android:text="@string/code_postal"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -126,9 +126,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:hint="Code postal"
+                android:hint="@string/code_postal"
                 android:imeOptions="flagNoExtractUi"
-                android:inputType="text"
+                android:inputType="number"
                 android:maxLines="1" />
 
             <TextView
@@ -136,7 +136,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Rue"
+                android:text="@string/rue"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -146,7 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:hint="Rue"
+                android:hint="@string/rue"
                 android:imeOptions="flagNoExtractUi"
                 android:inputType="text"
                 android:maxLines="1" />
@@ -157,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Numéro"
+                android:text="@string/numero"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -166,7 +166,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:hint="Numéro"
+                android:hint="@string/numero"
                 android:imeOptions="flagNoExtractUi"
                 android:inputType="number"
                 android:maxLines="1"/>
@@ -176,7 +176,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Coordonnée GPS"
+                android:text="@string/coordonnee_gps"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -191,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Latitude"
+                    android:hint="@string/latitude"
                     android:imeOptions="flagNoExtractUi"
                     android:inputType="numberSigned|numberDecimal"
                     android:maxLines="1" />
@@ -207,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Longitude"
+                    android:hint="@string/longitude"
                     android:imeOptions="flagNoExtractUi"
                     android:inputType="numberSigned|numberDecimal"
                     android:maxLines="1" />
