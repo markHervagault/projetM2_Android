@@ -1,6 +1,7 @@
 package istic.m2.ila.firefighterapp.map.SynchronisationMapFragmentItems;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -45,15 +46,13 @@ public class DeploiementManager extends MapItem
     public synchronized void onCreateOrUpdateDeploiementDTOMessageEvent(DeploiementDTO message)
     {
         // Création du déploiement
-        if(_deploiementById.containsKey(message.getId())) {
+       if(_deploiementById.containsKey(message.getId())) {
            _deploiementById.get(message.getId()).update(message);
-
         } else {
             _deploiementById.put(message.getId(), new DeploiementDrawing(message, _googleMap, _contextActivity));
-           ((MapActivity)_contextActivity).getIntervMapFrag().getTableauMoyen().synchroDeployCreate(message);
-
         }
     }
+
 
     public synchronized void onDeleteDeploiementDTOMessageEvent(DeploiementDTO message)
     {
