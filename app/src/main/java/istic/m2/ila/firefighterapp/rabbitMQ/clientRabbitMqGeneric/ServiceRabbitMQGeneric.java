@@ -30,6 +30,7 @@ import java.util.concurrent.TimeoutException;
 
 import istic.m2.ila.firefighterapp.constantes.Endpoints;
 import istic.m2.ila.firefighterapp.dto.IDTO;
+import istic.m2.ila.firefighterapp.dto.IRabbitDTO;
 import istic.m2.ila.firefighterapp.rabbitMQ.clientRabbitMqGeneric.messages.MessageGeneric;
 
 import static istic.m2.ila.firefighterapp.constantes.Endpoints.RABBITMQ_ANDROID_DELETE;
@@ -39,7 +40,7 @@ import static istic.m2.ila.firefighterapp.constantes.Endpoints.RABBITMQ_ANDROID_
  * Provide an Abstract class for RabbitMqService
  * @param <T> Type of the DTO
  */
-public abstract class ServiceRabbitMQGeneric<T extends IDTO, M extends MessageGeneric<T>> extends Service {
+public abstract class ServiceRabbitMQGeneric<T extends IRabbitDTO, M extends MessageGeneric<T>> extends Service {
 
     public String TAG = "Service "+ getGenericClass().getName() +" => ";
     private Connection _connection;

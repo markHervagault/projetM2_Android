@@ -46,7 +46,7 @@ public class MoyenTableAdapter extends AbstractTableAdapter<ColumnHeaderModel, R
         layout = LayoutInflater.from(mContext).inflate(R.layout.tableview_cell_layout,
                 parent, false);
 
-        // Create a Cell ViewHolder
+        // Create a Cell DemandeViewHolder
         return new CellViewHolder(layout);
 
     }
@@ -89,7 +89,7 @@ public class MoyenTableAdapter extends AbstractTableAdapter<ColumnHeaderModel, R
         View layout = LayoutInflater.from(mContext).inflate(R.layout
                 .tableview_row_header_layout, parent, false);
 
-        // Create a Row Header ViewHolder
+        // Create a Row Header DemandeViewHolder
         return new RowHeaderViewHolder(layout);
     }
 

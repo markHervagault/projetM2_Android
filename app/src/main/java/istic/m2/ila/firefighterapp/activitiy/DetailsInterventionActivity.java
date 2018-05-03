@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
-import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragments;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsStaticFragment;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;

@@ -37,6 +37,7 @@ public class InterventionMapFragment extends Fragment {
 
     private FragmentHolder fragmentHolder;
 
+
     private InterventionDetailsMoyensFragmentsTV tableauMoyen;
     private FrameLayout tableauMoyenLayout;
 
@@ -49,6 +50,10 @@ public class InterventionMapFragment extends Fragment {
         return (MapActivity)getActivity();
     }
 
+
+    public InterventionDetailsMoyensFragmentsTV getTableauMoyen() {
+        return tableauMoyen;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -277,6 +282,9 @@ public class InterventionMapFragment extends Fragment {
                 for(DeploiementDTO deploy : deploys) {
                     getMeActivity().getDeploiementManager().onCreateOrUpdateDeploiementDTOMessageEvent(deploy);
                 }
+
+                // Mise à jour du tableau
+                tableauMoyen.setDataDTO(deploys);
             }
         });
     }

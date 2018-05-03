@@ -38,6 +38,7 @@ import istic.m2.ila.firefighterapp.Intervention.ActivityMoyens;
 import istic.m2.ila.firefighterapp.Intervention.InterventionDetailsMoyensFragmentsTV;
 import istic.m2.ila.firefighterapp.R;
 import istic.m2.ila.firefighterapp.dto.DeploiementDTO;
+import istic.m2.ila.firefighterapp.dto.EEtatDeploiement;
 import istic.m2.ila.firefighterapp.dto.ETypeTraitTopographiqueBouchon;
 import istic.m2.ila.firefighterapp.dto.GeoPositionDTO;
 import istic.m2.ila.firefighterapp.dto.IDTO;
@@ -77,6 +78,10 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     public IMapService getService() {
         return service;
+    }
+
+    public InterventionMapFragment getIntervMapFrag() {
+        return intervMapFrag;
     }
 
     public String getToken() {
@@ -234,7 +239,6 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         //frameMoyen.setVisibility(View.VISIBLE);
         if (interventionView) {
             transaction.replace(R.id.mapFragment, intervMapFrag);
-            //transaction.replace(R.id.listViewFragment, intervListFrag);
         } else {
             transaction.replace(R.id.mapFragment, droneGeneralFrag);
             //transaction.replace(R.id.listViewFragment, droneListFrag);
@@ -280,7 +284,6 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
                 Object obj = marker.getTag();
                 if (obj instanceof IDTO) {
                     displayFragmentHolder((IDTO) obj);
-                    getMap().moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                 }
                 return true;
             }
@@ -336,8 +339,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
     public void displayFragmentHolder(IDTO dto) {
         if (intervMapFrag.getFragmentHolder().getObjectHeld() == dto) {
-            hideFragment();
-            intervMapFrag.getFragmentHolder().setObjectHeld(null);
+            hideSelf();
         } else if (intervMapFrag.getFragmentHolder().getObjectHeld() == null) {
             intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
@@ -346,6 +348,16 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
             hideFragment();
             intervMapFrag.getFragmentHolder().replace(dto);
             showFragment();
+        }
+        if(dto.getPosition() != null){
+            if(dto instanceof DeploiementDTO){
+                if(((DeploiementDTO)dto).getState() != EEtatDeploiement.DESENGAGE
+                    && ((DeploiementDTO)dto).getState() != EEtatDeploiement.REFUSE) {
+                    getMap().moveCamera(CameraUpdateFactory.newLatLng(new LatLng(dto.getPosition().getLatitude(),dto.getPosition().getLongitude())));
+                }
+            } else {
+                getMap().moveCamera(CameraUpdateFactory.newLatLng(new LatLng(dto.getPosition().getLatitude(),dto.getPosition().getLongitude())));
+            }
         }
     }
 
@@ -357,9 +369,7 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
 
 
     public void createSinistre() {
-        hideFragment();
-        intervMapFrag.getFragmentHolder().replace(new SinistreDTO());
-        showFragment();
+        displayFragmentHolder(new SinistreDTO());
     }
 
     //endregion
@@ -465,5 +475,4 @@ public class MapActivity extends AppCompatActivity implements ActivityMoyens {
         return icon;
     }
     //endregion
-
 }
