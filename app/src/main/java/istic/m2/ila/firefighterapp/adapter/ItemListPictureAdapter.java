@@ -62,12 +62,12 @@ public class ItemListPictureAdapter extends RecyclerView.Adapter<ItemListPicture
             Log.e(TAG, "Impossible de récupérer l'image sur le serveur, photoWithPhoto = null");
             return;
         }else{
-            Log.i(TAG, "Une image a bien été récupérée");
+            Log.i(TAG, "Une image a bien été récupérée : " + photoWithPhoto.toString());
         }
 
         // on decode l'image en base64
-        String base64Image = photoWithPhoto.getImgBase64().split(",")[1];
-        byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+        //String base64Image = photoWithPhoto.getImgBase64().split(",")[1];
+        byte[] decodedString = Base64.decode(photoWithPhoto.getImgBase64(), Base64.DEFAULT);
 
         /*String base64String = PhotoTest.getPhotoEn64();
         String base64Image = base64String.split(",")[1];*/

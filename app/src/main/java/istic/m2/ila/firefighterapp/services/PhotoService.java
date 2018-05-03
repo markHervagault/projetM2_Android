@@ -48,7 +48,7 @@ public class PhotoService {
         return images;
     }
 
-    public List<PhotoSansPhotoDTO> getPhotosForPointWithoutPhoto(String token, long pointId){
+    public List<PhotoSansPhotoDTO> getPhotosForPointWithoutPhoto(String token, Long pointId){
         Log.i(TAG, "Récupération des photos pour le point d'id : "+pointId);
         RestTemplate restTemplate = RestTemplate.getInstance();
         PhotoConsumer consumer = restTemplate.builConsumer(PhotoConsumer.class);
@@ -75,6 +75,8 @@ public class PhotoService {
                 return response.body();
             }
         }catch (IOException e) {
+            Log.e(TAG, "An unexpected error occured while trying to open the file (see the exception for more details): ", e);
+        }catch (Exception e){
             Log.e(TAG, "An unexpected error occured while trying to open the file (see the exception for more details): ", e);
         }
         return null;
