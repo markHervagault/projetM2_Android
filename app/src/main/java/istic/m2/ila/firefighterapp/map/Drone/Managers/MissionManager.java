@@ -164,7 +164,7 @@ public class MissionManager extends MapItem
         _pathPoints.clear();
         _pathPointsByTag.clear();
         _pathDrawing.Clear();
-        _selectedMarker = null;
+        setSelectedMarker(null);
 
         setEditMode(false);
 
