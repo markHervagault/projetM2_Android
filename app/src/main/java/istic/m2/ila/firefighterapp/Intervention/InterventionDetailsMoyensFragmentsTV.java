@@ -370,8 +370,9 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
 
         for (int i = 0; i < listDeploiment.size(); i++) {
             DeploiementDTO deploy = listDeploiment.get(i);
-            if(deploy.getId() == deploiementDTO.getId()){
-                listDeploiment.set(i,deploiementDTO);
+            if((deploy.getId() != null) && (deploy.getId().equals(deploiementDTO.getId()))){
+
+                changeDiffValue(deploy,deploiementDTO);
                 // On sort - break
                 break;
             }
@@ -384,16 +385,88 @@ public class InterventionDetailsMoyensFragmentsTV extends Fragment  {
         }
     }
 
+    private void changeDiffValue(DeploiementDTO reelDep, DeploiementDTO momDep) {
+
+        if(reelDep.getComposante() != null
+                && momDep.getComposante() != null) {
+            if (!reelDep.getComposante().equals(momDep.getComposante())) {
+                reelDep.setComposante(momDep.getComposante());
+            }
+        }
+
+        if(reelDep.getDateHeureDesengagement() != null
+                && momDep.getDateHeureDesengagement() != null) {
+            if (!reelDep.getDateHeureDesengagement().equals(momDep.getDateHeureDesengagement())) {
+                reelDep.setDateHeureDesengagement(momDep.getDateHeureDesengagement());
+            }
+        }
+
+        if(reelDep.getDateHeureEngagement() != null
+                && momDep.getDateHeureEngagement() != null) {
+            if (!reelDep.getDateHeureEngagement().equals(momDep.getDateHeureEngagement())) {
+                reelDep.setDateHeureEngagement(momDep.getDateHeureEngagement());
+            }
+        }
+
+        if(reelDep.getDateHeureValidation() != null
+                && momDep.getDateHeureValidation() != null) {
+            if (!reelDep.getDateHeureValidation().equals(momDep.getDateHeureValidation())) {
+                reelDep.setDateHeureValidation(momDep.getDateHeureValidation());
+            }
+        }
+
+        if(reelDep.getDateHeureDemande() != null
+                && momDep.getDateHeureDemande() != null) {
+            if (!reelDep.getDateHeureDemande().equals(momDep.getDateHeureDemande())) {
+                reelDep.setDateHeureDemande(momDep.getDateHeureDemande());
+            }
+        }
+        if(reelDep.getState() != null
+                && momDep.getState() != null) {
+            if (!reelDep.getState().equals(momDep.getState())) {
+                reelDep.setState(momDep.getState());
+            }
+        }
+
+        if(reelDep.getPresenceCRM() != null
+                && momDep.getPresenceCRM() != null) {
+            if (!reelDep.getPresenceCRM().equals(momDep.getPresenceCRM())) {
+                reelDep.setPresenceCRM(momDep.getPresenceCRM());
+            }
+        }
+
+        if(reelDep.getGeoPosition() != null
+                && momDep.getGeoPosition() != null) {
+            if (!reelDep.getGeoPosition().equals(momDep.getGeoPosition())) {
+                reelDep.setGeoPosition(momDep.getGeoPosition());
+            }
+        }
+    }
 
 
     public void synchroDeployCreate(DeploiementDTO deploiementDTO) {
 
-    listDeploiment.add(deploiementDTO);
+        Log.println(Log.INFO, "synchroDeployCreate", "synchroDeployCreate");
+        listDeploiment.add(deploiementDTO);
 
         if (isReduce()) {
             populatedTableViewReduce(listDeploiment, false, -1);
         } else {
             populatedTableViewAll(listDeploiment, false, -1);
         }
+    }
+
+    public boolean containsId(DeploiementDTO message) {
+
+        boolean exist = false;
+            for (int i = 0; i < listDeploiment.size(); i++) {
+                DeploiementDTO deploy = listDeploiment.get(i);
+                if((deploy.getId() != null) && (deploy.getId().equals(message.getId()))){
+                    exist = true;
+                    // On sort - break
+                    break;
+                }
+            }
+        return exist;
     }
 }
