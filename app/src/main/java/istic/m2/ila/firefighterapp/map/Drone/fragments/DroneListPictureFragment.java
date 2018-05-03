@@ -73,30 +73,27 @@ public class DroneListPictureFragment extends Fragment {
     }
 
     public void onClickOnPathPointDrawing (final PathPointDrawing point) {
-        /*AsyncTask.execute(new Runnable()
-        {
-            public void run()
-            {*/
-            // Construction de notre appel service
-            PhotoService photoService = new PhotoService();
-            // Récupération du token
-            String token = _context.getSharedPreferences("user", _context.MODE_PRIVATE).getString("token", "null");
+        // Construction de notre appel service
+        PhotoService photoService = new PhotoService();
+        // Récupération du token
+        String token = _context.getSharedPreferences("user", _context.MODE_PRIVATE).getString("token", "null");
 
-            List<PhotoSansPhotoDTO> result = photoService.getPhotosForPointWithoutPhoto(token, point.getPoinMission().getId());
+        List<PhotoSansPhotoDTO> result = photoService.getPhotosForPointWithoutPhoto(token, point.getPoinMission().getId());
 
-            photos.clear();
-            if(result!=null){
-                photos.addAll(result);
+        photos.clear();
+        if(result!=null){
+            photos.addAll(result);
+        }
+
+        Collections.sort(photos);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                _adapter.notifyDataSetChanged();
             }
-
-            Collections.sort(photos);
-
-            /*}
-        });*/
-        // TODO : à supprimer quand le serveur fonctionnera
-        /*for(int i =0; i<10; i++){
-            photos.add(new PhotoSansPhotoDTO());
-        }*/
+        });
+        //_adapter.notifyItemChanged(0);
+        //_adapter.notifyDataSetChanged();
 
         if(photos!=null){
             Log.i(TAG, "Nombre de photos récupérées : " + photos.size());

@@ -158,13 +158,16 @@ public class MissionManager extends MapItem
     {
         Log.i(TAG, "Reseting Mission");
 
+        if(_selectedMarker != null)
+            EventBus.getDefault().post(new UnSelectPathPointMessage());
+
+        setSelectedMarker(null);
         for(PathPointDrawing point : _pathPoints)
             point.Remove();
 
         _pathPoints.clear();
         _pathPointsByTag.clear();
         _pathDrawing.Clear();
-        _selectedMarker = null;
 
         setEditMode(false);
 
