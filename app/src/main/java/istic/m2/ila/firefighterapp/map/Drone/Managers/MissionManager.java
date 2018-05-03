@@ -319,7 +319,7 @@ public class MissionManager extends MapItem
 
         _selectedMarker.Remove();
         _pathPoints.remove(_selectedMarker);
-        setSelectedMarker(null);
+        _selectedMarker = null;
 
         ReindexPoints();
         _pathDrawing.Update(_pathPoints);
