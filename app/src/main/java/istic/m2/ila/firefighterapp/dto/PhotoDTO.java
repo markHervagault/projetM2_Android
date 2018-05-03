@@ -6,7 +6,7 @@ import java.util.Date;
  * Created by hakima on 3/26/18.
  */
 
-public class PhotoDTO {
+public class PhotoDTO{
     private Long id;
 
     private Date dateHeure;
@@ -56,6 +56,12 @@ public class PhotoDTO {
 
     public void setPointMissionId(Long pointMissionId) {
         this.pointMissionId = pointMissionId;
+    }
+
+    public String toString () {
+        return "photoDTOId = "+ id + ", dateHeure = " + dateHeure + ", iteration = " + iteration
+                + ", pointMissionId = " + pointMissionId + ", imgBase64 = " + imgBase64 +
+                ", nomFichier = " + nomFichier;
     }
 
 }
