@@ -10,24 +10,6 @@
         android:layout_height="match_parent"
         tools:context="istic.m2.ila.firefighterapp.fragment.map.intervention.InterventionMapFragment" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|right"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/toggleView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="toDrone" />
-
-        <Button
-            android:id="@+id/toggleViewTabMoy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="&lt; Moyens" />
-    </LinearLayout>
 
     <!-- Gestion du Menu Flottant -->
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -134,6 +116,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="top|left" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/toggleView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="toDrone" />
+
+        <Button
+            android:id="@+id/toggleViewTabMoy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&lt; Moyens" />
+    </LinearLayout>
 
 </FrameLayout>
 
