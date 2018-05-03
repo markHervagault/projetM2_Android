@@ -123,8 +123,7 @@ public class PathPointDrawing extends MapItem
     {
         this(new LatLng(point.getLatitude(), point.getLongitude()), draggable, tag, map, activity);
         _poinMission = point;
-        if(point.getAction())
-            _marker.setIcon(_photoIcon);
+        setAction(point.getAction());
     }
 
     //endregion
