@@ -37,7 +37,7 @@ public class VehiculeDispoAdapter extends ArrayAdapter<VehiculeDTO> {
         new TestAsynchTask().execute();
     }
 
-    public class TestAsynchTask extends AsyncTask<Void, Void, Object>{
+    private class TestAsynchTask extends AsyncTask<Void, Void, Object>{
 
         @Override
         protected Object doInBackground(Void... voids) {
