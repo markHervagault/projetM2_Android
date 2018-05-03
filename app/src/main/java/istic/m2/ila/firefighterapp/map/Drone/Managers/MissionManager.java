@@ -239,24 +239,28 @@ public class MissionManager extends MapItem
                 // Si un marqueur n'a jamais été sélectionné auparavant
                 if(_selectedMarker == null){
                     setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
-                    EventBus.getDefault().post(_selectedMarker);
+                    if(_missionMode == MissionMode.FOLLOW)
+                        EventBus.getDefault().post(_selectedMarker);
                 }
                 // si le marqueur sélectionné et le même que celui sélectionné auparavant
                 else if (_selectedMarker.getTag().equals(marker.getTag())){
                     _selectedMarker.UnSelect();
                     setSelectedMarker(null);
-                    EventBus.getDefault().post(new UnSelectPathPointMessage());
+                    if(_missionMode == MissionMode.FOLLOW)
+                        EventBus.getDefault().post(new UnSelectPathPointMessage());
                 }
                 // si le marqueur n'est pas le même que celui sélectionné auparavant
                 else{
                     _selectedMarker.UnSelect();
                     setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
-                    EventBus.getDefault().post(_selectedMarker);
+                    if(_missionMode == MissionMode.FOLLOW)
+                        EventBus.getDefault().post(_selectedMarker);
                 }
             }
             else{
                 setSelectedMarker(null);
-                EventBus.getDefault().post(new UnSelectPathPointMessage());
+                if(_missionMode == MissionMode.FOLLOW)
+                    EventBus.getDefault().post(new UnSelectPathPointMessage());
             }
             // TODO : Quand est ce qu'on renvoie TRUE ? Quand est ce qu'on renvoie FALSE ?
             return true;

@@ -172,6 +172,9 @@ public class DroneMapFragment extends Fragment {
                     break;
 
                 case MissionManager.EDIT_MODE_CHANGED_EVENT_NAME: //Prévenir l'UI changement de bouton
+                    if(_missionManager.getMissionMode() != MissionManager.MissionMode.EDIT)
+                        return;
+
                     if(_missionManager.isEditMode())
                         _droneMissionFrag.SetAddMode();
                     else

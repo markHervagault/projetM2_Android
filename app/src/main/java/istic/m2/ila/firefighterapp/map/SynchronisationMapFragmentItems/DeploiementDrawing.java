@@ -157,14 +157,14 @@ public class DeploiementDrawing extends MapItem
      * Dessine sur la googleMap le marqueur en fonction des données de la DTO
      */
     public void draw() {
-        if(!(_deploiementDTO.getState() == EEtatDeploiement.DESENGAGE
+        /*if(!(_deploiementDTO.getState() == EEtatDeploiement.DESENGAGE
                 || _deploiementDTO.getState() == EEtatDeploiement.REFUSE)
                 && !_deploiementDTO.isPresenceCRM()
                 && _deploiementDTO.getGeoPosition() != null) {
             // Récupération des icônes en fonction du type (change ou change pas)
             int rIcone = referentielMoyen.get(_deploiementDTO.getState());
 
-            String rgbNoA = _deploiementDTO.getComposante().getCouleur().substring(0, 7);
+            String rgbNoA = _deploiementDTO.getComposante().getCouleur().substring(0, 5);
             Bitmap icon = getNewBitmapRenderedWithColor(rIcone, rgbNoA);
             String label = null;
             if (_deploiementDTO.getState() != EEtatDeploiement.DEMANDE) {
@@ -185,6 +185,8 @@ public class DeploiementDrawing extends MapItem
                     .icon(BitmapDescriptorFactory.fromBitmap(icon))
                     .draggable(false));
             _deploimentMarker.setTag(_deploiementDTO);
+            }
+*/
 
 
 
@@ -192,7 +194,6 @@ public class DeploiementDrawing extends MapItem
 
 
 
-        }
     }
     // endregion
 
