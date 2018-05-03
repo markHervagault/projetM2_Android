@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import istic.m2.ila.firefighterapp.R;
-import istic.m2.ila.firefighterapp.adapter.ItemListInterventionAdapter;
 import istic.m2.ila.firefighterapp.dto.InterventionDTO;
 import istic.m2.ila.firefighterapp.rest.RestTemplate;
 import istic.m2.ila.firefighterapp.rest.consumers.InterventionConsumer;
@@ -32,7 +31,7 @@ public class ListInterventionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_intervention);
+        setContentView(R.layout.activity_new_list_intervention);
 
         // use a linear layout manager
         mRecyclerView = findViewById(R.id.recycler_list_intervention);
@@ -52,7 +51,6 @@ public class ListInterventionActivity extends AppCompatActivity {
 
         AsyncTask.execute(new Runnable() {
             public void run() {
-
                 // On peuple notre RecyclerView
                 List<InterventionDTO> myDataset = new ArrayList<>();
 
@@ -79,7 +77,7 @@ public class ListInterventionActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mAdapter = new ItemListInterventionAdapter(finalMyDataset);
+                        //mAdapter = new ItemListInterventionAdapter(finalMyDataset);
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 });
@@ -92,6 +90,6 @@ public class ListInterventionActivity extends AppCompatActivity {
      * @param view
      */
     public void openAddInterventionActivity(View view) {
-        startActivity(new Intent(ListInterventionActivity.this, AddInterventionActivity.class));
+        startActivity(new Intent(this, AddInterventionActivity.class));
     }
 }

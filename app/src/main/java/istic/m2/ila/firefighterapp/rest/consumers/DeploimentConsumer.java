@@ -36,7 +36,8 @@ public interface DeploimentConsumer {
     /** Validation d'un déploiement par un operateur CODIS*/
     @PUT(Endpoints.DEPLOIEMENT_ID_VALIDE)
     Call<DeploiementDTO> setDeploiementToValide(@Header("Authorization")String token,
-                                                @Path("id") Long id);
+                                                @Path("id") Long id,
+                                                @Body DeploiementDTO deploiementDto);
 
     /** Refus d'un deploiement par un operateur CODIS*/
     @PUT(Endpoints.DEPLOIEMENT_ID_REFUSE)

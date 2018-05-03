@@ -64,5 +64,6 @@
     <string name="new_map_activity_fab_menu_sinistre_label">Sinistre</string>
     <string name="new_map_activity_fab_menu_trait_topo_label">Trait topographique</string>
     <string name="fragment_holder_hide_button_alt">Masquer</string>
+    <string name="title_activity_new_list_intervention">NewListIntervention</string>
     <string name="add_intervention_validation_button">CREER L\'INTERVENTION</string>
 </resources>

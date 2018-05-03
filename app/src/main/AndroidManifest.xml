@@ -12,8 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme">
 
         <!-- Clé pour utiliser l'API Google Map -->
         <meta-data
@@ -28,11 +27,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>        <activity
-        android:name=".activitiy.AddInterventionActivity"
-        android:label="Nouvelle Intervention"
-        android:screenOrientation="landscape">
-    </activity>
+        </activity>
+        <activity
+            android:name=".activitiy.AddInterventionActivity"
+            android:label="Nouvelle Intervention"
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".activitiy.MapActivity"
             android:label="@string/title_activity_map"
@@ -59,6 +58,11 @@
         <service
             android:name=".rabbitMQ.clientRabbitMqGeneric.ServiceRabbitMQDeploiement"
             android:label="Service RabbitMQ Deploiment" />
+
+        <activity
+            android:name=".activitiy.NewListInterventionActivity"
+            android:label="@string/title_activity_new_list_intervention"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

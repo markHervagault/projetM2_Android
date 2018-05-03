@@ -120,7 +120,6 @@ public class InterventionCreationMoyensFragments extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.add_moyens_creation_intervention_fragment, container, false);
-
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_add_moyen_fragment);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new SimpleAdapter(recyclerView, mapVehiculesDisponibles));
