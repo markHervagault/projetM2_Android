@@ -26,6 +26,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.concurrent.TimeoutException;
 
@@ -75,7 +76,9 @@ public abstract class ServiceRabbitMQGeneric<T extends IRabbitDTO, M extends Mes
 
                 builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
                     public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                        return new Date(json.getAsJsonPrimitive().getAsLong());
+
+                        Date date =  new Date(json.getAsJsonPrimitive().getAsLong()*1000);
+                        return date;
                     }
                 });
 

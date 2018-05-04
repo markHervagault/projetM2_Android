@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -53,11 +54,26 @@ public class DemandeMoyenFragement extends Fragment {
         Button demande = view.findViewById(R.id.Demande);
         demande.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                List<DemandeDTO> listDemande = buildListVehicule(type);
-                for(int i = 0; i < listDemande.size(); i++){
-                    createDeploiement(listDemande.get(i));
+                if(editTextNumberDemand.getText() != null &&
+                !editTextNumberDemand.getText().toString().isEmpty()) {
+                    String text = String.valueOf(editTextNumberDemand.getText());
+                    int textToInt = Integer.parseInt(text);
+                    if(editTextNumberDemand.getText().length() != 0 && textToInt > 0) {
+                        List<DemandeDTO> listDemande = buildListVehicule(type);
+                        for (int i = 0; i < listDemande.size(); i++) {
+                            createDeploiement(listDemande.get(i));
+                        }
+                        ((MapActivity) getActivity()).hideSelf();
+                    } else {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                        "Erreur, le nombre de véhicule doit être > 0",
+                        Toast.LENGTH_LONG);
+                    }
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                    "Erreur, le nombre de véhicule doit être > 0",
+                    Toast.LENGTH_LONG);
                 }
-                ((MapActivity)getActivity()).hideSelf();
             }
         });
 
