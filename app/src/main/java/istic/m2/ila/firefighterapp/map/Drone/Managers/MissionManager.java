@@ -158,13 +158,16 @@ public class MissionManager extends MapItem
     {
         Log.i(TAG, "Reseting Mission");
 
+        if(_selectedMarker != null)
+            EventBus.getDefault().post(new UnSelectPathPointMessage());
+
+        setSelectedMarker(null);
         for(PathPointDrawing point : _pathPoints)
             point.Remove();
 
         _pathPoints.clear();
         _pathPointsByTag.clear();
         _pathDrawing.Clear();
-        _selectedMarker = null;
 
         setEditMode(false);
 
@@ -237,26 +240,28 @@ public class MissionManager extends MapItem
 
             if(marker.getTag() != null && marker.getTag() instanceof Integer && _pathPointsByTag.containsKey(marker.getTag())) {
                 // Si un marqueur n'a jamais été sélectionné auparavant
-                if(_selectedMarker == null){
-                    setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
-                    EventBus.getDefault().post(_selectedMarker);
-                }
-                // si le marqueur sélectionné et le même que celui sélectionné auparavant
-                else if (_selectedMarker.getTag().equals(marker.getTag())){
-                    _selectedMarker.UnSelect();
+                 if (_selectedMarker != null && _selectedMarker.getTag().equals(marker.getTag())){
                     setSelectedMarker(null);
-                    EventBus.getDefault().post(new UnSelectPathPointMessage());
+                    if(_missionMode == MissionMode.FOLLOW)
+                        EventBus.getDefault().post(new UnSelectPathPointMessage());
                 }
                 // si le marqueur n'est pas le même que celui sélectionné auparavant
                 else{
-                    _selectedMarker.UnSelect();
                     setSelectedMarker(_pathPointsByTag.get(marker.getTag()));
-                    EventBus.getDefault().post(_selectedMarker);
+                    if(_missionMode == MissionMode.FOLLOW)
+                    {
+                        if(_selectedMarker.getAction())
+                            EventBus.getDefault().post(_selectedMarker);
+                        else
+                            EventBus.getDefault().post(new UnSelectPathPointMessage());
+
+                    }
                 }
             }
             else{
                 setSelectedMarker(null);
-                EventBus.getDefault().post(new UnSelectPathPointMessage());
+                if(_missionMode == MissionMode.FOLLOW)
+                    EventBus.getDefault().post(new UnSelectPathPointMessage());
             }
             // TODO : Quand est ce qu'on renvoie TRUE ? Quand est ce qu'on renvoie FALSE ?
             return true;
@@ -314,7 +319,7 @@ public class MissionManager extends MapItem
 
         _selectedMarker.Remove();
         _pathPoints.remove(_selectedMarker);
-        setSelectedMarker(null);
+        _selectedMarker = null;
 
         ReindexPoints();
         _pathDrawing.Update(_pathPoints);

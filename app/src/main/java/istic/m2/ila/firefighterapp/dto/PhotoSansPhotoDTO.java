@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * A DTO for the Photo entity.
  */
-public class PhotoSansPhotoDTO  {
+public class PhotoSansPhotoDTO implements Comparable<PhotoSansPhotoDTO> {
 
     private Long id;
 
@@ -45,5 +45,10 @@ public class PhotoSansPhotoDTO  {
             return false;
         }
         return getId()==photoDTO.getId();
+    }
+
+    @Override
+    public int compareTo(PhotoSansPhotoDTO o) {
+        return o.getDateHeure().compareTo(getDateHeure());
     }
 }

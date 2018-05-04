@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:text=""
             android:textAlignment="center"
+            android:gravity="center_horizontal"
             android:textSize="16sp"
             android:textStyle="bold" />
 
